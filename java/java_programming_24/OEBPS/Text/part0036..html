@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introduction to Unit Testing with JUnit Framework</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="testing"></a><span
+            class="chapterTitle">Lesson 35<br/>Introduction to Unit Testing with JUnit Framework</span></h1>
+
+    <section>
+        <p>Software <span epub:type="pagebreak" title="511" id="Page_511"></span>developers are not perfect, and bugs
+            happen. Even if your program has no bugs, you may have used someone else’s code, which does have bugs.
+            Moreover, code modification in one class or interface can break previously working code in another; this is
+            <a id="idp23250784"></a><a id="idp23251984"></a><a id="idp23252960"></a>called <i>regression</i>. Thorough
+            testing is an important phase of any software development project. </p>
+        <p>Every developer knows how to test his or her code manually, and they do it. Periodically. But manual testing
+            is a pretty boring routine. Would you want to start each day with manual testing to see if
+            creating, updating, and deleting  a sample purchase order still works? Neither do I. Testing should be
+            automated. </p>
+        <p>The sooner your project team implements automated testing routines, the shorter the development cycle will
+            be. The concept <a id="idp23255296"></a>of <i>test-driven development</i> (<a
+                    href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a>) suggests that testing should be
+            embedded in the software development process from the very start of any new project.</p>
+        <p>There are different types of testing routines that have different goals. Here’s a description of the main
+            types of testing (see more at the Wikipedia article <a href="http://en.wikipedia.org/wiki/Software_testing">Software
+                Testing</a>) :</p>
+        <ul>
+            <li><b>Unit testing</b> is performed <a id="idp23261840"></a>by a software developer and is targeted at
+                small pieces of code. For example, if you invoke a method <code>calcTax()</code> with particular
+                arguments, it should return the expected result. Java classes performing application-specific unit tests
+                are written by software developers. Sometimes unit testing is called <i>white-box</i> testing because a
+                developer is familiar with the code being tested. 
+            </li>
+            <li><b>Integration testing</b> is a process <a id="idp23263936"></a>when several unit tests are combined to
+                ensure that different pieces of code work properly with each other. In other words, the goal here is to
+                test interfaces between different software components. If John wrote the method <code>calcTax()</code>,
+                which uses the method <code>getTaxBrackets()</code> that Mary wrote, there is a chance that Mary decided
+                to change this method’s signature without notifying John about the change. 
+            </li>
+            <li>If John and Mary work with the same source code, the Java compiler may catch this error. But what if
+                Mary packages compiled code in a JAR that John adds to the runtime <code>CLASSPATH</code> variable? The
+                <span epub:type="pagebreak" title="512" id="Page_512"></span>application would break. Integration tests 
+                ensure that all pieces of software work well together. Integration tests are written by software
+                developers.
+            </li>
+            <li><b>QA testing</b> is not performed by <a id="idp23270800"></a>software developers; instead specially
+                trained IT people use the application written by software developers and identify issues in the
+                functionality—for example, a Place Order button in the graphical user interface (GUI) allows the user to
+                place an order even though the user hasn’t entered the shipping address. 
+            </li>
+            <li>In some scenarios, QA engineers test the software manually, but in many cases they use <a
+                    href="http://en.wikipedia.org/wiki/Test_automation">test-automation software</a> (such as <a
+                    href="http://docs.seleniumhq.org/">Selenium</a> or  <a
+                    href="http://www8.hp.com/us/en/software-solutions/unified-functional-automated-testing/index.html">QuickTest
+                Pro</a>). They write scripts for different use cases using scripting languages. All errors are reported
+                in an issue-tracking system (such as <a href="http://www.redmine.org/">Redmine</a> or <a
+                        href="https://www.atlassian.com/software/jira">JIRA</a>) and are assigned to software developers
+                for providing code fixes.
+            </li>
+            <li><b>User-acceptance testing</b> is performed <a id="idp23273056"></a>by end users. It is often referred
+                as <i>black-box</i> testing because the users don’t know how the software was constructed. Although QA
+                engineers can catch a large number of usability issues, they’re not experts in the business domain for
+                which the software was written. For example, an application for insurance agents should check that the
+                agent is licensed for business in certain states and her license is not expired.  These kind of errors
+                can be caught by the business users.
+            </li>
+            <li><b>Stress or load testing</b> must ensure that <a id="idp23286496"></a><a id="idp23285344"></a>the
+                application remains operational if a large number of users decide to use the application simultaneously.
+                Load-testing tools (such as <a href="http://en.wikipedia.org/wiki/Apache_JMeter">Apache JMeter</a> or <a
+                        href="http://www.neotys.com/product/overview-neoload.html">NeoLoad</a>) make it possible to set
+                up several computers that emulate a large number of users working with your application. How good is an
+                application that works fine for 10 users but becomes unresponsive if the number of users increases to
+                100?  
+            </li>
+        </ul>
+        <p>Ideally, there should be a <a id="idp23279584"></a><a id="idp23280592"></a>written document called Service
+            Level Agreement (SLA) that defines the number of concurrent users and acceptable response time for the
+            software being developed. A savvy project manager signs an SLA with the users before the software
+            development begins. If a user starts complaining about a 10-second wait, you should check the SLA and either
+            improve the response or reject the user’s request.</p>
+        <p>This lesson covers just the unit testing procedures as they apply to the software developed in Java. JUnit is
+            the most popular tool for testing Java framework.</p>
+    </section>
+    <section>
+        <h2><a id="junit"></a>Introduction to JUnit</h2>
+        <p>JUnit is a an open source <a id="idp23293184"></a>unit testing framework available for download at <a
+                href="http://junit.org/">http://junit.org</a>. Before you start writing test classes, you should get
+            familiar with the JUnit terminology:</p>
+        <ul>
+            <li>Assertions compare expected and received results.</li>
+            <li>Test setup is a process of preparing the test data before running the test.</li>
+            <li>Test teardown means getting rid of the test data after it runs.</li>
+            <li>Test suite is a group of test classes that run together.</li>
+            <li>Exceptions testing checks that an exception is thrown where it should be or is not thrown where it
+                shouldn’t.
+            </li>
+            <li>Test runner is a utility that can run tests.</li>
+            <li>Rules allow to add functionality that applies to all tests within a test class, but in a more generic
+                way.
+            </li>
+            <li>Theories allow to combine assertions to state the test assumptions more clearly. </li>
+            <li>Assumptions selectively ignore certain tests based on some criteria. </li>
+            <li>Parameters allow you to prepare a set of data and pass it to a test as parameter.</li>
+        </ul>
+        <p>A <span epub:type="pagebreak" title="513" id="Page_513"></span>class that unit-tests the application’s code
+            is a Plain Old Java Object (POJO) that includes methods marked <a id="idp23298992"></a><a
+                    id="idp23297536"></a>with the <code>@Test</code> annotation. Each method represents a test case.</p>
+        <p>To run a unit test you need the following:</p>
+        <ul>
+            <li>A test Java class</li>
+            <li>System Under Test (SUT), which is a class method </li>
+            <li>A test runner </li>
+        </ul>
+        <section>
+            <h3><a id="idp23304304"></a>Installing JUnit</h3>
+            <p>JUnit is so popular that all <a id="idp23305328"></a>major integraged development environments (IDEs)
+                include the JUnit library, so you don’t even need to download it unless you want to use a newer JUnit
+                version. In Eclipse, you simply add the JUnit library to the Project Build Path. You can run JUnit tests
+                right from Eclipse or from a command line using <a href="part0036.html#testrunners">test runners</a>. 
+            </p>
+            <p>If you’re not using an IDE or prefer running tests from a command line, you need to download JUnit; no
+                installation is required. JUnit is packaged in two JAR files <code>junit.jar</code> and <code>hamcrest-core.jar</code>,
+                and you need to add them to the <code>CLASSPATH</code> of your application. You can download these JARs
+                from the <a href="http://search.maven.org/">Maven Central repository</a>. Search for these files by
+                names and click the jar link to download. <a
+                        href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch35.html#gradle">Lesson
+                    36</a> shows you how to automate downloading required JARs from Maven Central using build tools.</p>
+        </section>
+        <section>
+            <h3><a id="idp23310432"></a>Changing the Default Directory Structure in Eclipse</h3>
+            <p>Popular <a id="idp23313536"></a><a id="idp23315408"></a>build tools like Maven and Gradle recommend the
+                following standard directory structure for Java sources:</p>
+            <pre>
+src
+  main
+    java
+  test
+    java
+</pre>
+            <p>The source code of the application classes should originate from <code>src/main/java</code>, and the test
+                classes originate from <code>src/test/java</code>. But Eclipse originates all Java sources from the
+                directory <code>src</code>, and it doesn’t force you to write test classes. If you create a new Eclipse
+                project, change the directory structure up front to be prepared for automating the build process in the
+                future. </p>
+            <p>Create a new Eclipse Java project called <code>Lesson35</code> and change its default directory
+                structure. Open the project properties and select the Java Build Path option. Open the Source tab and
+                remove the <code>src</code> folder from the Source Folders on the Build Path field. After that add the
+                folders <code>src/main/java</code> and <code>src/test/java</code>. This is it. Your project directory
+                structure should look like <a id="fig-anc-c035-001" href="part0036.html#fig-c035-001">Figure 35-1</a>.
+            </p>
+            <figure>
+                <img class="center" src="../Images/image00619.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c035-001" href="part0036.html#fig-anc-c035-001">Figure 35-1</a>:</b></span>
+                        New <span epub:type="pagebreak" title="514" id="Page_514"></span>Eclipse project with modified
+                        directory structure</p>
+                </figcaption>
+            </figure>
+            <p>Now your test classes are separated from your application source code.</p>
+        </section>
+        <section>
+            <h3><a id="idp23325232"></a>Your First JUnit Test Case </h3>
+            <p>Following standard naming <a id="case"></a>conventions you name the test class the same as the class
+                under <code>test</code> but with the additional suffix <code>Test</code>. For example, if you are
+                planning to unit test the class <code>Tax</code>, the name of the test class should be
+                <code>TaxTest</code>. Start with creating a new package <code>tax</code> in the directory <code>src/main/java</code>.
+                 Then create a new interface <code>Taxable</code> and the class <code>Tax</code> there. The interface
+                <code>Taxable</code> has the following content:</p>
+            <pre>
+package tax;
+interface Taxable {
+  double calcTax(double grossIncome, int dependents)
+                                    throws IllegalArgumentException;
+  double applyStudentDeduction(double taxAmount, int numOfStudents);
+}
+</pre>
+            <p>The class <code>Tax</code> implements <code>Taxable</code> as follows:</p>
+            <pre>
+package tax;
+class Tax implements Taxable {
+    
+    final static double STUDENT_DEDUCTION = 300.00;
+    
+    public double calcTax(double grossIncome, int dependents)   
+                                  throws IllegalArgumentException{ 
+        
+       if (grossIncome &lt;0 ){
+          throw new IllegalArgumentException(
+                                "Gross income can't be negative");
+       }
+ 
+       return (grossIncome*0.33 - dependents*100);
+    }
+    
+    public double applyStudentDeduction(double taxAmount, 
+                                            int numOfStudents){
+        
+       return taxAmount - STUDENT_DEDUCTION*numOfStudents; 
+    }    
+}
+</pre>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp23337152"></a>Why Using an Interface?</h3>
+                    <p>You may ask, “Why do I even need to create a separate interface for such a simple class?”
+                        Designing to interfaces is a good idea in general, as it clearly declares the application
+                        programming interface (API) and allows changing implementation without the need to change
+                        classes that use this API. From the testing perspective, interfaces clearly expose the methods
+                        that should be unit tested.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Now create a package <code>tax</code> inside <code>src/test/java</code>.  Select this package and ask
+                Eclipse to generate a test class by selecting the menu File  → New  → JUnit Test Case.</p>
+            <p><span epub:type="pagebreak" title="515" id="Page_515"></span>Eclipse displays a window where you enter
+                the class name as <code>TaxTest</code> and the name of the class under test as <code>tax.Tax</code>.
+                (See <a id="fig-anc-c035-002" href="part0036.html#fig-c035-002">Figure 35-2</a>.)</p>
+            <figure>
+                <img class="center" src="../Images/image00620.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c035-002" href="part0036.html#fig-anc-c035-002">Figure 35-2</a>:</b></span>
+                        Creating <span epub:type="pagebreak" title="516" id="Page_516"></span>a new JUnit Test Case in
+                        Eclipse</p>
+                </figcaption>
+            </figure>
+            <p>Click the Next button, and you can select the methods from the class <code>Tax</code> that you want to
+                test, such as <code>calcTax()</code>. Then Eclipse displays a pop-up message asking if JUnit 4 should be
+                added to the build path of the project. Agree to this and you see a newly generated class that looks
+                like the following:</p>
+            <pre>
+package tax;
+import static org.junit.Assert.*;
+import org.junit.Test;
+public class TaxTest {
+    @Test
+    public void testCalcTax() {
+        fail("Not yet implemented");
+    }
+}
+</pre>
+            <p>Now <span epub:type="pagebreak" title="517" id="Page_517"></span>run this test. Right-click the <code>TaxTest</code>
+                class name and select Run As  → Unit Test.  </p>
+            <p>Eclipse starts its default JUnit test runner, which displays a red bar and a test failure message
+                producing the <code>AssertionError</code> with a message “Not yet implemented,” as shown in <a
+                        id="fig-anc-c035-003" href="part0036.html#fig-c035-003">Figure 35-3</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00621.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c035-003" href="part0036.html#fig-anc-c035-003">Figure 35-3</a>:</b></span>
+                        The first test failed: Not yet implemented</p>
+                </figcaption>
+            </figure>
+            <p>The test runner found one method annotated with <code>@Test</code> and ran it. The invocation of JUnit’s
+                method <code>fail()</code> reported an error with the message “Not yet implemented."  If you comment out
+                the <code>fail()</code> method and rerun the test, it passes and you see a green bar. Before learning
+                how to write the real tests, the next section familiarizes you with JUnit <a id="idp23353024"></a>annotations.
+            </p>
+        </section>
+        <section>
+            <h3><a id="idp23326704"></a>JUnit Annotations</h3>
+            <p>JUnit comes with a <a id="idp23355840"></a><a id="idp23357008"></a>handful of annotations that you need
+                to use in your test classes. The test runner reads these runtime annotations and performs the testing
+                according to your code.  Here’s the list of selected JUnit annotations:</p>
+            <ul>
+                <li><code>@Test</code> annotation <a id="idp23359680"></a><a id="idp23361104"></a>declares that a <code>public
+                    void</code> method is a unit test.
+                </li>
+                <li><code>@Before</code> is used with <a id="idp23364016"></a><a id="idp23365536"></a>a method to write
+                    some code to be executed before each test.
+                </li>
+                <li><code>@After</code> is used with a <a id="idp23367632"></a><a id="idp23369216"></a>amethod to be
+                    executed after each test.
+                </li>
+                <li><code>@BeforeClass</code> is <span epub:type="pagebreak" title="518" id="Page_518"></span>used <a
+                        id="idp23371440"></a><a id="idp23372896"></a>with a method to be executed before the very first
+                    test starts.
+                </li>
+                <li><code>@AfterClass</code> is used <a id="idp23374960"></a><a id="idp23376704"></a>with a method to be
+                    executed after the very last test is complete.
+                </li>
+                <li><code>@Ignore</code> disables a <a id="idp23378768"></a><a id="idp23380464"></a>test (the test
+                    runner skips such a method).
+                </li>
+            </ul>
+            <p>You can use the <code>@Test</code> annotation with optional parameters <code>expected</code> and <code>timeout</code>.
+                For example, the annotation <code>@Test(expected=Exception.class)</code> fails the test if the specified
+                exception is not thrown. The annotation <code>@Test(timeout=1000)</code> fails the test if it runs
+                longer than 1000 milliseconds.</p>
+        </section>
+        <section>
+            <h3><a id="idp23384208"></a>Applying Annotations for Testing Tax </h3>
+            <p>It’s time to <a id="apply"></a>see the <code>@Test</code> annotation in action. You’re going to write a
+                test to ensure that if you assign zero values to the arguments <code>grossIncome</code> and <code>dependents</code>,
+                the method <code>calcTax()</code> returns a zero tax. For that you use the <code>static</code> method
+                <code>assertEquals()</code> from the class <code>org.junit.Assert</code>. Names of the test methods
+                should be descriptive; call it <code>testZeroTax()</code>. The new version of your class
+                <code>TaxTest</code> is shown next:</p>
+            <pre>
+package tax;
+import static org.junit.Assert.*;
+import org.junit.Test;
+public class TaxTest {
+    @Test
+    public void testZeroTax() {
+        Tax tax = new Tax();
+        assertEquals("Tax on zero income is not zero",
+                                   0, tax.calcTax(0, 0), 0 );
+    }
+}
+</pre>
+            <p>The class <code>Assert</code> has several overloaded versions of the method <code>assertEquals()</code> ,
+                which checks whether the expected value is equal to the actual. I used the method with the following
+                four arguments:</p>
+            <ul>
+                <li>The message to display if the test fails</li>
+                <li>The expected value</li>
+                <li>The method to invoke on the test subject</li>
+                <li>The maximum difference (delta) between <code>expected</code> and <code>actual</code>, for which both
+                    numbers are still considered equal
+                </li>
+            </ul>
+            <p>Executing this test with the test runner returns success. Change the expected value or delta while
+                invoking <code>assertEquals()</code> in the preceding example, and the test fails. JUnit has many
+                flavors of the <code>assert()</code> method, for example, <code>assertTrue()</code> that check that the
+                boolean value is true and <code>assert NotNull()</code> checks that the value is not null.  The names of
+                these methods are self-explanatory and are pretty easy to understand. </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp23400224"></a>Static imports</h3>
+                    <p>In <span epub:type="pagebreak" title="519" id="Page_519"></span>the class <code>TestTax</code>, I
+                        use the <code>import static</code> keywords <a id="idp23404032"></a>to import the class <code>Assert</code>.
+                        This allows me to use the <code>static</code> method <code>assertEquals()</code> without
+                        specifying the name of the class where it was declared. With a regular <code>import</code>
+                        statement I should have written <code>Assert.assertEquals()</code>. In general static imports
+                        should be used rarely, as the code is more difficult to understand.</p>
+                    <p>In a small program such as <code>TaxTest</code>, you remember that the method <code>assertEquals()</code> was
+                        declared in JUnit, but in larger classes with lots of import statements static imports would
+                        make it less obvious where a method without the class qualification was declared.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Add one more test to see if the tax deduction is properly applied for a household with one student. The
+                classTax has a method <code>applyStudentDeduction()</code> that should deduct $300 per student. The
+                method <code>testOneStudentTaxDeductionIs300()</code> in the following class <code>TaxTest</code>
+                asserts this:</p>
+            <pre>
+package tax;
+import static org.junit.Assert.*;
+import org.junit.Test;
+public class TaxTest {
+    @Test
+    public void testZeroTax() {
+        Tax tax = new Tax();
+        
+        assertEquals("Tax on zero income is not zero", 0, 
+                            tax.calcTax(0, 0),0 ); 
+    }
+    
+    @Test
+    public void testOneStudentTaxDeductionIs300(){
+         Tax tax = new Tax();
+         
+         assertEquals("The $300 student discount was not applied", 
+                    2000, tax.applyStudentDeduction(2300, 1), 0);
+    }
+}
+</pre>
+            <p>The test runner runs both <code>testZeroTax()</code> and <code>testOneStudentTaxDeductionIs300()</code>,
+                and both of them are successful. By default, JUnit runs tests in arbitrary order unless you use a
+                special annotation <code>@FixMethodOrder</code> that expects you to name the test methods in <a
+                        href="http://junit.czweb.org/apidocs/org/junit/FixMethodOrder.html">alphabetical order</a>.  
+            </p>
+            <p>If you replace one of the <code>@Test</code> annotations with <code>@Ignore</code>, the test runner won’t
+                run this test.</p>
+            <p>Let’s improve the code of the class <code>TestTax</code> a little bit. I don’t like that we create a new
+                instance of <code>Tax</code> in each test method. You can create a <i>set up</i> method that
+                instantiates <code>Tax</code> so it’s available for each test method. To perform some actions before the
+                first test method run, you should use a set up method (for example, connect to a database <span
+                        epub:type="pagebreak" title="520" id="Page_520"></span>and insert test data) annotated with
+                <code>@BeforeClass</code>. If you need to run some cleanup procedure (for example, remove the test data
+                from a database and disconnect) add a <i>tear down</i> method annotated with <code>@AfterClass</code>.  The
+                following version of the class <code>TestTax</code> illustrates the use of the annotations <code>@BeforeClass</code>
+                and <code>@AfterClass</code> (the latter just prints the “In tearDown” message on the console):</p>
+            <pre>
+package tax;
+import static org.junit.Assert.*;
+import org.junit.*;
+public class TaxTest {
+    
+    static Tax tax;
+     
+    @BeforeClass
+    public static void setUp(){
+        tax = new Tax();
+        System.out.println("In setUp");
+    }
+    @Test
+    public void testZeroTax() {
+        assertEquals("Tax on zero income is not zero", 0, 
+                            tax.calcTax(0, 0),0 ); 
+    }
+    
+    @Test
+    public void testOneStudentTaxDeductionIs300(){
+         
+         assertEquals("The $300 student discount was not applied", 
+                    2000, tax.applyStudentDeduction(2300, 1), 0);
+    }
+    
+    @AfterClass
+    public static void tearDown(){
+        System.out.println("In tearDown");
+    }
+}
+</pre>
+            <p>If you want to create a test class that invokes <code>setUp()</code> and <code>tearDown()</code> before
+                invoking each test method, replace <code>@BeforeClass</code> and <code>@AfterClass</code> with <code>@Before </code>and <code>@After,</code>respectively. Although <code>@BeforeClass</code> and <code>@AfterClass</code> annotations
+                can be used only with static methods, <code>@Before</code> and <code>@After</code> don’t have this <a
+                        id="idp23431824"></a>restriction.</p>
+        </section>
+        <section>
+            <h3><a id="idp23384592"></a>Test Suites</h3>
+            <p>A test suite is a <a id="suite"></a>container for test classes that the test runner should execute
+                together. In large applications test cases are grouped into suites by some criteria—for example, long
+                running tests, or tests that should check a particular software module of the application. </p>
+            <p>For <span epub:type="pagebreak" title="521" id="Page_521"></span>a demonstration of how to create a test
+                suite, create a second JUnit test case in the same folder as <code>TaxTest</code>. Name this class
+                <code>TaxExceptionTest</code>; it has one test method to check whether the exception is thrown if the
+                method <code>Tax.calcTax()</code> gets a negative number as <code>grossIncome</code>:</p>
+            <pre>
+package tax;
+import static org.junit.Assert.*;
+import org.junit.Test;
+public class TaxExceptionTest {
+    @Test(expected=IllegalArgumentException.class)
+    public void testForNegativeGrossIncome() {
+      Tax tax = new Tax();
+      tax.calcTax(-100, 2);
+      fail("grossIncome in calcTax() can't be negative.");    
+   }
+}</pre>
+            <p>The test <code>TaxEceptionTest</code> is considered successful when the <code>calcTax()</code> throws an <code>IllegalArgumentException</code>
+                if it gets the negative number in <code>grossIncome</code>. If you want to see it fail, comment out the
+                <code>throw</code> statement in the method <code>calcTax()</code>. In this example, I was using <code>IllegalArgumentException</code>,
+                which is included in Java SE. But you can use the same mechanism with custom exceptions as well. </p>
+            <p>Now create a test suite that consists of two test cases: <code>TaxTest</code> and
+                <code>TaxExceptionTest</code>. In Eclipse select File → New → Other → Java → JUnit → JUnit Test Suite;
+                you see the window shown in <a id="fig-anc-c035-004" href="part0036.html#fig-c035-004">Figure 35-4</a>.
+            </p>
+            <p>Click the Finish button and Eclipse generates the class <code>AllTests</code> with the following content:
+            </p>
+            <pre>
+package tax;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+@RunWith(Suite.class)
+@SuiteClasses({ TaxExceptionTest.class, TaxTest.class })
+public class AllTests {
+}
+</pre>
+            <p>The annotation <code>@RunWith</code> instructs the test runner <code>Suite</code> to be used instead of a
+                default test runner. The annotation <code>@SuiteClasses</code> includes both of the test classes: <code>TaxExceptionTest</code>
+                 and <code>TaxTest</code>. Run the test suite <code>AllTests</code> as JUnit Test Case and you see that
+                all of the tests have succeeded, <a id="idp23452256"></a>as shown in <a id="fig-anc-c035-005"
+                                                                                        href="part0036.html#fig-c035-005">Figure
+                    35-5</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00622.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c035-004" href="part0036.html#fig-anc-c035-004">Figure 35-4</a>:</b></span>
+                        Creating <span epub:type="pagebreak" title="522" id="Page_522"></span>a test suite in Eclipse
+                    </p>
+                </figcaption>
+            </figure>
+            <figure>
+                <img class="center" src="../Images/image00623.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c035-005" href="part0036.html#fig-anc-c035-005">Figure 35-5</a>:</b></span>
+                        Running a test suite in Eclipse</p>
+                </figcaption>
+            </figure>
+        </section>
+        <section>
+            <h3><a id="testrunners"></a>JUnit Test Runners</h3>
+            <p>JUnit <span epub:type="pagebreak" title="523" id="Page_523"></span>comes <a id="runner"></a>with several
+                <a href="https://github.com/junit-team/junit/wiki/Test-runners">test runners</a> classes located in the
+                package <code>org.junit.runner</code>. The class <code>JUnit4</code> is a default runner that was used
+                for most of the examples in this lesson. To specify a non-default runner you need to use the annotation
+                <code>@RunWith</code>. As you saw in the previous section, the test suite <code>AllClasses</code> used
+                the runner implemented in the <code>Suite</code> class:</p>
+            <pre>
+@RunWith(Suite.class)</pre>
+            <p>There are other specialized runners implemented in the classes <code>Parameterized</code>, <code>Categories</code>,
+                and <code>Enclose</code>. There are also several third-party runners.</p>
+            <p>Using test runners inside Eclipse is convenient for development, but in real-world projects you should
+                incorporate unit tests into build scripts. Hence you need to know how to launch JUnit test runners
+                without an IDE. You can launch the runners outside of any IDE using one of these methods:</p>
+            <ul>
+                <li>Create a Java class that invokes the method <code>run()</code> on the  <code>JUnitCore</code>
+                    object. <br/>
+                     
+                </li>
+                <li>Run the <code>JUnitCore</code> from a command line providing the names of the test classes as
+                    command-line arguments.
+                </li>
+            </ul>
+            <p>With the first method, you need to create a Java class, instantiate <code>JUnitCore</code>, and invoke
+                its method <code>run()</code> providing test classes or a test suite as arguments. For example:</p>
+            <pre>
+JUnitCore junitCore= new JUnitCore();
+Result result = junitCore.run(AllTests.class);</pre>
+            <p>Then you can get a collection of the <code>Failure</code> objects each of which represents one failed
+                test, if any:</p>
+            <pre>
+List&lt;Failure&gt; failedTests = result.getFailures();</pre>
+            <p>To have better control and improved logging during the test run, you can create a listener—a subclass of
+                <code>RunListener</code>—and assign it to the instance of the <code>JUnitCore</code> object using the
+                method <code>addListener()</code>:</p>
+            <pre>
+ JUnitCore junitCore= new JUnitCore();
+ jUnitCore.addListener(new MyRunListener());
+ jUnitCore.run(AllTests.class);</pre>
+            <p>In the listener class, you can override methods  <code>testStarted()</code>, <code>testFinished()</code>,
+                <code>testFailure()</code>, and several others. Then add logging statements inside these methods.</p>
+            <p>If you decide to run <code>JUnitCore</code> directly from the command line, you need to make sure that
+                the JUnit JAR and the directories of your test classes and the classes under test are included to the
+                 <code>CLASSPATH</code> variable in your runtime environment. Then you can run a command similar to this
+                one:</p>
+            <pre>
+java <span style="box-sizing: border-box;">org.junit.runner<span
+                    style="box-sizing: border-box; color: rgb(167, 29, 93);">.</span>JUnitCore</span> tax.TaxTest </pre>
+            <p>Lesson <span epub:type="pagebreak" title="524" id="Page_524"></span>36 explains how to automate builds
+                with Gradle. If you’ve written unit tests for your application, you can easily incorporate them into the
+                build process,  so they run without manual interaction via an IDE. In the “Try It” section you practice
+                using JUnit test runners from the command line.</p>
+        </section>
+        <p>In this lesson you’ve learned how to write simple unit tests using JUnit framework. For writing <a
+                id="idp23483296"></a>more advanced tests you should study JUnit <a
+                href="https://github.com/junit-team/junit/wiki">online documentation</a>. The other popular frameworks
+            that can be used for unit testing are <a href="http://testng.org/doc/index.html">TestNG</a> and <a
+                    href="https://code.google.com/p/spock/">Spock</a>. I can also recommend you to watch a presentation
+            "<a href="http://www.java-tv.com/2015/02/09/tooling-for-java-test-driven-development/">Tooling for
+                Test-Driven Development in Java</a>" by Pawel Lipinski.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00135"></a>Try It</h2>
+        <p>In this assignment you <a id="idp23490544"></a><a id="idp23491920"></a>need to run the test classes described
+            in this lesson from the command line. First, you create a Java class with the code that invokes a test
+            runner. Then you try an alternative way of launching  the test runner; you start the <code>JUnitCore</code>
+            runner directly from a command line. </p>
+        <section>
+            <h3><a id="lesson_requirements-id00136"></a>Lesson Requirements</h3>
+            <p>You should have Java installed and the JUnit JARS available.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson35 folder in the download.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00138"></a>Step-by-Step</h3>
+            <ol>
+                <li>
+                    <p>Continue using the directory structure created for Eclipse project Lesson35. In the directory
+                        <span><code>src/test/java/tax</code> </span>create a class <code>TaxCommanLineRunner</code> with
+                        the following code: </p>
+                    <pre>
+package tax;
+import java.util.List;
+import org.junit.internal.TextListener;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+public class TaxCommandLineRunner {
+    public static void main(String[] args) {
+        
+        JUnitCore junitCore = new JUnitCore();
+        
+        Result result = junitCore.run(AllTests.class);
+        
+        if (result.wasSuccessful()){
+            
+          System.out.println(
+                      "All Tax Test cases ran successfully");   
+        } else{
+            
+          System.out.println("These Tax Test cases failed:");
+          List&lt;Failure&gt; failedTests = result.getFailures();
+          failedTests.forEach(failure -&gt;
+                System.out.println(failure.getMessage()));    
+        }
+    }
+}
+</pre>
+                    <p>This program runs the <code>AllTests</code> suite and either prints the message that all tests
+                        were successful or prints specific error descriptions from the failed tests.</p>
+                </li>
+                <li>
+                    <p><span epub:type="pagebreak" title="525" id="Page_525"></span>Open the Command or Terminal window
+                        and change to the <code>bin</code> directory of the project Lesson35 where all the compiled
+                        classes are located.</p>
+                </li>
+                <li>
+                    <p>Run <code>TestCommandLineRunner</code> adding the JARs <code>junit.jar</code> and <code>hamcrest-core.jar</code>
+                        to the CLASSPATH (the option <code>-cp</code>). In my case these JARs were located in the
+                        directory <code>/Users/yfain11/junit</code>, and <a id="fig-anc-c035-006"
+                                                                            href="part0036.html#fig-c035-006">Figure
+                            35-6</a> shows how I launched my test runner in the Terminal window.</p>
+                    <figure>
+                        <img class="center" src="../Images/image00624.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c035-006" href="part0036.html#fig-anc-c035-006">Figure 35-6</a>:</b></span>
+                                Running TaxCommandLineRunner in Mac OS</p>
+                        </figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <p> Replace the <code>System.out.println()</code> calls with logging as explained in <a
+                            href="part0035.html#logging">Lesson 34</a>.</p>
+                </li>
+                <li>
+                    <p>Use an alternative way of invoking the <code>JUnitCore</code>. Run it directly from a Command or
+                        Terminal window specifying the test suite <code>AllTests</code> as a command-line argument. I
+                        did it, as shown in <a id="fig-anc-c035-007" href="part0036.html#fig-c035-007">Figure
+                            35-7</a>.<br/>
+                         </p>
+                    <figure>
+                        <img class="center" src="../Images/image00625.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c035-007" href="part0036.html#fig-anc-c035-007">Figure 35-7</a>:</b></span>
+                                Invoking <span epub:type="pagebreak" title="526" id="Page_526"></span>org.junit.runner.JUnitCore
+                                directly</p>
+                        </figcaption>
+                    </figure>
+                </li>
+            </ol>
+            <p>The output of the <code>AllTests</code> program looks a little different now, but the results are the
+                same: All tests completed successfully.  </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0036.html">Lesson 35</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

@@ -1,0 +1,1031 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Lambda Expressions and Functional Style Programming</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="lambda_expression"></a><span class="chapterTitle">Lesson 13<br/>Lambda Expressions and Functional Style Programming</span>
+    </h1>
+
+    <section>
+        <p>Presenting <span epub:type="pagebreak" title="151" id="Page_151"></span>materials of <a id="idp16161200"></a><a
+                id="idp16162464"></a>this chapter is somewhat challenging. From the beginning of this book you’ve gotten
+            to know that Java is an object-oriented language (as opposed to a functional language). You’ve learned that
+            to start any program you’ll need to define classes with attributes and methods, instantiate them as objects,
+            and invoke methods (think functions) on these instances. If a method is declared as <code>static</code>, you
+            can invoke it without the need to instantiate a class, but still you were defining the class first and then
+            a static method inside of it. For example, to process a click on a Swing <code>JButton</code>, you would
+            need to implement and instantiate a listener class containing just one method <code>actionPerformed()</code>.
+        </p>
+        <p>Now I need to tell you that the object-oriented approach may have some drawbacks, and there is a large <a
+                id="idp16164688"></a><a id="idp16164160"></a>group of <a
+                href="http://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Functional_languages">functional
+            programming languages</a> in which you don’t need to wrap functionality inside classes. Proponents of
+            functional languages say (and rightly so) that creating objects with fields that can be changed
+            (<i>mutated</i>) by the methods’ code may be error prone and more difficult to debug. They prefer thinking
+            in terms of functions that don’t depend on the external context.</p>
+        <p>A function takes <a id="idp16166720"></a><a id="idp16168112"></a>the values from the outside world in the
+            form of arguments, apply some application logic and returns the result. A function doesn’t change any
+            external values (including those that were provided as arguments). A function can take a single value (or a
+            data collection) and produce another value, but doesn’t modify the input. So no matter how many times you’ll
+            be invoking any given function with the same input, the returned value will be the same.   </p>
+        <p>In languages <a id="idp16173056"></a><a id="idp16181056"></a><a id="idp16182208"></a><a id="idp16178816"></a><a
+                id="idp16179904"></a>such as Haskell, JavaScript, Scala, Closure, and Ruby, functions are treated as
+            first-class citizens, and they don’t require you to write and instantiate classes. In functional languages,
+            you can do the following:</p>
+        <ul>
+            <li>Assign a function to a variable.</li>
+            <li>Pass a function as an argument to another function.</li>
+            <li>Define a function inside another function.</li>
+            <li>Return a function from another function.</li>
+        </ul>
+        <p>For <span epub:type="pagebreak" title="152" id="Page_152"></span>example, this is how you can create a
+            function that returns another function, in JavaScript:</p>
+        <pre>
+function () {
+    var taxDeduction = 500;
+    <strong>return function (income)</strong> {
+       // Implement calculating tax using taxDeduction here
+       // ...
+       return calculatedTax;
+    }
+}
+</pre>
+        <p>Java 8 introduced<i> lambda expressions</i> (from<a href="http://en.wikipedia.org/wiki/Lambda_calculus">
+            Lambda Calculus</a>), which  are anonymous functions. Since the lambda expression has no name, it can be
+            assigned as a value to a named variable.  </p>
+        <p>With lambda expressions, object-oriented Java (as well as C#) allows programing in a mixed style. When you
+            need an object with state, declare a class and instantiate it. If you just need to implement some algorithm
+            define a lambda expression.  </p>
+        <p>In this lesson you find out how to make your Java code more concise with lambda expressions. Java 8 blends
+            functional into object-oriented style by representing a <code>Function</code> as a an object in the Java
+            type system. Also, the interfaces that declare just one abstract method (<a
+                    href="part0014.html#functional-interfaces">functional interfaces</a>) now can be implemented without
+            the need to create an object just to contain this method. </p>
+    </section>
+    <section>
+        <h2><a id="idp16191264"></a>Imperative vs Functional Style</h2>
+        <p>Java is not a <a id="idp16189840"></a><a id="idp16192864"></a><a id="idp16194224"></a>functional programming
+            language, but even without lambda expressions it allows writing programs with elements of functional style.
+            I’ll show you a quick example illustrating the concept of <i>imperative</i> vs <i>functional</i> styles of
+            programming. The following <a id="idp16198784"></a><a id="idp16195760"></a>class <code>ImperativeVsFunctional</code>
+            creates a collection <code>winners</code> and populates it with names. Then it tries to find if this
+            collection contains the winner named “Ringo” using two different styles - imperative and then functional. 
+        </p>
+        <pre>
+public class ImperativeVsFunctional {
+ public static void main(String[] args) {
+        
+   List&lt;String&gt; winners = new ArrayList&lt;&gt;();
+        
+   winners.add("Mary");
+   winners.add("Ringo");
+   winners.add("Joe");
+   winners.add("Paul");
+   
+   // Imperative style         
+   boolean gotRingo = false;
+   for (String winner: winners){
+    if ("Ringo".equals(winner)){
+      gotRingo = true;
+      System.out.println("Imperative style. Ringo won?" 
+                                              + gotRingo);
+       break;
+    }
+   }    
+   
+   // Functional style     
+   System.out.println("Functional style. Ringo won?" 
+                                      + winners.contains("Ringo"));
+ } 
+}
+</pre>
+        <p>Running this program will produce the following output:</p>
+        <pre>
+Imperative style. Ringo won? true
+Functional style. Ringo won? true
+</pre>
+        <p><span epub:type="pagebreak" title="153" id="Page_153"></span>In imperative style the program dictates what
+            has to be done: create a flag, then in a for-loop check the value of each element and if Ringo is found,
+            change the value of the flag to true and break out of the loop. In this case we assume that
+            <code>ArrayList</code> is just a storage of the winner’s names. </p>
+        <p>In functional style, we don’t dictate<i> how</i> to search for Ringo, and just call the method <code>contains()</code>.
+            No external loops, no mutable flags, a no breaks. It’s short, concise, and easy to understand. How <a
+                    id="idp16206896"></a><a id="idp16207024"></a>the method <code>contains()</code> is implemented in
+            the current version of Java? It’s an internal business of the <code>ArrayList</code>. It very well can be
+            that either in this or in the future version of Java the method <code>contains()</code> will split the
+            collection (especially the large one) into smaller chunks and will do a parallel search for Ringo if the
+            computer has multiple processors, while the imperative version will always process this collection
+            sequentially.</p>
+        <p>This example uses a function that already exists in the collection. But with lambda expressions you can
+            define your own functions and give it for the execution to a class or a collection. And again, depending on
+            what your lambda does, the Java run time may decide to execute it in parallel. </p>
+        <p>You’ll see some examples comparing imperative<i> </i>and functional<i> </i>styles of programming in the
+            section "<a
+                    href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch13.html#foreach">Iterating
+                Collections with foreach</a>" later in this chapter. With imperative style we tell Java <i>how</i> to do
+            things, but with functional we tell Java <i>what</i> we want to do. In <a
+                    href="part0021.html#introduction_to_streams">Lesson 20</a> on Stream API you’ll see more examples of
+            writing code in declarative and functional style. Let’s learn the syntax of the lambda expressions now.</p>
+    </section>
+    <section>
+        <h2><a id="whats_lambda_expressions"></a>What’s Lambda Expression </h2>
+        <p>A lambda expression is an <a id="idp16217152"></a><a id="idp16218448"></a>anonymous function that you can</p>
+        <ul>
+            <li>Assign to a variable.</li>
+            <li>Pass as an argument to another function.</li>
+            <li>Return from a method.</li>
+        </ul>
+        <p>If in earlier versions of Java only objects and primitives could represent values, as of Java 8, functions
+            can be values as well. In <a href="part0010.html#event_handling_in_ui">Lesson 9</a> you <a
+                    id="idp16223552"></a><a id="idp16224512"></a><a id="idp16225984"></a>learned about <a
+                    href="part0010.html#anonymous_inner_classes">anonymous inner classes</a> served as wrapper for
+            methods. Lambda expressions can eliminate the need for such wrappers. For example, consider the following
+            lambda expression (let’s call them <i>lambdas</i> for brevity):</p>
+        <pre>
+(int a, int b) -&gt; a + b;
+</pre>
+        <p>Assume <span epub:type="pagebreak" title="154" id="Page_154"></span>that there is an interface that declares
+            a single abstract method that takes two <code>int</code> arguments and returns an <code>int</code>
+            value. The lambda in the preceding code is an anonymous function that takes two <code>int</code> arguments
+            <code>a</code> and <code>b</code>. The arguments are placed inside the parentheses similarly to Java
+            methods. Actually, if lambda expression has only one argument then even those parentheses are not needed. On
+            the right side of the <code>-&gt;</code> sign (a.k.a. arrow token) you see the body of the lambda
+            expression. In this case it’s just a one-liner that calculates and returns the sum of arguments. If the body
+            of lambda is a single-line expression as in the preceding example, there is no need to write a
+            <code>return</code> statement. The result of the lambda expression is returned implicitly.</p>
+        <p>While the <a id="idp16233056"></a><a id="idp16234256"></a>syntax of a lambda expression may look unusual,
+            it’s pretty easy to understand. Just take a regular Java method declaration, remove everything to the left
+            of the opening paren, and add the <code>-&gt;</code> sign after the closing paren. So if you wanted to
+            rewrite the above lambda expression as a Java method, it could look like this: </p>
+        <pre>
+public int addNumbers(int a, int b){
+ return a + b;
+}
+</pre>
+        <figure>
+            <img class="center" src="../Images/image00533.gif" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c013-001"></a>Figure 13-1:</b></span> Parts of a lambda
+                    expression</p>
+            </figcaption>
+        </figure>
+        <p>In lambda expressions, <a id="idp16241504"></a><a id="idp16242928"></a>specifying argument types is optional.
+            Lambdas support inferred data types; the Java compiler properly “guesses” the types based on the context of
+            your code. So our lambda expression can be rewritten as follows:</p>
+        <pre>
+(a, b) -&gt; a + b;
+</pre>
+        <p>If the lambda expression <a id="idp16244928"></a>consists of several lines of code, you need to put the code
+            inside the curly braces and add an explicit <code>return</code> statement. You can pass lambda expressions
+            to a method <i>to be applied</i> there. You’ll see the example of using <code>apply()</code> in the section
+            titled "<a href="part0014.html#BiFunction">Interfaces Function and BiFunction</a>.” The Java 8 lambdas can
+            represent single-method interfaces in a concise way, which is discussed next.</p>
+        <section>
+            <h3><a id="functional-interfaces"></a>Functional Interfaces</h3>
+            <p>A Java interface can <a id="function"></a><a id="functional"></a>declare any number of methods, but to be
+                implemented as lambdas, the interface has to declare a <a id="idp16257072"></a><a id="idp16255968"></a>single
+                <i>non-implemented method</i>. Such interfaces are called <i>functional interfaces</i>. Technically,
+                functional interfaces can have more than one method; some of them can be static, some of them can be
+                implemented as default methods—these don’t count. The important part is that there is only one abstract
+                method that has to be implemented.</p>
+            <p>Consider <span epub:type="pagebreak" title="155" id="Page_155"></span>the <code>ActionListener</code>
+                interface that you used in <a href="part0010.html#ActionListener">Lesson 9</a> to process button clicks:
+            </p>
+            <pre>
+public interface ActionListener extends EventListener {
+    public void actionPerformed(ActionEvent actionEvent);
+}
+</pre>
+            <p>The old way of implementing such an interface with an anonymous inner class could look like this:</p>
+            <pre>
+myButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent actionEvent) {
+        someTextField.setText("Someone clicked on the button");
+    }
+});
+</pre>
+            <p>Because  <code>ActionListener</code> defines a single method <code>actionPerformed()</code> it can be
+                called <i>functional interface</i>. Hence it can be represented in a concise form with a lambda
+                expression:</p>
+            <pre>
+myButton.addActionListener(actionEvent -&gt; {
+    someTextField.setText("Someone clicked on the button);
+});</pre>
+            <p>It is a lot simpler to write and read, isn’t it? No need to declare and instantiate anonymous
+                classes. This lambda expression has one argument represented by the variable <code>actionEvent</code> (you
+                could name it anything and no data type is needed). The method <code>actionPerformed()</code> is a
+                callback, and Java run time would pass the instance of <code>ActionEvent</code> to it. But because it is
+                a single method interface, the compiler is smart enough to figure out the type of the argument so you
+                don’t even need to declare it. Because any functional interface has a single method, it is easy for the
+                compiler to figure out its name, so you just can write a lambda expression as its implementation.</p>
+            <section>
+                <h4><a id="methodreference"></a>Method References</h4>
+                <p>In some cases your <a id="idp16269728"></a><a id="idp16271424"></a>lambda expression just calls a
+                    predefined method. Java 8 introduces method references that can be used instead of lambda
+                    expressions. The new syntax introduces  a double colon operator <code>::</code>, and you can write
+                    something like this:</p>
+                <pre>
+myObject::myMethod
+</pre>
+                <p>There is no parentheses after the method name and you can’t specify the arguments in method
+                    references. So this syntax applies to the cases when either the method has no arguments or the
+                    compiler can “figure out” what such method expects as an argument. For example, the following method
+                    has no arguments and can be invoked using method reference syntax:</p>
+                <pre>
+public void myMethod(){
+    System.out.println("Hello from myMethod");
+}
+</pre>
+                <p>The case with inferred arguments, which the compiler figures out, can be illustrated by the event
+                    listener callback methods. The following class  <code>MethodReferenceSample</code> uses method
+                    reference syntax in <code>addActionListener()</code>. <span epub:type="pagebreak" title="156"
+                                                                                id="Page_156"></span>The compiler
+                    figures out that the <code>processButtonClick()</code> method expects the argument of the type
+                    <code>ActionEvent</code>.</p>
+                <pre>
+public class MethodReferenceSample extends JFrame {
+   public void processButtonClick(ActionEvent actionEvent){
+      System.out.println("Someone clicked on the button");
+   }
+   
+   public static void main(String args[]){
+       MethodReferenceSample mrs = new MethodReferenceSample();
+       JButton myButton = new JButton("Click me");
+       mrs.add(myButton);
+       
+       myButton.addActionListener(mrs::processButtonClick);
+               
+       mrs.pack(); 
+       mrs.setVisible(true);      
+       mrs.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+   }
+}
+</pre>
+            </section>
+        </section>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp16281888"></a>Eclipse Luna and Lambdas</h3>
+                <p>Eclipse Luna (as well as NetBeans and IntelliJ IDEA) offers help in converting <a
+                        id="idp16283472"></a><a id="idp16280368"></a><a id="idp16284576"></a>anonymous inner classes
+                    that implement functional interfaces into lambda expressions. Highlight the anonymous class creation
+                    (starting with <code>new</code>), and select the Quick Fix option by pressing Ctrl+1 ( or Cmd+1 on
+                    Mac). Eclipse opens a menu. Select the Convert to Lamba Expression option to turn the anonymous
+                    inner class into a lambda expression.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp16288272"></a>Annotation @FunctionalInterface</h3>
+                <p>In <a href="part0024.html#annotations_and_reflection">Lesson 23</a> you’ll be learning <a
+                        id="idp16286544"></a><a id="idp16290864"></a>about Java annotations, which are metadata about
+                    Java code. Some annotation affect the process of compilation while other instruct Java run time to
+                    do certain things with the code. Java 8 introduces a new annotation that you can use for explicitly
+                    marking your interfaces as functional like this:</p>
+                <pre>
+@FunctionalInterface
+public interface Payable {
+   boolean increasePay(int percent);
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>     Using the annotation <code>@FunctionalInterface</code> is optional. It just shows your intention to
+            implement this interface as a lambda expression. People who read your code may appreciate this hint. In the
+            section "<a href="part0014.html#passing_functions">Passing Functions to Methods</a>" I’ll show you an
+            example of <a id="idp16295744"></a><a id="idp16294352"></a>using this annotation.  </p>
+    </section>
+</section>
+<section>
+    <h2><a id="idp16216096"></a>Methods Versus Functions </h2>
+    <p>The <span epub:type="pagebreak" title="157" id="Page_157"></span>difference <a id="methfunc1"></a><a
+            id="methfunc2"></a>between methods and functions is that functions are not attached to any class instance.
+        You can say that static methods are also not attached to the instances, but static methods have to be declared
+        inside a class or an interface, whereas functions don’t.</p>
+    <p>You can try using lambdas just to simplify your code in places where you need to implement functional interfaces
+        while maintaining an object-oriented style of programming. The code sample of replacing anonymous an inner class
+        implementing <code>ActionListener</code> is an illustration of such simplification.</p>
+    <p>On the other hand, you may start experimenting with a functional style of programming, where a function just gets
+        some input, applies its business logic, and returns the results. A function doesn’t know anything about the
+        context it operates in unless it was given to it as an argument. A function doesn’t belong to any object hence
+        it cannot rely on the fact that certain external values can be used in performing its action. A function does
+        not change the state of any object.</p>
+    <p>The following example of the class <code>Tax</code> is written in object-oriented style. After the object of type
+        <code>Tax</code> is instantiated, its fields <code>grossIncome</code> and the method <code>calcTax()</code> are
+        not functions, as it expects to get some values from class variable <code>grossIncome</code> that
+        modifies <code>federalTax</code>.  It’s a situation with mutable state. </p>
+    <pre>
+class Tax{   
+    double grossIncome;
+    double federalTax;
+    public void calcTax() {
+        if (grossIncome &lt; 30000) {
+          federalTax=grossIncome*0.05;
+        }
+        else{
+          federalTax= grossIncome*0.06;
+        }
+  } 
+}
+</pre>
+    <p>In the object-oriented world it’s perfectly fine, because an object is the center of the universe there. To <a
+            id="idp16310144"></a><a id="idp16309152"></a>eliminate mutable attributes  (<code>grossIncome</code> and
+        <code>federalTtate</code>), change the definition of this class to:</p>
+    <pre>
+class TaxNoState{   
+ public static double calcTax(double grossIncome) {
+        double federalTax=0;
+        if (grossIncome &lt; 30000) {
+          federalTax=grossIncome*0.05;
+        }
+        else{
+          federalTax= grossIncome*0.06;
+        }
+          return federalTax;
+  }  
+}
+</pre>
+    <p>in <code>TaxNoState</code> the <span epub:type="pagebreak" title="158" id="Page_158"></span>method  <code>calculateStateTax()</code>
+        gets the required values via its arguments. It’s still a method since it lives inside the class, but is closer
+        to being a function. After applying business logic <code>calculateStateTax()</code> returns the calculated
+        <code>federalTax</code>. Returns to whom? It’s none of the function’s business. Note that I’ve used the keyword
+        <code>static</code> in the method declaration to remove any attachments to specific instances of the class
+        <code>TaxNoState</code>. After all, the tax calculation should be done the same way for Mary and Joe if they
+        have the same income.</p>
+    <p>In the class <code>TaxNoState</code> we removed class variables and used the method arguments instead. The
+        question is why the tax calculation logic that doesn’t use any class fields have to live inside class
+        method? Can you provide the code to calculate the tax from outside? Prior to Java 8, primitives or objects were
+        the only values that you could pass to a method. But now you can also pass lambda expressions as method
+        arguments, and I’ll give you an example of this in the next section.  </p>
+    <section>
+        <h3><a id="passing_functions"></a>Passing Functions to Methods </h3>
+        <p>In functional programming, <a id="idp16318960"></a><a id="idp16327680"></a><a id="idp16322512"></a><a
+                id="idp16323632"></a>you can pass a function as an argument to another function (or a function can
+            return a function). Such outer functions are called <i>higher-order functions</i>.</p>
+        <p>This section shows you how to pass a function to a Java method. We’ll create a class with three fields:
+            <code>name</code>, <code>grossIncome</code>, and <code>state</code> to represent a customer of some
+            accounting office. This class will have a method <code>applyTaxCalculationFunction()</code>, but the code of
+            this function will be provided to this method as an argument. Here’s the code of the class
+            <code>Customer</code>:</p>
+        <pre>
+public class Customer{
+   public String name;    
+   public double grossIncome;    
+   
+   public void applyTaxCalcFunction(TaxFunction taxFunc) {
+     
+      double calculatedTax = taxFunc.calcTax(grossIncome); 
+      System.out.println( "The calculated tax for " + name + 
+                                       " is "+ calculatedTax );
+     
+   }
+}
+</pre>
+        <p>The argument of the method <code>applyTaxCalcFunction()</code> is an implementation of the functional
+            interface <code>TaxFunction</code>, which is shown here:</p>
+        <pre>
+@FunctionalInterface
+public interface TaxFunction {
+    double calcTax(double grossIncome);
+}
+</pre>
+        <p>The implementation of this interface is provided by lambda expressions <a id="idp16335296"></a><a
+                id="idp16335808"></a>defined in the class <code>TestTaxLambda</code>. This class creates two customer
+            instances and invokes the method <code>applyTaxCalculationFunction()</code> providing the lambda to execute.
+            The customer’s method <code>applyTaxCalculationFunction()</code> receives the implementation of this
+            interface and invokes its method <code>calcTax()</code>. Here’s the code of the class
+            <code>TestTaxLambda</code>:</p>
+        <pre>
+public class TestTaxLambda {
+    public static void main(String[] args) {
+        
+        // Define one function as a lambda expression
+        // and store it in a variable
+        TaxFunction taxFunction = (double grossIncome) -&gt; {
+            
+            double federalTax=0;
+            if (grossIncome &lt; 30000) {
+              federalTax=grossIncome*0.05;
+            }
+            else{
+              federalTax= grossIncome*0.06;
+            }
+            return federalTax;
+        };
+    
+        // Define another function as a lambda expression
+        // for calculating tax for mafia members
+        TaxFunction taxFunctionMafia = (double grossIncome) -&gt; {
+            
+            double stateTax=0;
+            if (grossIncome &lt; 30000) {
+              stateTax=grossIncome*0.01;
+            }
+            else{
+              stateTax= grossIncome*0.02;
+            }
+            return stateTax;    
+        };
+        Customer customer1 = new Customer();
+        customer1.name = "Mary Lou";
+        customer1.grossIncome=50000;
+        customer1.applyTaxCalcFunction(taxFunction);
+        Customer customer2 = new Customer();
+        customer2.name = "Al Capone";
+        customer2.grossIncome=25000;
+        customer2.applyTaxCalcFunction(taxFunctionMafia);
+    }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="159" id="Page_159"></span>The implementation of two different algorithms
+            of tax calculation is stored in  lambda expressions is stored in the variable <code>taxFunction </code>and
+            <code>taxFunctionMafia</code>.  If you run <code>TestTaxLambda</code>, you see the following output on the
+            console:</p>
+        <pre>
+The calculated tax for Mary Lou is 3000.0
+The calculated tax for Al Capone is 250.0
+</pre>
+    </section>
+    <p>Lambda expressions spare you from needing to wrap a function inside a class. The big question is what’s better:
+        providing the tax calculation function inside the class <code>Customer</code> or passing it from outside. There
+        is no general <span epub:type="pagebreak" title="160" id="Page_160"></span>answer for this. Just know that if
+        the business rules of your application require you to apply a the same or different pieces of a functionality to
+        different objects, lambda expressions allow you to do this.</p>
+    <p>Java 8 lambdas still have some restrictions, and you can pass it to a method that expects a lambda that
+        implements an interface of a specified type (<code>TaxFunction</code> in this case). In functional languages
+        like JavaScript, you can attach an arbitrary function to any object and execute in the context of that object
+        with functions <code>call()</code> or <code>apply()</code>.  You see the <a id="idp16347376"></a><a
+                id="idp16348400"></a>Java version of <code>apply()</code> in the last section of this lesson. </p>
+</section>
+<section>
+    <h2><a id="foreach"></a>Iterating Collections with forEach() </h2>
+    <p>In the previous lesson you iterated a <a id="idp16355712"></a><a id="idp16357120"></a><a id="idp16358224"></a><a
+            id="idp16359600"></a>collection of objects by writing a loop. To perform some actions on each object of a
+        collection you can implement these actions in <a id="idp16360976"></a><a id="idp16362208"></a>the method <code>doSomething()</code>
+        that’s called in the loop body:</p>
+    <pre>
+List&lt;Customer&gt; customers = new ArrayList&lt;&gt;(); 
+// The code to populate customers is omitted for brevity 
+// Iterate through the list customers and do something with each 
+// element of this collection. 
+for (Customer customer : customers){ 
+     customer.doSomething(); 
+}
+</pre>
+    <p>This is an <i>imperative</i> way of programming, you say, “I want  get every element of the collection
+        sequentially and do something with it." But there is a <i>functional</i> approach to this task, “Hey,
+        collection, I’ll give you a function to perform on each of your elements. Please figure out the best way to do
+        it." </p>
+    <p>You may say, “What do you mean by the best way? Does collection know better than me how to process its elements?”
+        Yes, it does. Starting with Java 8, collection became smarter and can parallelize execution, especially on
+        multiprocessor computers. For example, it may internally split the collection in half and apply <code>doSomething()</code>
+        in parallel for each half, and then it merges the results back. So you’d better give your function to a
+        collection; there is a chance the processing will finish faster. </p>
+    <p>I’ll show you the implementation of both imperative and functional styles in the class <code>TestCollectionsForEach</code> below. It’ll
+        iterate through the collection of workers represented by the instances of the class <code>Person</code>, which
+        has a <code>boolean</code> variable <code>workerStatus</code> to store the employment : <code>E</code> means
+        employee, and <code>C</code> means contractor. </p>
+    <pre>
+public class Person {
+    private String name;
+    private char workerStatus;  // 'E' or 'C'
+    public Person (String name, char workerStatus){
+        this.name = name;
+        this.workerStatus = workerStatus;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public char getWorkerStatus() {
+        return workerStatus;
+    }
+}
+</pre>
+    <p><span epub:type="pagebreak" title="161" id="Page_161"></span>The program <code>TestCollectionsForEach</code> creates
+        an array of <code>Person</code> instances and then turns it into a <code>List</code> with
+        <code>Arrays.asList()</code>. After that it iterates  through the list using two different techniques:
+        imperative and functional.</p>
+    <pre>
+public class TestCollectionsForEach {
+    
+  public static void main(String[] args) {
+        Person workers[] = new Person[3];
+        workers[0] = new Person("John", 'E');
+        workers[1] = new Person("Mary", 'C');
+        workers[2] = new Person("Steve", 'E');    
+        
+        List&lt;Person&gt; workersList = Arrays.asList(workers);
+        
+        <strong>// Imperative loop</strong>
+        System.out.println("1. Running imperative loop");
+        for (Person person : workersList){
+          if ('E' == person.getWorkerStatus()){
+            System.out.println(person.getName() + " is employee");
+          } else if ('C' == person.getWorkerStatus()){
+            System.out.println(person.getName() + " is contractor");
+          }
+        }
+        
+        <strong>// Functional loop</strong>
+        System.out.println("2. Running functional loop");
+        workersList.forEach(person -&gt; {
+          if ('E' == person.getWorkerStatus()) {
+            System.out.println(person.getName() + " is employee");
+          } else if ('C'==pers.getWorkerStatus()){
+            System.out.println(person.getName() + " is contractor");
+          }
+        }); 
+  }
+}
+</pre>
+    <p>The output of this program is shown here:</p>
+    <pre>
+1. Running imperative loop
+John is employee
+Mary is contractor
+Steve is employee
+2. Running functional loop
+John is employee
+Mary is contractor
+Steve is employee
+</pre>
+    <p><span epub:type="pagebreak" title="162" id="Page_162"></span>The output is the same from both loops. In the
+        functional loop you’re passing a lambda expression to the <code>forEach()</code> method of the collection.  </p>
+    <p>In <a href="part0021.html#introduction_to_streams">Lesson 20</a> you learn about the new Stream API, and you see
+        there how to specifically request parallel processing.</p>
+    <p>I’d like to bring your attention to the variable <code>person</code> in the argument to the
+        <code>forEach()</code> method. I’ve never declared this variable, so what its type? It’s yet another example <a
+                id="idp16385056"></a>of the <i>type inference</i>. Java is smart enough to see that the lambda
+        expression is being applied to the collection of the class <code>Person</code> (see, generics are helpful!).
+        Hence the variable <code>person</code> will be typed as  <code>Person</code>. You can name this variable
+        anything you want; the  Java compiler will figure out its inferred type.</p>
+</section>
+<section>
+    <h2><a id="polymorphism_ch13_section"></a>Lambdas Versus Inheritance and Polymorphism</h2>
+    <p>Lambda expressions promote <a id="lambda1"></a><a id="lambda2"></a><a id="lambda3"></a><a id="lambda4"></a>a
+        functional style of programming. In previous lessons you’ve learned about the object-oriented style and its
+        major concepts: inheritance, which can be implemented as polymorphism or composition. This section shows you how
+        to take<a href="part0008.html#polymorphism_ch07_section"> </a>the example from the section "<a
+                href="part0008.html#making_the_interface_solution_polymorphi">Making the Interface Solution
+            Polymorphic</a>" from <a href="part0008.html">Lesson 7</a> where you processed a collection of employees and
+        contractors in polymorphic ways and rewrite it using composition with lambdas.</p>
+    <aside epub:type="sidebar">
+        <div class="top hr">
+            <hr/>
+        </div>
+        <section class="feature2">
+            <h3><a id="idp16400064"></a>Inheritance vs Composition</h3>
+            <p>To create a class that <a id="idp16397344"></a><a id="idp16401424"></a>can reuse features of another
+                class you can use either inheritance or composition as a design technique. In case of inheritance you
+                can simply create a <code>ClassB</code> that extends <code>ClassA</code> and use the ancestor’s <a
+                        id="idp16403440"></a><a id="idp16404816"></a>elements from a descendent class. The following
+                example demonstrates inheritance, where the <code>ClassB</code> invokes in constructor a <a
+                        id="idp16406240"></a><a id="idp16407552"></a>method <code>doSomething()</code> declared in its
+                ancestor:</p>
+            <pre>
+ClassA {
+ public void doSomething(){
+ }
+}
+ClassB extends ClassA{
+   ClassB(){
+      doSomething();
+   }
+}
+</pre>
+            <p>In case of composition, you don’t need to inherit from <code>ClassA</code>, but just instantiate (and
+                hold a reference) <code>ClassA</code> in <code>ClassB</code>:</p>
+            <pre>
+ClassA {
+ public void doSomething(){
+ }
+}
+ClassB{
+   ClassB(){
+      ClassA classA = new classA();
+      classA.doSomething();
+   }
+}
+</pre>
+            <p>For pros and cons of inheritance vs composition, read the JavaWorld article "<a
+                    href="http://www.javaworld.com/article/2076814/core-java/inheritance-versus-composition--which-one-should-you-choose-.html">Inheritance
+                versus Composition: Which one Should You Choose?</a>"</p>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </section>
+    </aside>
+    <p><span epub:type="pagebreak" title="163" id="Page_163"></span>In that <a
+            href="part0008.html#making_the_interface_solution_polymorphi">Lesson 7 example</a> you used the <code>Payable</code>
+        interface to increase pay for employees and contractors. First, refresh your memory about that application. <a
+                id="fig-anc-c013-002" href="part0014.html#fig-c013-002">Figure 13-2</a> shows the <a
+                href="http://en.wikipedia.org/wiki/Class_diagram">class diagram</a> of that <a id="idp16417536"></a>application
+        (in UML notation arrows mean <i>extends</i>, and dashed arrows means <i>implements</i>):</p>
+    <figure>
+        <img class="center" src="../Images/image00534.jpeg" alt="image"/>
+        <figcaption>
+            <p><span class="figureLabel"><b><a id="fig-c013-002" href="part0014.html#fig-anc-c013-002">Figure 13-2</a>:</b></span>
+                <a href="part0014.html#fig-c013-002">Figure 13-2</a>. Extending Person and implementing Payable</p>
+        </figcaption>
+    </figure>
+    <p>The code of the superclass <code>Person</code> is shown next:</p>
+    <pre>
+public class Person {
+    private String name;
+    
+    public Person(String name){
+        this.name = name;
+    }
+    public String getName(){
+        return "Person's name is " + name; 
+    }
+}
+</pre>
+    <p>This is the <code>Payable</code> interface:</p>
+    <pre>
+public interface Payable {
+    int INCREASE_CAP = 20; 
+    boolean increasePay(int percent);
+}
+</pre>
+    <p>Classes <code>Employee</code> and <code>Contractor</code> had <span epub:type="pagebreak" title="164"
+                                                                           id="Page_164"></span>different
+        implementations of the  <code>Payable</code> interface. This is what <code>Employee</code> looked like:</p>
+    <pre>
+public class Employee extends Person implements Payable {
+    public Employee(String name){
+        super(name);
+    }
+    public boolean increasePay(int percent) {
+      System.out.println("Increasing salary by " + percent + "%. "+ 
+                                                    getName()); 
+      return true;
+    }
+}
+</pre>
+    <p>The class <code>Contractor</code> looked as follows:</p>
+    <pre>
+public class Contractor extends Person implements Payable {
+    
+    public Contractor(String name){
+        super(name);
+    }
+    public boolean increasePay(int percent) {
+        if(percent &lt; Payable.INCREASE_CAP){
+            System.out.println("Increasing hourly rate by " + 
+                                        percent + "%. "+ getName());
+            return true;
+        } else {
+            System.out.println(
+             "Sorry, can't increase hourly rate by more than " + 
+              Payable.INCREASE_CAP + "%. "+ getName());
+            return false;
+        }
+    }
+}
+</pre>
+    <p>The program <code>TestPayIncreasePoly</code> demonstrated the polymorphic behavior of <code>Employee</code> and
+        <code>Contractor</code> objects. </p>
+    <pre>
+public class TestPayInceasePoly {
+    public static void main(String[] args) {
+        Payable workers[] = new Payable[3];
+        workers[0] = new Employee("John");
+        workers[1] = new Contractor("Mary");
+        workers[2] = new Employee("Steve");        
+            for (Payable p: workers){
+                p.increasePay(30);
+             }
+        }
+}
+</pre>
+    <section>
+        <h3><a id="eliminating_inheritance"></a>Eliminating Inheritance </h3>
+        <p>The <span epub:type="pagebreak" title="165" id="Page_165"></span>only <a id="idp16435632"></a>difference
+            between <code>Contractor</code> and <code>Employee</code> was the implementation of
+            the <code>increasePay()</code> method, extracting the implementation of this method into a lambda
+            expression. This enables you to get rid of the classes <code>Employee</code> and <code>Contractor</code> and
+            simply pass the proper function to the class <code>Person</code>. To be able to distinguish contractors and
+            employees you use the version of the class <code>Person</code> from the section <a
+                    href="part0014.html#foreach">“Iterating collection with forEach() Method</a>.” But this time add a
+            method <code>validatePayIncrease()</code> that takes the lambda expression as one parameter and the amount
+            of pay increase as another. This is the new version of the class <code>Person</code>:</p>
+        <pre>
+public class Person {
+    
+    private String name;
+    private char workerStatus;  // 'E' or 'C'
+    public Person (String name, char workerStatus){
+        this.name = name;
+        this.workerStatus = workerStatus;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public char getWorkerStatus(){
+        return workerStatus;
+    }
+    
+    public boolean validatePayIncrease(Payable increaseFunction, 
+                                                    int percent) {
+             
+         boolean isIncreaseValid = 
+                 increaseFunction.increasePay(percent); 
+              
+         System.out.println( " Increasing pay for " + name + 
+           " is " + (isIncreaseValid? "valid.": "not valid."));
+         return isIncreaseValid;
+    }
+}
+</pre>
+        <p>The <code>Payable</code> interface remains the same, and its implementation will be represented by two lambda
+            expressions—one for employees and another one for contractors, as shown in the program <code>TestPayIncreaseLambda</code>:
+        </p>
+        <pre>
+public class TestPayIncreaseLambda {
+    
+  public static void main(String[] args) {
+        Person workers[] = new Person[3];
+        workers[0] = new Person("John", 'E');
+        workers[1] = new Person("Mary", 'C');
+        workers[2] = new Person("Steve", 'E');        
+       // Lambda expression for increasing Employee's pay
+       <strong>Payable increaseRulesEmployee</strong> = (int percent) -&gt; {
+                return true;
+       };
+       
+        // Lambda expression for increasing Contractor's pay       
+        <strong>Payable increaseRulesContractor</strong> = (int percent) -&gt; {
+            if(percent &gt; Payable.INCREASE_CAP){
+              System.out.print(
+               " Sorry, can't increase hourly rate by more than " + 
+                         Payable.INCREASE_CAP + "%. "); 
+              return false;
+            } else {    
+              return true;
+            }
+       };    
+       
+       for (Person p: workers){
+           if ('E'==p.getWorkerStatus()){
+               // Validate 30% increase for every worker
+               p.validatePayIncrease(increaseRulesEmployee, 30); 
+           } else if ('C'==p.getWorkerStatus()){
+               p.validatePayIncrease(increaseRulesContractor, 30);
+           }
+       }
+  }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="166" id="Page_166"></span>Running this program produces the same output as
+            the version with class inheritance and polymorphism:</p>
+        <pre>
+Increasing pay for John is valid.
+Sorry, can't increase hourly rate by more than 20%.  
+Increasing pay for Mary is not valid.
+Increasing pay for Steve is valid.
+</pre>
+        <p>The result is the same, so what have you achieved? Using lambdas made it possible to remove two classes:
+            <code>Contractor</code> and <code>Employee</code>. This is good. But it seems that by removing these classes
+            you’ve lost the strict contract enforcement to implement the <code>Payable</code> interface. Actually,
+            though, you didn’t! Using the <code>Payable</code> type is still enforced but in a different way; now it’s a
+            type of the argument in the method <code>validatePayIncrease()</code>. If a new type of a worker will be
+            introduced (for example, foreign workers), you just need to add another lambda expression to the class
+            <code>TestPayIncreaseLambda</code> that implements business rules for foreign workers. </p>
+    </section>
+    <aside epub:type="sidebar">
+        <div class="top hr">
+            <hr/>
+        </div>
+        <section class="feature2">
+            <h3><a id="idp16454016"></a>Closures with Lambdas</h3>
+            <p>The <a href="part0018.html#closures">“Closures in Java”</a> section in <a id="idp16456992"></a><a
+                    id="idp16458352"></a>Lesson 17 demonstrates an important concept of functional programming: <i>closures</i>.
+            </p>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </section>
+    </aside>
+    <section>
+        <h3><a id="BiFunction"></a>Interfaces Function and BiFunction</h3>
+        <p>On <span epub:type="pagebreak" title="167" id="Page_167"></span>the other hand, even the <a
+                id="interface1"></a><a id="bifunc"></a><a id="interface2"></a><a id="bifunction"></a>interface  <code>Payable</code>
+            can be eliminated from the increase pay example. Revisit the class <code>Person</code> from the section <a
+                    href="part0014.html#eliminating_inheritance">“Eliminating Inheritance.”</a> It has a method <code>validatePayIncrease</code>
+            where the first argument is strictly typed as <code>Payable</code>. But Java 8 allows passing any arbitrary
+            function to a method as an argument. There is a new package <a
+                    href="http://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">java.util.function</a>
+            that has a number of useful interfaces for those who like functional programming. For example, the interface
+            <code>Function</code> has the following declaration:</p>
+        <pre>
+@FunctionalInterface 
+public interface Function&lt;T, R&gt;
+</pre>
+        <p>As you see, it uses generics. This interface has two parameters: <code>T</code> for type and <code>R</code>
+            for the type of the return value of the method <code>apply()</code> declared in the interface
+            <code>Function</code>. Using <code>T</code> for type and <code>R</code> for the type of the return value
+            became idiomatic in Java, so you should also use these letters in your code. You can pass the code of such a
+            function to a class method and apply this function to a provided argument.</p>
+        <p>The interface <code>BiFunction</code> declares two arguments (<code>T</code> and <code>U</code>) and a return
+            value (<code>R</code>):</p>
+        <pre>
+@FunctionalInterface 
+public interface BiFunction&lt;T, U, R&gt;
+</pre>
+        <p>Accordingly, the <code>BiFunction</code> interface declares a method  <code>R apply(T, U)</code>. Let’s see
+            if you can use it in the increase pay example, which is built using the techniques you’ve learned in this
+            lesson.</p>
+        <p>First, take a look at the new version of the class <code>Person</code>. Note the change in the arguments of
+            the method <code>validateIncreasePay()</code>: </p>
+        <pre>
+public class Person {
+    
+    private String name;
+    private char workerStatus;  // 'E' or 'C'
+    public Person (String name, char workerStatus){
+        this.name = name;
+        this.workerStatus=workerStatus;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public char getWorkerStatus(){
+        return workerStatus;
+    }
+    
+    public boolean validateIncreasePay(
+        BiFunction&lt;Person, Integer, Boolean&gt; func
+, int percent) {
+        
+        boolean isIncreaseValid = <strong>func.apply(</strong>this, percent);
+        System.out.println( " Increasing pay is " + 
+                  (isIncreaseValid? "valid.": "not valid."));
+        return isIncreaseValid;
+    }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="168" id="Page_168"></span>The method <code>validateIncreasePay()</code>
+            has two arguments: a <code>BiFunction</code> for the function to apply and a proposed increase pay percent
+            to validate. In turn, <code>BiFunction</code> declares two arguments—one of type <code>Person</code> and the
+            other of type <code>Integer</code>—and a <code>Boolean</code> return type. When actual implementation of
+            <code>BiFunction</code> is passed to the method <code>validateIncreasePay()</code>, it invokes it using the
+            method <code>apply()</code>. The keyword <code>this</code> represents the current instance of a
+            <code>Person</code>, and percent is the proposed increased amount.</p>
+        <p>Once again, the <a id="idp16490960"></a><a id="idp16492304"></a>term <i>higher order function</i> is a
+            function (or method) that either takes a function as an argument or returns a function. In other words,
+            higher order functions work on other functions.</p>
+        <p>The program <code>TestPayIncreaseFunctionInterface</code>, which declares the lambdas for contractors and
+            employees and validates a list of workers, is shown here:</p>
+        <pre>
+public class TestPayIncreaseFunctionInterface{
+    
+ public static void main(String[] args) {
+      
+      final int INCREASE_CAP = 20;  // cap for pay increase in % 
+      
+      int proposedIncrease = 30;  // percent
+  
+        Person workers[] = new Person[3];
+        workers[0] = new Person("John", 'E');
+        workers[1] = new Person("Mary", 'C');
+        workers[2] = new Person("Steve", 'E');        
+        List&lt;Person&gt; workersList = Arrays.asList(workers);
+       // Define functions with 2 args Person and percent 
+       // that returns Boolean 
+        
+        // Lambda expression for increasing Employee's pay    
+    BiFunction &lt;Person, Integer, Boolean&gt; increaseRulesEmployee =
+          (pers,percent) -&gt; {
+              System.out.print(" Increasing pay for " + 
+                                     pers.getName() + " is valid");
+             return true; // allow any increases for employees
+          };
+       
+       // Lambda expression for increasing Contractor's pay 
+    BiFunction &lt;Person, Integer, Boolean&gt; increaseRulesContractor =
+       (pers,percent) -&gt; {
+           if(percent &gt; INCREASE_CAP){
+              System.out.print(
+                " Sorry, can't increase hourly rate by more than " +
+                         INCREASE_CAP + "%. for " + pers.getName());
+                return false;
+           } else {    
+               return true;
+           }
+       };
+       
+       // Validate pay increase
+        workersList.forEach(pers -&gt; {
+              if ('E'==pers.getWorkerStatus()){
+                pers.validateIncreasePay(increaseRulesEmployee,
+                                                proposedIncrease);
+              } else if ('C'==pers.getWorkerStatus()){
+                  pers.validateIncreasePay(increaseRulesContractor,
+                                                proposedIncrease);
+              }
+       });       
+ }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="169" id="Page_169"></span>In the previous section you stored lambdas in
+            the variables of type <code>Payable</code>, but in this version it’s stored as a <code>BiFunction</code>;
+            for example:</p>
+        <pre>
+BiFunction &lt;Person, Integer, Boolean&gt; increaseRulesEmployee </pre>
+        <p>The <code>Payable</code> interface is gone. I just moved the final variable <code>INCREASE_CAP</code>in the
+            class <code>TestPayIncreaseFunctionInterface</code>. In the beginning of this lesson we designed the
+            increase pay application using four classes and one interface. Now we have just two classes and the code
+            became shorter.</p>
+    </section>
+    <p>The goal of this lesson was to explain the concept of lambdas and show some practical use cases where they can
+        simplify your code. I didn’t want to repeat all syntax details of lambdas. Please visit Oracle’s tutorial on
+        lambda expressions (<a href="http://goo.gl/xS3ejB">http://goo.gl/xS3ejB</a>) for further <a
+                id="idp16501856"></a><a id="idp16507024"></a><a id="idp16504128"></a><a id="idp16508608"></a>studying <a
+                id="idp16510368"></a><a id="idp16511856"></a><a id="idp16513248"></a><a id="idp16514944"></a>of this
+        subject.</p>
+</section>
+<section>
+    <h2><a id="try_it-id00034_ch13"></a>Try It</h2>
+    <p>The goal of this lesson is to add another <a id="idp16519616"></a><a id="idp16518656"></a>lambda expression to
+        the class <code>TestPayIncreaseLambda</code> to process pay increases for foreign workers.</p>
+    <section>
+        <h3><a id="lesson_requirements-id00035_ch13"></a>Lesson Requirements</h3>
+        <p>You should have Java installed.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You</i> <i>can download the code and resources for
+                    this “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                    You can find them in</i> <code>Lesson13.zip</code><i>.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h3><a id="step-by-step-id00036_ch13"></a>Step-by-Step</h3>
+        <ol>
+            <li>Import into Eclipse the project Lesson13 from the file <code>Lesson13.zip</code>. Review the code of all
+                examples from this lesson.
+            </li>
+            <li>Introduce <span epub:type="pagebreak" title="170" id="Page_170"></span>the new type of workers: a
+                foreign worker.
+            </li>
+            <li>Come up with some business logic for increasing rate for foreigners.</li>
+            <li>Create a new lambda expression implementing these rules and assign it to the variable <code>Payable
+                increaseRulesForeigner</code>. 
+            </li>
+            <li>Add an instance of the foreign worker (worker status <code>'F'</code>) to the array <code>workers</code>. 
+            </li>
+            <li>Modify the <code>for</code> loop in the class <code>TestPayIncreaseLambda</code> to process pay increase
+                for foreigners.
+            </li>
+            <li>Extra challenge: Modify the class <code>Person</code> to remove the <code>workerStatus</code> attribute.
+                Add a second parameter to its constructor—a lambda expression—so you can pass the rules of increasing
+                pay during instantiation of a worker. 
+            </li>
+        </ol>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0014.html">Lesson
+                    13</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                    will also be able to download the code and resources for this lesson from the website.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+</section>
+</body>
+</html>

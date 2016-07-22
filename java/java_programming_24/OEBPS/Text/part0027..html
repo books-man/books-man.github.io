@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Programming with Servlets</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="programming_with_servlets"></a><span class="chapterTitle">Lesson 26<br/>Programming with Servlets</span>
+    </h1>
+
+    <section>
+        <p>Web <span epub:type="pagebreak" title="355" id="Page_355"></span>applications <a id="idp20149200"></a>can
+            serve static or dynamic content. Some examples of static content are text files with HTML markup, images,
+            and video. Dynamic content is formed on the fly. Think of a web application that enables you to browse the
+            inventory of an online store. The content you see on your screen is being created based on your queries—in
+            other words, dynamically.</p>
+        <p>In the Java EE world, web content can be served by a program running in a container with deployed servlets,
+            <a id="idp20156608"></a><a id="idp20150816"></a>Java Server Pages (JSP), <a id="idp20152832"></a><a
+                    id="idp20154336"></a>JavaServer Faces (JSF), or a third-party framework. You can also create a web
+            application by implementing a <a id="idp20153984"></a><a id="idp20157648"></a>SOAP or RESTful Web Service.
+            You can also create a web application based on <a id="idp20160544"></a>a Plain Old Java Object (POJO)
+            utilizing WebSocket protocol. Servlets, JSP, and JSF not only return the data, but also present it as
+            formatted HTML pages, hence <a id="idp20158656"></a>the term <i>presentation layer</i> (refer to <a
+                    href="part0026.html#fig-c025-001">Figure 25-1</a>). Web Services or WebSocket-based applications, on
+            the other hand, return just the data (see <a href="part0034.html#working_with_restful_web_services">Chapter 33</a>).
+        </p>
+        <p>A servlet is a Java class written by certain rules and deployed in a Java EE–compliant servlet container of
+            your choice. The client program can be a lightweight HTML/JavaScript, a heavyweight applet, or a Swing or
+            JavaFX program. This lesson uses the most popular means of web communication: Web browsers talk to servlets
+            using HTTP, which stands for <a id="idp20164112"></a><i>Hypertext Transfer Protocol</i>.</p>
+        <p>All examples in this lesson work in any servlet container supporting the Servlet 3.1 specification. The
+            lesson uses a full application server GlassFish, which may be an overkill if your application only needs the
+            servlet support. If you want to experiment with a lightweight servlet container, consider using <a
+                    href="http://tomcat.apache.org/">Apache Tomcat</a> or <a
+                    href="http://www.eclipse.org/jetty/">Jetty</a>. But every Java EE application server comes with a
+            servlet container, and because you are going to study several Java EE technologies, installing a full
+            featured Java EE application server covers you for all upcoming lessons.</p>
+    </section>
+    <section>
+        <h2><a id="big_picture-id00097"></a>The Big Picture</h2>
+        <p><a id="fig-anc-c026-001" href="part0027.html#fig-c026-001">Figure 26-1</a> depicts a web <a
+                id="idp20167728"></a>browser making HTTP requests to the servlet named <code>MyServlet</code> and
+            receiving HTTP responses that <code>MyServlet</code> sends back.</p>
+        <figure>
+            <img class="center" src="../Images/image00570.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-001"
+                                                   href="part0027.html#fig-anc-c026-001">Figure 26-1</a>:</b></span> A
+                    <span epub:type="pagebreak" title="356" id="Page_356"></span>sample client-servlet data flow</p>
+            </figcaption>
+        </figure>
+        <p>Before you even learn how to create and deploy servlets, take a look at the components and the <a
+                id="idp20178736"></a>workflow of an imaginary online store, <code>www.MyBooks.com</code>, which is
+            developed and deployed with Java servlets.</p>
+        <ul>
+            <li>The client’s machine just needs a web browser. The bookstore consists of a number of HTML web pages for
+                interacting with users. The web browser sends the user requests to the server with the name <code>MyBooks.com</code>
+                in the form of an <code>HttpRequest</code> object.
+            </li>
+            <li>The computer that hosts <code>MyBooks.com</code> has to run some web server software, usually on port
+                80. For secure communication with HTTPS (HyperText Transfer Protocol Secure) the default port is 443.
+                These two ports are usually open on any web server, otherwise external clients wouldn’t even be able to
+                make any requests to the resources deployed under such a server.
+            </li>
+            <li>The web server “listens to” the users’ requests. If a web server receives a simple request for static
+                HTML content (such as a file or an image), the web server  processes the request without needing to
+                engage any additional software, and it sends back <code>HttpResponse</code> with the requested static
+                content inside.
+            </li>
+            <li>The website <code>MyBooks.com</code> also runs a servlet container with deployed servlet(s). If the web
+                server receives a user request to find books based on some search criteria, it creates and passes <code>HttpServletRequest</code>
+                to the appropriate servlet (for example, <code>FindBooksServlet</code>), which should be deployed and
+                running in the servlet container. The next section shows sample HTML containing a form that explicitly
+                lists <code>FindBooksServlet</code> by name.
+            </li>
+            <li>The servlet invokes the Java code that performs the search and creates (on the fly) the HTML page
+                listing the found books that meet the requested search criteria, and sends it to the web server wrapped
+                in <code>HttpServletResponse.</code> 
+            </li>
+            <li>The web server extracts the content from <code>HttpServletResponse</code>, wraps it inside the <code>HttpResponse</code>
+                object, and sends it back to the user’s web browser.
+            </li>
+            <li>The user’s browser displays the received page without knowing if it was a static HTML page or a freshly
+                baked one.
+            </li>
+        </ul>
+        <p>The user’s web browsers don’t need to know which server-side technology has been used to prepare dynamic
+            content. It could be Java, .NET, Python, PHP, and so on. The browser just knows that to send data to the
+            server using HTTP protocol, the data has to be placed inside <code>HttpRequest</code>. Web browsers also
+            know how to display <span epub:type="pagebreak" title="357" id="Page_357"></span>content arriving from the
+            server in a form of <code>HttpResponse</code>. All other magic that’s happening on the server is of no
+            interest to the web browsers.</p>
+    </section>
+    <section>
+        <h2><a id="thin_client"></a>The Thin Client</h2>
+        <p>Let’s start <a id="idp20192736"></a><a id="idp20194128"></a><a id="idp20195552"></a>with creating a simple
+            HTTP page that can serve as a client for a Java servlet. <a id="list-anc-c026-001"
+                                                                        href="part0027.html#list-c026-001">Listing
+                26-1</a> shows a simple HTML file with a form containing a text input field and a Submit button, which
+            users can use to find a book by its title.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c026-001"
+                                           href="part0027.html#list-anc-c026-001">Listing 26-1</a>:</span> HTML that
+                    gives the 404 error</h5>
+                <pre>
+&lt;html&gt;
+   &lt;head&gt;
+    &lt;title&gt;Find a book&lt;/title&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
+     Enter a word from the book title:
+     &lt;form action=http://www.MyBooks.com/servlet/FindBooksServlet 
+                                                 method=Get&gt;
+       &lt;input type=Text name=booktitle&gt;
+       &lt;input type=Submit value="Search"&gt;
+    &lt;/form&gt;
+   &lt;/body&gt;
+&lt;/html&gt;</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>In any plain text editor, create a file called <code>BookSearch.html</code> containing the HTML from <a
+                href="part0027.html#list-c026-001">Listing 26-1</a>. Open this file in a web browser (File →
+            Open), enter any text in the input field, and press Search. You get an error message because there is
+            neither a server behind the URL <code>www.MyBooks.com</code> nor a servlet called
+            <code>FindBooksServlet</code> at this address. This was just an illustration of what the thinnest client
+            could look like.</p>
+        <p>Clients communicate with servlets using HTTP protocol, and when no requested network resource is found, the
+            <code>HttpResponse</code> object comes back with an error. If the server responds, but the requested
+            resource (the <code>FindBooksServlet</code> ) is not there, the error code 404 is returned. If the server
+            doesn’t respond, the web client shows an appropriate error code. If the client successfully receives the
+            requested resource from the specified URL, the HTTP status code is anywhere in the range from 200 to 300.
+            The HTTP may also return 304, which indicates that the browser found in its cache an unchanged local copy of
+            the requested resource, so there was no need to send a request to the web server. The list of all possible
+            HTTP status codes is available at <code><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">www.w3.org/Protocols/rfc2616/rfc2616-sec10.html</a></code>.
+        </p>
+    </section>
+    <section>
+        <h2><a id="how_to_write_a_servlet"></a>How to Write a Servlet</h2>
+        <p>To create a <a id="idp20215008"></a>servlet, write a class that extends from <code>HttpServlet</code> and
+            annotate it with the <code>@WebServlet</code> <a id="idp20209376"></a><a id="idp20211248"></a>annotation.
+            The class <code>HttpServlet</code> extends <code>GenericServlet</code>, which defines the <a
+                    id="idp20213616"></a><a id="idp20217488"></a>method <code>service()</code>. The method <code>service()</code>
+            receives the client’s response and directs it to one of the methods of your class that’s a <span
+                    epub:type="pagebreak" title="358" id="Page_358"></span>descendant of <code>HttpServlet</code>.
+            Typically you have to override the <a id="idp20220432"></a><a id="idp20221360"></a><a
+                    id="idp20222960"></a><a id="idp20224336"></a>methods <code>doGet()</code> and/or
+            <code>doPost()</code>. Which one to override? This depends on the client’s request method. If the client
+            uses the HTTP request with the method <code>Post</code>, override <code>doPost()</code>, if the client uses
+            the  <code>Get</code>  request (see <a href="part0027.html#list-c026-001">Listing 26-1</a>), override the
+            callback <code>doGet()</code>, as shown in your_first_servlet.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c026-002"></a>Listing 26-2:</span> Your first servlet</h5>
+                <pre>
+@WebServlet(urlPatterns="/books", name="FindBooksServlet" )
+public class FindBooksServlet extends HttpServlet {
+  @Override
+  public void doGet(HttpServletRequest request,
+           HttpServletResponse response) throws ServletException {
+         
+         // The code processing the request goes here
+         // The resulting Web page will be sent back via the
+         // I/O stream that response variable contains
+         PrintWriter out = response.getWriter();
+         out.println("Hello from FindBooks");
+   }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>All the classes that support servlets are located in the package <code>javax.servlet</code>  and are packaged
+            in a JAR file, the location of which should be listed in the <code>CLASSPATH</code> environment
+            variable. The <code>javax.servlet</code> package is not included with Java SE—you need to either have <a
+                    href="http://www.oracle.com/technetwork/java/javaee/downloads/index.html">Java EE 7 SDK</a>
+            installed or read the documentation of the servlet container of your choice to know where they are located.
+            GlassFish 4 comes with Java EE 7 files, so no separate download is needed.</p>
+        <p>If you properly deploy <code>FindBooksServlet</code> on <a href="part0027.html#list-c026-001">Listing
+            26-1</a> gets as a response a web page containing the text “Hello from FindBooks.” </p>
+    </section>
+    <section>
+        <h2><a id="how_to_deploy_a_servlet"></a>How to Deploy a Servlet</h2>
+        <p>The annotation <code>@WebServlet</code> is where <a id="deploy1"></a><a id="deploy2"></a>you specify servlet
+            deployment parameters. Prior to Java EE 6 you needed to specify deployment parameters in the
+            <code>web.xml</code> file, but now that’s optional. <code>FindBooksServlet</code> uses the deployment
+            parameters <code>urlPatterns</code> and <code>name</code>. The former is used to match one of the servlets
+            deployed on the server to the URL. The value <code>/books</code> means that whenever the client sends a
+            request containing the pattern <code>books</code> in its URL, the request has to be redirected to the <code>FindBooksServlet</code> .
+            For example, the servlet container forwards the request <code><a href="http://localhost:8080/books">http://localhost:8080/books</a></code>
+            to the <code>FindBooksServlet</code>.</p>
+        <p>Each web server and servlet container <a id="idp20245904"></a><a id="idp20250464"></a>has a directory known
+            as a document root. It is used not only for servlet-based websites but also for the deployment of static
+            HTML files. For example, if you put the HTML file <code>TermsAndConditions.html</code> in the subfolder
+            <code>legal</code> of the document root of the server <code>MyBooks.com</code>, users would need to direct
+            their web browsers to <code>www.mybooks.com/legal/TermsAndConditions.html</code>.</p>
+        <p>You <span epub:type="pagebreak" title="359" id="Page_359"></span>can read the documentation for the server of
+            your choice to find out the location of the document root directory. In the GlassFish application server,
+            the default document root is the directory <code>/glassfish/domains/domain1/docroot</code>. In Apache Tomcat
+            it’s the directory <code>webapps</code>. If you are planning to create a servlet, its deployment directory
+            is also located in the document root, but it’s in the subdirectories <code>WEB-INF</code> and
+            <code>META-INF</code>.</p>
+        <p><code>WEB-INF</code> has the subdirectories <code>classes</code> and <code>lib</code> and <a
+                id="idp20257296"></a>might contain the optional file <code>web.xml</code>. It may be needed to configure
+            filters; otherwise  you can specify all deployment parameters using Java annotations. But if you use both
+            annotations and <code>web.xml</code>, the values in this file override the corresponding values in the
+            annotations. This allows changing deployment parameters without requiring recompilation of the servlets. The
+            <code>WEB-INF</code> directory also may have some container-specific files. </p>
+        <p>The directory <code>META-INF</code> may have <a id="idp20263872"></a>files containing metadata about this web
+            application, like <code>manifest.mf</code> or other data specific to a third-party framework or application
+            server content. For example, Apache Tomcat uses a file called <code>context.xml</code> where you may specify
+            the information about JDBC drivers. </p>
+        <p>This is what the directory structure of the application deployed in the document root directory can look
+            like:</p>
+        <pre>
+document root dir
+     WEB-INF
+      classes
+       com
+         practicaljava
+           lesson26
+             FindBooksServlet.class
+      lib
+META-INF
+    manifest.mf</pre>
+        <p>The class <code>com.practicaljava.lesson26.FindBooksServlet</code> was compiled into the directory <code>classes</code>.
+            If you have some third-party JAR files, add them to the <code>lib</code> directory.</p>
+        <p>When your web application is complete, most likely it’ll consist of multiple files, and typically the entire
+            directory structure is deployed as one compressed file with the extension <code>.war</code>, which stands
+            for web archive. Such files can be created manually, by your Integrated Development Environment (IDE)
+            plug-ins, or by one of the build tools such as Ant, Maven, or Gradle. Later in this lesson you see how to
+            create a war file with Eclipse for Java EE Developers. <a href="part0037.html#gradle">Lesson 36</a> is about
+            automating builds with Gradle, and you’ll see how to automate <a id="idp20274016"></a><a
+                    id="idp20273216"></a>creation of the <code>.war</code> files.</p>
+    </section>
+    <section>
+        <h2><a id="installing_the_glassfish_plug-in_for_ecl"></a>Configuring Glassfish in Eclipse IDE</h2>
+        <p>In the "<a href="part0026.html#try_it-id00093">Try It</a>" section <a id="eclipseglass"></a><a
+                id="glassconfig"></a><a id="configglass"></a>in <a href="part0026.html">Lesson 25</a> you started and
+            stopped GlassFish Server from a command window. However, it’s a lot more convenient to develop and deploy
+            web applications when you don’t need to leave the IDE. Eclipse for Java EE is a good fit for the development
+            of web projects.  It supports a variety of Java EE application servers. In this section you configure
+            GlassFish Server so you can do all the work inside Eclipse.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20282864"></a>Using Other IDEs</h3>
+                <p>NetBeans <span epub:type="pagebreak" title="360" id="Page_360"></span>IDE and IntelliJ IDEA also
+                    offer good support for Java EE developers.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If your GlassFish instance is still running, stop it from the command line. In Eclipse, switch to Java EE
+            perspective by pressing the Java EE button on the top-right corner of the toolbar, as shown in <a
+                    id="fig-anc-c026-002" href="part0027.html#fig-c026-002">Figure 26-2</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00571.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-002"
+                                                   href="part0027.html#fig-anc-c026-002">Figure 26-2</a>:</b></span>
+                    Switching to Java EE perspective in Eclipse</p>
+            </figcaption>
+        </figure>
+        <p>If you don’t see this button, use the Eclipse menu Window  →  Open Perspective  →  Other  →  Java EE.  Go to
+            the Servers view and click the link to add a new server, as shown in <a id="fig-anc-c026-003"
+                                                                                    href="part0027.html#fig-c026-003">Figure
+                26-3</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00572.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-003"
+                                                   href="part0027.html#fig-anc-c026-003">Figure 26-3</a>:</b></span>
+                    Configuring a new server in Eclipse</p>
+            </figcaption>
+        </figure>
+        <p>You see a new pop-up window with several server adapters, but to add GlassFish to the list click the Download
+            Additional Server Adapters link (see <a id="fig-anc-c026-004" href="part0027.html#fig-c026-004">Figure
+                26-4</a>).</p>
+        <figure>
+            <img class="center" src="../Images/image00573.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-004"
+                                                   href="part0027.html#fig-anc-c026-004">Figure 26-4</a>:</b></span>
+                    Download server adapters</p>
+            </figcaption>
+        </figure>
+        <p>Eclipse searches for <a id="idp20296752"></a>available server adapters. If you see GlassFish Tools in the
+            menu, install them. If not, you need to install the tools by selecting Help  → Marketplace in Eclipse. In
+            the marketplace window enter <code>GlassFish</code> in the Find field. Select GlassFish Tools for Luna and
+            install them (make sure that during install Oracle Java EE tools are also selected). (See <a
+                    id="fig-anc-c026-005" href="part0027.html#fig-c026-005">Figure 26-5</a>.)</p>
+        <figure>
+            <img class="center" src="../Images/image00574.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-005"
+                                                   href="part0027.html#fig-anc-c026-005">Figure 26-5</a>:</b></span>
+                    Installing <span epub:type="pagebreak" title="361" id="Page_361"></span>GlassFish Tools for Luna
+                    from Eclipse Marketplace</p>
+            </figcaption>
+        </figure>
+        <p>Now go back to the Servers view and click the link to create new server. Select GlassFish 4 from the list
+            (see <a id="fig-anc-c026-006" href="part0027.html#fig-c026-006">Figure 26-6</a>) and complete the
+            configuration .</p>
+        <figure>
+            <img class="center" src="../Images/image00575.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-006"
+                                                   href="part0027.html#fig-anc-c026-006">Figure 26-6</a>:</b></span>
+                    Configuring GlassFish in Eclipse</p>
+            </figcaption>
+        </figure>
+        <p>The next pop-up asks you about a default JRE (I use 1.8) and where GlassFish Server should be located.
+            According to my installation I specified <code>/Users/yfain11/glassfish4/glassfish</code> and pressed Next.
+            Accept the default parameters for <code>domain1</code>, don’t enter any passwords for admin in the next
+            window, and press Finish. Eclipse starts GlassFish, and the Eclipse console should look similar to a command
+            window shown in the "<a href="part0026.html#try_it-id00093">Try It</a>" section of <a href="part0026.html">Lesson
+                25</a>.</p>
+        <p>You may configure several Java EE servers of the same or different vendors in Eclipse IDE. For example, I
+            have Apache Tomcat 8, WildFly 8.1, and GlassFish 4.1 configured in my Eclipse, as shown in <a
+                    id="fig-anc-c026-007" href="part0027.html#fig-c026-007">Figure 26-7</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00576.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-007"
+                                                   href="part0027.html#fig-anc-c026-007">Figure 26-7</a>:</b></span>
+                    Three <span epub:type="pagebreak" title="362" id="Page_362"></span>servers configured in Eclipse</p>
+            </figcaption>
+        </figure>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20313104"></a>Starting and Stopping Servers in Eclipse</h3>
+                <p>To start or stop the configured server from Eclipse, visit the Servers view, right-click the server
+                    name, and select Start or Stop from the pop-up menu. If you want to debug <a id="idp20314208"></a><a
+                            id="idp20316080"></a><a id="idp20318176"></a>the server-side code, select Debug instead of
+                    Start. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="how_to_create_a_servlet_with_eclipse"></a>How to Create a Servlet in Eclipse</h2>
+        <p>Open File → New → Other → Web and <a id="serv1"></a><a id="serv2"></a>select the Create Dynamic Web Project
+            option. In the pop-up window, name the project Lesson26. Because you are going to deploy the servlet under
+            GlassFish Server, make sure that GlassFish is selected in the Target Runtime combobox. Click Finish, and a
+            new Eclipse project is created. It doesn’t have the same structure as the projects you’ve been creating so
+            far. It has a subfolder called <i><code>WebContent</code></i> that contains the <i><code>WEB-INF</code></i>
+            and <i><code>META-INF</code></i> directories that will be used for deployment in the servlet container of
+            your choice. (See <a id="fig-anc-c026-008" href="part0027.html#fig-c026-008">Figure 26-8</a>.)</p>
+        <figure>
+            <img class="center" src="../Images/image00577.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-008"
+                                                   href="part0027.html#fig-anc-c026-008">Figure 26-8</a>:</b></span>
+                    Dynamic Web Project Structure</p>
+            </figcaption>
+        </figure>
+        <p>Right-click the project name, select New→Servlet, and then specify <code>com.practicaljava.lesson26</code> as
+            the name of the package and <code>FindBooksServlet</code> as the class name. Click Next and edit the URL
+            mapping field to be <code>/books</code> (see <a id="fig-anc-c026-009" href="part0027.html#fig-c026-009">Figure
+                26-9</a>; I’ll explain it shortly).</p>
+        <figure>
+            <img class="center" src="../Images/image00578.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-009"
+                                                   href="part0027.html#fig-anc-c026-009">Figure 26-9</a>:</b></span>
+                    Changing <span epub:type="pagebreak" title="363" id="Page_363"></span>the URL mapping for a servlet
+                </p>
+            </figcaption>
+        </figure>
+        <p>Click Next again. The next window asks you which method stubs you’d like to have auto-generated; keep the
+            default <code>doGet()</code> and <code>doPost()</code>. Finally, click Finish, and Eclipse generates the
+            code shown in <a id="list-anc-c026-003" href="part0027.html#list-c026-003">Listing 26-3</a> (I just removed
+            some comments).</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c026-003"
+                                           href="part0027.html#list-anc-c026-003">Listing 26-3</a>:</span> Generated
+                    FindBooks servlet</h5>
+                <pre>
+package com.practicaljava.lesson26;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet(urlPatterns = {"/books"})
+public class FindBooksServlet extends HttpServlet {
+      private static final long serialVersionUID = 1L;
+    public FindBooks() {
+        super();
+    }
+      protected void doGet(HttpServletRequest request,
+         HttpServletResponse response) throws ServletException,
+                                                     IOException{
+            // TODO Auto-generated method stub
+      }
+      protected void doPost(HttpServletRequest request,
+         HttpServletResponse response) throws ServletException, 
+                                                     IOException{
+            // TODO Auto-generated method stub
+      }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>I explain the servlet’s data flow in the section "<a href="part0027.html#browser-servlet_data_flow">Browser-Servlet
+            Data Flow</a>.” Meanwhile let’s see the servlet <code>FindBooksServlet</code> in action. Add the following
+            two lines in the <code>doGet()</code> method to get access to the output stream and send the message “Hello
+            from FindBooks”:</p>
+        <pre>
+PrintWriter out = response.getWriter();
+out.println("Hello from FindBooks");</pre>
+        <p>Don’t forget to add the import statement for <code>PrintWriter</code>. The final step is to deploy the
+            servlet under GlassFish Server. Open the Servers view, right-click the server, and select Add and Remove
+            from the pop-up menu. Select the project Lesson26 in the left panel and add it to the right one. Click
+            Finish.</p>
+        <p><span epub:type="pagebreak" title="364" id="Page_364"></span>The servlet deployment is finished. Now
+            right-click the class name  <code>FindBooksServlet</code> in the Eclipse project, select Run on Server →
+            GlassFish, and click Finish. If the server was not running, Eclipse first starts the server and then forms
+            the URL to access the servlet <code>FindBooks</code>. Eclipse runs its internal web browser and displays the
+            message shown in <a id="fig-anc-c026-0010" href="part0027.html#fig-c026-0010">Figure 26-10</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00579.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-0010" href="part0027.html#fig-anc-c026-0010">Figure 26-10</a>:</b></span>
+                    Running the servlet in Eclipse internal browser</p>
+            </figcaption>
+        </figure>
+        <p>You <span epub:type="pagebreak" title="365" id="Page_365"></span>can copy this URL into any other web browser
+            on your computer; the response will be the same. Starting the server from inside Eclipse doesn’t change the
+            fact that it listens to the port 8080, and any client can request and deploy servlets via this port.  </p>
+        <p>Please note that the URL ends with <code>/books</code> and not <code>FindBooksServlet</code>. Take another
+            look at <a href="part0027.html#fig-c026-008">Figure 26-8</a>. You’ve changed the URL mapping instructing the
+            servlet container to route all HTTP requests that include <code>/books</code> to the servlet <code>FindBooksServlet</code>.
+             Eclipse has generated the proper annotation in the servlet’s class that may look similar to this one:</p>
+        <pre>
+@WebServlet(urlPatterns = {"/books"}) 
+public class FindBooksServlet extends HttpServlet</pre>
+        <p>Servlets belong to the presentation layer, so let’s change the web page presentation a little bit. Replacing
+            the code of the <code>doGet()</code> method with following three lines shows the output on yellow background
+            and in the header <code>&lt;H2&gt;</code> style:</p>
+        <pre>
+PrintWriter out = response.getWriter();
+out.println("&lt;html&gt;&lt;body bgcolor=yellow&gt;");
+out.println("&lt;h2&gt;Hello from FindBooks&lt;/h2&gt;");</pre>
+        <p>The browser renders this HTML page, as shown in <a id="fig-anc-c026-0011" href="part0027.html#fig-c026-0011">Figure
+            26-11</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00580.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c026-0011" href="part0027.html#fig-anc-c026-0011">Figure 26-11</a>:</b></span>
+                    Changing the presentation of a web page from the servlet</p>
+            </figcaption>
+        </figure>
+        <p>Having HTML markup embedded inside servlets has some drawbacks though. You need to recompile the Java code
+            every time the presentation changes. There are more drawbacks in having HTML embedded in Java, which are
+            covered at the beginning of the next lesson.  </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20361968"></a>Hot Deployment</h3>
+                <p>When you modify the <a id="idp20363008"></a><a id="idp20364560"></a>code of a Java servlet or other
+                    application class, the server might need to be restarted or the servlet might need to be redeployed.
+                    This depends on the <i>hot deployment</i> (without the server restart) capabilities of a specific
+                    server you use. If you want to automate redeployments of your server-side Java code, consider using
+                    a third-party tool <a href="http://zeroturnaround.com/software/jrebel/">JRebel</a>, which
+                    automatically reloads all your Java modifications in the server.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <section>
+            <h3><a id="idp20369424"></a>Deploying a Web Application as WAR</h3>
+            <p>A <span epub:type="pagebreak" title="366" id="Page_366"></span>real-world web <a id="idp20367440"></a><a
+                    id="idp20370208"></a>application may consist of multiple files, and it would be easier if all of
+                them are placed into a single archive file and deployed by placing such a file in the document root
+                directory of your servlet container. Usually you create build scripts that that compile all required
+                files, archive them in a WAR file, and copy this file into the deployment directory. You get familiar
+                with a build tool called Gradle in <a href="part0037.html#gradle">Lesson 36</a>.</p>
+            <p>But if you want to quickly create a WAR file by Eclipse means, just right-click the project name and
+                select the menu Export  →  Web →  WAR file.</p>
+            <p>In a couple of seconds you have <code>Lesson26.war</code>, a file that you can deploy in any Java
+                EE–compliant container. Seasoned software developers wouldn’t like this way of building WARs; they would
+                argue that creating build scripts up front is the right thing to do. Because you’re just making your
+                first steps in the server-side development, though, using convenient <a id="idp20379840"></a><a
+                        id="idp20378880"></a>features offered by IDE is justifiable. </p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="browser-servlet_data_flow"></a>Browser-Servlet Data Flow</h2>
+        <p>One servlet can <a id="data"></a>serve multiple users, so let’s review the entire process of client-servlet
+            communication. Regular Java Servlets run in a container, which automatically spawns a new thread for every
+            client’s request without requiring you to do any thread programming. This sounds great and can work fine if
+            the number of users is limited. Later in the section on <a href="part0027.html#asynchronous_servlets">asynchronous
+                servlets</a> you see a more scalable way of reusing threads, but for now you can concentrate on a
+            traditional single-thread model—one thread per user.</p>
+        <p>A web page may include an HTML form, a link, or a JavaScript code that can sendan HTTP request (for example, 
+            <code>Get</code>  or  <code>Post</code>  ) to the web server. When the very first user’s request hits the
+            <code>FindBooksServlet</code> , the container check whether this servlet is up and running. If not, the
+            container loads and instantiates it and calls the servlet’s method <code>init()</code>. Even if you didn’t
+            override this method, it exists in the superclass <code>HttpServlet</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20385456"></a>Servlet Life Cycle Events</h3>
+                <p>If you’d like to perform some actions when the servlet is initialized or about to be destroyed, use
+                    <code>ServletContextListener</code> to intercept these events.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Then the container calls the method <code>service()</code> on your servlet’s superclass, which redirects the
+            request to <code>doGet()</code>, <code>doPost()</code>, or similar <code>doXXX()</code>, passing the
+            arguments <code>HttpServletRequest</code> and <code>HttpServletResponse</code>. Your code can get the data
+            that came from the web page by calling the method <code>getParameter()</code> on the <code>HttpServletRequest</code>
+            object supplied by the servlet container to <code>doGet()</code>, <code>doPost()</code> and so on.</p>
+        <p>After you get the parameter(s), process it in the business layer, which can be implemented either as POJOs
+            talking to some data store or as an EJB. Return the result to the client by getting the reference to the
+            <code>PrintWriter</code> object; it knows how to send text data to the user. For non-textual results, use
+            the class <code>OutputStream</code> instead of <code>PrintWriter</code>. Don’t forget to set the content
+            type (the <a href="http://en.wikipedia.org/wiki/MIME">MIME type</a>) by calling
+            <code>setContentType()</code>. For <span epub:type="pagebreak" title="367" id="Page_367"></span>example, if
+            you are sending an object containing PDF content and want the browser to automatically open Acrobat Reader,
+            call the function <code>response.setContentType(“application/pdf”);</code>.</p>
+        <p>The servlet <a id="idp20395488"></a><a id="idp20399152"></a><a id="idp20400912"></a><a
+                id="idp20402336"></a><a id="idp20403408"></a><a id="idp20404544"></a>container controls when the servlet
+            is loaded, and when its <code>init()</code>, <code>service()</code>, and <code>destroy()</code> methods are
+            called. The method <code>destroy()</code> is called when a server administrator decides to unload the
+            servlet, the server is shutting down, or the server needs to free some memory.</p>
+        <p>If the HTTP client sent some data to the servlet, it can get them by calling <code>getParameter()</code> on
+            the <code>HttpServletRequest</code> object. The following code gets the name of the book entered by the user
+            in a <a id="idp20410528"></a>field named <code>booktitle</code> and responds with the price of $65:</p>
+        <pre>
+public void doGet(HttpServletRequest req, HttpServletResponse res)
+                    throws ServletException, IOException {
+ String title = req.getParameter("booktitle");
+ PrintWriter out = res.getWriter();
+ res.setContentType("text/html");
+ out.println("&lt;html&gt;&lt;body&gt;");
+ out.println("&lt;h2&gt;the book "+title+" costs only $65");
+ out.println("&lt;/body&gt;&lt;/html&gt;");
+}</pre>
+    </section>
+    <section>
+        <h2><a id="http_get_and_post_requests"></a>HTTP Get and Post Requests</h2>
+        <p>HTTP specification  <a id="idp20414080"></a><a id="idp20416112"></a><a id="idp20417360"></a><a
+                id="idp20418512"></a>defines several methods for data exchange on the web, but with servlets the  <code>Get</code>
+            and <code>Post</code> methods were the most widely used ones. (In <a href="part0034.html">Lesson 33</a> you
+            see the use of other HTTP methods.) If you don’t specify the method, <code>Get</code> is used by default.
+            Because I’ve used the  <code>method=Get</code> in the tag <code>&lt;form&gt;</code> in <a
+                    href="part0027.html#list-c026-001">Listing 26-1</a> , the servlet container invokes the method
+             <code>doGet()</code> on  <code>FindBooksServlet</code> . With <code>Get</code>, the web browser appends the
+            values entered in the form to the end of the URL after the question mark. For example, if the user enters
+            the word <code>Apollo</code> as a book title, the URL may look like this:</p>
+        <pre>
+http://www.mybooks.com<strong>?booktitle=Apollo</strong></pre>
+        <p>If a form (or a script) submits multiple values, the URL includes several key/value pairs separated by
+            the <code>&amp;</code> symbol after the question mark:</p>
+        <pre>
+http://www.mybooks.com?booktitle=Apollo<strong>&amp;</strong>author=Smith
+</pre>
+        <p>With <code>Get</code> it’s easy to copy and paste or bookmark the URL with parameters. On the other hand,
+            with <code>Get</code> the data is not protected; you can see it in clear text.</p>
+        <p>The method <code>Post</code> is typically used to send data to the server. It also may be used for sending
+            the binary data (for example, uploading an image) to the server. Of course, the log-in forms shouldn’t use
+            <code>Get</code> because you don’t want the user’s ID and password to be shown in the URL. To process <code>Post</code>
+            requests, servlets have to override the method <code>doPost()</code>. It’s common to use <code>Get</code>
+            for data retrieval and <code>Post</code> for sending data to the server.</p>
+    </section>
+    <section>
+        <h2><a id="session_tracking"></a>Session Tracking</h2>
+        <p>HTTP <span epub:type="pagebreak" title="368" id="Page_368"></span>is a <i>stateless</i> protocol. If a <a
+                id="idp20435616"></a><a id="idp20436992"></a><a id="idp20438144"></a>user retrieves a web page with a
+            list of books from the <code>FindBooksServlet</code> (or any other server-side program) and then goes to
+            another web page, this second page does not know what was shown or selected on the first one. To preserve
+            data to more than one web page, <i>session tracking</i> has to be implemented.</p>
+        <p>A session is a logical task, which the user is trying to complete by visiting a website. For example, the
+            process of buying a book may involve several steps: book selection, input of billing and shipping
+            information, and so on. These steps combined are an example of a session. When a purchase order is placed,
+            the session is over.</p>
+        <p>The session information can be stored either on the client or on the server side. On the client side the
+            user’s session data can be stored using <i>cookies</i> (explained in the next section) or URL rewriting—this
+            information is being sent back and forth from the client to the server as a part of the URL.</p>
+        <p>The server-side alternative for storing session data is a session tracking application programming interface
+            (API) that offers a number of methods defined in the <a id="idp20441040"></a><a id="idp20443536"></a>interface <code>HttpSession</code>.
+            In this case the session data is stored only on the server, but the client gets only a session ID to
+            identify a series of HTTP requests made by the same user. To create a session on the server, call the method
+            on the <code>HttpServletRequest</code> object  <code>getSession(true)</code>, which means “get a reference
+            to an existing session, or create the new one.” Calling this method without an argument gives you either a
+            reference to the existing session or <code>null</code>. The next sections provide more details about session
+            tracking.   </p>
+        <section>
+            <h3><a id="cookies"></a>Cookies</h3>
+            <p>A cookie is a small <a id="idp20448192"></a><a id="idp20451744"></a><a id="idp20453104"></a>piece of data
+                that your servlet can send to the web client to be stored as a file on the user’s computer. On every
+                subsequent request from that client, the browser checks the local non-expired cookies (domain specific)
+                and sends them to the server, uniquely associating the request with a given session. The cookies are
+                persistent, but the user may disable them by selecting the appropriate setting in his web browser.
+                Here’s how the servlet can send a business-related <code>Cookie</code> to the client:</p>
+            <pre>
+Cookie myCookie = new Cookie("bookName",
+                                "Java Programming 24-hour trainer");
+// Set the lifetime of the cookie for 24 hours
+myCookie.setMaxAge(60*60*24);
+response.addCookie(myCookie);</pre>
+            <p>This is how a servlet can retrieve a client’s cookies that arrive with <code>HttpServletRequest</code>:
+            </p>
+            <pre>
+Cookie[] cookies = request.getCookies();</pre>
+            <pre>
+if (cookies != null){
+ // Get each cookie (a name/value pair)
+ for (i=0; i &lt; cookies.length; i++){
+   Cookie currentCookie = cookie[i];
+   String name = currentCookie.getName();
+   String value = currentCookie.getValue();
+ }
+}</pre>
+            <p>Even <span epub:type="pagebreak" title="369" id="Page_369"></span>though you can store multiple cookies
+                on the client, as in the preceding code, it’s not a good idea to send the application data back and
+                forth over the network. Typically the session data is stored in the <code>HttpSession</code> object
+                described later in the section <a href="part0027.html#server-side_httpsession">Server-Side
+                    HttpSession</a>.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp20458672"></a>Other cookies</h3>
+                    <p>Besides the cookies that your servlet creates and sends to the web browser, search analytics
+                        engines may send their own cookies, too. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp20460160"></a>HTML 5 Web Storage</h3>
+                    <p>HTML 5 supports web storage (local storage) that allows storage of key value pairs on the user’s
+                        disk drive, but as opposed to cookies, these data always stay on the client side. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="url_rewriting"></a>URL Rewriting</h3>
+            <p>If a client disables <a id="idp20465872"></a>cookies, the URL rewriting may be used for keeping track of
+                the user’s session. In this case the session ID and other required session data are attached to the URL
+                string and are being sent back and forth with each client/server communication. If you’ve noticed
+                something such as <code>jsessionid=12345</code> in the URL string of any website, it means that URL
+                rewriting is being used.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp20467904"></a>Session ID and Security</h3>
+                    <p>OWASP stands <a id="idp20469536"></a>for Open Source Web Application Security Project. It
+                        publishes a document titled "<a
+                                href="https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project">Top 10 Security
+                            Risks</a>."  One of the top 10 risks is broken authentication and session management.
+                        Hackers can hijack a session ID presenting themselves as legitimate users.</p>
+                    <p>Some applications configure the servers to switch from cookies to URL re-writing for delivering
+                        the session ID to allow the users who turned off the cookies to still use their application.
+                        Such configuration results in attaching the session ID to the URL, which makes hijacking the
+                        session easier. It’s recommended to add a section <code>&lt;session-config&gt;</code> to
+                        the <code>web.xml</code> of your Java EE application server that includes the element <code>&lt;tracking-mode&gt;COOKIE&lt;/tracking-mode&gt;</code> so
+                        that only cookies can be used for storing session IDs. This doesn’t guarantee that the user’s
+                        session ID won’t be stolen, but will definitely lower the risk.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="server-side_httpsession"></a>Server-Side HttpSession</h3>
+            <p>You <span epub:type="pagebreak" title="370" id="Page_370"></span>should keep the data <a
+                    id="httpsession1"></a><a id="httpsession2"></a><a id="httpsession3"></a>that belong to a user’s
+                session (such as the shopping cart) inside the <code>HttpSession</code> object in the servlet container,
+                which creates one such object per client. The servlet can store there any <code>Serializable</code>
+                objects. The following line creates a session object (or finds a previously created one):</p>
+            <pre>
+HttpSession mySession = request.getSession(true);</pre>
+            <p>The <code>getSession(true)</code> call <a id="idp20485392"></a><a id="idp20486432"></a>means “find this
+                client’s session object or create a new one if not found.” For example, a shopping process usually
+                consists of a number of subsequent servlet calls (list an inventory, add an item to the shopping cart,
+                enter shipping information, and so on). The method call <code>getSession(true)</code> should be used in
+                the very first servlet request that opens the business process qualified for a session opening. At this
+                moment the application server generates a unique session ID (available by calling
+                <code>session.getId()</code>) and sends it to the user’s web browser using either a special cookie
+                <code>JSESSIONID</code> or uses URL rewriting. When the browser sends an HTTP request to the server, the
+                session ID is located in the request’s header so the servlet container can find the matching session
+                object.</p>
+            <p>The call <code>getSession(false</code>) means “find my session object,” assuming that it has been created
+                in the previous steps of the session. If this call returns <code>null</code>, the session object has
+                been timed out or destroyed and you might want to display a message saying that the session has expired,
+                and the user has to start the process from scratch.</p>
+            <p>I’ll illustrate the concept of using <code>Httpsession</code> object by showing you an example, which
+                includes an HTML page and a servlet. The HTML page has a form where you can enter a book title and a
+                price to be added to your shopping cart on the server. Each time you add a book, the servlet returns a
+                new HTML page that lists the content of the shopping cart and the form to add more books.</p>
+            <p>The initial file <code>ShoppingCart.html</code> is located in the document root directory of the project
+                Lesson26. In the Eclipse Dynamic Web Project, the document root is represented by the directory <code>WebContent</code>. Here’s
+                the content of <code>ShoppingCart.html</code>:</p>
+            <pre>
+&lt;html&gt;
+   &lt;head&gt;
+    &lt;title&gt;Add a book to shopping cart&lt;/title&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
+     Add the book title and price to the shopping cart:
+     &lt;form <strong>action=shoppingcart</strong> method=Get&gt;
+       &lt;input type=Text name=booktitle&gt;
+       &lt;input type=Text name=price&gt;
+       &lt;input type=Submit value="Add to shopping cart"&gt;
+    &lt;/form&gt;
+   &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+            <p>Because this file is deployed in the same web application (that is, Lesson26) as the servlet, the form’s
+                action parameter doesn’t include the complete URL of the servlet; the pattern—<code>shopingcart</code>—is
+                all you need, assuming that the servlet is annotated with <code>@WerServlet("/shoppingcart")</code>.  In
+                Eclipse, you right-click the file <code>ShoppingCart.html</code> and select the Run on Server. The
+                following URL is constructed (see <a id="fig-anc-c026-0012" href="part0027.html#fig-c026-0012">Figure
+                    26-12</a>):</p>
+            <pre>
+http://localhost:8080/Lesson26/ShoppingCart.html</pre>
+            <figure>
+                <img class="center" src="../Images/image00581.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c026-0012" href="part0027.html#fig-anc-c026-0012">Figure 26-12</a>:</b></span>
+                        Opening <span epub:type="pagebreak" title="371" id="Page_371"></span>ShoppingCart.html deployed
+                        on the server</p>
+                </figcaption>
+            </figure>
+            <p>Don’t enter the book title and the price just yet; the servlet is not ready. Before showing you the code
+                of the servlet, let’s agree that each shopping cart item will be represented as an instance of the
+                following class <code>Book</code>:</p>
+            <pre>
+class Book implements Serializable {
+   String title;
+   double price;
+}</pre>
+            <p>Note that the class <code>Book</code> implements <code>Serializable</code> because you’re planning to
+                keep it in the <code>HttpSession</code> object. </p>
+            <p>Next comes the <code>ShoppingCartServlet</code>  class that has the URL
+                mapping  <code>/shoppingcart</code>; the web browser’s request tries to find the server-side object that
+                goes by the name <code>shoppingcart</code>.  The <code>doGet()</code> method starts with printing the
+                browser’s cookies on the system console. I just want you to see that the value of the cookie <code>JSESSIONID</code>
+                remains the same with each request made from the same browser.  After that, the code works with the
+                session object; the program comments give you some more explanations:</p>
+            <pre>
+@WebServlet("/shoppingcart")
+public class ShoppingCartServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, 
+                   HttpServletResponse response) 
+                    throws ServletException, IOException {
+        Cookie[] cookies = request.getCookies();
+        
+        for (int i=0; i &lt; cookies.length; i++){
+              Cookie currentCookie = cookies[i];
+              String name = currentCookie.getName();
+              String value = currentCookie.getValue();
+              
+              System.out.println("Received the cookie " 
+                                           + name + "=" + value);
+            }
+        
+        // Get or create a session object
+        HttpSession session = request.getSession(true);
+        
+        // Try to get the shopping cart
+        ArrayList&lt;Book&gt; myShoppingCart=(ArrayList&lt;Book&gt;) 
+                         session.getAttribute("shoppingCart");
+        if (myShoppingCart == null){ 
+           // This is the first call – instantiate the shopping cart
+           myShoppingCart = new ArrayList&lt;&gt;();
+        }
+        // create an instance of a book object for received params
+        Book selectedBook = new Book();
+        selectedBook.title=request.getParameter("booktitle");
+        selectedBook.price = Double.parseDouble(
+                                    request.getParameter("price"));
+        // Add the book to our shopping cart
+        myShoppingCart.add(selectedBook);
+        // Put the shopping cart back into the session object
+        session.setAttribute("shoppingCart", myShoppingCart);
+        
+        // Prepare the Web page and send it to the browser
+        PrintWriter out = response.getWriter();
+        // Add the content of the shopping cart to the Web page
+        out.println("&lt;body&gt;Your shopping cart content:");
+        myShoppingCart.forEach(book -&gt; 
+              out.printf("&lt;br&gt;Title: %s, price: %.2f",  
+                          book.title, book.price)   
+           );
+        
+        //Add the HTML form to the Web page 
+        out.println("&lt;p&gt;Add another book to the shopping cart:");
+        out.println("&lt;form action=shoppingcart method=Get&gt;");
+        out.println("&lt;input type=Text name=booktitle&gt;");
+        out.println("&lt;input type=Text name=price&gt;");
+        out.println(
+                "&lt;input type=Submit value='Add to shopping cart'&gt;");
+        out.println("&lt;/form&gt;");
+        out.println("&lt;/body&gt;");        
+    }
+}
+</pre>
+            <p>The <span epub:type="pagebreak" title="372" id="Page_372"></span>very first time the servlet tries to get
+                the shopping cart (represented by an  <code>ArrayList</code>)  from the session object, it won’t be
+                there, so the new instance of the <code>ArrayList&lt;Book&gt;</code> is created. Then the code gets the
+                values of parameters <code>booktitle</code> and <code>price</code> (received from the web page), creates
+                a new <code>Book</code> instance, adds it to <code>myShoppingCart</code> collection, and places it in
+                the <code>HttpSession</code> instance for storage.</p>
+            <p>This code loops through the <code>myShoppingCart</code> collection using <code>forEach()</code> and a
+                lambda expression just to send the content of the shopping cart with HTML to the web page.  Finally, the
+                servlet sends to the browser the same HTML form so the user can continue adding new books to the
+                shopping cart. <a id="fig-anc-c026-0013" href="part0027.html#fig-c026-0013">Figure 26-13</a> shows how
+                my browser looks after adding several books to the shopping cart.</p>
+            <figure>
+                <img class="center" src="../Images/image00582.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c026-0013" href="part0027.html#fig-anc-c026-0013">Figure 26-13</a>:</b></span>
+                        The <span epub:type="pagebreak" title="373" id="Page_373"></span>web page after adding four
+                        books to the shopping cart</p>
+                </figcaption>
+            </figure>
+            <p>The <code>ShoppingCartServlet</code> doesn’t have code to close the session. But you could add a Place
+                Order to the Web Page button, and the corresponding method <code>placeOrder()</code> in the servlet,
+                which could close the session by making the following call:</p>
+            <pre>
+session.invalidate();</pre>
+            <p>The simplest way of adding a Place Order button to ShoppingCart.html is to add yet another button of
+                Submit type to the form:</p>
+            <pre>
+&lt;input type=Submit name=placeorder value="Place Order"&gt;
+</pre>
+            <p>And in the <code>doGet()</code> method, check whether the user clicked on the button. If yes, invalidate
+                the session.</p>
+            <pre>
+if (request.getParameter("placeorder") != null) { 
+   session.invalidate(); 
+}
+</pre>
+            <p>If the session has not been invalidated explicitly, the application server does it automatically after a
+                specific period (timeout). You can set the timeout programmatically by calling the method <code>setMaxInactiveInterval()</code>
+                on the <code>HttpSession</code> object, or you can make it configurable in the external file <code>web.xml</code>.
+                If the user closes the browser, the cookie <a id="idp20528368"></a><a id="idp20526816"></a><a
+                        id="idp20531232"></a>associated with the session is destroyed and the session is closed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp20532656"></a>Session Life Cycle Events</h3>
+                    <p>If you’d like to perform some actions when the HTTP session is created, invalidated, or timed
+                        out, use <code>HttpSessionListener</code>. To intercept adding or removing an attribute to a
+                        session, use <code>HttpSessionAttributeListener</code>.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+    <section>
+        <h3><a id="filters"></a>Filters</h3>
+        <p>Even after a servlet is deployed, <a id="filter1"></a><a id="filter2"></a>you still can change the way it
+            processes requests and responses without modifying the servlet’s code. You can create <i>filters</i>, which
+            are the Java classes that can be configured to process HTTP requests <span epub:type="pagebreak" title="374"
+                                                                                       id="Page_374"></span>before they
+            are passed to the servlet or when the servlet is about to return the response to the client. Filters are
+            good for adding such functionality as authentication, logging, encryption, data compression, image
+            conversion, and so on. Filters can even block request and response objects from passing any further.  </p>
+        <p>None of these actions depend on the business logic implemented by servlets. Besides, you can create one
+            filter (such as to authenticate the user) and apply it to multiple servlets deployed in the servlet
+            container. What if you need to compress and encrypt the data before sending them to the client? Write two
+            separate filters and chain them so both are applied to the same servlet. Filter classes are deployed in the <code>WEB-INF/classes</code> directory—in
+            the same place where other compiled classes reside.</p>
+        <p>To create a filter, write a <a id="idp20548832"></a><a id="idp20542224"></a>class that implements the
+            interface <code>Filter</code> annotated <a id="idp20548064"></a><a id="idp20544192"></a>with <code>@WebFilter</code>.
+            There are three methods in this interface: <code>doFilter()</code>, <code>init()</code>, and
+            <code>destroy()</code>.  To allow filter chaining, you need to implement the <code>FilterChain</code>
+            interface. The following code is a sample of a filter class to be used with two servlets: <code>FindBooksServlet</code>
+            and <code>ShoppingCartServlet:</code></p>
+        <pre>
+@WebFilter(servletNames={"/FindBooksServlet","
+                          /ShoppingCartServlet"})
+public class MyAuthenticationFilter implements Filter {
+      FilterConfig config;
+      @Override
+      public void doFilter(ServletRequest request, 
+                  ServletResponse response, FilterChain chain)
+                            throws IOException, ServletException {
+      // user authentication code goes here
+      //Call the next filter, if need be
+      chain.doFilter(request, response);
+     }
+     @Override
+     public void init(FilterConfig filterConfig) 
+                            throws ServletException {
+        this.config = filterConfig;
+     }
+     @Override
+     public void destroy() {
+       // Clean up system resources here
+     }
+}</pre>
+        <p>The container gives the filter both request and response objects. You can check passed parameters by the
+            client (such as by checking ID/password), perform authentication, and, if the user is not valid, call <code>response.getWriter()</code>
+            and send the user the message “You don’t belong here” without even passing control to the servlet.</p>
+        <p>The <span epub:type="pagebreak" title="375" id="Page_375"></span>method <code>destroy()</code> is called <a
+                id="idp20554432"></a><a id="idp20555552"></a>once before the container removes the filter; if the filter
+            has created some resources such as Database Management System (DBMS) connections, close them in the <code>destroy()</code>
+            method.</p>
+        <p>The method <code>init()</code> is invoked on the filter object only once during its instantiation. The the
+            servlet container gives to the <code>init()</code> method the instance of the <code>FilterConfig</code>
+            object, which gives you access to the servlet context and initialization parameters if these are specified
+            in the <code>@WebFilter</code> annotation (or in the file <code>web.xml</code>); for example:</p>
+        <pre>
+@WebFilter(servletNames={"/FindBooksServlet", 
+                         "/ShoppingCartServlet"},
+           initParams={@WebInitParam(name="community", 
+                                       value="adults")})</pre>
+        <p>To assign several filters to the same servlet, configure them in the <code>web.xml</code> file in the the
+            order you want them to be chained. So when you call <code>chain.doFilter()</code>, the container knows which
+            filter to invoke next.</p>
+    </section>
+    <section>
+        <h2><a id="asynchronous_servlets"></a>Asynchronous Servlets</h2>
+        <p>It’s great that servlets <a id="idp20566304"></a><a id="idp20567616"></a>automatically create and allocate a
+            separate thread for each user’s request, but each thread takes up system resources (both memory bytes and
+            CPU cycles), and after a certain number of concurrent requests the server simply stops responding. Imagine
+            if thousands of users simultaneously hit the <code>FindBooksServlet</code> that has to perform a
+            three-second long DBMS search for each request. During these three seconds, the container is idling, but it
+            holds the lock on each thread, doing nothing but waiting for the result of the DBMS query (running on
+            another server!). </p>
+        <p>Is hard to say how many simultaneous blocking threads a specific servlet container can process in a timely
+            manner; it all depends on the business application and the server hardware/software. Consider running load
+            tests of your application with <a href="http://jmeter.apache.org/">JMeter</a> or similar software to get the
+            real numbers for your hardware/software combination. I’ve seen a situation when a server started failing
+            after just one of thousands of concurrent requests. </p>
+        <p>The idea of asynchronous servlets is to minimize the time of thread locking by reusing threads in the servlet
+            container. If User A makes a request that takes three seconds on a DBMS server, his servlet container’s
+            thread is given to the request of User B, and when User A’s result comes back from the DBMS, the container
+            allocates this (or another) thread to return the result to User A.  This architecture can substantially
+            increase the number of concurrent requests that can be processed on the same server.</p>
+        <p>Java EE 7 includes Servlets 3.1, which supports asynchronous processing. In <code>doGet()</code> or <code>doPost()</code>
+            you can instantiate the object <code>AsyncContext</code>, which creates an asynchronous worker thread and
+            doesn’t lock the client’s thread while preserving the client’s request and response objects. For example,
+            the following servlet emulates a three-second blocking process, which runs in a separate thread:</p>
+        <pre>
+@WebServlet(urlPatterns = {"/booksasync"}, asyncSupported=true)
+public class FindBooksAsyncServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, 
+                         HttpServletResponse response) 
+             throws ServletException, IOException{
+    // Don't send response when doGet ends
+    AsyncContext aContext = request.startAsync();    
+      //Provide Runnable implementation to start method
+      aContext.start(() -&gt;{
+        
+        // a blocking operation goes here
+        try{
+            String title = aContext.getRequest()
+                                   .getParameter("booktitle");
+            PrintWriter out;
+            try {
+                // Emulate a 3-second process
+                Thread.currentThread().sleep(3000);  
+                HttpServletResponse resp = 
+                     (HttpServletResponse) aContext.getResponse();
+                out = resp.getWriter();
+                out.println("Hello from Async FindBooks");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }catch( InterruptedException e){
+            e.printStackTrace();
+        }finally{
+            aContext.complete(); // close the response obj         
+        }
+      });
+    }
+}
+</pre>
+        <p>For simplicity, I used <code>sleep()</code> on a <code>Thread</code> in this example just to emulate a
+            long-running process. But keep in mind that in a real-world you should create threads in Java EE containers
+            by using such classes as <code>ManagedExecutorService</code>, <code>ManagedThreadFactory</code>.  </p>
+        <p><span epub:type="pagebreak" title="376" id="Page_376"></span>To catch some important events in the life cycle
+            of asynchronous servlets, you can add <code>AsyncListener</code> on <code>AsyncContext</code> and provide
+            callbacks <code>onComplete()</code>, <code>onError()</code>, and <code>onTimeout()</code>.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00098"></a>Try It</h2>
+        <p>Write a simple HTML client <a id="idp20583808"></a><a id="idp20585328"></a>with one text input field that has
+            a Submit button. The user enters the stock symbol for which she wants to get a price quote. Generate a
+            random quote and return a web page with the quote. Reuse the code from <code>StockServerImpl</code> from <a
+                    href="part0025.html#list-c024-002">Listing 24-2</a> to generate the price quotes.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00099"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in Lesson26.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00101"></a>Step-by-Step</h3>
+            <ol>
+                <li>In <span epub:type="pagebreak" title="377" id="Page_377"></span>the Eclipse project Lesson26 create
+                    an HTML client similar to the one from <a
+                            href="part0027.html#list-anc-c026-001">html_that_gives_404</a> to allow the user to enter
+                    the stock symbol. Name it <code>tryit.html</code>.
+                </li>
+                <li>Create a servlet called <code>StockServerServlet</code> that takes one parameter, the stock symbol,
+                    and instantiates a class called <code>StockQuoteGenerator</code> that should have the code similar
+                    to <a href="part0025.html#list-c024-002">Listing 24-2</a>. You don’t use RMI here, and there’s no
+                    need to implement <code>Remote</code> interface.
+                </li>
+                <li>Pass the stock symbol received from the client to <code>StockQuoteGenerator</code> and get the
+                    price.
+                </li>
+                <li>Return the dynamically created HTML page to the client via the response object.</li>
+                <li>Test the servlet in the Eclipse IDE: right-click on the HTML file and select Run As  → Run on
+                    Server. Enter the stock symbol and get the price quote.
+                </li>
+                <li>Undeploy the Lesson26 project from GlassFish in Eclipse because you’ll need to deploy this
+                    application directly in GlassFish. Stop GlassFish in Eclipse.
+                </li>
+                <li> Export the project Lesson26 into a  <code>Lesson26.war</code> file. Deploy this web application in
+                    GlassFish by copying it into the directory <span><code>glassfish/domains/domain1/autodeploy</code> of your</span> GlassFish
+                    Server, installed in <a href="part0026.html#java_ee_7_overview">Chapter 25</a>.
+                </li>
+                <li>Start GlassFish Server from the command line, as described in the "<a
+                        href="part0026.html#try_it-id00093">Try It</a>" section of <a href="part0026.html">Lesson 25</a>.
+                </li>
+                <li>Open the following URL in your web browser: <code><a
+                        href="http://localhost:8080/Lesson26/tryit.html">http://localhost:8080/Lesson26/tryit.html</a></code>.
+                    you should see the same Web page as in Step 5 above. Test this Web application  by entering various
+                    stock symbols. You should be getting price quotes.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0027.html">Lesson 26</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

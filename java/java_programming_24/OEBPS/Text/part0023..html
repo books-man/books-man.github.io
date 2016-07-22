@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Rendering Tabular Data in the GUI</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="swing_with_jtable"></a><span class="chapterTitle">Lesson 22<br/>Rendering Tabular Data in the GUI</span>
+    </h1>
+
+    <section>
+        <p>This <span epub:type="pagebreak" title="311" id="Page_311"></span>lesson <a id="idp19289488"></a>shows you
+            how to display tabular data on the graphical user interface (GUI). Data grids and spreadheet-like data are
+            very popular in the enterprise applications. Most of this lesson is dedicated to working with a powerful
+            Swing component <a id="idp19291056"></a>called <code>JTable</code>. This user interface (UI) component
+            enables you to present data in a grid with rows and columns. After learning the basics of working with
+            <code>JTable</code>, you see how to display tabular data using the JavaFX TableView control. In the “Try It”
+            section you apply these new skills to display the portfolio data that, as of <a
+                    href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a>, is stored in the database.
+        </p>
+        <p>In other words, you build a client-server application, where the Java GUI is a client and the RDBMS is a
+            server. Such architecture was pretty popular in the mid-1990s. Rich clients were developed in Visual Basic,
+            PowerBuilder, Delphi, Java, or C++, and they connected directly to database servers such as Oracle, DB2,
+            Sybase, Microsoft SQL Server, and Informix.</p>
+        <p>In the late ’90s, thin clients (plain-looking HTML-based web pages with almost no code implementing business
+            logic) became the trend. These days applications with rich UIs are coming back, but typically you’ll be
+            using an application server as a middleman between the client and the data storage. I describe such
+            middlemen starting in <a href="part0026.html#java_ee_7_overview">Chapter 25</a>, but your UI skills need to
+            include the ability to program data grids.</p>
+    </section>
+    <section>
+        <h2><a id="jtable_and_the_mvc_paradigm"></a>JTable and the MVC Paradigm</h2>
+        <p>The Swing class <code>JTable</code> is a <a id="idp19298912"></a><a id="idp19300400"></a><a
+                id="idp19301792"></a>powerful UI component created for displaying tabular data like a spreadsheet. The
+            data is represented as rows and columns; that’s why the <code>JTable</code> component is often used to
+            display data from relational databases, which store data similarly. <code>JTable</code> was designed
+            according to the <i>MVC</i> design pattern introduced in <a href="part0010.html">Lesson 9</a>.  The
+            components responsible for presentation (or the view) are separated from components that store data (or the
+            model) for that presentation. </p>
+        <p><code>JTable</code> is responsible for the visible portion of the grid (the V part of MVC), but the data has
+            to be stored in a different Java class that implements the <code>TableModel</code> interface (the M part).
+            Any other UI component can play the role of the controller (the C part) and initiate some actions that will
+            move the data from model to view or <span epub:type="pagebreak" title="312" id="Page_312"></span>vice versa.
+            For example, a click on the <code>JButton</code> can initiate the population of the table model from the
+            database and display the data in <code>JTable</code>.</p>
+    </section>
+    <section>
+        <h2><a id="model"></a>The Model</h2>
+        <p>Swing includes the classes <code>DefaultTableModel</code> and <code>AbstractTableModel</code>, which <a
+                id="idp19312848"></a><a id="idp19314192"></a><a id="tablemodel1"></a><a id="tablemodel2"></a><a
+                id="tablemodel3"></a>implement the <code>TableModel</code> interface and have methods to notify a <code>JTable</code>
+            when the data is changing.</p>
+        <p>A programmer usually creates a model as a subclass of <code>AbstractTableModel</code>, and this class has to
+            contain the data in some collection, for example <code>ArrayList</code>. When <code>JTable</code> needs to
+            be populated, it requests the data from a class that implements <code>TableModel</code>, invoking such
+            callback methods as <code>getColumnCount()</code> and <code>getValueAt()</code>. When a Swing program
+            creates an instance of <code>JTable</code>, it has to assign to it a corresponding table model class. <a
+                    id="list-anc-c022-001" href="part0023.html#list-c022-001">Listing 22-1</a> shows how the class
+            <code>MyTableModel</code> (created by you) is given to the constructor of <code>JTable</code>.</p>
+        <p>Typically, <a id="idp19322560"></a>the UI class that creates <code>JTable</code> defines one or more event
+            listeners that are notified of any changes in the table’s data. The incomplete class <code>MyFrame</code> in
+            <a href="part0023.html#list-c022-001">Listing 22-1</a> implements the <code>TableModelListener</code>
+            interface that defines just one method—<code>tableChanged()</code>. This method should contain the code
+            performing data modifications—for example, code to save the data in the database.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c022-001"
+                                           href="part0023.html#list-anc-c022-001">Listing 22-1</a>:</span> A window with
+                    JTable</h5>
+                <pre>
+public class MyFrame extends JFrame implements TableModelListener{
+  private MyTableModel myTableModel;
+  private JTable myTable;
+  MyFrame (String winTitle){
+  super(winTitle);
+  myTableModel = new MyTableModel();
+  myTable = new JTable(myTableModel );
+  //Add the JTable to frame and enable scrolling
+  add(new JScrollPane( myTable));
+  // Register an event listener
+  myTableModel.addTableModelListener(this);
+}
+public void tableChanged(TableModelEvent e) {
+  // Code to process data changes goes here
+}
+public static void main(String args[]){
+  MyFrame myFrame = new MyFrame( "My Test Window" );
+  myFrame.pack();
+  myFrame.setVisible( true );
+}
+  class MyTableModel extends AbstractTableModel {
+    // The data for JTable should be here
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>In <span epub:type="pagebreak" title="313" id="Page_313"></span>very simple cases you can create a <code>JTable</code>
+            without declaring a table model class (<code>JTable</code> has a no-argument constructor), but Java
+            internally uses its <code>DefaultTableModel</code> class anyway. My sample class <code>MyFrame</code>,
+            though, uses the data model that’s a subclass of the <code>AbstractTableModel</code>.</p>
+        <p>Note that the class <code>MyTableModel</code> is an inner class declared inside the class
+            <code>MyFrame</code>. Having a model as an inner class is not a must, but if the data model is used with
+            only one specific <code>JTable</code>,  it can be created in the inner class.</p>
+        <p>The code in <a href="part0023.html#list-c022-001">Listing 22-1</a> is not complete; it doesn’t include any
+            data yet, and the table model must include the mandatory callbacks described in the next section.</p>
+        <section>
+            <h3><a id="mandatory_callbacks_of_table_models"></a>Mandatory Callbacks of Table Models</h3>
+            <p>The <a id="tablecallbacks"></a> class that implements the <code>TableModel</code> interface and feeds
+                data to <code>JTable</code> must include at least three callback methods: <code>getColumnCount()</code>,
+                <code>getRowCount()</code>, and <code>getValueAt()</code>. To populate the table, the Java run time
+                needs to know the number of columns, number of rows, and the value for each cell (an intersection of the
+                row and a column).</p>
+            <p>The method <code>getColumnCount()</code> must return an integer value—the number of columns in this
+                <code>JTable</code>. This method is called once by the Java run time for a <code>JTable</code> instance.
+                For example, if you are planning to display orders, each of which consists of four fields—order ID,
+                stock symbol, quantity, and price—just put one line in the method <code>getColumnCount()</code>:</p>
+            <pre>
+return 4;</pre>
+            <p>The callback method <code>getRowCount()</code> must return an integer; it will also be called only once.
+                The data has to be placed into an array or a data collection (for example, an <code>ArrayList</code> )
+                before it appears on the screen, and the code for this method could look like this assuming that <code>myData</code>
+                is prepopulated with data:</p>
+            <pre>
+return myData.size(); //myData is an ArrayList in this sample</pre>
+            <p>The method <code>getValueAt(int row, int col)</code> returns an <code>Object</code> and is called once
+                for each cell of <code>JTable</code>. You have to write the code that returns the value for the
+                requested row and column.</p>
+            <p>Let’s say you have a class called <code>Order</code>, as shown in <a id="list-anc-c022-002"
+                                                                                    href="part0023.html#list-c022-002">Listing
+                22-2</a>, and you want to store instances of this class in <code>ArrayList</code> <code>myData</code>. 
+            </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c022-002"
+                                               href="part0023.html#list-anc-c022-002">Listing 22-2</a>:</span> The <span
+                            epub:type="pagebreak" title="314" id="Page_314"></span>Order class</h5>
+                    <pre>
+public class Order {
+ private int orderID;
+ private String stockSymbol;
+ private int quantity;
+ private float price;
+    public Order(int id, String stockSymbol, int quantity, 
+                 float price){
+           orderID=id;
+           this.stockSymbol=stockSymbol;
+           this.quantity=quantity;
+           this.price=price;
+    }
+}</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Whenever the callback <code>getValueAt(int row, int col)</code> is called on the model, you have to
+                return the cell value based on the given row and column. The inner class <code>MyTableModel</code> from
+                <a id="list-anc-c022-003" href="part0023.html#list-c022-003">Listing 22-3</a> includes the method <code>getValueAt()</code>
+                working with <code>myData</code>, which is an <code>ArrayList</code> of <code>Order</code> objects.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c022-003"
+                                               href="part0023.html#list-anc-c022-003">Listing 22-3</a>:</span> The
+                        JFrame window with implemented table model</h5>
+                    <pre>
+public class MyFrame extends JFrame implements TableModelListener{
+ MyTableModel myTableModel;
+ JTable myTable;
+  MyFrame (String winTitle){
+    super(winTitle);
+    myTableModel = new MyTableModel();
+    myTable = new JTable(myTableModel );
+    //Add the JTable to frame and enable scrolling
+    add(new JScrollPane( myTable));
+   // Register an event listener
+   myTableModel.addTableModelListener(this);
+  }
+  public void tableChanged(TableModelEvent e) {
+   // Code to process data changes goes here
+ }
+public static void main(String args[]){
+ MyFrame myFrame = new MyFrame( "My Test Window" );
+ myFrame.pack();
+ myFrame.setVisible( true );
+}
+// Inner class for data model
+class MyTableModel extends AbstractTableModel {
+  ArrayList&lt;Order&gt; myData = new ArrayList&lt;&gt;();
+  MyTableModel(){
+      myData.add(new Order(1,"IBM", 100, 135.5f));
+      myData.add(new Order(2,"AAPL", 300, 290.12f));
+      myData.add(new Order(3,"MOT", 2000, 8.32f));
+      myData.add(new Order(4,"ORCL", 500, 27.8f));
+  }
+  public int getColumnCount() {
+    return 4;
+  }
+  public int getRowCount() {
+    return myData.size();
+  }
+  public Object getValueAt(int row, int col) {
+      switch (col) {
+        case 0:   // col 1
+          return myData.get(row).orderID;
+        case 1:   // col 2
+              return myData.get(row).stockSymbol;
+        case 2:   // col 3
+              return myData.get(row).quantity;
+        case 3:   // col 4
+              return myData.get(row).price;
+        default:
+          return "";
+      }
+  }
+ }
+}</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Note the use of generics in the declaration of the <code>myData</code> collection. Another Java feature
+                not to be missed here is <i>autoboxing</i>; the primitive <code>Order</code> fields <code>int</code> and
+                <code>float</code> are automatically converted into the corresponding wrapper objects
+                <code>Integer</code> and <code>Float</code>.</p>
+            <p>Running the program from <a href="part0023.html#list-c022-003">Listing 22-3</a>  displays the window
+                shown in <a id="fig-anc-c022-001" href="part0023.html#fig-c022-001">Figure 22-1</a> (I ran it on Mac
+                OS). </p>
+            <figure>
+                <img class="center" src="../Images/image00563.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c022-001" href="part0023.html#fig-anc-c022-001">Figure 22-1</a>:</b></span>
+                        Running <span epub:type="pagebreak" title="316" id="Page_316"></span>MyFrame with no column
+                        titles</p>
+                </figcaption>
+            </figure>
+        </section>
+        <section>
+            <h3><a id="optional_callbacks_of_table_models"></a>Optional Callbacks of Table Models</h3>
+            <p>The <code>JTable</code> shown in <a href="part0023.html#fig-c022-001">Figure 22-1</a> doesn’t show the
+                proper titles of the columns; the auto-generated A, B, C, and D don’t count. You can fix this easily by
+                overriding the <code>getColumnName()</code> method in the table model class. This callback, if present,
+                is called (once for each column) to render the column titles. Add the following code to the class <code>MyTableModel</code>
+                and the window looks as it does in <a id="fig-anc-c022-002" href="part0023.html#fig-c022-002">Figure
+                    22-2</a>.</p>
+            <pre>
+ String[] orderColNames = 
+                    { "Order ID", "Symbol", "Quantity", "Price"};
+public String getColumnName(int col) {
+     return orderColNames[col];
+ }</pre>
+            <figure>
+                <img class="center" src="../Images/image00564.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c022-002" href="part0023.html#fig-anc-c022-002">Figure 22-2</a>:</b></span>
+                        Running MyFrame with column titles</p>
+                </figcaption>
+            </figure>
+            <p>If you want to make some of the columns or cells editable, just override the
+                <code>isCellEditable()</code> method and return <code>true</code> from this callback for the editable
+                columns. Here’s how to make the third column (the column numbers are zero based) of your
+                <code>JTable</code> editable:</p>
+            <pre>
+public boolean isCellEditable(int row, int col) {
+  if (col ==2){
+      return true;
+  } else {
+    return false;
+  }
+}</pre>
+            <p>If your table has editable columns you need to override the method <code>setValueAt(Object value, int
+                row, int col)</code> and include the code that copies the data from the UI component
+                —<code>JTable</code>—to the appropriate field <span epub:type="pagebreak" title="317"
+                                                                    id="Page_317"></span>in its model objects. This
+                method is called automatically when the user changes the value in a table cell and moves the cursor out
+                of that cell by pressing the Enter or Tab key or by clicking a different cell.</p>
+            <p>The following method, <code>setValueAt()</code>, takes the modified order quantity and sets the new value
+                for the <code>quantity</code> field in the appropriate <code>Order</code> in the model. By default, all
+                the data shown in <code>JTable</code>’s cells have the <code>String</code> data type, and it’s your
+                responsibility to do proper casting.</p>
+            <pre>
+public void setValueAt(Object value, int row, int col){
+  if (col== 2){
+   myData.get(row).quantity=(Integer.valueOf(value.toString()));
+  }
+  //Notify listeners about the data change
+   TableModelEvent event = new TableModelEvent(this, row, row, col);
+   fireTableChanged(event);
+}</pre>
+            <p>The <code>fireTableChanged()</code> method has been placed in the <code>setValueAt()</code> method to
+                notify any listener(s) that want to know about the data changes. For example, if the quantity on any
+                order has been changed and has gone over a certain threshold, the application may need to immediately
+                perform some actions to report this to some authority.</p>
+            <p>Review the code in <a href="part0023.html#list-c022-003">Listing 22-3</a>. The class <code>MyFrame</code>
+                implements <code>TableModelListener</code>, so the method <code>tableChanged()</code> is invoked as a
+                result of the <code>fireTableChanged()</code> method call. Add the following line to the <code>tableChanged()</code>
+                method:</p>
+            <pre>
+System.out.println("Someone modified the data in JTable!");</pre>
+            <p>Now run the program and modify the quantity in any row of <code>JTable</code>. The message is printed on
+                the system console. But JVM fires an event with a payload—<code>TableModelEvent</code>—that carries
+                useful information about what exactly has changed in the table model.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp19403520"></a>Implementing TableModelListener with Lambda Expression</h3>
+                    <p>Instead of <a id="idp19404688"></a><a id="idp19406176"></a>writing that the class implements
+                        <code>TableModelListener</code> and implementing the method <code>tableChanged()</code>, you can
+                        just use a lambda expression:</p>
+                    <pre>
+myTableModel.addTableModelListener(e -&gt; 
+System.out.println("Someone changed the data in JTable!"))
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p><code>TableModelEvent</code> has several constructors; I’ve chosen the one that takes modified rows and
+                columns as arguments. For example, if you change the quantity in the last row, as shown in <a
+                        href="part0023.html#fig-c022-002">Figure 22-2</a>, the method <code>tableChanged()</code>
+                receives an instance of <code>TableModelEvent</code> that encapsulates the reference to the entire model
+                encapsulating the following values describing the change:</p>
+            <pre>
+column=2    //  the third column
+firstRow=3  //  starting from the row #4
+lastRow=3   //  ending with the row #4</pre>
+            <p>Based <span epub:type="pagebreak" title="318" id="Page_318"></span>on this information you can implement
+                any further processing required by the functional specification of your application. If you need to
+                apply the UI changes to the database, the <a id="idp19411120"></a><a id="idp19414592"></a>method <code>tableChanged()</code>
+                can be the right place to use the JDBC API or other communication with the server-side code to persist
+                the changes.</p>
+            <p>There are several functions with names that start with the word <code>fire</code>. For example, to apply
+                each cell’s change to the database, call the method <code>fireTableCellUpdated()</code>. To apply all
+                changes at once, call the method <code>fireTableDataChanged()</code>. Refer to the documentation of the
+                class <code>AbstractTableModel</code> to decide <a id="idp19419056"></a><a id="idp19421152"></a><a
+                        id="idp19422816"></a><a id="idp19424272"></a><a id="idp19425936"></a>which method fits your
+                needs.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="introduction_to_renderers"></a>Introduction to Renderers</h2>
+        <p>The process <a id="render1"></a><a id="render2"></a>of transferring data from the table model to the <code>JTable</code>
+            view is  performed by <i>cell renderers</i>. Accordingly, when the user is modifying the content of the
+            cell, the <i>cell editor</i> is <a id="editor1"></a><a id="editor2"></a>cengaged. By default, the content of
+            each cell in a <code>JTable</code> is rendered using one of three default renderers, based on the type of
+            data in the column. <code>Boolean</code> values are rendered as checkboxes, <code>javax.swing.Icon</code> is
+            rendered as an image, and any other object is rendered as a string of characters.</p>
+        <p>To change the default rendering (for example, if you don’t want to see checkboxes for <code>Boolean</code>
+            values) you can either override the callback <code>getColumnClass()</code> or define a <i>custom cell
+                renderer</i>. The latter option gives you a lot more flexibility. For example, you may need to display a
+            photo of a person and his or her name in each cell. Or you may need to show cell values that meet certain
+            criteria in a different color. To do something like one of these, you need to create a <i>custom
+                renderer</i>.</p>
+        <p>The UI portion of each column is represented by the class <code>TableColumn</code>, which has a property,
+            <code>cellRenderer</code>, of type <code>TableCellRenderer</code>, which defines the only method: <code>getTableCellRendererComponent()</code>.
+            This method prepares the content for each column’s cells of <code>JTable</code> and returns an instance of
+            the <code>Component</code> class to be used for the cell rendering. This process uses <code>DefaultTableCellRenderer</code>
+            unless you create a custom renderer. Custom renderers give you full control over how the cell is displayed.
+        </p>
+        <p>The class <code>DefaultTableCellRenderer</code> extends <code>JLabel</code> and is Swing’s implementation of
+            the <code>TableCellRenderer</code> interface. Let’s look at an example that formats the text in the <code>Price</code>
+            column shown in <a href="part0023.html#fig-c022-002">Figure 22-2</a> to be right-justified and to display in
+            red all prices greater than $100.</p>
+        <p>First the code fragment from <a id="list-anc-c022-004" href="part0023.html#list-c022-004">Listing 22-4</a>
+            gets a reference to the fourth column of <code>JTable</code> (remember, column numbering is zero-based).
+            Then it needs to call the method <code>setCellRenderer()</code> on this column, provided that the custom
+            renderer class was defined and instantiated. But you can define, instantiate, and set the custom renderer in
+            one shot by using the mechanism of <i>anonymous inner classes</i>.</p>
+        <p>The anonymous inner class in <a href="part0023.html#list-c022-004">Listing 22-4</a> extends the class <code>DefaultTableCellRenderer</code>
+            and overrides the callback method <code>getTableCellRendererComponent()</code>. The latter sets the cell
+            value to be right-justified and to be red if it is greater than 100. At the end, the method <code>getTableCellRendererComponent()</code>
+            returns a <code>JLabel</code> object to be rendered in the current cell of <code>JTable</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c022-004"
+                                           href="part0023.html#list-anc-c022-004">Listing 22-4</a>:</span> Custom <span
+                        epub:type="pagebreak" title="319" id="Page_319"></span>rendering of the Price value</h5>
+                <pre>
+//Assign custom cell renderer to the Price column
+// Get the reference to the fourth column - Price
+TableColumn column = myTable.getColumnModel().getColumn(3);
+// Create a new cell renderer as an anonymous inner
+// class and assign it to the column price
+column.setCellRenderer(
+      new DefaultTableCellRenderer(){
+  public Component getTableCellRendererComponent(
+           JTable table, Object value, boolean isSelected,
+                     boolean hasFocus, int row, int col) {
+       JLabel label = (JLabel) super.getTableCellRendererComponent(
+             table, value, isSelected, hasFocus, row, col);
+     // right-align the price value
+     label.setHorizontalAlignment(JLabel.RIGHT);
+     // display stocks that cost more than $100 in red
+     if (((Float) value)&gt;100){
+        label.setForeground(Color.RED);
+     } else{
+           label.setForeground(Color.BLACK);
+     }
+     return label;
+    } // end of getTableCellRendererComponent
+   }  // end of new DefaultTableCellRenderer
+);    // end of setCellRenderer</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Add this code fragment at the end of the constructor in the class <code>MyFrame</code> from <a
+                href="part0023.html#list-c022-003">Listing 22-3</a> and run the application. The screen shows the text
+            in the Price column right-justified <a id="idp19463120"></a><a id="idp19461568"></a><a id="idp19464176"></a><a
+                    id="idp19465920"></a>and the first two prices printed in red (see <a id="fig-anc-c022-003"
+                                                                                         href="part0023.html#fig-c022-003">Figure
+                22-3</a>).</p>
+        <figure>
+            <img class="center" src="../Images/image00565.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c022-003"
+                                                   href="part0023.html#fig-anc-c022-003">Figure 22-3</a>:</b></span>
+                    Running MyFrame with custom price renderer</p>
+            </figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2><a id="summary-id00079"></a>Summary</h2>
+        <p>This <span epub:type="pagebreak" title="320" id="Page_320"></span>lesson was a high-level overview of the
+            <code>JTable</code> component, which is probably the most advanced UI component that deserves serious study
+            if you are planning to develop Java Swing applications. You can continue studying all the features of <code>JTable</code>
+            by following the section "<a href="http://docs.oracle.com/javase/tutorial/uiswing/components/table.html">How
+                to Use Tables</a>" in the online Oracle tutorial.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00080"></a>Try It</h2>
+        <p>Create a Portfolio application <a id="idp19475760"></a><a id="idp19477696"></a>that displays your portfolio
+            data that’s stored in the database table. You need to use the database and the Portfolio table you created
+            in the “Try It” section of <a href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a>.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00081"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson22.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00083"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new Eclipse project. Copy there the classes <code>MyFrame</code> and <code>Order</code>
+                    from the accompanying book code samples for <a href="part0023.html">Lesson 22</a>. Compile and run
+                    the program to ensure that it displays hard-coded portfolio data, as shown in <a
+                            href="part0023.html#fig-c022-002">Figure 22-2</a>.
+                </li>
+                <li>Replace the hard-coded table model <code>ArrayCollection myData</code> with the JDBC code to connect
+                    to the database Lesson21 created in the<a href="part0022.html#try_it-id00076"> Try It section</a> of
+                    <a href="part0022.html">Lesson 21</a>. Use the records from the database table Portfolio to populate
+                    orders.<br/>
+                    Don’t forget to add the file <code>derbyclient.jar</code> to the Java Build Path of your project.
+                </li>
+                <li>Run the appropriate SQL <code>Select</code> statement, and populate the <code>myData</code> collection
+                    with data received from the database.
+                </li>
+                <li>Run  the <code>MyFrame</code> program. The data should be displayed in the GUI.</li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0023.html">Lesson 22</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

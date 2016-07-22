@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Introducing Java</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="introducing_java"></a><span class="chapterTitle">Lesson 1<br/>Introducing Java</span></h1>
+
+<section>
+<p>During <span epub:type="pagebreak" title="1" id="Page_1"></span>the last two decades Java has maintained its status as one of the most popular programming languages for everything from programming games to creating mission-critical applications, such as those for trading on Wall Street or controlling Mars rovers. For the current popularity chart see the Tiobe Index at <code><a href="http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html">http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html</a></code>. In this lesson you are introduced to some of the very basic Java terms. You also download and install the Java Development Kit (JDK) and compile your first program.</p>
+</section>
+<section>
+<h2><a id="why_learn_javaquestion_mark"></a>Why Learn Java?</h2>
+<p>The Java programming language was originally created in 1995 by <a id="idp12944640"></a>James Gosling from Sun Microsystems (acquired by Oracle Corporation in 2010). The goal was to provide a simpler and platform-independent alternative to C++. Java programs run inside the <a id="idp12938736"></a>Java Virtual Machine (JVM), which is the same on every platform from the application programmer’s perspective. You find out <a id="idp12948160"></a>what <i>platform independence</i> means a little later, in the section <a href="part0002.html#life_cycle_of_a_java_program">“The Life Cycle of a Java Program”</a>. For now, let’s look at some of the reasons why Java can be your language of choice.</p>
+<p>Java is a general-purpose programming language that’s used in all industries for almost any type of application. If you master it, your chances of getting employed as a software developer will be higher than if you specialize in some domain-specific programming languages.</p>
+<p>There are more than nine million professional Java developers in the world, and the majority of them are ready to share their knowledge by posting blogs and articles or simply answering technical questions online. If you get stuck solving some problem in Java, the chances are very high that you’ll find the solution on the Internet.</p>
+<p>Because the pool of Java developers is huge, project managers of large and small corporations like to use Java for the development of new projects—if you decide to leave the project for whatever reason, it’s not too difficult to find another Java programmer to replace you. This would not be the case if the project were being developed in a powerful, but less popular language, such as Scala. At this point you may ask, “Does that also mean that my <span epub:type="pagebreak" title="2" id="Page_2"></span>Java skills will be easily replaceable?” It depends on you. To improve your value and employability, you need to <i>master</i> not only the syntax of the language but also the right set of Java-related technologies that are in demand (you learn them in this book in the Java EE section).</p>
+<p>Not only is Java open-source, but there are thousands and thousands of open-source projects being developed in Java. Joining one of these projects is the best way to get familiar with the process of project development and secure your very first job without having any prior real-world experience as a programmer.</p>
+<p>The Java <a id="idp12957264"></a>language is <i>object-oriented</i> (OO), which enables you to easily relate program constructs to objects from the real world (more on this in <a href="part0004.html#object-oriented_programming">Chapter 3</a>-<a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>). On the other hand, recently added lambda expressions (see <a href="part0015.html#working_with_streams">Chapter 14</a>) allow you to program in Java in a functional style.</p>
+<p>The IT world is changing and people often use more than one language in the same project. Java is not <a id="idp12960064"></a>the only language that runs in JVM. Such languages as Scala, Groovy, Clojure, JavaScript and others also run on JVM. So being familiar with the JVM opens the doors to being a polyglot programmer within the same operating environment.</p>
+<p>The server-side applications that are deployed in the JVM scale well. The processing of thousands of users requests can be arranged in parallel by splitting the job between rather inexpensive servers in a cluster.</p>
+<p>Java as a development platform has many advantages over other environments, which makes it the right choice for many projects, and you’ll have a chance to see this for yourself while reading this book, watching the screencasts from the accompanying DVD, and deploying all code samples from the book on your computer.</p>
+</section>
+<section>
+<h2><a id="setting_the_goals"></a>Setting the Goals</h2>
+<p>The goal of this rather slim tutorial is to give you just enough information about most of the Java language elements, techniques, and technologies that are currently being used in the real world. The first 25 lessons of the book are about the Java Standard Edition, whereas the remaining part is about Java Enterprise Edition—it covers server-side Java technologies, and this is where Java shines in the enterprise world.</p>
+<p>The brevity of some of the lessons may make you wonder if it’s even possible to explain a subject in just 10 pages when there are whole books devoted for the same topic. My approach is to cover just enough for you to understand the concept, important terms, and best practices. Prerecorded screencasts on the DVD help you to repeat the techniques explained in the lesson on your own.</p>
+<p>There are plenty of additional materials online that help you to study any specific topic more deeply. But you’ll get a working and practical knowledge about Java just by using the materials included with this book.</p>
+<p>The goal of this book is not just to get you familiar with the syntax of the Java language, but to give you practical Java skills that will enable you to develop business applications either on your own or by working as a team member in a larger-scale project.</p>
+</section>
+<section>
+<h2><a id="life_cycle_of_a_java_program"></a>The Life Cycle of a Java Program</h2>
+<p>There are different <a id="idp12961984"></a>types of programming languages. In some of them you write the text of the program (aka the source code) and can execute this program right away. These are interpreted languages (for example, JavaScript).</p>
+<p> But <span epub:type="pagebreak" title="3" id="Page_3"></span>Java requires the source code of your program to be compiled first. It gets converted to a bytecode that is run by Java Virtual Machine, which may turn some of it into a platform-specific machine code using the so-called Just-In-Time (JIT) compiler.</p>
+<p>Not only will the program be checked for syntax errors by a Java compiler, but other libraries of Java code can be added (<i>linked</i>) to your program after the compilation is complete (deployment stage). There are plenty of readily available libraries of reusable components, and a vast majority of them are free of charge.</p>
+<p>In this lesson you start with writing a very basic Java program that outputs the words “Hello World” on your computer’s monitor.</p>
+<p>Technically <a id="idp12975088"></a><a id="idp12968512"></a><a id="idp12973536"></a><a id="idp12975632"></a><a id="idp12976720"></a>you can write the source code of your Java program in any plain text editor that you prefer (Notepad, TextEdit, Sublime Text, vi, and so on), but to compile your program you need additional tools and code libraries that are included in the <a id="idp12977840"></a>Java Development Kit (JDK).</p>
+</section>
+<section>
+<h2><a id="jdk_and_jre"></a>JDK and JRE</h2>
+<p>If you are planning to use a specific computer to develop Java programs, you need to download and install JDK. If you are planning to use this computer only to run Java programs that <a id="idp12982016"></a>were compiled somewhere else, you just need the Java Runtime Environment (JRE).</p>
+<p>If you have JDK installed on your machine, it includes JRE.</p>
+<p>Java’s platform independence comes from the fact that your Java program doesn’t know under which operating system (OS) or on which hardware it’s being executed. It operates inside the pre-installed JRE.</p>
+<p>You need to get <a id="idp12985152"></a><a id="idp12985504"></a>familiar with two more terms: Java SE (Standard Edition) and Java EE (Enterprise Edition). The latter includes the server-side tools and libraries that you get familiar with starting in <a href="part0026.html#java_ee_7_overview">Chapter 25</a>.</p>
+</section>
+<section>
+<h2><a id="downloading_and_installing_java_se"></a>Downloading and Installing Java SE</h2>
+<p>Start with <a id="SEdown"></a>downloading the latest version of the JDK SE Development Kit, which at the time of this writing is Java SE 8. Download and install JDK for your platform from Oracle’s Java SE Downloads site: <code><a href="http://goo.gl/X68FzJ">http://goo.gl/X68FzJ</a></code>. In some literature you see references like JDK 1.8, which is the same as JDK 8. The number 8 is followed by the letter <i>u</i> and a number. For example, JDK 8u5 means that Oracle has released an update number 5 for JDK 8.</p>
+<section>
+<h3><a id="installing_jdk_8_for_mac_os"></a>Installing JDK 8 for MAC OS</h3>
+<p>Download <a id="idp12995472"></a><a id="idp12996864"></a><a id="idp12997984"></a>the <i>dmg</i> file marked as MAC OS X x64. Running this program on a Mac OS X computer installs Java in <code>/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk</code>. MAC OS X is my platform of choice, but Java works practically the same on all platforms, and all the book examples work under Windows and Linux as well.</p>
+<p>Open the Terminal window and enter <code>java –version</code>. You should see an output similar to this one:</p>
+<figure>
+<img class="center" src="../Images/image00497.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c01-001"></a>Figure 1-1:</b></span> Checking <span epub:type="pagebreak" title="4" id="Page_4"></span>the Java version in MAC OS</p>
+</figcaption>
+</figure>
+</section>
+<section>
+<h3><a id="installing_jdk_8_in_windows"></a>Installing JDK 8 in Windows</h3>
+<p>Select and <a id="idp13005616"></a><a id="idp13007072"></a><a id="idp13008192"></a>download the Windows x86 executable file, which is a Java version for 32-bit computers. This version is perfectly fine to start working with Java. Run this file, click the Next button two or three times, and then click Close. In about a minute the installation is complete. By default JDK is installed in the directory named something like <code>c:\Program Files\Java\jdk1.8.0_05</code>. This is the place where both JDK and JRE are installed.</p>
+<p>Now you need to add the <code>bin</code> folder from your java installation directory to the environment variable PATH of your Windows OS. Click Start, Control Panel and search for the environment variables. Click the Edit the System Environment Variables link and press the Environment Variables button. Edit the system variable PATH (if you don’t have one, create it) to include the path to <code>c:\Program Files\Java\jdk1.8.0_05\bin</code> unless you have it in a different location. Don’t forget to add a semicolon as a separator as in <a id="fig-anc-c01-002" href="part0002.html#fig-c01-002">Figure 1-2</a>.</p>
+<figure>
+<img class="center" src="../Images/image00498.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c01-002" href="part0002.html#fig-anc-c01-002">Figure 1-2</a>:</b></span> Java location is added to the Path variable in Windows</p>
+</figcaption>
+</figure>
+<p>If you have previous versions of the JDK installed on your computer, each of them is located in its own directory, and they don’t conflict with each other.</p>
+<p>To <span epub:type="pagebreak" title="5" id="Page_5"></span>ensure that you’ll be working with the freshly installed Java, open a command window (in Windows 7 just click the Start button and in the search box enter command <code>cmd</code>) and enter <code>java -version</code> in the command window. <a id="fig-anc-c01-003" href="part0002.html#fig-c01-003">Figure 1-3</a> shows the confirmation that I have Java 1.8.0_05.</p>
+<figure>
+<img class="center" src="../Images/image00499.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c01-003" href="part0002.html#fig-anc-c01-003">Figure 1-3</a>:</b></span> Checking the Java version in Windows</p>
+</figcaption>
+</figure>
+<p>If you still don’t<a id="idp13020944"></a> see the proper version, reopen the command window. Congratulations! Your JDK and JRE are installed.</p>
+</section>
+</section>
+<section>
+<h2><a id="your_first_java_program_hello_world"></a>Your First Java Program: Hello World</h2>
+<p>Historically, the <a id="HWprog"></a>first program you write while learning a new programming language is the program Hello World. If you can write a program that outputs Hello World on your monitor, it proves that you have properly installed the compiler and the run time environment, and your program doesn’t have syntax errors.</p>
+<p>To start writing a Java program you could use any plain text editor, such as Notepad, TextEdit, or Sublime Text . The file that contains the Java code must be saved in a file with its name ending in <code>.java</code>.</p>
+<p>Enter the following code in the text editor.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c01-001"></a>Listing 1-1:</span> HelloWorld.java</h5>
+<pre>
+public class HelloWorld {
+   public static void main(String[] args){
+            System.out.println("Hello World!!!!!");
+   }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Create a directory, <code>c:\PracticalJava\Lesson1</code>, and save the program you just created in the file <code>HelloWorld.java</code> (if you use Notepad, select All Files in the Save as Type drop-down to avoid auto-attachment of the <code>.txt</code> suffix).</p>
+<p>Keep in mind that Java is a case-sensitive language, which means that if you named the program HelloWorld with a capital H and a capital W, don’t try to start the program helloworld. Your first dozen syntax errors will probably be caused by improper capitalization.</p>
+<p>What follows is a really short explanation of some of the terms and language elements used in the HelloWorld program. You’ll get more comfortable with them after mastering the first several lessons in this book.</p>
+<p>The <span epub:type="pagebreak" title="6" id="Page_6"></span>first program <a id="idp13032480"></a>contains a <i>class</i>, <code>HelloWorld</code>. Give the Java class and its file the same name. (There could be exceptions to this rule, but not in this simple program.) While writing Java programs, you create <i>classes</i>, which often represent objects from real life. You learn more about classes in <a href="part0004.html#object-oriented_programming">Chapter 3</a>.</p>
+<p>The class <code>HelloWorld</code> contains <a id="idp13037360"></a>a <i>method</i>, <code>main()</code>. Methods in Java classes represent functions (actions) that a class could perform. A Java class may have several methods, but if one of them is called <code>main()</code> and has the same <i>method signature</i> (the declaration line) as in our class, this makes this Java class executable. If a class doesn’t have a method <code>main()</code>, it can be used from other classes, but you can’t run it as a program. Here is the <i>method signature</i> (similar to a title) of the method <code>main()</code>:</p>
+<pre>
+public static void main(String[] args)</pre>
+<p>This method <a id="idp13045456"></a>signature includes the access level (<code>public</code>), instructions on usage (<code>static</code>), return value type (<code>void</code>), name of the method (<code>main</code>), and argument list (<code>String[] args</code>).</p>
+<ul>
+	<li>
+	<p>The keyword <code>public</code> means <a id="idp13050848"></a><a id="idp13052400"></a>that the method <code>main()</code> can be accessed by any other Java class.</p>
+	</li>
+	<li>
+	<p>The keyword <code>static</code> means <a id="idp13055424"></a><a id="idp13056912"></a>that you don’t have to create an instance of this class to use this method.</p>
+	</li>
+	<li>
+	<p>The keyword <code>void</code> means <a id="idp13059616"></a><a id="idp13061072"></a>that the method <code>main()</code> doesn’t return any value to the calling program.</p>
+	</li>
+	<li>
+	<p>The keyword <code>String[]</code> <code>args</code> tells <a id="idp13064544"></a><a id="idp13066096"></a>you that this method will receive an array of strings as the argument (you can pass external data to this method from a command line).</p>
+	</li>
+</ul>
+<p>The <code>main()</code> method is <a id="idp13068384"></a><a id="idp13069744"></a>the starting point of your program. You can write a program in Java SE that consists of more than one class, but at least one of them has the method <code>main</code>. A Java class can have more than one method. For example, a class <code>Employee</code> can have the methods <code>updateAddress()</code>, <code>raiseSalary()</code>, <code>changeName()</code>, and so on.</p>
+<p>The <i>body</i> of <a id="idp13074384"></a><a id="idp13075840"></a>the method <code>main()</code> contains the following line:</p>
+<pre>
+System.out.println("Hello World!!!!!");</pre>
+<p>The preceding <code>println()</code> method <a id="idp13079104"></a><a id="idp13080512"></a>is used to print data on the system console (command window). Java’s method names are always followed by parentheses.</p>
+<p><code>System</code> here represents another Java class.</p>
+<p>The dot notation, as in <code>System.out</code>, means <a id="idp13083264"></a>that the variable <code>out</code> is defined inside the class <code>System</code>.</p>
+<p><code>out.println()</code> tells you that there is an object represented by a variable called <code>out</code> and it has a method called <code>println()</code>.</p>
+<p>You will be using this dot notation to refer to <a id="idp13088864"></a><a id="idp13087968"></a>class methods or variables.</p>
+<p>All these explanations may sound too short and inadequate, and they really are. Bear with me; I go into greater <a id="idp13090816"></a>detail in subsequent chapters.</p>
+<section>
+<h3><a id="compiling_and_running_hello_world"></a>Compiling and Running Hello World</h3>
+<p>The <span epub:type="pagebreak" title="7" id="Page_7"></span>program HelloWorld is <a id="idp13094736"></a><a id="idp13096320"></a>written, and now you need to <i>compile</i> this program. Java compiler is a program that will convert your source code into so-called bytecode that JRE understands. The <code>javac</code> compiler is a part of the JDK, so open a command window on your PC or Terminal on MAC, change the current directory to <code>c:\PracticalJava\Lesson1</code>, and try to compile the following program:</p>
+<pre>
+cd PracticalJava\Lesson1
+ javac HelloWorld.java</pre>
+<p>Even though there is no program javac in the <a href="part0002.html#introducing_java">Chapter 1</a> directory, your OS found it in the <i>bin</i> directory of your Java install. MAC OS knows where the bin directory is located. In Windows OS you’ve added it to the PATH environment variable.</p>
+<p>You won’t see any confirmation of a successful compilation; just type <i>dir</i> on Windows (or <i>ls</i> on MAC OS) to confirm that a new file named <code>HelloWorld.class</code> has been created. This proves that your program has been successfully compiled.</p>
+<p>If the program has syntax errors, the compiler prints error messages. In this case, fix the errors, and recompile the program again. You may need to do it more than once until the file <code>HelloWorld.class</code> is successfully created.</p>
+<p>Now run the program by typing the following command:</p>
+<pre>
+java HelloWorld</pre>
+<p>Note that this time you didn’t use the <i>javac</i> program, but java, which starts the Java run time and loads the HelloWorld program into the Java Virtual Machine (JVM). The words “Hello World” are displayed in the command window. <a id="fig-anc-c01-004" href="part0002.html#fig-c01-004">Figure 1-4</a> is a screenshot that shows how in MAC OS looks the compilation command (<code>javac HelloWorld.java</code>), the content of the <a href="part0002.html#introducing_java">Chapter 1</a> folder (<code>ls</code>) after the compilation—the <code>dir</code> in Windows is an equivalent to <code>ls</code>, how to run the program (<code>java HelloWorld</code>), and the output of the HelloWorld program (<code>Hello World!!!!!</code>).</p>
+<figure>
+<img class="center" src="../Images/image00500.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c01-004" href="part0002.html#fig-anc-c01-004">Figure 1-4</a>:</b></span> Compiling and running HelloWorld</p>
+</figcaption>
+</figure>
+</section>
+</section>
+</section>
+<section>
+<h2><a id="try_it-id00001"></a>Try It</h2>
+<p>In this lesson your goal is to write your first Java program that outputs the words “Hello World.” After this goal is achieved, add more lines to this program to print your address.</p>
+<section>
+<h3><a id="lesson_requirements-id00002"></a>Lesson Requirements</h3>
+<p>For <span epub:type="pagebreak" title="8" id="Page_8"></span>this lesson download and install the current version of JDK as explained in the section <a href="part0002.html#downloading_and_installing_java_se">Downloading and Installing Java SE</a>.</p>
+</section>
+<section>
+<h3><a id="step-by-step-id00003"></a>Step-by-Step</h3>
+<ol>
+	<li>
+	<p>Open a plain text editor of your choice and enter the text of the Hello World program. Keep in mind that Java is case sensitive.</p>
+	</li>
+	<li>
+	<p>Save the program in the file <code>HelloWorld.java</code>.</p>
+	</li>
+	<li>
+	<p>Compile the program in the command window using the command <code>javac HelloWorld.java</code>.</p>
+	</li>
+	<li>
+	<p>Run the program by using the command <code>java HelloWorld</code>.</p>
+	</li>
+</ol>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0002.html">Lesson 1</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</body></html>

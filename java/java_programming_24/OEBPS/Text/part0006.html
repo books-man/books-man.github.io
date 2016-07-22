@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Java Syntax: Bits and Pieces</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="back_to_java_basics"></a><span class="chapterTitle">Lesson 5<br/>Java Syntax: Bits and Pieces</span></h1>
+
+<section>
+<p>This <span epub:type="pagebreak" title="47" id="Page_47"></span>tutorial didn’t start with detailed coverage of basic constructs of the Java language such as the syntax of <code>if</code> statements, loops, and the like. You started learning Java programming with getting used to object-oriented terms and constructs of the language. This lesson is a grab bag of basic language elements, terms, and data structures. You also find out how to debug Java programs in Eclipse IDE and how to pass parameters to a program started from a command line.</p>
+</section>
+<section>
+<h2><a id="arrays"></a>Arrays</h2>
+<p>An <i>array</i> is data storage <a id="array"></a>that’s used to store multiple values of the same type. Let’s say your program has to store names of 20 different girls, such as Masha, Matilda, Rosa, and so on. Instead of declaring 20 different <code>String</code> variables, you can declare one <code>String</code> array with the capacity to store 20 elements:</p>
+<pre>
+String []  friends = new String [20]; // Declare and instantiate array
+friends[0] = "Masha";                 //Initialize the first element
+friends[1] = "Matilda";               //Initialize the second element
+friends[2] = "Rosa";
+// Keep initializing other elements of the array here
+friends[19] = "Natasha";               //Initialize the last element</pre>
+<p>The first element of an array in Java always has an index of <code>0</code>. Arrays in Java are <i>zero-based</i>. While <a id="idp13903360"></a><a id="idp13906688"></a>declaring an array you can place brackets either after the data type or after the variable name. Both of the following declarations are correct:</p>
+<pre>
+String friends[];
+String[] friends;</pre>
+<p>You must know the <a id="idp13908752"></a> size of the array before assigning values to its elements. If you want to be able to dynamically change the size of an array during run time, consider other Java collection classes from the package <code>java.util</code>, such as <code>Vector</code> and <code>ArrayList</code>. <span epub:type="pagebreak" title="48" id="Page_48"></span>Besides arrays, Java has lots of collection classes that can store multiple related values; for example, <code>HashMap</code>, <code>List</code>, and <code>LinkedList</code>. You have a chance to see their use in the code samples accompanying this book. <a id="list-anc-c05-001" href="part0006.html#list-c05-001">Listing 5-1</a> contains sample code that partially populates an array.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c05-001" href="part0006.html#list-anc-c05-001">Listing 5-1</a>:</span> Populating a simple array</h5>
+<pre>
+public class Girlfriends1 {
+ public static void main(String[] args) {
+    String [] friends = new String [20]; // Declare and instantiate array
+    friends[0] = "Masha";             //Initialize the first element
+    friends[1] = "Matilda";           //Initialize the second element
+    friends[2] = "Rosa";
+    // ...
+    friends[18] = "Hillary";
+    friends[19] = "Natasha";
+    System.out.println("The third girl's name is " + friends[2]);
+    System.out.println("The twentieth girl's name is " + friends[19]);
+ }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>An array has a property <code>length</code> that “knows” the number of elements in the array. The next line shows how you can get this number:</p>
+<pre>
+int totalElements = friends.length;</pre>
+<p>If you know all the values that will be stored in the array at the time of its declaration, you can declare and initialize an array at the same time. The following line declares, instantiates, and populates an array of four elements:</p>
+<pre>
+String []  friends = {"Masha", "Matilda", "Rosa", "Sharon"};</pre>
+<p>Our array <code>friends</code> is not as practical as a contacts list in your phone, though — it does not store girls’ phone numbers. Luckily, Java supports multidimensional arrays. For example, to create a two-dimensional array (names and phone numbers), declare it with two sets of square <a id="idp13924528"></a>brackets:</p>
+<pre>
+String friends [][] = new String [20][2];
+friends[0][0] = "Masha";
+friends[0][1] = "732 111-2222";
+friends[1][0] = "Matilda";
+friends[1][1] = "718 111-2222";
+...
+friends[19][0] = "Sharon";
+friends[19][1] = "212 111-2222"
+</pre>
+<section>
+<h3><a id="idp13923552"></a>More About Strings </h3>
+<p>Strings <span epub:type="pagebreak" title="49" id="Page_49"></span>are special <a id="string"></a>objects in Java. They are stored in a pool of strings for reusability. They are immutable; you can’t change the value of a <code>String</code> that has been initialized. However, this doesn’t mean that you can’t create new <code>Strings</code> based on the existing one. Consider the following code sample:</p>
+<pre>
+String bestFriend = "Mary";    
+bestFriend = bestFriend + " Smith";
+String greeting = "Hello " + bestFriend;
+</pre>
+<p>The first line creates an entry in the pool of strings with the value of “Mary." The second line doesn’t modify the first one but creates a new entry with the value “Mary Smith." The third line creates yet another entry in the pool with the value “Hello Mary Smith.”</p>
+<p>A program can consist of hundreds classes, and if any other class will need a <code>String</code> with any of these three values, they’ll be taken from the pool.</p>
+<p>If your program needs to do lots of manipulations with strings, consider <a id="idp13931680"></a><a id="idp13935072"></a>using a class <code>StringBuffer</code>, which is mutable. For example:</p>
+<pre>
+StringBuffer sbf = new StringBuffer();
+sbf.append("Mary");
+sbf.append(" Smith");
+String fullName = sbf.toString();  // Converting back to String
+</pre>
+<p>Another way to create a mutable object for storing textual <a id="idp13937792"></a><a id="idp13936928"></a>data is the class <code>StringBuilder</code>. It’s based on arrays and has capacity. For example, you can allocate memory for 50 characters and fill 10 of them as follows:</p>
+<pre>
+StringBuilder sbld = new StringBuilder(50);
+sbld.append("Mary");
+sbld.append(" Smith");
+String fullName = sbld.toString(); // Converting back to String
+</pre>
+<p><code>StringBuilder</code> has lots of convenient methods, such as methods that insert characters into a certain position in a character sequence or remove one or more characters. Refer to Oracle’s tutorial at <code><a href="http://docs.oracle.com/javase/tutorial/java/data/buffers.html">http://docs.oracle.com/javase/tutorial/java/data/buffers.html</a></code> for more examples.</p>
+<p>Have you noticed that although <code>String</code> is an object (not a primitive), I have not used the <code>new</code> operator to instantiate these objects? You can instantiate strings as regular objects, too. For example:</p>
+<pre>
+String friend1=new String("Mary");
+String friend2=new String("Joe");
+String friend3=new String("Mary");
+</pre>
+<p>Now, I’d like to bring your attention to <code>String</code> comparison. Revisit the beginning of <a href="part0004.html">Lesson 3</a>, and take another look at <a href="part0004.html#referencingobjects">the diagram illustrating two instances</a> of the car. The variables <code>car1</code> and <code>car2</code> point at different memory addresses. On the same note, the variables <code>friend1</code>, <code>friend2</code>, and <code>friend3</code> point at three different memory locations, and the values stored in these variables are the addresses of two different objects. Hence, even though <span epub:type="pagebreak" title="50" id="Page_50"></span>the name of the first and third friend are the same, comparing <code>friend1</code> and <code>friend3</code> returns false. You can test it by trying the following line of code:</p>
+<pre>
+System.out.println("Is friend1==friend3? " + (friend1==friend3));
+</pre>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature2">
+<h3><a id="idp13950608"></a>The == Operator</h3>
+<p>Note the double equal sign in the code above. You are comparing the variables for equality and not assigning one value to another.</p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>But if you’d like to <a id="idp13954608"></a><a id="idp13953024"></a>compare values of the strings (not the memory addresses), use the <code>equals()</code> method. The following <a id="idp13956480"></a>code prints the sentence that ends with true:</p>
+<pre>
+System.out.println("Is friend1.equals(friend3)? " + 
+                                        (friend1.equals(friend3))); 
+</pre>
+</section>
+<section>
+<h2><a id="loops"></a>Loops</h2>
+<p><i>Loops</i> are used to repeat <a id="loop"></a>the same action multiple times. When you know in advance how many times you want to repeat an action, use the <code>for</code> loop. Try printing <a id="idp13963616"></a><a id="idp13964864"></a>the names from the one-dimensional array <code>friends</code>.</p>
+<pre>
+int  totalElements = friends.length;
+for (int i=0; i &lt; totalElements;i++){
+   System.out.println("I love " + friends[i]);
+}</pre>
+<p> The preceding code reads “Print the value of the element <code>i</code> from the array <code>friends</code> starting from <code>i=0</code> and incrementing <code>i</code> by one (<code>i++</code>) until <code>i</code> reaches the value equal to the value of <code>totalElements</code>.” <a id="list-anc-c05-002" href="part0006.html#list-c05-002">Listing 5-2</a> adds a <code>for</code> loop <a id="idp13973072"></a><a id="idp13974464"></a>to the program shown in <a href="part0006.html#list-c05-001">Listing 5-1</a>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c05-002" href="part0006.html#list-anc-c05-002">Listing 5-2</a>:</span> Looping through the array</h5>
+<pre>
+public class Girlfriends2 {
+       public static void main(String[] args) {
+              String [] friends = new String [20];
+              friends[0] = "Masha";
+              friends[1] = "Matilda";
+              friends[2] = "Rosa";
+              friends[18] = "Hillary";
+              friends[19] = "Natasha";
+              int  totalElements = friends.length;
+              int i;
+              for (i=0; i&lt;totalElements;i++){
+                 System.out.println("I love " + friends[i]);
+              }
+       }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Because <span epub:type="pagebreak" title="51" id="Page_51"></span>the <code>friends</code> array has been declared with a size of <code>20</code>, the Java run time has allocated memory for 20 elements. But the code in <a href="part0006.html#list-c05-002">Listing 5-2</a> has populated only five of the 20 elements of the array, which explains why the output of this program looks as follows:</p>
+<pre>
+I love Masha
+I love Matilda
+I love Rosa
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love null
+I love Hillary
+I love Natasha</pre>
+<p>The keyword <code>null</code> represents <a id="idp13983808"></a><a id="idp13985536"></a>an absence of any value in an object. Even though the size of this array is <code>20</code>, only five elements were initialized.</p>
+<p>There’s another syntax of the <code>for</code> loop, known <a id="idp13988288"></a><a id="idp13989712"></a>as the <code>for-each</code> loop. You simply declare a variable of the same type as the objects stored in an array and specify the array to iterate. The following code snippet declares the variable <code>girl</code>, and the colon means “in.” Read this loop’s condition expression as “for each element in <code>friends</code>.” This syntax allows you to not worry about checking the size of the array, and there is no need to increment any loop variable either. This is an elegant and short loop notation:</p>
+<pre>
+for (String girl: friends){
+    System.out.println("I love " + girl);
+}</pre>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature2">
+<h3><a id="idp13994752"></a>Looping through collections with forEach()</h3>
+<p>Java 8 introduced a new <a id="idp13992384"></a><a id="idp13996304"></a><a id="idp13997568"></a>way of looping through data collection with the method <code>forEach()</code>. You see it in action in <a href="part0014.html">Lesson 13</a>. Just keep in mind that for-each loops and the <code>forEach()</code> method are different animals. </p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>You <span epub:type="pagebreak" title="52" id="Page_52"></span>can rewrite the program in <a href="part0006.html#list-c05-002">Listing 5-2</a> using the <code>while</code> loop, <a id="idp14001904"></a><a id="idp14003264"></a>which is used when you do not know the exact size of the array but do know the condition of exit from the loop. Use the keyword <code>while</code>:</p>
+<pre>
+int  totalElements = friends.length;
+int i=0;
+while (i&lt;totalElements){
+   System.out.println("I love " + friends[i]);
+       i++;    // the same as i=i+1;
+}</pre>
+<p>Just think of a program that reads and processes the records from a database (see <a href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a>). When you write a Java program, you don’t know how many elements the database has, and even if you do know, this number can change in the future, so it’s better to use loops with the exit condition than to use a hard-coded number of repetitions.</p>
+<p>Use the keyword <code>break</code> to prematurely <a id="idp14007008"></a><a id="idp14010272"></a>jump out of the loop on the line below the ending curly brace. For example, if you want to find the first <code>null</code> element in the <code>friends</code> array, write the following:</p>
+<pre>
+while (i&lt;totalElements){
+       if (friends[i]==null){
+          System.out.println("The element " + (i+1) + " is null");
+          break;
+       }
+      System.out.println("I love " + friends[i]);
+      i++;
+}  // closing curly brace for the loop</pre>
+<p>The <code>if</code> statement <a id="idp14014176"></a><a id="idp14015712"></a>in the preceding code checks the value of each element of the array, and as soon as it finds <code>null</code>, the loop prints the message about it, stops the iteration process, and goes to the line below the closing curly brace of the loop, if any.</p>
+<p>The keyword <code>continue</code> enables <a id="idp14016864"></a><a id="idp14018320"></a>you to force the loop to return to its first line and retest the loop exit condition. The following code snippet prints only those values from the array that are not <code>null</code>:</p>
+<pre>
+while (i&lt;totalElements){
+    if (friends[i]==null){
+        i++;
+        continue;
+    }
+    System.out.println("I love " + friends[i]);
+    i++;
+                    }
+    System.out.println("The iteration is over");
+</pre>
+<p>The preceding code uses an <code>if</code> statement, which allows you to check a certain condition and redirect the program to execute or skip a portion of the code. In this case, if the loop runs into a <code>null</code> value, it increments by one the value of the variable <code>i</code> and goes to the beginning of the <code>while</code> loop, skipping the rest of the code within the loop body. (Later in this lesson there’s a section explaining the syntax of the various <code>if</code> statements in greater detail.) The complete code of the program, illustrating a <code>while</code> loop with a <code>continue</code> statement, is shown in <a id="list-anc-c05-003" href="part0006.html#list-c05-003">Listing 5-3</a>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c05-003" href="part0006.html#list-anc-c05-003">Listing 5-3</a>:</span> While loop with continue statement</h5>
+<pre>
+public class WhileLoopDemo {
+       public static void main(String[] args) {
+              String [] friends = new String [20];
+              friends[0] = "Masha";
+              friends[1] = "Matilda";
+              friends[2] = "Rosa";
+              friends[18] = "Hillary";
+              friends[19] = "Natasha";
+              int  totalElements = friends.length;
+              int i=0;
+              while (i&lt;totalElements){
+                       if (friends[i]==null){
+                                 i++;
+                                 continue;
+                        }
+                        System.out.println("I love " + friends[i]);
+                        i++;
+                        }
+                        System.out.println("The iteration is over");
+       }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>The output of the <code>WhileLoopDemo</code> program is <a id="idp14031904"></a>shown here:</p>
+<pre>
+I love Masha
+I love Matilda
+I love Rosa
+I love Hillary
+I love Natasha
+The iteration is over
+</pre>
+<p><span epub:type="pagebreak" title="53" id="Page_53"></span>There is a <a id="idp14034128"></a><a id="idp14035856"></a>rarely used <code>do-while</code> version of the <code>while</code> loop. It starts with the <code>do</code> keyword followed by the body of the loop in curly braces, and the <code>while</code> condition comes last. Such loop syntax guarantees that the code written in the body of the loop will be executed at least once, because the loop condition will be tested only after the first pass into the loop. In the following loop, at the very minimum the statements about reading the element zero of array <code>friends</code> will be printed for each element of the array even if every one of them is <code>null</code>:</p>
+<pre>
+do {
+   System.out.println("Reading the element" + i +" of array friends");
+    if (friends[i]==null){
+       i++;
+       continue;
+    }
+    System.out.println("I love " + friends[i]);
+    i++;
+                     
+} while (i&lt;totalElements);</pre>
+<p>The <span epub:type="pagebreak" title="54" id="Page_54"></span>worst thing <a id="idp14040928"></a><a id="idp14042880"></a>that can happen in any loop is a programmer’s mistake in the loop exit condition that always evaluates the loop condition as <code>true</code>. In programming this is known as an <i>infinite loop</i>. To get a better feeling for what this term means, comment out the line that increments the value of the variable <code>i</code> inside the <code>if</code> statement in the <code>do-while</code> sample, and your program will never end unless you forcefully stop it or your computer runs out of power. The reason is clear: If the program enters the code block that just has the statement <code>continue</code>, the value of the variable <code>i</code> will never increase and the loop execution condition <code>i&lt;totalElements</code> will hold <a id="idp14047952"></a>true forever.</p>
+</section>
+<section>
+<h2><a id="debugging_java_programs"></a>Debugging Java Programs</h2>
+<p>In programmer’s lingo, a <i>bug</i> is an <a id="debug"></a>error in a program that causes the program to work in an unexpected way. Don’t confuse a bug with a syntax error in the code. The latter will be caught by the Java compiler before you even start the program, while bugs are your run-time enemies. To <i>debug</i> a program is to identify and fix the run-time errors in code.</p>
+<p>The simplest way to debug a program is to print the value of the “suspicious variables” with <code>System.out.println()</code> or the like. You may think that a certain variable will get a particular value during the execution, but you might be wrong, and printing its value from the running program may reveal why your code produces unexpected results.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature2">
+<h3><a id="idp14054336"></a>Logging API</h3>
+<p>Java also comes with a logging application program interface (API) — see<code><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/logging/index.html">http://docs.oracle.com/javase/8/docs/technotes/guides/logging/index.html</a> </code>— that allows you to <i>log</i> the run-time values in a file or other destination. Logging is out of the scope of this book, but you can find <code>Logger</code> and other supporting classes in the Java package <code>java.util.logging</code>.</p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>You’ll find daily use for the debugger that comes with your IDE.</p>
+<p>Even though <a href="part0003.html#eclipse_ide">Chapter 2</a> was dedicated to Eclipse IDE, explaining debugging back then would have been a bit premature because it didn’t have much Java code to debug. Now you’re ready to learn how the Eclipse debugger can help you.</p>
+<p>Let’s see how the <code>while</code> loop from <a href="part0006.html#list-c05-003">Listing 5-3</a> works by running the <code>WhileLoopDemo</code> program with the Eclipse debugger. First, download  <code>Lesson5.zip</code> from this book’s website and import it into Eclipse.  Open the source code of the class <code>WhileLoopDemo</code> and set a breakpoint on the line of code where you want the program to pause execution so you can start watching the program internals. </p>
+<p> I’d like to pause this program right before it enters the <code>while</code> loop, so set the breakpoint on the following line:</p>
+<pre>
+while (i&lt;totalElements){...}</pre>
+<p>Double-click <span epub:type="pagebreak" title="55" id="Page_55"></span>the blue vertical bar located at the left side of the Editor view — you should see an image of a little bullet there. This line becomes a breakpoint, and if the program runs into the code with the set breakpoint, Eclipse IDE switches to Debug perspective and pauses the program, highlighting the line that’s about to execute.</p>
+<p>To run <code>WhileLoopDemo</code> in the debugger, right-click the name of this program in Package Explorer and select the Debug As Java Application menu option.</p>
+<p>On the first run you will see a warning that Eclipse wants to switch to the Debug perspective; agree with this. <a id="fig-anc-c05-001" href="part0006.html#fig-c05-001">Figure 5-1</a> shows how the Debug perspective looks when the program reaches the breakpoint.</p>
+<p>Note the little arrow in the Editor view next to the bullet; it shows you the line of code that will be executed next. The Variables view shows you the values of the program variables at this moment. The variable <code>i</code> is equal to <code>0</code>; the value of <code>totalElements</code> is <code>20</code>. If you click the little plus sign by the variable <code>friends</code>, you see the contents of this array.</p>
+<figure>
+<img class="center" src="../Images/image00513.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c05-001" href="part0006.html#fig-anc-c05-001">Figure 5-1</a>:</b></span> Debugger paused at the breakpoint</p>
+</figcaption>
+</figure>
+<p>Now try to execute this program step by step, watching how the value of the variable <code>i</code> changes. You control program execution by clicking the buttons in the toolbar for the Debug view (see <a id="fig-anc-c05-002" href="part0006.html#fig-c05-002">Figure 5-2</a>).</p>
+<figure>
+<img class="center" src="../Images/image00514.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c05-002" href="part0006.html#fig-anc-c05-002">Figure 5-2</a>:</b></span> The Debug View tab</p>
+</figcaption>
+</figure>
+<p>The <span epub:type="pagebreak" title="56" id="Page_56"></span>green play button means “Continue executing the program until it ends or hits another breakpoint.” The red square button stops the debugging process. The first curvy yellow arrow (Step Into) is used if the code has been paused on a line that calls a method, and you’d like to debug the code of the method being called. The second curvy arrow (Step Over) allows you to execute the current line without stepping into any methods that may be called in this line of code.</p>
+<p> There are other and less frequently used buttons on this toolbar, which you can study on your own; for now, enter the loop by clicking the Step Over button. Keep clicking this button and observe that the program doesn’t enter the <code>if</code> statement, which is correct — the first element of the friends <code>array</code> is not <code>null</code>. Then <code>if</code> prints “I love Masha” in the console view, increments the value of the variable <code>i</code> to <code>1</code> (see the Variables view in <a id="fig-anc-c05-003" href="part0006.html#fig-c05-003">Figure 5-3</a>), and returns to the loop condition to check whether the value of <code>i</code> is still less than the value of <code>totalElements</code>.</p>
+<figure>
+<img class="center" src="../Images/image00515.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c05-003" href="part0006.html#fig-anc-c05-003">Figure 5-3</a>:</b></span> A snapshot of a Debug perspective </p>
+</figcaption>
+</figure>
+<p>Keep clicking the Step Over button, and expand the variable <code>friends</code> in the Variables view to see its elements in order to better understand why the program skips or enters the <code>if</code> statement in the loop. Note the moment when the program exits the loop and prints the message “The iteration is over.” After spending some time debugging the program, you should appreciate the value of the Eclipse Debugger. In my opinion, the best way to learn a new programming language is to run someone else’s code through a good debugger. The program may be bug-free, but running the program through the debugger helps you to better understand the program’s <a id="idp14090288"></a>flow.</p>
+</section>
+<section>
+<h2><a id="more_about_if_and_switch_statements"></a>More About if and switch Statements</h2>
+<p>If <span epub:type="pagebreak" title="57" id="Page_57"></span>you need to change the execution of the program based on a certain condition then you can use either <code>if</code> or <code>switch</code> statements, which were introduced in <a href="part0004.html#object-oriented_programming">Chapter 3</a>. In this section you see more flavors of the conditional statements.</p>
+<section>
+<h3><a id="flavors_of_if_statements"></a>The Flavors of if Statements</h3>
+<p>In <a href="part0006.html#list-c05-003">Listing 5-3</a> you saw <a id="if"></a><a id="idp14100112"></a>one version of the <code>if</code> statement:</p>
+<pre>
+if (friends[i]==null){
+    i++;
+    continue;
+}</pre>
+<p>The curly braces must be used in the <code>if</code> statement to specify a block of code that has to be executed if the condition is true. Even though the curly braces are not required if there’s only one statement in the code block, using the braces is considered a good practice. They make the program more understandable for other people who may need to read your code (or for yourself six months from now):</p>
+<pre>
+if (friends[i]==null){
+    System.out.println("I found an array element with null value");
+}
+// Some other code goes here</pre>
+<p>The code below the <a id="idp14105024"></a><a id="idp14106448"></a>closing curly brace is always executed, which may not be desirable. In this case use the <code>if-else</code> syntax:</p>
+<pre>
+if (friends[i]==null){
+    System.out.println("I found an array element with null value");
+} else{
+    // Some other code goes here
+}</pre>
+<p>In the preceding code snippet, the “some other code” is executed only if the current element of the array is not <code>null</code> (or, as it’s put it in Java, <code>friends[i]!=null</code>). You can write an <code>if</code> statement with multiple <code>else</code> clauses. For example, the following code prints only one love confession:</p>
+<pre>
+if (friends[i]==null){
+    System.out.println("I found an array element with null value");
+} else if (friends[i] == "Natasha"){
+    System.out.println("I love my wife so much!");
+} else if (friends[i] == "Masha"){
+    System.out.println("I fell in love with Masha when I was in the 8th grade.");
+} else{
+    System.out.println("I used to love " + friends[i] + " at some point.");
+}</pre>
+<p>Using conditional <a id="idp14113360"></a><a id="idp14114896"></a>statements can be a lot more complex than comparing two values. You can build expressions using <code>boolean</code> AND, OR, and NOT operators. The AND operation <a id="idp14117408"></a><a id="idp14116448"></a>is represented as <code>&amp;&amp;</code>, like this:</p>
+<pre>
+if (age&lt;20 &amp;&amp; gender=="male") {
+      // do something only for males under 20 years old
+}</pre>
+<p>For the OR condition <a id="idp14121168"></a><a id="idp14122416"></a>use <code>||</code>; for example:</p>
+<pre>
+if (age &lt; 30 || yearsInArmy &gt; 0) {
+    // do something with people younger than 30 or those who served
+    // in the army regardless of their age
+}</pre>
+<p>For the NOT <a id="idp14125648"></a><a id="idp14126864"></a>condition (aka negation) use the <code>!</code> sign:</p>
+<pre>
+boolean hasBachelorDegree;
+// Read the person record and assign the value true or false
+// to the variable hasBachelorDegree
+if (!hasBachelorDegree) {
+      // do something with people without bachelor degree
+}</pre>
+<p><span epub:type="pagebreak" title="58" id="Page_58"></span>The negation symbol can be placed either in front of a <code>boolean</code> variable, as in the preceding code snippet, or in front of the expression that returns <code>boolean</code>. The next code example shows how to use negation. Note that the comparison expression was placed inside the parentheses; otherwise the Java compiler would assume that you’re trying to negate a <code>String</code> value called <code>friends[i]</code>, which is not allowed.</p>
+<pre>
+if (!(friends[i]=="Hillary")){
+       System.out.println("Still looking for Hillary.");
+}</pre>
+<p>Imagine a situation in which you need to assign a value to a variable, but the value depends on the result of a certain condition. To assign the variable in a verbose way you can use a regular <code>if</code> statement and test some condition, writing one assignment operator for a result of <code>true</code>, and another in the <code>else</code> section for a result of <code>false</code>. But if you use a special construct called a <i>conditional operator</i> (<code>?</code>), the same task can be done more simply.</p>
+<p>The conditional operator consists of the following parts: an expression that returns <code>boolean</code>, a question mark, an expression that returns some value if the first expression evaluates to <code>true</code>, a colon, and an expression that returns a value to be used if the first expression returns <code>false</code>. It sounds complicated, but it’s not. The following code sample shows how to assign a $3,000 bonus if a person’s salary is greater than $90,000, and <a id="idp14140288"></a><a id="idp14136704"></a>only $2,000 otherwise:</p>
+<pre>
+float salary;
+// Retrieve the salary of the person from some data source here
+int bonus = salary &gt; 90000 ? 3000 : 2000;</pre>
+</section>
+</section>
+<section>
+<h2><a id="command-line_arguments"></a>Command-Line Arguments</h2>
+<p>In <a href="part0002.html#introducing_java">Chapter 1</a> you <a id="idp14145600"></a><a id="idp14146768"></a>learned how to start a Java program from a command line. After development in Eclipse or another IDE is done, Java programs are <i>deployed in production</i> and <a id="idp14148592"></a>will be started from a command line — usually you get an icon to click that runs a command to start a program, but under the hood the operating system executes <span epub:type="pagebreak" title="59" id="Page_59"></span>a command that starts your program. You can’t expect an accountant to have Eclipse installed to run a tax calculation program, right? For example, to run the <code>TestTax</code> program (see <a href="part0005.html">Lesson 4</a>) from the command window you need to open a command (or Terminal) window, change the directory to <code>Lesson4</code> in your Eclipse workspace, and enter the following:</p>
+<pre>
+java TestTax</pre>
+<p>You can run as standalone programs only those Java classes <a id="idp14154480"></a><a id="idp14153952"></a>that have the method <code>main</code>, which takes a <code>String</code> array as an argument. This array is the means of passing some data from the command line to your program during start-up. For example, you can pass gross income, state, and number of dependents to <code>TestTax</code> by starting it from the command line as follows:</p>
+<pre>
+java TestTax 50000 NJ 2</pre>
+<p>The method <code>main(String[] args)</code> of the class <code>TestTax</code> receives this data as a <code>String</code> array that I decided to call <code>args</code>. This array is automatically created by JVM, and it’s large enough to accommodate all the arguments entered from the command line. This array will be populated as follows:</p>
+<pre>
+args[0] = "50000";
+args[1] = "NJ";
+args[2] = "2";</pre>
+<p>Command-line arguments are always being passed to a program as <code>String</code> arrays. It’s the responsibility of the programmer to convert the data to the appropriate data type. The wrapper Java classes that were introduced in <a href="part0004.html#object-oriented_programming">Chapter 3</a> can come in handy. For example, the wrapper class <code>Double</code> has the function <code>parseDouble</code> to convert <code>String</code> to <code>double</code>:</p>
+<pre>
+double grossIncome = Double.parseDouble(args[0]);</pre>
+<p>Review the code of the <code>TestTax</code> program from <a href="part0005.html#list-c04-006">Listing 4-6</a>, which has hard-coded values of gross income, state, and number of dependents. By using command-line arguments you can make the program more generic and use for more people — not only those from New Jersey who have two dependents and an annual income of $50,000.</p>
+<p>You’ll work on this assignment in the Try It section.</p>
+</section>
+<section>
+<h2><a id="try_it-id00015"></a>Try It</h2>
+<p>Your assignment is to introduce <a id="lesson"></a><a id="idp14172208"></a>command-line arguments into the program from <a href="part0005.html#list-c04-006">Listing 4-6</a>.</p>
+<section>
+<h3><a id="lesson_requirements-id00016"></a>Lesson Requirements</h3>
+<p>For this lesson you should have Java installed.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this “Try It” from the book’s web page at </i><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a><i>. You can find them in </i> <code>Lesson5.zip</code><i>.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="step-by-step-id00017"></a>Step-by-Step</h3>
+<ol>
+	<li>In <span epub:type="pagebreak" title="60" id="Page_60"></span>Eclipse IDE, copy the <code>TestTax</code> class from the Lesson4 project to the <i>src</i> folder of the project Lesson5. Also, copy the <code>Tax</code> class from the project <a href="part0004.html#object-oriented_programming">Chapter 3</a> that has an <code>if</code> statement in the <code>calcTax()</code> method.</li>
+	<li>Remove the three lines that initialize <code>grossIncome</code>, <code>state</code>, and <code>dependents</code> with hard-coded values.</li>
+	<li>
+	<p>Add the following code fragment to ensure that the program has been started with three arguments. If it has not, print the error message and exit the program.</p>
+	<pre>
+if (args.length != 3){
+      System.out.println("Sample usage of the program:" +
+                              "  java TestTax 50000 NJ 2");
+      System.exit(0);
+}</pre>
+	</li>
+	<li>
+	<p>Add the following statements to the method <code>main()</code> to get the values passed from the command line, convert them to appropriate data types, and initialize the variables <code>grossIncome</code>, <code>state</code>, and <code>dependents</code>:</p>
+	<pre>
+double grossIncome = Double.parseDouble(args[0]);
+String state = args[1];
+int dependents = Integer.parseInt(args[2]);</pre>
+	</li>
+	<li>Even though there is a way to specify command-line arguments in Eclipse, I want you to leave the IDE and do the rest in the command-line window. Right-click the Lesson5 project in Eclipse IDE and select the Properties menu item (note the location of the compiled classes of your project — in my case it was <code>c:\practicalJava\workspace\Lesson5\bin</code>).</li>
+	<li>Open the command window and change the directory to the one that contains the file <code>TestTax.class</code>.</li>
+	<li>Run your program several times, specifying different values for the command-line arguments. The program should print <a id="idp14193440"></a><a id="idp14196832"></a>different values for the calculated tax.</li>
+</ol>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0006.html">Lesson 5</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</section>
+</section>
+</body></html>

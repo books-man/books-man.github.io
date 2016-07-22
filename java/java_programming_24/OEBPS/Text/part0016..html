@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Java Serialization</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="java_serialization"></a><span class="chapterTitle">Lesson 15<br/>Java Serialization</span></h1>
+
+    <section>
+        <p>Imagine <span epub:type="pagebreak" title="185" id="Page_185"></span>a building that, <a id="serial"></a>with
+            a push of a button, can be turned into a pile of construction materials and the possessions of its
+            residents. Push another button and the building is re-created in its original form in a different location.
+            This is what Java serialization is about. By “pushing the serialize button” you turn an instance of an
+            object into a pile of bytes, and “pushing the deserialize button” magically re-creates the object.</p>
+        <p>Wikipedia defines the term <i>serialization</i> as</p>
+        <blockquote class="epigraph">
+            <p><i>the process of translating data structures or object state into a format that can be stored (for
+                example, in a file or memory buffer, or transmitted across a network connection link) and reconstructed
+                later in the same or another computer environment.</i><i> When the resulting series of bits is reread
+                according to the serialization format, it can be used to create a semantically identical clone of the
+                original object ... This process of serializing an object is also called deflating or marshalling an
+                object. The opposite operation, extracting a data structure from a series of bytes, is deserialization
+                (which is also called inflating or unmarshalling).</i></p>
+        </blockquote>
+        <p>In <a href="part0015.html#working_with_streams">Chapter 14</a> you became familiar with streams that deal
+            with single bytes, characters, Java primitives, and text. Now you see why and how to write objects into
+            streams, or how to serialize Java objects.</p>
+        <p>Consider the following scenario: <code>ClassA</code> creates an instance of the object <code>Employee</code>,
+            which has the fields <code>firstName</code>, <code>lastName</code>, <code>address</code>,
+            <code>hireDate</code>, <code>salary</code>, and so on. The values of these fields (that is, the object’s
+            state) have to be saved in a stream. Later,  <code>ClassB</code>, which needs these data, somehow has to
+            re-create the instance of the object <code>Employee</code> in memory. The instances of <code>ClassA</code>
+            and <code>ClassB</code> may live in two different Java Virtual Machines (JVMs) running on different
+            computers.</p>
+        <p>Sure enough, your program can memorize the order of the fields and their data types of <code>firstName</code>,
+            <code>lastName</code>, <code>address</code>, <code>hireDate</code>, and <code>salary</code>, and loop
+            through the fields performing the output with <code>DataOutputStream</code>. The program that reads this
+            stream needs to know the fields' order and their types. </p>
+        <p>Here’s another use case: Your application has a Preferences menu where the user can select fonts, colors, and
+            user interface (UI) controls that should be displayed on the opening view. To support such functionality,
+            the <a id="idp16866368"></a><a id="idp16866640"></a><a id="idp16870336"></a>Preferences panel creates an
+            instance of a class, <code>UserPreferences</code>, with 50 configurable properties (some of <span
+                    epub:type="pagebreak" title="186" id="Page_186"></span>which are of custom data types) that have to
+            be saved in a local file. On the next start of the application, the previously saved data should be read
+            from this file with the re-creation of the <code>UserPreferences</code> object.</p>
+        <p>Writing a manual procedure that uses, say, <code>DataOutputStream</code> on each primitive property and then
+            recursively performs the same operation for each non-primitive type is tedious. Besides, this code would
+            need to be changed each time the properties of class <code>UserPreferences</code> change.</p>
+        <p>You can achieve the same result in a more elegant way, not one property at a time, but one object at a time,
+            with the <a id="idp16877088"></a><a id="idp16873568"></a>help of such streams as
+            <code>ObjectOutputStream</code> and <code>ObjectInputStream</code>. This process is known as <i>Java
+                serialization</i>, which enables you to save objects in a stream in one shot. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;This lesson discusses only core Java serialization. But
+                    the process of converting an instance of Java into XML, JSON, or another text format is also
+                    referred to as serialization. You see an example of serialization into JSON and XML formats in <a
+                            href="part0034.html#working_with_restful_web_services">Lesson 33</a> on RESTFul Web
+                    Services. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><code>ClassA</code> serializes <a id="idp16881552"></a><a id="idp16883840"></a><a id="idp16885056"></a><a
+                id="idp16886448"></a><a id="idp16887600"></a>the object <code>Employee</code>, and <code>ClassB</code>
+            <i>deserialize</i>s (reconstructs) this object. To support this mode, the class <code>Employee</code> has
+            <i>to be serializable</i>—that is, it has to implement the <code>Serializable</code> interface, as shown in
+            <a id="list-anc-c015-001" href="part0016.html#list-c015-001">Listing 15-1</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-001"
+                                           href="part0016.html#list-anc-c015-001">Listing 15-1</a>:</span> Serializable
+                    class Employee</h5>
+                <pre>
+class Employee implements java.io.Serializable{
+     String lName;
+     String fName;
+     double salary;
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The interface <code>Serializable</code> does not define any methods, so the class <code>Employee</code> has
+            nothing to implement. If an interface doesn’t declare any methods it’s called a <i>marker interface</i>. The
+            marker interfaces are just affecting the way compiler generates the bytecode.</p>
+        <p>Two use cases described in this section represent the main uses for Java serialization: distribution of the
+            Java objects between different JVMs and object persistence for future reuse. Often serialization is
+            implemented internally by various Java frameworks to pass objects between tiers of a distributed application
+            that runs on multiple servers and client computers.</p>
+        <p>Some Java frameworks use serialization <a id="idp16897312"></a><a id="idp16899184"></a><a
+                id="idp16900336"></a><a id="idp16901728"></a>to load or unload objects to free the JVM’s memory (these
+            are known as <i>passivation</i> and <i>activation</i> of objects, respectively). Later in the book you learn
+            about RMI and EJB, which use serialization a lot. But even in regular business application development you
+            may need to serialize and deserialize application-specific objects. This <a id="idp16903536"></a>process
+            comes down to reading from and writing into streams, namely <code>java.io.ObjectInputStream</code> and
+            <code>java.io.ObjectOutputStream</code>, respectively.</p>
+    </section>
+    <section>
+        <h2><a id="class_objectoutputstream"></a>The Class ObjectOutputStream</h2>
+        <p>To serialize an object <a id="objectoutput1"></a><a id="objectoutput2"></a><a id="objectoutput3"></a>perform
+            the following actions:</p>
+        <ol>
+            <li>Open <span epub:type="pagebreak" title="187" id="Page_187"></span>an output stream.</li>
+            <li>Chain it with <code>ObjectOutputStream</code>.</li>
+            <li>Call the method <code>writeObject()</code>, providing the instance of a <code>Serializable</code> object
+                as an argument.
+            </li>
+            <li>Close the stream.</li>
+        </ol>
+        <p><a id="list-anc-c015-002" href="part0016.html#list-c015-002">Listing 15-2</a> shows a code sample that
+            serializes an instance of the <code>Employee</code> object into the file <code>c:\practicalJava\BestEmployee.ser</code>.
+            This code first opens <code>FileOutputStream</code> and then chains it with <code>ObjectOutputStream</code>.
+            The method <code>writeObject()</code> performs <a id="idp16921776"></a><a id="idp16922960"></a>the
+            serialization of the <code>Employee</code> instance in one shot.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-002"
+                                           href="part0016.html#list-anc-c015-002">Listing 15-2</a>:</span> Serializing
+                    an Employee object into a file</h5>
+                <pre>
+class ClassA {
+ 
+  public static void main(String args[]){
+    
+    Employee emp = new Employee();
+    emp.lName = "John";
+    emp.fName = "Smith"; 
+    emp.salary = 50000;
+       
+    try (FileOutputStream fOut = 
+                       new FileOutputStream("BestEmployee.ser");
+         ObjectOutputStream oOut = 
+                                new ObjectOutputStream(fOut);){   
+     oOut.writeObject(emp);  //serializing employee
+   } catch (IOException ioe){
+      ioe.printStackTrace();
+   }  
+   System.out.println(
+     "Employee object has been serialized into BestEmployee.ser");
+  } 
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>All Java primitive data types are serializable. All member variables of the serializable class must be either
+            Java primitives or reference variables pointing to objects that are also serializable. The class <code>Employee</code>
+            from <a href="part0016.html#list-c015-001">Listing 15-1</a> contains only serializable data types. But if a
+            class has fields of custom data types, each of them has to be serializable. The <code>Employee</code> class
+            from <a id="list-anc-c015-003" href="part0016.html#list-c015-003">Listing 15-3</a> can be serialized only if
+            the class <code>PromotionHistory</code> (and all data types it uses) was declared with <code>implements
+                Serializable</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-003"
+                                           href="part0016.html#list-anc-c015-003">Listing 15-3</a>:</span> Class <span
+                        epub:type="pagebreak" title="188" id="Page_188"></span>Employee with custom data types</h5>
+                <pre>
+class Employee implements java.io.Serializable{
+     String lName;
+     String fName;
+     double salary;
+     PromotionHistory promos; // A custom data type
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If you do not want to <a id="idp16935344"></a><a id="idp16937184"></a>serialize some sensitive information,
+            such as salary, declare this variable using the keyword <code>transient</code>. If you declare the field
+            salary of the class <code>Employee</code> with the <code>transient</code> qualifier, its value won’t be
+            serialized. The serialized set of bytes will still contain the <code>transient</code> field, but it’s not
+            going to be  the actual value; such a field will have a default value for its type. </p>
+        <pre>
+transient double salary;</pre>
+        <p>Typically, you <a id="idp16940368"></a><a id="idp16943072"></a>declare a variable as <code>transient</code>
+            if it contains some sensitive information or if its value is useless in the destination stream. Suppose a
+            Java class that runs on the server has database connectivity variables. If such a class gets serialized to
+            the client’s machine, sending database credentials may be not only useless, but unsafe. Therefore, such
+            variables have to be declared as <code>transient</code>. One more reason <a id="idp16944976"></a><a
+                    id="idp16946720"></a><a id="idp16948128"></a>to use the <code>transient</code> keyword is to
+            serialize an object that includes fields of non-serializable types.</p>
+    </section>
+    <section>
+        <h2><a id="class_objectinputstream"></a>The Class ObjectInputStream</h2>
+        <p>To deserialize an object <a id="objectinput4"></a><a id="objectinput5"></a><a id="objectinput6"></a>perform
+            the following steps:</p>
+        <ol>
+            <li>Open an input stream.</li>
+            <li>Chain it with the <code>ObjectInputStream</code>.</li>
+            <li>Call the method <code>readObject()</code> and cast <a id="idp16960112"></a><a id="idp16961360"></a>the
+                returned object to the class that is being deserialized.
+            </li>
+            <li>Close the stream.</li>
+        </ol>
+        <p><a id="list-anc-c015-004" href="part0016.html#list-c015-004">Listing 15-4</a> shows a code sample that reads
+            the previously serialized file <code>BestEmployee.ser</code>. This code opens a <code>FileInputStream</code>
+            that points at <code>BestEmployee.ser</code> and then chains the <code>FileInputStream</code> with <code>ObjectInputStream</code>.
+            The method <code>readObject()</code> resurrects the instance of the <code>Employee</code> object in memory.
+        </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-004"
+                                           href="part0016.html#list-anc-c015-004">Listing 15-4</a>:</span> Deserializing
+                    Employee from file</h5>
+                <pre>
+import java.io.*;
+class ClassB {
+ 
+  public static void main(String args[]){
+       
+    try ( FileInputStream fIn = 
+                  new  FileInputStream("BestEmployee.ser");
+         ObjectInputStream oIn = new ObjectInputStream(fIn);){
+             
+         Employee bestEmp=(Employee)oIn.readObject();
+     
+   }catch (ClassNotFoundException cnf){
+       cnf.printStackTrace();
+   } catch (IOException ioe){
+     ioe.printStackTrace();
+   }
+   
+   System.out.println(
+                   "The Employee  object has been deserialized.");
+  } 
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="189" id="Page_189"></span>Note that the class that deserializes an object
+            has to have access to its declaration or the <code>ClassNotFoundException</code> is thrown. During the
+            process of deserialization all <code>transient</code> variables <a id="idp16972960"></a><a
+                    id="idp16973984"></a>are initialized with the default values for their type. For example,
+            <code>int</code> variables have a value of <code>0</code>.</p>
+        <p>Keep in mind that class variables with longer names produce larger footprints when the object is serialized.
+            In time-critical applications this may be important. Imagine a Wall Street trading system in which each
+            order is presented as an object, <code>TradeOrder</code>, with 50 fields, and you need to send 1,000 of
+            these objects over the network using serialization. Simply shortening each field name by one character can
+            reduce the network traffic by almost 50 KB! You find out how to open the network streams in <a
+                    href="part0017.html#network_programming">Chapter 16</a>.</p>
+    </section>
+    <section>
+        <h2><a id="interface_externalizable"></a>The Interface Externalizable</h2>
+        <p>Continuing with <a id="external"></a><a id="idp16982144"></a><a id="idp16983184"></a>the example of the trade
+            order, the knowledge of the values of all 50 fields from the class <code>TradeOrder</code> may be required
+            to support certain functionality of the application, but when the program has to send a buy or sell request
+            to the stock exchange, only ten fields may be needed.</p>
+        <p>This raises a question—can the process of serialization be customized so only some of the object fields are
+            serialized?</p>
+        <p>The method <code>writeObject()</code> of <code>ObjectOutputStream</code> sends all the object’s fields into a
+            stream. But if you want to have more control over what is being serialized and decrease the footprint of
+            your object, implement the <code>Externalizable</code> interface, which is a subclass of
+            <code>Serializable</code>.</p>
+        <p>This interface <a id="read1"></a><a id="write1"></a><a id="read2"></a><a id="write2"></a>defines two methods:
+            <code>readExternal()</code> and <code>writeExternal()</code>. These methods have to be written by you to
+            implement serialization of only the selected fields. <a id="list-anc-c015-005"
+                                                                    href="part0016.html#list-c015-005">Listing 15-5</a>
+            shows a fragment of a class, <code>Employee2</code>, that implements <code>Externalizable</code>. It has
+            several fields, but in a certain scenario only <code>id</code> and <code>salary</code> have to be
+            serialized.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-005"
+                                           href="part0016.html#list-anc-c015-005">Listing 15-5</a>:</span>
+                    Externalizable <span epub:type="pagebreak" title="190" id="Page_190"></span>version of Employee</h5>
+                <pre>
+class Employee2 implements java.io.Externalizable {
+       String lName;
+       String fName;
+       String address;
+       Date hireDate;
+       int id;
+       double salary;
+   public void writeExternal(ObjectOutput stream)
+                               throws java.io.IOException {
+    // Serializing only the salary and id
+    stream.writeDouble(salary);
+    stream.writeInt(id);
+   }
+   public void readExternal(ObjectInput stream)
+                               throws java.io.IOException {
+     salary = stream.readDouble(); // Order of reads must be the
+                                   // same as the order of writes
+     id = stream.readInt();
+   }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Note that each property of the class is individually serialized and the methods <code>writeExternal()</code>
+            and <code>readExternal()</code> must write and read properties, respectively, in the same order. The class
+            <code>EmpProcessor</code> from <a id="list-anc-c015-006" href="part0016.html#list-c015-006">Listing 15-6</a>
+            shows how to <i>externalize</i> the object <code>Employee2</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-006"
+                                           href="part0016.html#list-anc-c015-006">Listing 15-6</a>:</span> Externalizing
+                    an Employee object</h5>
+                <pre>
+import java.io.*;
+import java.util.Date;
+public class ClassAExt {
+  public static void main(String[] args) {
+      Employee2 emp = new Employee2();
+      emp.fName = "John";
+      emp.lName = "Smith";
+      emp.salary = 50000;
+      emp.address = "12 main street";
+      emp.hireDate = new Date();
+      emp.id=123;
+      
+      try ( FileOutputStream fOut= 
+                  new FileOutputStream("NewEmployee2.ser");
+            ObjectOutputStream oOut = 
+                  new ObjectOutputStream(fOut);){ 
+       
+          emp.writeExternal(oOut); //externalizing employee
+          System.out.println(
+            "An employee is externalized into NewEmployee2.ser");
+      }catch(IOException ioe){
+          ioe.printStackTrace();      
+      }  
+ }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="191" id="Page_191"></span>You had to write a little more code to implement
+            the <code>Externalizable</code> interface than to implement the <code>Serializable</code> interface, but the
+            size of the file <code>NewEmployee2.ser</code> will be substantially smaller. First of all, you serialized
+            the values of only two properties, and files created with the <code>Externalizable</code> interface contain
+            only data, whereas files created with <code>Serializable</code> also contain class metadata that includes
+            properties’ names. The <code>ClassBExt</code> in <a id="list-anc-c015-007"
+                                                                href="part0016.html#list-c015-007">Listing 15-7</a>
+            shows you <a id="idp17013888"></a><a id="idp17015664"></a><a id="idp17017328"></a><a id="idp17018752"></a>how
+            to re-create in memory the externalized object <code>Employee2</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-007"
+                                           href="part0016.html#list-anc-c015-007">Listing 15-7</a>:</span> Re-creating
+                    the externalized object</h5>
+                <pre>
+public class ClassBExt {
+  public static void main(String[] args) {
+      
+      try (FileInputStream fIn= 
+                      new FileInputStream("NewEmployee2.ser");
+           ObjectInputStream oIn = new ObjectInputStream(fIn);){
+          Employee2 emp = new Employee2();
+          emp.readExternal(oIn);
+          
+          System.out.println("Deserialized employee with id " 
+                                                     + emp.id); 
+          // format the output as dollars
+          System.out.printf("salary = $%7.2f", emp.salary); 
+      }catch (IOException ioe){
+          ioe.printStackTrace();
+      }
+      
+  }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="class_versioning"></a>Class Versioning</h2>
+        <p>Imagine that a program, <code>ClassA</code>, <a id="version1"></a><a id="version2"></a><a
+                id="idp17029232"></a>serializes the <code>Employee</code> object from <a
+                href="part0016.html#list-c015-001">Listing 15-1</a> into a file on Mary’s computer. Two days later Mary
+            starts another program, <code>ClassB</code>, that offers a download of its new version with long-awaited
+            features. After upgrade, <code>ClassB</code> starts generating errors, which are caused by the fact that the
+            new upgrade includes a modified version of the class <code>Employee</code> that now has one property with a
+            different data type than what exists in memory. The upgrade also includes one new property that wasn’t in
+            the previous version of the <code>Employee</code> object.</p>
+        <p>Now <span epub:type="pagebreak" title="192" id="Page_192"></span>the deserialization process tries <a
+                id="idp17032032"></a><a id="idp17035696"></a>to ignore the new property but fails because of the
+            mismatched property types between the serialized and in-memory versions of <code>Employee</code>.
+            Serialization may also fail because of a change in the inheritance tree of <code>Employee</code>.</p>
+        <p>During serialization, JVM automatically <a id="idp17039776"></a>calculates a special value: the <i>serial
+            version unique ID</i>, which is based on the properties of the serializable object, the class name, the
+            implemented interfaces, and the signatures of non-private methods. If you are curious to see how this number
+            looks for your class, run the program serialver (it’s located in the <code>bin</code> directory of your Java
+            install), providing the name of your class as a command-line argument.</p>
+        <p>But if your class explicitly <a id="idp17043408"></a><a id="idp17041408"></a>defines and initializes a <code>static
+            final</code> variable called <code>serialVersionUID</code>, Java uses your value instead of trying to
+            generate one. For example:</p>
+        <pre>
+public static final serialVersionUID = 123;</pre>
+        <p>Now, if you keep the value of this variable in the new version of <code>Employee</code> the same as in the
+            old one, you have some freedom to add more methods to this class, and JVM assumes that both classes have the
+            same version. If a new version has added a public field, the deserialization process ignores it. If a new
+            version has removed a field, the deserialized version still has it initialized with a default value. But if
+            you change the data type for the public field, the deserialization process fails anyway.</p>
+    </section>
+    <section>
+        <h2><a id="serializing_into_byte_arrays"></a>Serializing into Byte Arrays</h2>
+        <p>You can also <a id="idp17048912"></a><a id="idp17050448"></a><a id="idp17051840"></a>serialize objects into
+            an in-memory array of bytes—<code>byte[]</code>. This can be the easiest way of creating a sort of memory
+            blob that can be exchanged among different virtual machines (VMs).</p>
+        <p>The syntax of such serialization is pretty straightforward. Let’s assume that you have a class called <code>XYZ</code>
+            that implements <code>Serializable</code> and contains all the elements of your report in the proper format.
+            To prepare a byte array from it, write the code in <a id="list-anc-c015-008"
+                                                                  href="part0016.html#list-c015-008">Listing 15-8</a>.
+        </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-008"
+                                           href="part0016.html#list-anc-c015-008">Listing 15-8</a>:</span> Turning an
+                    object into an array of bytes</h5>
+                <pre>
+XYZ myXyz = new XYZ();
+// Code to assign values to the fields of myXyz goes here
+//...
+ByteArrayOutputStream baOut = new ByteArrayOutputStream(5000);
+ObjectOutputStream oOut = new ObjectOutputStream(
+                               new BufferedOutputStream(baOut));
+//Here comes the serialization part
+oOut.writeObject(myXyz);
+oOut.flush();
+// create a byte array from the stream
+byte[] xyzAsByteArray = baOut.toByteArray();
+oOut.close();</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Another <span epub:type="pagebreak" title="193" id="Page_193"></span>convenient use for serializing into a
+            byte array is <i>object cloning</i>, which is the creation of an exact copy of an object instance. Even
+            though the class <code>Object</code>, the root of all classes, includes the method <code>clone()</code>, it
+            works only with objects that implement another marker interface <code>Cloneable</code>; otherwise the
+            cloning fails. Things may get more complicated when an object contains instances of other objects: You need
+            to program a <i>deep copy</i> of the object.</p>
+        <p>Serialization into a byte array with immediate deserialization creates a deep copy of the object in no time.
+            After executing the code from <a id="list-anc-c015-009" href="part0016.html#list-c015-009">Listing 15-9</a>
+            you get two identical objects in memory. The variable <code>bestEmployee</code> points at one of them, and
+            the variable <code>cloneOfBestEmployee</code> points at another.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c015-009"
+                                           href="part0016.html#list-anc-c015-009">Listing 15-9</a>:</span> Object
+                    cloning with serialization</h5>
+                <pre>
+Employee bestEmployee = new Employee();
+//Serialize into byte array
+ByteArrayOutputStream baOut = new ByteArrayOutputStream();
+ObjectOutputStream oOut = new ObjectOutputStream(baOut);
+oos.writeObject(bestEmployee);
+//Deserialize from byte array to clone the object
+ByteArrayInputStream baIn = 
+                    new ByteArrayInputStream(baOut.toByteArray());
+ObjectInputStream oIn = new ObjectInputStream(baIn);
+Employee cloneOfBestEmployee = (Employee) oin.readObject();</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="try_it-id00059"></a>Try It</h2>
+        <p>Create a Java Swing <a id="idp17069952"></a><a id="idp17071712"></a>program called
+            <code>MyCustomizableGUI</code> that enables the user to specify her preferences, such as background color,
+            font family, and size. Pick any GUI components that have these attributes. Selected values should be
+            assigned to fields of the serializable class <code>UserPreferences</code> and be serialized into the file
+            <code>preferences.ser</code>. Each time <code>MyCustomizableGUI</code> is started it should determine if the
+            file <code>preferences.ser</code> exists. If the file does exist, <code>MyCustomizableGUI</code> should
+            deserialize it and apply previously saved preferences to the GUI.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00060"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You <span epub:type="pagebreak" title="194"
+                                                                                 id="Page_194"></span>can download the
+                        code and resources for this “Try It” from the book’s web page at</i> <code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson15.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00061"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new Eclipse project and name it Lesson15.</li>
+                <li>Create an executable Swing class called <code>MyCustomizableGUI</code> with a text field and a User
+                    Preferences button.
+                </li>
+                <li>Program the button to open a new window Preferences (based on <code>JDialog</code>) that has three
+                    drop-down menus (<code>JComboBox</code>), a Save button, and a Cancel button. The first drop-down
+                    menu enables the user to select a color, the second a font, and the third a font size.
+                </li>
+                <li>Create a serializable class, <code>UserPreferences</code>, that remembers the user’s selections.
+                    When the user has made her choices, the Save button has to serialize the instance of <code>UserPreferences</code>
+                    into a file named <code>preferences.ser</code>.
+                </li>
+                <li>Each time <code>MyCustomizableGUI</code> starts it has to determine if the file <code>preferences.ser</code>
+                    exists, deserialize it if so, and apply the appropriate color as the background color of the window
+                    <code>MyCustomizableGUI</code>. The font preferences should be applied to the text field.
+                </li>
+                <li>Run the program to ensure that you can change and save the preferences and that they are properly
+                    applied to the GUI.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0016.html">Lesson 15</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

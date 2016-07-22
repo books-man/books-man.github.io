@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Overview of the Java Persistence API</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_the_java_persistence_api"></a><span class="chapterTitle">Lesson 32<br/>Overview of the Java Persistence API</span>
+    </h1>
+
+    <section>
+        <p>In <span epub:type="pagebreak" title="463" id="Page_463"></span>the previous lesson you learned about various
+            types of Enterprise Java Beans in which you could program the business logic of your application. Now it’s
+            time to talk about persisting data. If an online store allows users to place orders with session beans,
+            there should be a mechanism for saving the data, too. Typically, the data is persisted in the relational or
+            NoSQL DBMS.</p>
+        <p>The Java Persistence API (JPA) defines <a id="idp22296656"></a><a id="idp22298096"></a>a standard way of
+            mapping the Java classes to their relational database peers. This process is also known <a
+                    id="idp22299376"></a>as <i>object-relational mapping (ORM)</i>. JPA allows you to work with DBMSes
+            using Java objects rather than with SQL. All SQL queries are generated under the hood by the library that
+            implements JPA. The most popular implementation of JPA is <a href="http://hibernate.org/">Hibernate</a>, and
+            there is a reference implementation called <a href="http://eclipse.org/eclipselink">EclipseLink</a>. You use
+            EclipseLink in the “Try It” section of this lesson.</p>
+        <p>This lesson is a brief introduction to the standard JPA 2.1 that’s implemented by Java EE 7-compliant
+            servers. You’ll also get familiar with the data validation process offered by the Bean Validation
+            framework. </p>
+    </section>
+    <section>
+        <h2><a id="big_picture-id00122"></a>The Big Picture</h2>
+        <p>In the past, J2EE (currently Java EE) specifications recommended using Entity EJB to provide all interactions
+            with databases. Entity beans have been pruned from the current Java EE specification, and you should use JPA
+            instead to deal with your application’s data querying and persistence. As a matter of fact, you can use JPA
+            from Java SE applications, too.</p>
+        <p>JPA enables you to specify and run queries and update data without needing to write SQL statements as you did
+            in <a href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a> while studying JDBC. Starting
+            from JPA 2.1 you can invoke stored procedures located in relational DBMSes.</p>
+        <p>JPA enables you to map Java classes to database tables using metadata, and perform create, retrieve, update,
+            and delete (CRUD) <a id="idp22308064"></a>operations using Java Persistence <a id="idp22310640"></a>Query
+            Language (JPQL), the Persistence <a id="idp22311104"></a><a id="idp22312352"></a>Criteria API, and <span
+                    epub:type="pagebreak" title="464" id="Page_464"></span>native database queries in SQL language. The
+            idea is to create an application-specific domain model as a set of interrelated Java classes and map it to
+            the corresponding data storage (the DBMS).</p>
+        <p>If a Java class <a id="idp22314160"></a><a id="idp22315664"></a><a id="idp22317168"></a>marked with the
+            <code>@Entity</code> annotation has no argument constructor you can call it an <i>entity:</i> </p>
+        <pre>
+@Entity
+public class Employee{
+ ...
+}</pre>
+        <p>If a persistent storage is a relational DBMS, each entity instance corresponds to a row in a database
+            table. If you start with an empty database, JPA tools enable you to create database tables based on Java
+            entities. You can also map Java entities to the existing database tables. Just like database tables, Java
+            entities can have one-to-one relationships (such as an <code>Employee</code> entity with one corresponding
+            <code>OfficeAddress</code> entity); one-to-many relationships (such as one <code>Customer</code> with many
+            <code>Orders</code>); many-to-one relationships (the opposite of one-to-many relationships); and
+            many-to-many relationships (for example, a <code>UniversityClass</code> has many enrolled
+            <code>Student</code>s, but each <code>Student</code> can enroll into multiple classes).</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp22322000"></a>JPA and NoSQL</h3>
+                <p>In NoSQL DBMS, a Java class <a id="idp22324560"></a>entity corresponds to an object in the database.
+                    Format of the object varies depending on the DBMS. Popular formats are JSON and BSON (binary
+                    JSON). For details, refer to the documentation of your JTA providers. For example, refer to the
+                    online documentation of <a
+                            href="http://docs.jboss.org/hibernate/ogm/3.0/reference/en-US/pdf/hibernate_ogm_reference.pdf">Hibernate
+                        Object/Grid Mapper</a> and <a href="https://wiki.eclipse.org/EclipseLink/Examples/JPA/NoSQL">EclipseLink</a>. 
+                </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Every entity class must define a field containing a unique value, which is the equivalent of a primary key in
+            a database table. You can either work directly with the fields of an entity class or use setters and getters
+            as defined in the <a href="http://www.oracle.com/technetwork/java/javase/overview/spec-136004.html">JavaBeans
+                specification</a>. In the latter case, persistent fields must not be <code>public</code> and should be
+            accessed by <code>public</code> methods, and the entity class must have a no-argument constructor. </p>
+        <p>The <code>EntityManager</code> class <a id="idp22330576"></a><a id="idp22333776"></a>deals with objects.
+            Before persisting data you can validate the values using the Bean Validation API illustrated <a
+                    href="part0033.html#bean_validation">later</a> in this lesson.</p>
+        <p>While JPQL provides string-based SQL-like syntax for working with entities, the Criteria API enables you to
+            dynamically construct queries from strongly typed objects.</p>
+    </section>
+    <section>
+        <h2><a id="mapping_objects_to_database_tables"></a>Mapping Objects to Database Tables</h2>
+        <p>You can map <a id="mapob1"></a><a id="mapob2"></a><a id="mapob3"></a>Java classes to database tables via
+            annotations, XML configuration files, or both. For example, common fields can be mapped with annotations,
+            and DBMS-specific mapping can be done in XML files. It does not have to be one-to-one mapping; one Java
+            entity can be mapped to a set of columns from more than one database table.</p>
+        <p>Besides having fields mapped to table columns, Java entities can have embeddable classes, like
+            <code>Address</code> in the <code>Employee</code> entity.</p>
+        <p>Typically <span epub:type="pagebreak" title="465" id="Page_465"></span>a <a id="idp22346256"></a><a
+                id="idp22348176"></a><a id="idp22349568"></a><a id="idp22350912"></a>database table has a <i>primary
+            key</i>—one or more columns that uniquely identify each row. Accordingly, Java entities must have one or
+            more fields making each instance unique. For a one-field key, an entity ID is marked with the
+            <code>@Id</code> <a id="idp22353536"></a><a id="idp22355072"></a>annotation. A composite key is declared in
+            separate classes, and the entity class is denoted with  <code>@IdClass </code>(or  <code>@EmbeddedId</code> if
+            the key defined in embeddable class). You can request your JPA provider to auto-generate the ID by adding
+            the annotation <code>@GeneratedValue</code> to the entity class. <a id="list-anc-c032-001"
+                                                                                href="part0033.html#list-c032-001">Listing
+                32-1</a> shows an example of an <code>Employee</code> entity.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c032-001"
+                                           href="part0033.html#list-anc-c032-001">Listing 32-1</a>:</span> Employee
+                    entity</h5>
+                <pre>
+@Entity
+public class Employee{
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @NotNull
+  @Size(max=10)
+  private String firstName;
+  @NotNull
+  @Size(min=2, max=20)
+  private String lastName;
+  @Column(name="boss_name")
+  private String managerName;
+  @OneToMany (mappedBy = "employee")
+  private List&lt;Address&gt; addresses = new ArrayList&lt;Address&gt;();
+  // constructor
+  public Employee(){ ...}
+  // getters and setters go here
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If you don’t specify an annotation containing the database table name in the entity class, JPA assumes that
+            there is a corresponding database table with the same name as the entity class, which in our example is
+            <code>Employee</code>. The specified strategy <code>GenerationType.IDENTITY</code> means that DBMS has an
+            auto-generated primary key with auto-increment. Many database management systems support either identity
+            columns or sequence objects with similar functionality.</p>
+        <p>The fields that must have <a id="idp22367216"></a>values are marked as <code>@NotNull</code>. If an instance
+            of the preceding <code>Employee</code> entity won’t have values in the <code>firstName</code> or <code>lastName</code>
+            fields, Bean Validation can catch this and generate an error. The entity fields that don’t have to be
+            persisted should be marked with the <code>@Transient</code> annotation.</p>
+        <p>If a table column <a id="idp22371408"></a>name is not the same as the name of the entity field, you can
+            specify the column name using <code>@Column</code>. According to the code sample <a
+                    href="part0033.html#list-c032-001">Listing 32-1</a>, the database column name <code>boss_name</code>
+            corresponds to the field <code>managerName</code> of the entity <code>Employee</code>.</p>
+        <p>Not <span epub:type="pagebreak" title="466" id="Page_466"></span>every Java <a id="idp22375280"></a><a
+                id="idp22376672"></a>class that corresponds to some data in the database has to be an entity. You can
+            have embeddable classes that define a group of arbitrary properties that belong to an entity. Let’s say a
+            company gives to each employee a smartphone identified by a phone number and model number. You can create a
+            Java class to represent such a device and <a id="idp22376368"></a><a id="idp22378320"></a>mark it with
+            <code>@Embeddable</code>:</p>
+        <pre>
+@Embeddable
+public class SmartPhone implements Serializable{
+   @Size(max=10)
+   public String phoneNumber;
+   public String model;
+}</pre>
+        <p>Now the <code>Employee</code> entity can embed the property of the <code>SmartPhone</code> type along with
+            other fields:</p>
+        <pre>
+@Entity
+public class Employee{
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @NotNull
+  public String firstName;
+  // some other fields go here
+  // ...
+  @Embedded
+  public SmartPhone companyPhone;
+}</pre>
+        <p>The code in <a href="part0033.html#list-c032-001">Listing 32-1</a> illustrates the mapping of one-to-many
+            relations between the entities <code>Employee</code> and <code>Address</code> (not shown). One employee can
+            have multiple addresses, so <code>Employee</code> references a collection of the <code>Address</code>
+            entities.  </p>
+        <p>You can also use <code>@Embeddable</code> class to <a id="idp22389248"></a><a id="idp22391264"></a><a
+                id="idp22392960"></a>declare a composite primary key for an entity class.</p>
+    </section>
+    <section>
+        <h2><a id="jpql"></a>Querying Entities</h2>
+        <p>JPA offers two ways of querying entities: Java Persistence Query Language (JPQL) and the Criteria API.</p>
+        <section>
+            <h3><a id="idp22396480"></a>JPQL</h3>
+            <p>JPQL is a SQL-like <a id="idp22398608"></a><a id="idp22399952"></a><a id="idp22401072"></a><a
+                    id="idp22402496"></a>query language. But SQL operates with the DBMS objects like schemas, tables,
+                and stored procedures, and JPQL manipulates with Java objects and their attributes from the domain
+                model. The application doesn’t need to know details of the underlying data storage objects to perform
+                JPQL queries.</p>
+            <p>If <span epub:type="pagebreak" title="467" id="Page_467"></span>you know the queries in advance you can
+                precompile them; otherwise you can build them dynamically during the run time. Similarly, in JDBC you
+                can use either <code>PreparedStatement</code> or <code>Statement</code>.</p>
+            <p>JPQL includes (case-insensitive) keywords that are pretty easy to remember: <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>ORDER
+                BY</code>, <code>GROUP BY</code>, and so on. Here’s how you would write a JPQL query to find all
+                managers who have subordinates with the last name Smith:</p>
+            <pre>
+SELECT e.managerName,
+FROM Employee AS e
+WHERE e.lastName='Smith'</pre>
+            <p>Don’t be misled by the <code>SELECT</code>, <code>FROM</code>, and <code>WHERE</code> clauses; it’s not
+                SQL, and this queries the Java Entity class, which in turn will generate SQL under the hood. The
+                <code>e</code> serves as an alias name here to refer to the <code>Employee</code> entity name. The
+                result of this query can be a collection of Java objects that contains zero or more instances.</p>
+            <p>The next query finds all employees who were given iPhones by the firm. Note the dot notation to find the
+                phone model from the embedded class:</p>
+            <pre>
+SELECT e.firstName, e.lastName
+FROM Employee AS e
+WHERE e.companyPhone.model='iPhone'</pre>
+            <p>To populate all fields of certain entities (the equivalent of <code>Select *</code> in SQL) just specify
+                the alias name of the entity right after the <code>SELECT</code> clause:</p>
+            <pre>
+SELECT e FROM Employee AS e</pre>
+            <p>The <code>Employee</code> and <code>Address</code> entities have a one-to-many relationship. If you’d
+                like to find all employees who live in New York, this is the join written in JPQL:</p>
+            <pre>
+SELECT DISTINCT e
+FROM Employee AS e JOIN e.addresses as a
+WHERE a.city='New York'</pre>
+        </section>
+        <section>
+            <h3><a id="idp22397072"></a>Criteria API</h3>
+            <p>Although JPQL is a <a id="idp22419328"></a><a id="idp22421024"></a><a id="idp22422160"></a>string-based
+                query language, the Criteria API allows the creation of strongly typed object-based queries. On one hand
+                it’s more verbose than JPQL, but on the other there is no need to do data-type conversion when
+                processing query results. Because Criteria API is strongly typed, Java compiler catches all the
+                type-related errors during the compilation time, whereas string-based JPQL needs to be parsed during the
+                run time.</p>
+            <p>These are some core interfaces in the Criteria API:</p>
+            <ul>
+                <li><code>CriteriaBuilder</code>: A utility <a id="idp22425376"></a><a id="idp22426416"></a>class that
+                    can create criteria queries.
+                </li>
+                <li><code>CriteriaQuery</code>: This is an <a id="idp22428320"></a><a id="idp22430032"></a>object that
+                    contains all parts of the query, such as <code>SELECT</code>, <code>FROM</code>,
+                    and <code>WHERE</code>. It’s like a memory graph, in which each node represents some clause of the
+                    query.
+                </li>
+                <li><code>Root</code>: Represents the root of <a id="idp22433968"></a><a id="idp22435136"></a>the query.
+                </li>
+                <li><code>TypedQuery</code>: A <span epub:type="pagebreak" title="468" id="Page_468"></span>query
+                    prepared <a id="idp22437424"></a><a id="idp22438560"></a>for execution.
+                </li>
+                <li><code>Join</code>: An object that represents a <code>JOIN</code> clause.</li>
+            </ul>
+            <p>The next code fragment shows an equivalent of the JPQL query <code>SELECT e FROM Employee AS e</code> written
+                using the Criteria API:</p>
+            <pre>
+EntityManager em;
+...
+CriteriaBuilder cb = em.getCriteriaBuilder();
+CriteriaQuery&lt;Employee&gt; crQuery = cb.createQuery(Employee.class);
+Root&lt;Employee&gt; employee = crQuery.from(Employee.class);
+crQuery.select(employee);
+TypedQuery&lt;Employee&gt; tQuery= em.createQuery(crQuery);
+List&lt;Employee&gt; employees = tQuery.getResultList( );</pre>
+            <p>Start with asking <code>EntityManager</code> to create <code>CriteriaBuilder</code>, which in turn
+                creates the instance of <code>CriteriaQuery</code>. Note that via generics,
+                the <code>CriteriaQuery</code> is typed based on the expected results. After that you add instances of
+                required objects (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, and so on) to <code>CriteriaQuery</code>.
+            </p>
+            <p>Finally, the <code>EntityManager</code> prepares the executable <code>TypedQuery</code> that produces
+                strongly typed results by executing <code>getResultList()</code>. If you expect just one record back,
+                use the <code>getSingleResult()</code> method. You can chain several clauses in the query:</p>
+            <pre>
+crQuery.select(employee).where(...).orderBy(...);</pre>
+            <p>Because we are building the object graph, the order of the query classes in the preceding line is not
+                important. The <code>Root</code> object can serve as a starting point for joining entities:</p>
+            <pre>
+Root&lt;Employee&gt; employee = crQuery.from(Employee.class);
+Join&lt;Employee, Address&gt; empJoin = employee.join(...);</pre>
+            <p>The next example shows how to add the <code>LIKE</code> clause to get all employees with the last name
+                Thompson:</p>
+            <pre>
+Root&lt;Employee&gt; employee = crQuery.from(Employee.class);
+crQuery.select(employee).where(
+           cb.like(employee.&lt;String&gt;)get("lastName"),
+           cb.parameter(String.class, "lname"));
+TypedQuery&lt;Employee&gt; tQuery= em.createQuery(crQuery);
+tQuery.setParameter("lname", "%Thompson%");
+List&lt;Employee&gt; employees = tQuery.getResultList( );</pre>
+        </section>
+    </section>
+    <section>
+        <h2><a id="entitymanager"></a>Entity Manager</h2>
+        <p>Entities are <a id="emanage1"></a>managed by the entity manager <code>javax.persistense.EntityManager</code>,
+            which  is the centerpiece of persistence mechanism; it executes all your JPA requests to read from or write
+            into a database. Often each instance of <code>EntityManager</code> is associated with a set of entities.
+            Such a set is <a id="emanage2"></a><a id="idp22461024"></a>called a <i>persistence context</i>. </p>
+        <p>A JTA <span epub:type="pagebreak" title="469" id="Page_469"></span>transaction usually involves invocation of
+            more than one application component and is annotated with <code>@PersistenceContext</code>. In Java EE
+            containers the <code>EntityManager</code> can be injected as a resource—for example:</p>
+        <pre>
+@PersistenceContext
+EntityManager em;</pre>
+        <p>With a container-managed entity manager, its persistence context is automatically propagated by the container
+            to application components.  If you want your application to manage multiple instances of
+            <code>EntityManager</code> ,  you need to instantiate it programmatically using
+            <code>EntityManagerFactory</code>:</p>
+        <pre>
+private EntityManagerFactory factory;
+private static final String PERSISTENCE_CONTEXT_NAME = "employees";
+...
+factory = Persistence.createEntityManagerFactory(
+                                         PERSISTENCE_CONTEXT_NAME);
+EntityManager em = factory.createEntityManager();</pre>
+        <p>The entity manager can create, update, remove, and find entities by IDs or using a query. The code to find an
+            <code>Employee</code> entity with the ID <code>1234</code> can look like this:</p>
+        <pre>
+Employee employee = em.find(Employee.class, 1234);</pre>
+        <p>To create a new row in the <code>Employee</code> database table, create an instance of the entity <code>Employee</code>
+            and invoke the <a id="idp22469952"></a><a id="idp22471664"></a>method <code>persist()</code> on the <code>EntityManager</code>.
+            To delete a row, call <code>remove()</code>. Your application can explicitly begin and commit transactions
+            when the persistence is successfully completed:</p>
+        <pre>
+@PersistenceContext
+EntityManagerFactory factory;
+EntityManager em;
+@Resource
+UserTransaction userTransaction;
+...
+em=factory.createEntityManager();
+Employee newEmployee = new Employee();
+newEmployee.firstName="Mary";
+newEmployee.lastName="Thompson";
+...
+try{
+  userTransaction.begin();
+  em.persist(newEmployee);
+  em.remove(oldEmployee);
+userTransaction.commit();
+}
+catch (SystemException e){ //other exceptions can be thrown here
+  e.printStackTrace();
+  try{
+   userTransaction.rollback();
+   } catch(SystemException e1){e1.printStackTrace()}
+}</pre>
+        <p><span epub:type="pagebreak" title="470" id="Page_470"></span>To select the manager name of the employee with
+            the <code>firstName</code> Mary and the <code>lastName</code> Thompson, ask the <code>EntityManager</code>
+            to run the following JPQL query:</p>
+        <pre>
+EntityManager em;
+List employees;
+...employees = em.createQuery(
+"SELECT e.managerName FROM Employee AS e WHERE e.firstName='Mary' "
+      + " AND e.lastName='Thompson'").getResultList();</pre>
+        <p>This static query works only for employees whose full names are Mary Thompson. Note that the method <code>getResultList()</code>
+            is invoked on the created query object. If you expect just one entity as a result, call the method <code>getSingleResult()</code>
+            instead. To specify the first and last names dynamically, you should use parameters; for example:</p>
+        <pre>
+EntityManager em;
+List&lt;Employee&gt; employees;
+// parameters
+String firstName = "Mary";
+String lastName = "Thompson";
+...
+employees = em.createQuery(
+"SELECT e.managerName FROM Employee AS e WHERE " +
+  "e.firstName= :fname AND lastName= :lname")
+   .setParameter("lname", lastName)
+   .setParameter("fname", firstName)
+   .getResultList();</pre>
+        <p>One instance of <code>EntityManager</code> manages a <i>persistence unit</i>—a set of classes specified in
+            the configuration file <code>persistence.xml</code>, which is located in the <code>META-INF</code> directory
+            of the deployed EJB jar. If you package the application in the <code>.war</code> file, this file has to be
+            located either in the directory <code>WEB-INF/classes/META-INF</code> or in a jar under
+            <code>WEB-INF/lib</code>.</p>
+        <p>The file <code>persistence.xml</code> specifies the name of the <code>.jar</code> file that contains managed
+            persistence classes and their names. It also contains the name of the JDBC data source (not the specific
+            JDBC driver) used for communication with DBMS; for example:</p>
+        <pre>
+&lt;persistence&gt;
+    &lt;persistence-unit name="EmployeeManagement"&gt;
+        &lt;description&gt;This unit manages Acme Employees &lt;/description&gt;
+        &lt;jta-data-source&gt;jdbc/HRDatabase&lt;/jta-data-source&gt;
+        &lt;jar-file&gt;MyEmployeeApp.jar&lt;/jar-file&gt;
+        &lt;class&gt;lesson32.Employee&lt;/class&gt;
+        &lt;class&gt;lesson32.Address&lt;/class&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;</pre>
+        <p>The <code>&lt;persistence-unit&gt;</code> element <span epub:type="pagebreak" title="471"
+                                                                   id="Page_471"></span>must specify a name that is
+            unique to the persistence unit scope. All classes included in a persistence unit have to work with a single
+            data store defined in the <a id="idp22489856"></a><a id="idp22488032"></a>element <code>&lt;jta-data-source&gt;</code>,
+            which must be preconfigured as a JNDI resource in your Java EE application server.</p>
+    </section>
+    <section>
+        <h2><a id="bean_validation"></a>Bean Validation</h2>
+        <p>When the user <a id="beanvalid1"></a><a id="beanvalid2"></a><a id="beanvalid3"></a>enters the data, she can
+            make a mistake. The input validation can and should be done on the client’s side to prevent unnecessary
+            server requests if the entered data is wrong or incomplete.</p>
+        <p>Then the data travels to the server, which also has to perform the validation before handling or persisting
+            the data. Think of a web application where the user enters the data in the form, the client-side validation
+            passed, and an HTTP request is made to the server. You should revalidate the data on the server side to
+            protect against the malicious user who might have hijacked and modified the data en route.</p>
+        <p>Then you need to perform the data validation prior to persisting the data. The Bean Validation framework is
+            supported by all Java EE-compliant servers. It’s a Java API for ensuring that the values in entities are
+            correct. You can declare the constraints on your entities, and the validation is automatically initiated
+            when you are about to create, update, or remove an entity. Standard bean validation is done by placing <a
+                    href="https://docs.oracle.com/javaee/7/tutorial/bean-validation001.htm#GKAGK">built-in
+                annotations</a> on a class, field, or a method of a managed bean. Custom bean validation is done by
+            declaring a custom annotation and implementing the <code>isValid()</code> method of the <code>ConstraintValidator</code>
+            interface.</p>
+        <p>The code sample <a href="part0033.html#list-c032-001">Listing 32-1</a> declared the field validation
+            using <code>@NotNull</code> and <code>@Size</code> built-in constraints defined in the package <code>javax.validation.constraints</code>,
+            but you can create and implement custom validation rules as well. You can validate non-static methods of the
+            entity class.</p>
+        <p>The entity life-cycle callback methods marked with the annotations <code>@PrePersist</code> and <code>@PreRemove</code>
+            are invoked on the entity before the <code>EntityManager</code> persists or removes this entity.
+            Accordingly, another pair of annotations, <code>@PostPersist</code> and <code>@PostRemove</code>, are
+            invoked after these operations.</p>
+        <p>For example, you can put the validation code in the method <code>transferEmployee()</code> to ensure that the
+            transfer has been approved by the employee’s manager. Throwing an exception invalidates the operation:</p>
+        <pre>
+@PrePersist
+public void validateTransfer(){
+   if (!transferApproved()){
+     throw new TransferException("Manager didn't approve transfer");
+  }
+}</pre>
+        <p>To prevent <code>NullPointerException</code>s, you can add a <code>@NotNull</code> constraint to the return
+            value of a method:</p>
+        <pre>
+@NotNull 
+public Employee getEmployee() {
+ ... 
+}
+</pre>
+        <p>If you need to validate a group of fields, you can create a cross-parameter validation on the constructor or
+            a method level. For example, you can create a custom constraint <code>@EmploymentDates</code> that ensures
+            that the <span epub:type="pagebreak" title="472" id="Page_472"></span>employee’s hire date is older than the
+            resignation date, and none of these dates are Saturday, Sunday, or a company holiday. Such a custom
+            validation can be applied to the class <code>Employee</code>:</p>
+        <pre>
+@ValidateEmploymentDates (start="hireDate", end="resignationDate")  
+public class Employee{
+  Date hireDate;
+  Date resignationDate;
+ ... 
+}</pre>
+        <p>To create a custom validation, you need to declare a custom annotation and implement it. For example, you
+            could declare the custom annotation as follows:</p>
+        <pre>
+@Target( { TYPE, ANNOTATION_TYPE }) 
+@Retention(RUNTIME) 
+@Constraint(validatedBy = {EmploymentDatesValidator.class} ) 
+@Documented public 
+@interface ValidateEmploymentDates { 
+    String message() default "{end} should be later than {start} 
+                     and can't fall on weekends and holidays"; 
+    String start(); 
+    String end(); 
+    Class[] groups() default {}; 
+    Class[] payload() default {}; 
+}</pre>
+        <p>This annotation allows two parameters: <code>start</code> and <code>end</code>. According to the Bean
+            Validation specification, it must include three mandatory attributes: <code>message</code>,
+            <code>groups</code>, and <code>payload</code>. The <code>message</code> attribute is needed to specify an
+            error message if the constraint is violated. An attribute <code>groups</code> can be used to group
+            constraints, and must default to an empty array. The <code>payload</code> attribute can be used to assign
+            custom payloads required for validation. It also must default to an empty array.</p>
+        <p>The class that implements this validation has to implement the interface <code>javax.validation.ConstraintValidator</code>,
+            that declares two methods:<br/>
+            <code>initialize()</code> and <code>isValid()</code>. The first method initializes the values to be
+            validated, and the second implements the validation logic:</p>
+        <pre>
+public class EmploymentDatesValidator implements
+             ConstraintValidator(ValidateEmploymentDates, Employee){
+  private String start; 
+  private String end; 
+  public void initialize(ValidateEmploymentDates validateEmpDates){ 
+    start = validateEmpDates.start(); 
+    end = validateEmpDates.end(); 
+  } 
+  
+  public boolean isValid(Employee employee, 
+          ConstraintValidatorContext constraintValidatorContext) {
+ 
+      // Implement the validation logic here. 
+      // Return true if valid, and false if invalid
+   } 
+}
+</pre>
+        <p>The <span epub:type="pagebreak" title="473" id="Page_473"></span>content of this section should give you an
+            idea how to validate entities. For more details about the Bean Validation API, refer to the <a
+                    href="https://docs.oracle.com/javaee/7/tutorial/partbeanvalidation.htm#sthref1322">Oracle
+                tutorial</a>.</p>
+    </section>
+    <p>This lesson gives you a very high-level overview of the Java Persistence API. You can find more detailed <a
+            id="idp22527568"></a><a id="idp22527296"></a><a id="idp22529312"></a>explanation of JPA in the <a
+            href="https://docs.oracle.com/javaee/7/tutorial/partpersist.htm#BNBPY">online Oracle tutorial</a>. </p>
+</section>
+<section>
+    <h2><a id="try_it-id00123"></a>Try It</h2>
+    <p>The GlassFish 4 server <a id="idp22533216"></a><a id="idp22535104"></a>includes the binaries of the JPA 2.1
+        provider <a href="http://eclipse.org/eclipselink">EclipseLink</a>, which is an open source mapping and
+        persistence framework. You’ll be using EclipseLink to auto-generate the Java entity class <code>Employee</code> based
+        on the existing database table <code>EMPLOYEE</code>. This serves as an example of object-relational mapping,
+        when Java entities are generated based on the existing database. In this walkthrough you reuse the database
+        named  <code>Lesson21</code> with a table <code>Employee</code> that was created in <a
+                href="part0022.html#creating_a_database_with_derby">Lesson 21</a>.</p>
+    <section>
+        <h3><a id="lesson_requirements-id00124"></a>Lesson Requirements</h3>
+        <p>You should have installed Java, Eclipse, GlassFish, and Derby DB , which comes with GlassFish. </p>
+        <p><i>You can download the code and resources for this “Try It” from the book’s web page at </i><a
+                href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a><i>. You can find them
+            in  <code>Lesson32.zip</code>.</i></p>
+    </section>
+    <section>
+        <h3><a id="step-by-step-id00125"></a>Step-by-Step</h3>
+        <ol>
+            <li>
+                <p>This time you create a new type of Eclipse project. Create a new JPA project by selecting File → New
+                    → JPA → JPA project. Name it <code>Lesson32</code>. Select GlassFish 4 as a target run time and JPA
+                    Configuration 2.1, as shown in <a id="fig-anc-c032-001" href="part0033.html#fig-c032-001">Figure
+                        32-1</a>.</p>
+                <figure>
+                    <img class="center" src="../Images/image00609.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-001" href="part0033.html#fig-anc-c032-001">Figure 32-1</a>:</b></span>
+                            A <span epub:type="pagebreak" title="474" id="Page_474"></span>fragment of the JPA project
+                            configuration window</p>
+                    </figcaption>
+                </figure>
+                <p> </p>
+            </li>
+            <li>A pop-up suggesting the name of the default output folder displays. Don’t change anything there; click
+                Next.
+            </li>
+            <li>
+                <p>The JPA Facet window enables you to select the JPA implementation—the library that implements JPA
+                    specification. The User Library box is initially  empty.Press the little Preferences icon next to it
+                    and then click New in the Preferences window to configure a new library. Call it
+                    <code>EclipseLink</code>.</p>
+            </li>
+            <li>
+                <p>To include full EclipseLink implementation,  add the following external jars from the folder <code>glassfish4/glassfish/modules</code> to
+                    your EclipseLink user library:</p>
+                <pre>
+org.eclipse.persistence.antlr.jar
+org.eclipse.persistence.asm.jar
+org.eclipse.persistence.core.jar
+org.eclipse.persistence.dbws.jar
+org.eclipse.persistence.jpa.jar
+org.eclipse.persistence.jpa.jpql.jar
+org.eclipse.persistence.jpa.modelgen.processor.jar
+org.eclipse.persistence.moxy.jar
+org.eclipse.persistence.oracle.jar
+javax.persistence.jar</pre>
+            </li>
+            <li>
+                <p>Click the Finish button and the generation of the Eclipse JPA project will be finished. The structure
+                    of your project should look similar to <a id="fig-anc-c032-002" href="part0033.html#fig-c032-002">Figure
+                        32-2</a>.</p>
+                <figure>
+                    <img class="center" src="../Images/image00610.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-002" href="part0033.html#fig-anc-c032-002">Figure 32-2</a>:</b></span>
+                            Newly <span epub:type="pagebreak" title="475" id="Page_475"></span>generated Eclipse JPA
+                            project with EclipseLink support</p>
+                    </figcaption>
+                </figure>
+            </li>
+            <li>Start your Derby database server using the <code>startNetworkServer</code> command, as explained in 
+                <p style="display: inline !important;"><a href="part0022.html#creating_a_database_with_derby">creating_a_database_with_derby</a>
+                </p>
+                in <a href="part0022.html">Lesson 21</a>. 
+            </li>
+            <li>Using the ij utility in a separate command window, check to see that the database <code>Lesson21</code>
+                exists and the table <code>Employee</code> (created in <a href="part0022.html">Lesson 21</a>) is still
+                there. If not, re-create it and populate it with data. 
+            </li>
+            <li>Add the file <code>derby/lib/derbyclient.jar</code> to the build path of your Eclipse project
+                (right-click the project Lesson32, select Properties → Java Build Path → Libraries → Add External Jars).
+                This is where the Derby DB implements the JDBC driver. 
+            </li>
+            <li>
+                <p>In the project’s Data Source Explorer view, right-click Database Connections (see <a
+                        id="fig-anc-c032-003" href="part0033.html#fig-c032-003">Figure 32-3</a>) and create a new
+                    Connection Profile.<br/>
+                     </p>
+                <figure>
+                    <img class="center" src="../Images/image00611.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-003" href="part0033.html#fig-anc-c032-003">Figure 32-3</a>:</b></span>
+                            The Data Source Explorer View</p>
+                    </figcaption>
+                </figure>
+            </li>
+            <li>
+                <p>In the pop-up window, configure your new connection into the database Lesson21 that you created in <a
+                        href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a><a
+                        href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a>. The default user id is
+                    <code>u</code><code>ser</code> and the password is <code>sys</code>. (See <a id="fig-anc-c032-004"
+                                                                                                 href="part0033.html#fig-c032-004">Figure
+                        32-4</a>.)</p>
+                <figure>
+                    <img class="center" src="../Images/image00612.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-004" href="part0033.html#fig-anc-c032-004">Figure 32-4</a>:</b></span>
+                            Configuring <span epub:type="pagebreak" title="476" id="Page_476"></span>new connection
+                            profile</p>
+                    </figcaption>
+                </figure>
+            </li>
+            <li>
+                <p>Click Test Connection to ensure the connection is successful. </p>
+            </li>
+            <li>
+                <p>Using the view Data Source Explorer, connect to the database using the newly configured profile and
+                    see that the table Employee exists in the <code>APP</code> schema, as shown in <a
+                            id="fig-anc-c032-005" href="part0033.html#fig-c032-005">Figure 32-5</a>.</p>
+                <figure>
+                    <img class="center" src="../Images/image00613.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-005" href="part0033.html#fig-anc-c032-005">Figure 32-5</a>:</b></span>
+                            Verifying <span epub:type="pagebreak" title="477" id="Page_477"></span>that the table
+                            Employee exists</p>
+                    </figcaption>
+                </figure>
+            </li>
+            <li>
+                <p>You can see the data in Eclipse, as shown in <a id="fig-anc-c032-006"
+                                                                   href="part0033.html#fig-c032-006">Figure 32-6</a>;
+                    right-click the table <code>Employee</code> and select Data → Sample Contents.</p>
+                <figure>
+                    <img class="center" src="../Images/image00614.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-006" href="part0033.html#fig-anc-c032-006">Figure 32-6</a>:</b></span>
+                            Sampling the data from a table</p>
+                    </figcaption>
+                </figure>
+            </li>
+            <li>
+                <p>JPA requires database tables to have primary keys, but our table Employee didn’t define one. You need
+                    to fix this by making the column <code>empno</code> a primary key. You can do it from the command
+                    line via the<i> ij</i> utility (see <a href="part0022.html#working_with_databases_using_jdbc">working_with_databases_using_jdbc</a>)
+                    by issuing the following command:</p>
+                <pre>
+alter table APP.Employee add primary key (empno);</pre>
+            </li>
+            <li>Right-click <span epub:type="pagebreak" title="478" id="Page_478"></span>the name of project Lesson32
+                and select JPA Tools → Generate Entities from Tables. In the pop-up window, select the connection, the
+                schema APP, and the table  <code>Employee</code> and click Finish as shown in <a id="fig-anc-c032-007"
+                                                                                                 href="part0033.html#fig-c032-007">Figure
+                    32-7</a>.
+                <figure>
+                    <img class="center" src="../Images/image00615.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c032-007" href="part0033.html#fig-anc-c032-007">Figure 32-7</a>:</b></span>
+                            Generating an entity from the existing table</p>
+                    </figcaption>
+                </figure>
+            </li>
+            <li>
+                <p>Open the folder <code>src</code> in your Eclipse project, where you’ll find a freshly generated class
+                    called <code>Employee</code> that looks as follows:</p>
+                <pre>
+package model;
+import java.io.Serializable;import javax.persistence.*;
+/** * The persistent class for the EMPLOYEE database table. * */
+@Entity
+@NamedQuery(name="Employee.findAll",
+             query="SELECT e FROM Employee e")
+public class Employee implements Serializable { 
+  private static final long serialVersionUID = 1L;
+  @Id private int empno;
+  private String ename;
+  @Column(name="JOB_TITLE") private String jobTitle;
+  public Employee() { }
+  public int getEmpno() { return this.empno; }
+  public void setEmpno(int empno) { this.empno = empno; }
+  public String getEname() { return this.ename; }
+  public void setEname(String ename) { this.ename = ename; }
+  public String getJobTitle() { return this.jobTitle; }
+  public void setJobTitle(String jobTitle) { 
+   this.jobTitle = jobTitle; }
+}</pre>
+                <p>Finally, open the folder <code>META-INF</code>, where you’ll find the file
+                    <code>persistence.xml</code>:</p>
+                <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence version="2.1" 
+  xmlns="http://xmlns.jcp.org/xml/ns/persistence" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence 
+  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"&gt;
+    
+    &lt;persistence-unit name="Lesson32"&gt;
+        &lt;class&gt;model.Employee&lt;/class&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+</pre>
+            </li>
+        </ol>
+        <p><span epub:type="pagebreak" title="479" id="Page_479"></span>Eclipse has generated the Java entity class
+            <code>Employee</code> from an existing database table. This completes your assignment. </p>
+        <p>The reverse workflow is also supported. Eclipse can generate a database table based on the entity class
+            definition. To do this, you’d need to use the option JPA Tools → Generate Tables from Entities.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0033.html">Lesson
+                    32</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                    will also be able to download the code and resources for this lesson from the website.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+</section>
+</body>
+</html>

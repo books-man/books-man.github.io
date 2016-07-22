@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introduction to Generics</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_generics"></a><span class="chapterTitle">Lesson 12<br/>Introduction to Generics</span>
+    </h1>
+
+    <section>
+        <p>In <span epub:type="pagebreak" title="141" id="Page_141"></span>the previous lesson you saw an example of a
+            collection that stores objects of different types (see <a href="part0012.html#list-c011-002">Listing
+                11-2</a>). During the run time, that program would test the actual type of each object and cast it to an
+            appropriate type—<code>Customer</code> or <code>Order</code>. If some code adds an element of another
+            (unexpected) data type, this will result in a casting error, <code>ClassCastException</code>. Instead of
+            leaving it until run time, it would be nice if during the compilation the compiler would prevent using
+            unexpected types with collection, objects, or even method arguments and return types. </p>
+        <p>Java supports <i>generics</i>, which <a id="idp15926560"></a><a id="idp15922976"></a><a id="idp15928240"></a>enable
+            you to use parameterized data types—you can declare an object, collection, or method without specifying a
+            concrete data type, shifting the definition of concrete types to the code that will use these objects,
+            collections, or methods. In other words, a <a id="idp15927888"></a><a id="idp15930752"></a>generic type is
+            one that can work with parameterized data types. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp15933152"></a>Parameterized Classes</h3>
+                <p>Not only Java methods can accept parameters (also known as arguments), but classes can have them as
+                    well. I’ll show you how to do it in the section on <a
+                            href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch12.html#custom_parameterized_classes">custom
+                        parameterized classes</a>.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>By using generic notation, you get help from Java compiler, which does not allow you to use objects of the
+            “wrong” types that don’t match the declaration. In other words, you can catch improper data types earlier,
+            during the compilation phase. This concept is easier to explain by examples, and so we’ll get right into
+            it.</p>
+    </section>
+    <section>
+        <h2><a id="idp15942320"></a>Generics with Classes</h2>
+        <p>Consider the <code>ArrayList</code> <a id="generic1"></a><a id="generic2"></a>from <a
+                href="part0012.html#list-c011-002">Listing 11-2</a>, which is a kitchen sink–like storage that can hold
+            pretty much any object. But if you add the parameterized type <code>Customer</code> in angle brackets
+            (<code>ArrayList&lt;Customer&gt;</code>) to the <span epub:type="pagebreak" title="142"
+                                                                  id="Page_142"></span>declaration of the <code>customers</code>
+            collection (see <a id="list-anc-c012-001" href="part0013.html#list-c012-001">Listing 12-1</a>), any attempt
+            to place an <code>Order</code> object there generates the following compiler error:</p>
+        <pre>
+The method add(Customer) in the type ArrayList&lt;Customer&gt; is not 
+applicable for the arguments (Order).</pre>
+        <p>Think of it this way: <code>ArrayList</code> can be used to store any objects, and using generics enables you
+            to put a constraint on the types of objects allowed in a specific instance of <code>ArrayList</code>. This
+            is an example of a parameterized class, which is just one use for generics.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c012-001"
+                                           href="part0013.html#list-anc-c012-001">Listing 12-1</a>:</span> Using
+                    generics in the collection</h5>
+                <pre>
+import java.util.List;
+import java.util.ArrayList; 
+public class TestGenericCollection {
+       public static void main(String[] args) {
+           <strong>List&lt;Customer&gt; customers = new ArrayList&lt;&gt;();</strong>
+           Customer customer1 = new Customer("David","Lee");
+           customers.add(customer1);
+           Customer customer2 = new Customer("Ringo","Starr");
+           customers.add(customer2);
+           
+           Order order = new Order();
+           customers.add(order); // Compiler error
+       }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Getting an <a id="idp15951872"></a><a id="idp15953648"></a>error during compilation is better than getting
+            runtime cast exceptions. Note the empty angle brackets in the preceding example. Those are called <a
+                    id="idp15953312"></a><a id="idp15956160"></a>the <i>diamond operator</i>—you don’t need to repeat
+            <code>&lt;Customer&gt;</code> on the right because this type has been specified already on the left. As a
+            refresher, I’ve been using the List interface to declare the variable customers as explained in the previous
+            lesson in the section "<a href="part0012.html#programming_to_interfaces">Programming to Interfaces</a>." 
+        </p>
+        <p>What makes the <code>ArrayList</code> class capable of rejecting the unwanted data types? Open the source
+            code of the <code>ArrayList</code> itself (pressing F3 in Eclipse shows the source code of any class or
+            interface, if available). It starts as follows:</p>
+        <pre>
+public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;
+    implements List&lt;E&gt;, RandomAccess, Cloneable, Serializable</pre>
+        <p>This magic <code>&lt;E&gt;</code> after the class name tells the Java compiler that this class can use some
+            types of elements, but which ones remains unknown until a concrete instance of <code>ArrayList</code> is
+            created. In <a href="part0013.html#list-c012-001">Listing 12-1</a>, the <i>type parameter</i> <code>&lt;Customer&gt;</code>
+            replaces <code>&lt;E&gt;</code> during compilation, and the compiler ensures that the code stores only
+            instances of <code>Customer</code> objects in the collection <code>customers</code> .</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp15966640"></a>Type Erasure</h3>
+                <p>I’d <span epub:type="pagebreak" title="143" id="Page_143"></span>like to stress <a
+                        id="idp15968304"></a><a id="idp15969792"></a><a id="idp15971232"></a>that this <code>
+                    &lt;E&gt;</code> notation is used only during the declaration of the type. The code in <a
+                        href="part0013.html#list-c012-001">Listing 12-1</a> does not include <code>&lt;E&gt;</code>. The
+                    compiler replaces <code>&lt;E&gt;</code> with <code>Customer</code> and erases the parameterized
+                    data type in the byte code. This process is known as <i>type erasure;</i> it’s primarily done for
+                    compatibility with code written in older versions of Java that didn’t have generics. The generated
+                    byte code is the same with parameterized and with <i>raw</i> data types.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Now you can simplify the code from <a href="part0012.html#list-c011-002">Listing 11-2</a> by removing casting
+            (see <a id="list-anc-c012-002" href="part0013.html#list-c012-002">Listing 12-2</a>). Why? Because with
+            generics, when the compiler sees a specific type, it automatically generates the bytecode, which performs
+            casting internally! That’s why you don’t even need to cast the data returned by the method
+            <code>get(i)</code> from <code>Object</code> to <code>Customer</code> any longer. Besides, you’re guaranteed
+            that the collection <code>customers</code> will have only <code>Customer</code> instances. Java compiler has
+            the ability to look at the method invocation and properly guess the type of <a id="idp15981056"></a><a
+                    id="idp15982656"></a>the argument. It’s called <i><a
+                    href="http://docs.oracle.com/javase/tutorial/java/generics/genTypeInference.html">type inference</a></i>.
+            It’s used not only with generics, but with lambda expressions as well, which will be covered in <a
+                    href="part0014.html#lambda_expression">Lesson 13</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c012-002"
+                                           href="part0013.html#list-anc-c012-002">Listing 12-2</a>:</span> Iterating
+                    through customers without casting</h5>
+                <pre>
+List&lt;Customer&gt; customers = new ArrayList&lt;&gt;();
+// The code to populate customers is omitted for brevity
+// Iterate through the list customers and do something with each
+// element of this collection. No casting required.
+for (Customer customer: customers){
+    customer.doSomething();
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp15986832"></a>Raw Types</h3>
+                <p>Using the parameterized <code>ArrayList</code> in this <a id="idp15991392"></a><a
+                        id="idp15992944"></a>example is not a must. You can still write the following:</p>
+                <pre>
+List customers = new ArrayList();
+</pre>
+                <p>The compiler gives you a warning that <code>ArrayList</code> is a raw type and should be
+                    parameterized. This basically means that compiler won’t help you if you add to this collection an
+                    object of a type that might blow up in some other place in the program. While <a
+                            id="idp15999472"></a><a id="idp15995760"></a>using raw types is not an error, it should be
+                    avoided.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="defining_generics"></a>Declaring Generics</h2>
+        <p>If you’ll <span epub:type="pagebreak" title="144" id="Page_144"></span>be <a id="idp16001184"></a><a
+                id="idp16003072"></a>creating your own class for storing objects, you can use any letter(s) in angle
+            brackets to declare that your class will use parameterized types. You can use any letters <a
+                    id="idp16004464"></a><a id="idp16005712"></a>to represent parameterized types, but traditionally
+            developers use <code>&lt;E&gt;</code> for <i>element, </i> <code>&lt;T&gt;</code> for <i>type,</i> <code>
+                &lt;K&gt;</code> for <i>keys,</i> <code>&lt;V&gt;</code> for <i>value</i>, and so on. The letter is
+            replaced by a concrete type during concrete variable declaration. Open the source code of the Java class
+            <code>Hashtable</code>, and you see <code>&lt;K,V&gt;</code>, which stands for <i>key</i> and <i>value</i>:
+        </p>
+        <pre>
+public class Hashtable&lt;K,V&gt; extends Dictionary&lt;K,V&gt;
+    implements Map&lt;K,V&gt;, Cloneable, Serializable </pre>
+        <p>Again, what types are used for storing keys and values is decided when the <code>Hashtable</code> is being
+            declared. You can use a parameterized type for declaring variables wherever you can use regular data types.
+            <a id="list-anc-c012-003" href="part0013.html#list-c012-003">Listing 12-3</a> shows a fragment from the
+            source code of the interface <code>java.util.List</code>. This interface declaration uses <code>
+                &lt;E&gt;</code> as a data type.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c012-003"
+                                           href="part0013.html#list-anc-c012-003">Listing 12-3</a>:</span> Fragment from
+                    java.util.List interface</h5>
+                <pre>
+package java.util;
+public interface List&lt;E&gt; extends Collection&lt;E&gt; {
+    Iterator&lt;E&gt; iterator();
+    &lt;T&gt; T[] toArray(T[] a);
+    boolean add(E e);
+    boolean containsAll(Collection<strong>&lt;?&gt;</strong> c);
+    boolean addAll(Collection&lt;? extends E&gt; c);
+    boolean addAll(int index, Collection&lt;? extends E&gt; c);
+    boolean removeAll(Collection&lt;?&gt; c);
+    E set(int index, E element);
+    void add(int index, E element);
+    ListIterator&lt;E&gt; listIterator();
+    ListIterator&lt;E&gt; listIterator(int index);
+    List&lt;E&gt; subList(int fromIndex, int toIndex);
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="wild_cards"></a>Wildcards</h2>
+        <p><a href="part0013.html#list-c012-003">Listing 12-3</a> contains <a id="idp16022336"></a><a
+                id="idp16024000"></a>question marks that represent unknown types. It’s easier to explain them with an
+            example. Let’s turn the <code>for</code> loop from <a href="part0013.html#list-c012-002">Listing 12-2</a>
+            into a method. In Eclipse, highlight the code of the <code>for</code> loop, right-click, and select Refactor
+            → Extract Method. In the pop-up window enter the method name <code>processCustomers</code> and click OK.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c012-004"></a>Listing 12-4:</span> Refactored <span
+                        epub:type="pagebreak" title="145" id="Page_145"></span>class TestGenericCollection</h5>
+                <pre>
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+public class TestGenericCollection {
+       public static void main(String[] args) {
+         List&lt;Customer&gt; customers = new ArrayList&lt;Customer&gt;();
+         Customer customer1 = new Customer("David","Lee");
+         customers.add(customer1);
+         Customer customer2 = new Customer("Ringo","Starr");
+         customers.add(customer2);
+         Order order = new Order();
+         //customers.add(order); // Compiler error
+         // Iterate through the list customers and do something 
+         // with each element of this collection. 
+         // No casting required.
+         processData(customers);
+       }
+       private static void processData(List&lt;Customer&gt; customers){
+              for (Customer customer: customers){
+                    customer.doSomething();
+              }
+       }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>What if you want to make the method <code>processData()</code> more generic and useful not only for a
+            collection of <code>Customer</code> objects but for others, too? Without generics you’d be using <code>instanceof</code>
+            and writing something similar to <a id="list-anc-c012-005" href="part0013.html#list-c012-005">Listing
+                12-5</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c012-005"
+                                           href="part0013.html#list-anc-c012-005">Listing 12-5</a>:</span> Back to
+                    casting</h5>
+                <pre>
+private static void processData(ArrayList data) {
+    for (Object object: data){
+       if(object instanceof Customer){            
+          ((Customer) object).doSomething();
+       } 
+    }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>But <span epub:type="pagebreak" title="146" id="Page_146"></span>now, armed with the new knowledge, you can
+            try to change the signature of the method <code>processData()</code> to the following:</p>
+        <pre>
+private static void processData(List&lt;Object&gt; data){
+  // do something with data
+}</pre>
+        <p>Unfortunately, this solution won’t work, because there is no such thing as inheritance of parameterized
+            types. In other words, even though the class <code>Customer</code> is a subclass of <code>Object</code>,
+            such inheritance does not apply to parameters <code>&lt;Customer&gt;</code> and <code>&lt;Object&gt;</code>.
+            This is when the question mark that represents an unknown type becomes handy. The next step in making <code>processData()</code>
+            more generic is to change the method signature like so:</p>
+        <pre>
+private static void processData(List&lt;?&gt; data){
+   // do something with data
+}</pre>
+        <p>Using such a method signature is different from simply declaring the method argument data of type
+            <code>List</code>, which would require casting, as in <a href="part0013.html#list-c012-005">Listing 12-5</a>.
+            With the wildcard notation you state, “At this point the type of data is not known, but whenever some code
+            uses the method <code>processData()</code> it’ll be known and properly compiled so casting won’t be needed.”
+        </p>
+        <p>The next challenge you face is to compile the code calling the method <code>doSomething()</code> on the
+            objects of unknown types.</p>
+    </section>
+    <section>
+        <h2><a id="custom_parameterized_classes"></a>Creating Custom Parameterized Classes</h2>
+        <p>Let’s <a id="parameter1"></a><a id="parameter2"></a>consider an example with the<a
+                href="part0011.html#bikestore"> bike store </a>from the “Try It” section for <a
+                href="part0011.html#error_handling">Lesson 10</a>. That online store has a truck that’s used to deliver
+            bikes and, say, spare wheels for customers. We want to allow only bikes and wheels to be loaded into the
+            truck; people are not allowed there. Consider the class hierarchy in <a id="fig-anc-c012-001"
+                                                                                    href="part0013.html#fig-c012-001">Figure
+                12-1</a>:</p>
+        <p>An object of type <code>Truck</code> can contain instances of <code>Product</code>. The object
+            <code>Ferry</code> can contain <code>Truck</code> instances. The
+            classes <code>Product</code>, <code>Bike</code>, <code>Wheel</code>, and <code>Person</code> don’t implement
+            any business logic in this small application as it’s irrelevant for understanding  generic types. But the
+            fact that <code>Product</code> is a superclass of <code>Bike</code> and <code>Model</code> is important. The
+            parameterized class <code>Truck</code> can look as follows:</p>
+        <pre>
+public class Truck&lt;T&gt; {
+    
+    private List&lt;T&gt; products = new ArrayList&lt;&gt;();
+    
+    // load the product on the truck
+    public void add (T t){
+        products.add(t);
+    }
+    
+    // Return products loaded on the truck
+    public List&lt;T&gt; getProducts(){
+        return products;
+    }
+}
+</pre>
+        <figure>
+            <img class="center" src="../Images/image00531.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c012-001"
+                                                   href="part0013.html#fig-anc-c012-001">Figure 12-1</a>:</b></span> <a
+                        href="part0013.html#fig-c012-001">Figure 12-1</a>. The <span epub:type="pagebreak" title="147"
+                                                                                     id="Page_147"></span>bike store
+                    class hierarchy</p>
+            </figcaption>
+        </figure>
+        <p>This declaration uses a parameter of type T that’s unknown at this point yet. You specify a concrete type
+            when you create a program that instantiates <code>Truck</code>; for example:</p>
+        <pre>
+public class TestGenericType {
+    public static void main(String[] args) {
+        Truck&lt;Product&gt; shipment = new Truck&lt;&gt;();
+        
+        Bike bike = new Bike();
+        Wheel wheel = new Wheel();
+        Person person = new Person();
+        
+        shipment.add(bike);        
+        shipment.add(wheel);        
+     // shipment.add(person); // Compiler error                 
+    }
+}
+</pre>
+        <p>The variable <code>shipment</code> points at the instance of the <code>Truck</code> that allows adding only
+            the objects of type <code>Product</code> or its subclasses. Because <code>Person</code> is not a <code>Product</code>,
+            the compiler won’t let you add it <a id="idp16067904"></a><a id="idp16069504"></a>to the <code>Truck</code> load.
+        </p>
+    </section>
+    <section>
+        <h2><a id="bounded_wild_cards"></a>Bounded Type Parameters</h2>
+        <p>Bounded type <a id="bounded1"></a><a id="bounded2"></a>parameters enable you to specify generic types with
+            restrictions related to class inheritance hierarchies. Let’s continue using the same example of a bike
+            store. Although  <code>Product</code> is a superclass of a <code>Bike</code>,  <code>ArrayList&lt;Product&gt;</code>
+            is not a superclass of <code>ArrayList&lt;Bike&gt;</code>.  Hence, if there is a method that expects <code>ArrayList&lt;Product&gt;</code>
+            as an argument, you can’t provide <code>ArrayList&lt;Bike&gt;</code>  instead. With generics, you should use
+            the <a id="idp16080544"></a><a id="idp16078576"></a>keyword <code>extends</code> to specify the upper bound
+            of allowed types in the inheritance hierarchy. In <span epub:type="pagebreak" title="148"
+                                                                    id="Page_148"></span>this case it would be  <code>ArrayList&lt;?
+                extends Product&gt;</code>. This means that only <code>ArrayList</code> containing object of <code>Product</code>
+            type and its subclasses are allowed. The question mark is a wildcard here. </p>
+        <p>To illustrate this, let’s change the rules in our bike store: You can’t mix bikes and wheels in the same
+            truck. Also, you want to be able to load trucks on a ferry. The class <code>Ferry</code> looks like the
+            following:</p>
+        <pre>
+public class Ferry {
+  public void loadTruck(<strong>Truck&lt;? extends Product&gt;</strong> truck){ }
+    
+  public void unloadToDock(List&lt;? extends Product&gt; ferryTrucks, 
+                           List&lt;? super Product&gt; dockTrucks){
+        
+      for (Product product: ferryTrucks){
+          dockTrucks.add(product);
+      }        
+  }
+}
+</pre>
+        <p>The method <code>loadTruck()</code> declares the argument <a id="idp16087968"></a><a id="idp16089248"></a>with
+            the <i>upper bounded wildcard</i>—only the trucks with <code>Product</code> and its subclasses can be loaded
+            to the ferry. The class <code>TestGenericBounded</code> creates <a id="idp16091376"></a><a
+                    id="idp16093024"></a>one truck loaded with two bikes, and another one loaded with three wheels. Then
+            it loads both trucks on the ferry.</p>
+        <pre>
+public class TestGenericBounded {
+    public static void main(String[] args) {
+        Ferry ferry = new Ferry();
+        
+        // Load a truck with two bikes 
+        Truck&lt;Bike&gt; bikes = new Truck&lt;&gt;();
+        bikes.add(new Bike());
+        bikes.add(new Bike());
+        
+        // Load a truck with three wheels 
+        Truck&lt;Wheel&gt; wheels = new Truck&lt;&gt;();
+        wheels.add(new Wheel());
+        wheels.add(new Wheel());
+        wheels.add(new Wheel());
+        
+        // Load two trucks on the ferry
+        ferry.loadTruck(bikes);
+        ferry.loadTruck(wheels);                       
+    }
+}
+</pre>
+        <p>If the ferry’s <code>loadTruck()</code> method would be declared as <code>loadTruck(Truck&lt;Product&gt;
+            truck)</code>, you wouldn’t be able to load either the truck with bikes or the one with wheels. </p>
+        <p>The class <code>Ferry</code> also has the method <code>unloadToDock()</code> that illustrates lower bounded
+            wildcards by using the keyword <code>super</code>.</p>
+        <pre>
+public void unloadToDock(List&lt;? extends Product&gt; ferryTrucks, 
+                         List&lt;? <strong>super</strong> Product&gt; dockTrucks){
+   for (Product product : ferryTrucks){
+       dockTrucks.add(product);
+   }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="149" id="Page_149"></span>Note the <code>super</code> keyword <a
+                id="idp16101712"></a><a id="idp16102880"></a>here. You are copying the data from a collection that can
+            contain any subclasses of <code>Product</code> into another one. Revisit the class hierarchy diagram and
+            think of a standard Java upcasting. The destination collection can be of a type of any class that the <code>Product</code>
+            extends from (for example, of type <code>Object</code>). Moreover, you may introduce yet another class
+            located between <code>Object</code> and <code>Product</code> in the inheritance hierarchy—this won’t break
+            the code. The keyword <code>super</code> means exactly this; the destination collection can hold any types
+            as long as they are superclasses of <code>Product</code>.  </p>
+        <p>There is a simple <i>in-out</i> rule that may help you to figure out if you need to use <code>extends</code>
+            or <code>super</code> keywords. If you’re creating a parameterized class to read data from it, use <code>extends</code>.
+            If you <a id="idp16109040"></a><a id="idp16112704"></a>are planning to put or copy data into a parameterized
+            class, use <code>super</code>.</p>
+    </section>
+    <section>
+        <h2><a id="generic_methods"></a>Generic Methods</h2>
+        <p>While declaring <a id="idp16116736"></a><a id="idp16118512"></a>a method you can either predefine data types
+            for its arguments and return values or use generics. For example, the method <code>toArray()</code> from <a
+                    href="part0013.html#list-c012-003">Listing 12-3</a> starts with a declaration of a new parameterized
+            type (<code>&lt;T&gt;</code> in that case), which has to be placed in angle brackets right before the return
+            type in the method signature. The very fact that a method declares a new type makes it generic. The
+            following declaration of the <code>toArray()</code> method takes an array of objects of type <code>T</code>
+            and returns an array of <code>T</code> objects:</p>
+        <pre>
+&lt;T&gt; T[] toArray(T[] a);</pre>
+        <p><a id="fig-anc-c012-002" href="part0013.html#fig-c012-002">Figure 12-2</a> explains the above line in greater
+            details. </p>
+        <figure>
+            <img class="center" src="../Images/image00532.gif" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c012-002"
+                                                   href="part0013.html#fig-anc-c012-002">Figure 12-2</a>:</b></span> <a
+                        href="part0013.html#fig-c012-002">Figure 12-2</a>. A signature of a generic method </p>
+            </figcaption>
+        </figure>
+        <p>If you have an <code>ArrayList</code> of integers, you can declare and convert it to an array as follows:</p>
+        <pre>
+List&lt;Integer&gt; myNumericList = new ArrayList&lt;&gt;();
+...
+Integer myNumericArray[] = new Integer[myNumericList.size()];
+myNumericArray = myNumericList.toArray();</pre>
+        <p>If <span epub:type="pagebreak" title="150" id="Page_150"></span>you need to use the same method <code>toArray()</code>
+            with a list of customers, the data type <code>&lt;T&gt;</code> magically transforms (by compiler) into the
+            <code>Customer</code> type:</p>
+        <pre>
+List&lt;Customer&gt; myCustomerList = new ArrayList&lt;Customer&gt;();
+...
+Customer myCustomerArray[] = new Customer[myCustomerList.size()];
+myCustomerArray = myCustomerList.toArray();</pre>
+        <p>As in examples from the ??? section, you are allowed to put constraints on the type. For example, you can
+            restrict the <code>toArray()</code> method to work only with types that implement the
+            <code>Comparable</code> interface:</p>
+        <pre>
+&lt;T extends Comparable&gt; T[] toArray(T[] a);</pre>
+    </section>
+    <section>
+        <h2><a id="try_it-id00052"></a>Try It</h2>
+        <p>Create a simple program <a id="idp16135920"></a><a id="idp16137584"></a>that uses generics with the class
+            <code>RetiredEmployee</code> (which extends the class <code>Employee</code>) from <a
+                    href="part0008.html#list-c07-002">Listing 7-2</a>. Write a generic method that accepts a collection
+            of <code>RetiredEmployee</code> objects and copies it into a collection of <code>Employee</code> objects.
+            Use the method <code>unloadToDock()</code> from class <code>Ferry</code> as an example.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00053"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in</i> <code>Lesson12.zip</code><i>.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00054"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new Eclipse project called Lesson12.</li>
+                <li>Create classes <code>Employee</code> and then <code>RetiredEmployee</code> that extends <code>Employee</code>.
+                </li>
+                <li>Create an executable Java class, <code>TestGenericMethod</code>, that accepts a <code>List</code> of
+                    <code>RetiredEmployee</code> objects and copies it into a <code>List</code> of <code>Employee</code>
+                    objects. This method should print on the system console the name of each <code>Employee</code> from
+                    the resulting collection.
+                </li>
+                <li>Run the <code>TestGenericMethod</code> program and observe the printed names.</li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0013.html">Lesson 12</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

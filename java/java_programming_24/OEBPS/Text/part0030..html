@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introducing JNDI</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introducing_jndi"></a><span class="chapterTitle">Lesson 29<br/>Introducing JNDI</span></h1>
+
+    <section>
+        <p>Instead <span epub:type="pagebreak" title="413" id="Page_413"></span>of having distributed Java programs that
+            instantiate lots of reusable objects over and over again, it’s better if these objects are pre-created and
+            published at a known server, where they can be easily and quickly found. <a
+                    href="part0025.html#remote_method_invocation">Lesson 24</a> introduces a registry concept, in which
+            a Java object can be published under some name so the client can look it up.  </p>
+        <p>Java Naming <a id="idp21348288"></a><a id="idp21349328"></a>and Directory Interface (JNDI) is also about
+            registering and finding objects in distributed applications. JNDI is an application programming interface
+            (API) that can be used for binding and accessing objects located in Java EE or specialized naming servers
+            that play roles  similar to that of a company telephone directory assistance service. But instead of looking
+            for people’s information, you look for objects. Various software vendors offer specialized directory
+            assistance software, and JNDI provides a standard API to read from and write to such directories. </p>
+        <p>Every Java EE application server comes with an administrator’s console that allows you to manage objects in a
+            JNDI tree. This lesson introduces you to the JNDI concepts, and you see how to use JNDI for <a
+                    id="idp21359456"></a><a id="idp21360464"></a>publishing (and looking up) <i>administered objects</i>
+            (that is, configured by the server administrator).  Some examples of administered objects are database
+            connection pools and message queues (explained in <a href="part0031.html#introducing_jms_and_mom">Lesson
+                30</a>). </p>
+    </section>
+    <section>
+        <h2><a id="java_naming_and_directory_interface"></a>Naming and Directory Services</h2>
+        <p>A <i>naming service</i> enables <a id="idp21356288"></a><a id="idp21357552"></a>you to add, change, or delete
+            names of objects that exist in some naming hierarchy so other Java classes can look them up to find their
+            location. One more analogy: In a library, you find the name of the physical location of the book in a
+            directory and then go to the shelf to pick up the book. A naming service provides a unique name for every
+            entry that is registered with (<i>bound to</i>) this service. Every naming service <a
+                    id="idp21361344"></a><a id="idp21362880"></a>has one or more <i>contexts</i>—think of directories
+            and subdirectories in a file system, where any directory tree with children is a context. The naming tree
+            originates from a root node, which is also known as an <i>initial context</i> (like a root directory on the
+            disk).</p>
+        <p>A <i>directory <span epub:type="pagebreak" title="414" id="Page_414"></span>service</i> enables you to search
+            the naming tree by object attributes rather than object names. One example is that of the domain name
+            system, which is a distributed naming system that takes the domain name of a networked computer or service
+            and returns the IP address and port number of the resource.</p>
+        <p>To allow clients to do lookups, there has to be a process that initially binds the objects to a naming tree.
+            This can be handled via a sever administration console or an independent program that (for example) binds
+            employee names to a directory server of some organization. Java EE servers bind such objects as EJB,
+            Servlets, JMS, and database connection pools to their naming servers during startup.</p>
+        <p>All classes and interfaces that support JNDI are located in the package <code>javax.naming</code> that comes
+            with Java EE SDK.</p>
+    </section>
+    <section>
+        <h2><a id="idp21366304"></a>Using the Class InitialContext </h2>
+        <p>The class <code>InitialContext</code> represents <a id="idp21373200"></a><a id="idp21368768"></a><a
+                id="idp21370016"></a>the root of a JNDI tree in a naming server. There are two ways of getting a
+            reference to  a particular resource that was bound to this tree:</p>
+        <ul>
+            <li>If your Java code runs inside Java EE server, it can can <i>inject</i> the JNDI resource into your
+                program by using <code>@Resource</code> annotation. Your program can also run a <code>lookup()</code> on
+                the <code>InitialContext</code> object.
+            </li>
+            <li>If an external Java program needs a JNDI resource (for example, a standalone messaging program needs to
+                get references to the message queues bound to the JNDI tree of an application server), it has to get a
+                reference to the <code>InitialContext</code> and then invoke the method <code>lookup()</code> .
+            </li>
+        </ul>
+        <section>
+            <h3><a id="initial_context"></a>Getting a Reference to InitialContext</h3>
+            <p>Explicit instantiation of <code>InitialContext</code> is needed only if you are planning to use <code>lookup()</code>
+                as opposed to resource injection, which is explained in the next section. If a Java program runs inside
+                the application server, instantiating the <code>InitialContext</code> object comes down to one line of
+                code:</p>
+            <pre>
+Context initContext = new InitialContext();
+</pre>
+            <p>If a Java program runs outside of the application server, you need to specify the location of the server,
+                the names of the vendor-specific classes implementing <code>InitialContext</code>, and the access
+                credentials. For example, for the WildFly application server, the following code may be used (given that
+                you know the security credentials):</p>
+            <pre>
+final Properties env = new Properties(); 
+env.put(Context.INITIAL_CONTEXT_FACTORY,
+        "org.jboss.naming.remote.client.InitialContextFactory"); 
+env.put(Context.PROVIDER_URL, “http-remoting://127.0.0.1:8080"); 
+env.put(Context.SECURITY_PRINCIPAL, “Alex123”); 
+env.put(Context.SECURITY_CREDENTIALS, “MySecretPwd”;
+ 
+Context initContext = new InitialContext(env);
+</pre>
+            <p>If an external program needs to access the <code>InitialContext</code> object in the GlassFish server,
+                the code may look like this:</p>
+            <pre>
+final Properties env = new Properties(); 
+env.setProperty("java.naming.factory.initial",
+           "com.sun.enterprise.naming.SerialInitContextFactory"); 
+env.setProperty("java.naming.factory.url.pkgs",
+           "com.sun.enterprise.naming"); 
+env.setProperty("java.naming.factory.state", 
+    "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl"); 
+env.setProperty("org.omg.CORBA.ORBInitialHost", "localhost"); 
+env.setProperty("org.omg.CORBA.ORBInitialPort", "8080"); 
+InitialContext initContext = new InitialContext(env);
+</pre>
+            <p><span epub:type="pagebreak" title="415" id="Page_415"></span>You need to read the documentation that
+                comes with your application server to get the proper code for accessing JNDI from an external program.
+                  </p>
+            <p>After receiving a reference to <code>InitialContext</code>, you can invoke a <code>lookup()</code> method
+                specifying the name of the required resource. <a href="part0031.html#introducing_jms_and_mom">Lesson
+                    30</a> explains Java messaging in detail, but for now I’ll just show you an example of getting a
+                reference to a message queue named <code>test</code>:</p>
+            <pre>
+Destination destination = (Destination)
+                     initContext.lookup(“jms/queue/test");
+</pre>
+            <p> The next code samples show how to get a reference to an EJB and a default JDBC data source:</p>
+            <pre>
+MySessionBean msb = (MySessionBean) initContext.lookup(
+                                 "java:comp/env/ejb/mySessionBean");
+ 
+DataSource ds = (DataSource) initContext.lookup(
+                           "java:comp/env/jdbc/DefaultDataSource");</pre>
+            <p>The next section shows you an example of preferable way of getting JNDI resources by injection.</p>
+        </section>
+        <section>
+            <h3><a id="resource_injection"></a>Injecting JNDI Resources</h3>
+            <p>Most likely, your Java programs <a id="idp21396848"></a>that need JNDI resources will run inside some
+                Java EE application server, which greatly simplifies getting a hold of such resources. In this case you
+                don’t even need to instantiate <code>InitialContext</code> or invoke <code>lookup()</code>. </p>
+            <p>Resource injection <a id="idp21399344"></a><a id="idp21400864"></a>with the
+                annotation <code>@Resource</code> is a cleaner and simpler way of providing these resources to your Java
+                EE components. In <a href="part0031.html#introducing_jms_and_mom">Lesson 30</a> you use resource for
+                getting references to JMS objects, which look as follows:</p>
+            <pre>
+import javax.annotation.Resource;
+...
+@Resource(name="MyTestConnectionFactory")
+private ConnectionFactory factory;
+@Resource(name="MyJMSTestQueue")
+private Queue ioQueue;</pre>
+            <p>For <span epub:type="pagebreak" title="416" id="Page_416"></span>example, you could place this code in a
+                Java servlet, which sends messages to a <code>Queue</code> bound to the JNDI tree under the name <code>MyJMSTestQueue</code> with
+                the help of the <code>ConnectionFactory</code> that has the JNDI name
+                <code>MyTestConnectionFactory</code>.  These resources are injected into variables <code>ioQueue</code>
+                and <code>factory</code> by the servlet container—no need to do a lookup.  </p>
+            <p>Depending on its location, the time of injection varies. If you put the <code>@Resource</code> annotation
+                at the class level, the resource is injected during run time when the application looks it up. If you
+                put this annotation above the field or setter method declaration, the resource is injected in the
+                component when the application is initialized.</p>
+            <p>If you need to override resources specified in annotations, you can do it in XML configuration files. You
+                see more examples of using resource injection with EJB in <a
+                        href="part0032.html#introduction_to_enterprise_javabeans">Chapter 31</a>. Later in this lesson
+                you use resource injection of JDBC <code>DataSource</code>. Meanwhile, take a look at the GlassFish
+                Administration Console.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="administering_jndi_objects_in_glassfish"></a>Administering JNDI Objects in Glassfish</h2>
+        <p>Each Java EE application <a id="idp21411376"></a><a id="idp21415760"></a><a id="idp21417232"></a>server
+            offers a tool that allows administration of its service modules; we are interested in binding objects to
+            their directory names. When you start GlassFish there is a message on the console: “Waiting for DAS to
+            start...” DAS stands <a id="idp21416848"></a>for Domain Administration Server, which authenticates the user
+            with administrative privileges and responds to requests from a graphical web browser-based Admin Console. To
+            use the console enter the following URL in your browser: <code><a href="http://localhost:4848/">http://localhost:4848/</a></code>. You
+            see the console, as in <a id="fig-anc-c029-001" href="part0030.html#fig-c029-001">Figure 29-1</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00593.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c029-001"
+                                                   href="part0030.html#fig-anc-c029-001">Figure 29-1</a>:</b></span>
+                    GlassFish Administration Console</p>
+            </figcaption>
+        </figure>
+        <p>Administration Console enables you to configure your instance(s) of GlassFish server and administer various
+            resources that should be available to Java EE applications. In <a
+                    href="part0031.html#introducing_jms_and_mom">Lesson 30</a> you see how to configure JMS resources.  
+        </p>
+    </section>
+    <section>
+        <h2><a id="datasource_and_jndi"></a>Datasource and JNDI</h2>
+        <p>In <a href="part0022.html#working_with_databases_using_jdbc">Lesson 21</a>, in <span epub:type="pagebreak"
+                                                                                                title="417"
+                                                                                                id="Page_417"></span>the
+            section "<a href="part0022.html#connection_pools_and_datasources">Connection Pools and Datasource</a>,” you
+            learn that creating a new <a id="datasourceJNDI"></a><a id="dataJNDI"></a>connection object for each request
+            is a slow operation, and it’s better to work with database connection pools that  reuse pre-created JDBC
+            connections. </p>
+        <p>Typically the administrator of the Java EE server pre-creates the pools of database connections and
+            configures the minimum and maximum number of connections and some other parameters on connection pools. To
+            configure a new DBMS connection pool in GlassFish, use the Administration Console’s entry JDBC Connection
+            Pools (see <a id="fig-anc-c029-002" href="part0030.html#fig-c029-002">Figure 29-2</a>) and press the button
+            New.</p>
+        <figure>
+            <img class="center" src="../Images/image00594.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c029-002"
+                                                   href="part0030.html#fig-anc-c029-002">Figure 29-2:</a></b></span>
+                    JDBC connection pools in GlassFish</p>
+            </figcaption>
+        </figure>
+        <p>Then you’d need to add parameters for the new pool. GlassFish includes DerbyDB database server and has a
+            preconfigured pool for it.<span style="letter-spacing: 9px;"> </span><a id="fig-anc-c029-003"
+                                                                                    href="part0030.html#fig-c029-003">Figure 29-3</a> shows
+            a snapshot of the GlassFish administration console, where the existing resource named <code>DerbyPool</code>
+            represents a pool of JDBC connections. The object <code>javax.sql.DataSource</code> is a <i>factory</i> of
+            database connections. The administrator configures this factory as a JNDI resource, specifying what JDBC
+            driver to use, how many connections to create initially, and the maximum number of connections allowed.</p>
+        <figure>
+            <img class="center" src="../Images/image00595.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c029-003"
+                                                   href="part0030.html#fig-anc-c029-003">Figure 29-3</a>:</b></span>
+                    DerbyPool is configured to have from 8 to 32 connections</p>
+            </figcaption>
+        </figure>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp21443936"></a>Configuring GlassFish Resources</h3>
+                <p>GlassFish <span epub:type="pagebreak" title="418" id="Page_418"></span>(and other Java EE servers)
+                    has an alternative way of creating and configuring resources by using an XML configuration file.
+                    GlassFish resources can be specified in the file <code>glassfish-resources.xml</code> that the
+                    server loads on startup. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The Java program that needs a JDBC connection gets access to the connection pool by its JNDI name (<code>DerbyPool</code>
+            in this case) and makes a <code>getConnection()</code> call on this resource. If unused connections are
+            available, the Java class immediately gets an instance of the <code>Connection</code> object that internally
+            implements <code>PooledConnection. </code>If many users are making concurrent requests, all connections may
+            be taken, and there is a slight delay until one of the busy connections is returned to the pool. Connection
+            is auto-closable, and it gets returned to the pool on closing. Connections returned to the pool are not
+            destroyed; they are preserved by the application server for future requests.</p>
+        <p>You can do either a JNDI lookup of the <code>DataSource</code> object or inject it to your Java code. In <a
+                href="part0022.html#working_with_databases_using_jdbc">Lesson 21</a> you’ve been using a standalone Java
+            program, which invoked <code>DriverManager.getConnection()</code> to get the <code>Connection</code> object.
+            But now you can use <code>getConnection()</code> on the <code>DataSource</code> object taken from the
+            pool. If the name of the configured <code>DataSource</code> object is <code>DerbyPool</code>, the sample
+            code to obtain a pooled database connection may look as follows:</p>
+        <pre>
+InitialContext ic = new InitialContext();
+DataSource ds = (DataSource) ic.lookup("DerbyPool");
+Connection myConnection = ds.getConnection();
+//The rest of the JDBC processing goes here as in <a href="part0022.html">Lesson 21</a>
+</pre>
+        <p>Injecting a <code>DataSource</code> using the <code>@Resource</code> syntax would  look like this:</p>
+        <pre>
+@Resource(name="java:global/DerbyPool")
+DataSource ds;</pre>
+        <p><span epub:type="pagebreak" title="419" id="Page_419"></span>You have a chance to work with the <code>DataSource</code>
+            while working on the assignment from the "<a href="part0030.html#try_it-id00114">Try It”</a> section of <a
+                    id="idp21456928"></a><a id="idp21459664"></a>this lesson. </p>
+    </section>
+    <section>
+        <h2><a id="lightweight_directory_access_protocol"></a>Lightweight Directory Access Protocol</h2>
+        <p>Lightweight Directory <a id="light"></a>Access Protocol (LDAP) servers are specialized software products that
+            store directory entries in hierarchical trees and are highly optimized for reading. This makes them a good
+            choice for such directory services as employee lists or phone directories in an organization. Directories
+            are mainly read, not changed, and this is where LDAP servers shine.</p>
+        <p>From the enterprise Java perspective you should keep LDAP solutions in mind when a really fast lookup of some
+            Java objects is needed, such as with JMS connection factories, queues, or topics. Java developers use the
+            JNDI API to bind, look up, and update the entries in LDAP. JNDI is to LDAP servers as JDBC is to DBMSes.</p>
+        <p>These are some popular LDAP servers:</p>
+        <ul>
+            <li>Oracle Directory Server (Oracle)</li>
+            <li>Microsoft Active Directory (Microsoft)</li>
+            <li>OpenLDAP (open-source, community developed)</li>
+            <li>ApacheDS (open-source, Apache)</li>
+            <li>OpenDJ (open-source, community developed)</li>
+        </ul>
+        <p>The LDAP directory tree has a root entry, which consists of one or more  <i>distinguished names</i> (unique
+            identifiers). Typically the top of the hierarchy is an object with the prefix <i>o</i> for
+            <i>organization</i>. One level below has the prefix <i>ou</i> for <i>organizational unit</i>, <i>cn</i>
+            stands for <i>common name</i>, and so on. Unlike with other naming services, the search string starts from
+            the very lowest hierarchical entry and the root entry has to be specified last. Here’s an example of a
+            distinguished name that can be used in a search:</p>
+        <pre>
+cn=jsmith, ou=accounting, o=oracle.com</pre>
+        <p>This means “Find the entry that goes by the name jsmith located under accounting node, which in turn is
+            located under oracle.com." The preceding search string corresponds to the following hierarchy in an LDAP
+            tree:</p>
+        <pre>
+o = oracle.com
+  ou = accounting
+     cn = jsmith</pre>
+        <p>The next Java code snippet specifies the JNDI properties, connects to the LDAP server running on port 389,
+            and looks for the object called <code>CustomerHome</code>there: </p>
+        <pre>
+Hashtable&lt;String, String&gt; env = new Hashtable&lt;&gt;();
+env.put(Context.INITIAL_CONTEXT_FACTORY,
+                        "com.sun.jndi.ldap.LdapCtxFactory");
+env.put(Context.PROVIDER_URL, "ldap://localhost:389");
+env.put(Context.SECURITY_AUTHENTICATION,"simple");
+env.put(Context.SECURITY_PRINCIPAL, "cn=Directory Manager");
+env.put(Context.SECURITY_CREDENTIALS,"myPassword");
+DirContext ctx = new InitialDirContext(env);
+CustomerHome custHome =(CustomerHome) ctx.lookup("cn=CusomerHome,
+ou=RealBigProject, o=trump.com");</pre>
+        <p><span epub:type="pagebreak" title="420" id="Page_420"></span>To study distributed applications you can run
+            all the examples from this book (clients and servers) on a single computer, but real-world distributed
+            applications can be constructed in various ways; for example:</p>
+        <ul>
+            <li>Computer #1 runs the LDAP server.</li>
+            <li>Computer #2 runs an application server that has registered (published) some objects with the LDAP server
+                on Computer #1.
+            </li>
+            <li>Computer #3 has a client program that finds object references on Computer #1 and invokes their methods
+                on Computer #2.
+            </li>
+            <li>Computer #4 runs a DBMS server that is being used by the application server running on Computer #2.</li>
+            <li>Computer #5 publishes financial market data, and Computer #2 subscribes to this service.</li>
+        </ul>
+        <p>...and so on, and so on.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp21480016"></a>September 11</h3>
+                <p>When the terrorists attacked and destroyed the World Trade Center, I was working for a firm that lost
+                    the data center as a result of this attack. I was working on a financial trading application that
+                    utilized messaging. The JMS objects that were using New York’s data center were bound to an LDAP
+                    server located in North Carolina. When the reserved data center started functioning in New Jersey,
+                    we just ran the program to rebind the JMS objects to the LDAP server so they would point at the
+                    messaging server in a new location. Because of such a flexible architecture, the firm’s trading
+                    application was not operational for only three days.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>This lesson has shown you how to use JNDI and given some examples of why you may want to use it. Comparing
+            the code in <a href="part0031.html#list-c030-001">Listing 30-1</a> with the one in messageservlet is just
+            one example that shows that naming and binding specific physical objects under a generic JNDI name enables
+            you to remove these physical locations from your program code. <a
+                    href="part0031.html#introducing_jms_and_mom">Lesson 30</a> and  <a
+                    href="part0032.html#introduction_to_enterprise_javabeans">Chapter 31</a> give more examples <a
+                    id="idp21485056"></a>of using JNDI.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00114"></a>Try It</h2>
+        <p>In <span epub:type="pagebreak" title="421" id="Page_421"></span>this assignment you need to create a servlet
+            deployed under GlassFish server, which should obtain a <a id="idp21490400"></a><a id="idp21489760"></a>connection
+            to DerbyDB by using the resource injection of  a <code>DataSource</code> object.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00115"></a>Lesson Requirements</h3>
+            <p>You should have Java and GlassFish 4 installed. GlassFish has to be configured in Eclipse IDE as
+                described in <a href="part0027.html">Lesson 26</a> in <a
+                        href="part0027.html#installing_the_glassfish_plug-in_for_ecl">Configuring GlassFish in Eclipse
+                    IDE</a>.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the file <code>Lesson29.zip</code>.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00116"></a>Step-by-Step</h3>
+            <ol>
+                <li>Open the command (or Terminal ) window, switch to the folder <code>glassfish/javadb/bin</code> and
+                    start the instance of the DerbyDB that comes with GlassFish. You need to run <code>startNetworkServer.exe</code>
+                    (or  <code>startNetworkServer</code> if you use  Mac OS).
+                </li>
+                <li>Start GlassFish from the Eclipse IDE.</li>
+                <li>In Eclipse, create a new Dynamic Web Project Lesson29 specifying GlassFish as the target run
+                    time. 
+                </li>
+                <li>Create a new servlet called <code>MyDerbyClientServlet</code>. This servlet should get the <code>DataSource</code>
+                    injected and use it for a connection to DerbyDB. Modify the generated code so the servlet looks as
+                    follows:
+                    <pre>
+@WebServlet("/MyDerbyClientServlet")
+public class MyDerbyClientServlet extends HttpServlet {
+  @Resource(name="java:global/DerbyPool")
+  DataSource ds; 
+  protected void doGet(HttpServletRequest request,
+                       HttpServletResponse response) 
+                        throws ServletException, IOException {
+		
+     try {
+         Connection myPooledConnection = ds.getConnection();
+	 System.out.println("Got pooled connection to DerbyDB");
+			
+     } catch (SQLException e) {
+	  e.printStackTrace();
+     }
+  }
+}
+</pre>
+                </li>
+                <li>Deploy <span epub:type="pagebreak" title="422" id="Page_422"></span>the servlet: Right-click
+                    GlassFish in the Server view and select Add and Remove. Check the Eclipse console and locate the
+                    message that the Lesson29 application is loaded.
+                </li>
+                <li>Right-click the servlet name and select Run on Server. You should see the message “Got pooled
+                    connection to DerbyDB” in the Console view.
+                </li>
+                <li>Open GlassFish Administration Console and go to the Additional Properties tab of DerbyPool. Modify
+                    the database name to be Lesson29. 
+                    <figure>
+                        <img class="center" src="../Images/image00596.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c029-004"></a>Figure 29-4:</b></span> Additional
+                                Properties of the connection pool</p>
+                        </figcaption>
+                    </figure>
+                     
+                </li>
+                <li>Revisit <a href="part0022.html#working_with_databases_using_jdbc">Lesson 21</a> and create the
+                    <code>Employee</code> table as described in "<a href="part0022.html#creating_a_database_with_derby">Installing
+                        Derby DB” and “Creating a Database</a>.”
+                </li>
+                <li>Add the code to <code>MyDerbyClientServlet</code> that retrieves the data from <code>Employee</code>
+                    table (use employeelist_program as a reference). 
+                </li>
+                <li>Run the servlet <code>MyDerbyClientServlet</code>. It should retrieve the data from
+                    <code>Employee</code> and print them in Eclipse Console view.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0030.html">Lesson 29</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

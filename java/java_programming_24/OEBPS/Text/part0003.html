@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Eclipse IDE</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="eclipse_ide"></a><span class="chapterTitle">Lesson 2<br/>Eclipse IDE</span></h1>
+
+<section>
+<p>Your <span epub:type="pagebreak" title="9" id="Page_9"></span>first Java program was written in a plain text editor and compiled from a command window, but this is not a productive way of developing software. Professional programmers use an <a id="idp13130976"></a>Integrated Development Environment (IDE), which includes an editor, a compiler, context-sensitive help, a debugger, and a lot more (you become familiar with these features later in this lesson). There are several popular Java IDEs, such as <a id="idp13131952"></a><a id="idp13132944"></a><a id="idp13133984"></a>Eclipse, IntelliJ IDEA, and NetBeans.</p>
+<p>Eclipse is by far the most widely used IDE, and I use it for compiling and running most of the examples in this book. But switching from one IDE to another is a pretty simple process, and if you see that in some areas one IDE makes you more productive than the other, just use the best one for the job. As a matter of fact, I prefer IntelliJ IDEA IDE, but this doesn’t stop me from enjoying Java development in Eclipse, too.</p>
+</section>
+<section>
+<h2><a id="introducing_eclipse_ide"></a>Introducing Eclipse IDE</h2>
+<p>Eclipse IDE is an open-source <a id="idp13137104"></a>product that was originally created with a substantial code donation by IBM to the Java community, and from that moment Eclipse was a community-driven product. It started as an IDE for developing Java programs, but today it’s a development platform used for building thousands of tools and plug-ins. Some people are using <a id="idp13142704"></a><a id="idp13145808"></a>its Rich Client Platform (RCP) API to develop <a id="idp13140000"></a>user interfaces (UIs) for applications. With Eclipse you can easily generate and deploy web applications, start and stop servers, use it as a Database admin tool, and a lot more. Some use its plug-ins for developing reports. Visit the Downloads page at <code><a href="http://www.eclipse.org/downloads">www.eclipse.org/downloads</a></code> to see some of the Eclipse-based products available.</p>
+<p>Besides being an IDE, Eclipse supports plug-in development, and each developer can add only those plug-ins that he or she is interested in. For example, there is a plug-in to display UML diagrams, another offers a reporting system, and there are plug-ins for developing applications in C, JavaScript, Apache Flex, and other languages.</p>
+</section>
+<section>
+<h2><a id="downloading_and_installing_eclipse"></a>Downloading and Installing Eclipse</h2>
+<p>There <span epub:type="pagebreak" title="10" id="Page_10"></span>are different <a id="idp13150864"></a><a id="idp13146640"></a>versions of Eclipse IDE, and this <a id="idp13148016"></a>book uses <i>Eclipse IDE for Java EE Developers</i>. Each version of Eclipse IDE has a name. At the time of this writing, the current version is called Luna, and you should download it from <code><a href="http://www.eclipse.org/downloads">http://www.eclipse.org/downloads</a></code>.</p>
+<p>The <a id="idp13154144"></a><a id="idp13155888"></a>installation of Eclipse IDE comes down to a simple unzipping of the downloaded file into a disk drive of your choice. Depending on your OS, you find either the file Eclipse.exe or Eclipse.app in the Eclipse folder — just run this program. You immediately see a pop-up window asking you to select a <i>workspace</i>, which is a directory on your hard disk where one or more of your <i>projects</i> is going to be stored.</p>
+<p>Eclipse for Java EE IDE starts with showing the Welcome panel; just close it by clicking the <a id="idp13160656"></a><a id="idp13159040"></a>little x on the Welcome tab. <a id="fig-anc-c02-001" href="part0003.html#fig-c02-001">Figure 2-1</a> is a snapshot of the <i>workbench</i> of the freshly installed Eclipse IDE.</p>
+<figure>
+<img class="center" src="../Images/image00502.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-001" href="part0003.html#fig-anc-c02-001">Figure 2-1</a>:</b></span> The Java EE perspective in Eclipse IDE workbench</p>
+</figcaption>
+</figure>
+<p>In Eclipse you start with creating a project. In the real world, the source code of a decent-sized application can consist of several Eclipse projects.</p>
+<p>For code samples of this book, I selected the following workspace directory: <code>practicalJava/workspace</code>.</p>
+<p>To be precise, in <a href="part0003.html#fig-c02-001">Figure 2-1</a> you are looking at Java EE <i>perspective</i> (note the Java EE tab at the top), which is a collection of default <i>views</i> that are opened for Java EE developers. On the left you see a <a id="idp13170624"></a><a id="idp13169024"></a>Project Explorer view; creating a Hello project is your next task. The area in the middle is reserved for the code editor view. You start entering Java code in there after creating your first Java class. The Outline view is on the right; you’ll see the names of your classes, methods, and variables (see <a href="part0004.html#object-oriented_programming">Chapter 3</a>) there.</p>
+<p>There are many other views that you can open and close by yourself by selecting Window → Show View. These include Console, Search, Problems, Servers, and others. If you don’t see some of these menu items, find them in Windows → Show View → Other.</p>
+<p>Because <span epub:type="pagebreak" title="11" id="Page_11"></span>you are just starting to learn the language, there is no need to work in the Java EE perspective; you can get by in the Java perspective. Click the little icon with the plus sign on the toolbar by the Java EE tab and select Java perspective. You’ll see a slightly different set of views with the Package Explorer and Hierarchy views on the left, Task List on the right, and the Problems, Javadoc, and Declaration tabs at the bottom, as shown in <a id="fig-anc-c02-002" href="part0003.html#fig-c02-002">Figure 2-2</a>.</p>
+<figure>
+<img class="center" src="../Images/image00503.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-002" href="part0003.html#fig-anc-c02-002">Figure 2-2</a>:</b></span> The Java perspective in Eclipse IDE workbench</p>
+</figcaption>
+</figure>
+</section>
+<section>
+<h2><a id="creating_hello_project_in_eclipse"></a>Creating Hello Project in Eclipse</h2>
+<p>In <a href="part0002.html#introducing_java">Chapter 1</a> you <a id="idp13174320"></a><a id="idp13175648"></a>simply created the class <code>HelloWorld</code>, but in Eclipse you have to create the project first. Select File → New → Java Project and enter <code>Hello</code> as the name of the project in the pop-up window, as shown in <a id="fig-anc-c02-003" href="part0003.html#fig-c02-003">Figure 2-3</a>.</p>
+<p>You can select the version of the JRE you want to work with. In <a href="part0002.html#introducing_java">Chapter 1</a> I’ve installed the JDK and JRE of version 1.8, but you may have more than one version of JRE, and Eclipse can compile the code that will run in another version of JRE. This might be useful if some of your projects have to run with the older versions of JRE. Typically enterprises don’t rush to install the newest version of Java because it requires substantial investments of time and resources to ensure that their production applications are not broken in the new version of JRE. Eclipse allows you to select for your projects any of the installed versions of JRE.</p>
+<figure>
+<img class="center" src="../Images/image00504.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-003" href="part0003.html#fig-anc-c02-003">Figure 2-3</a>:</b></span> Creating <span epub:type="pagebreak" title="12" id="Page_12"></span>a Java project in Eclipse (step 1)</p>
+</figcaption>
+</figure>
+<p>After you click Next, you’re asked to specify the folders where the source code and compiled Java classes of the Hello project should be created (see <a id="fig-anc-c02-004" href="part0003.html#fig-c02-004">Figure 2-4</a>). By default, Eclipse creates a Hello folder for this project with a <i>bin</i> subfolder for compiled classes and an <i>src</i> subfolder for the source code. In <a href="part0002.html#introducing_java">Chapter 1</a> both <code>HelloWorld.java</code> and <code>HelloWorld.class</code> were sitting in the same folder, which is OK for a one-class project, but the good practice is to keep <code>.java</code> and <code>.class</code> files in separate folders.</p>
+<p>Don’t change the name of the output directory; just click Finish on that window. In <a id="fig-anc-c02-005" href="part0003.html#fig-c02-005">Figure 2-5</a> you see a new project, Hello, in the Package Explorer view of Eclipse. This project has an empty folder named <i>src</i>—you will save the source code of <code>HelloWorld.java</code> there. </p>
+<figure>
+<img class="center" src="../Images/image00505.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-004" href="part0003.html#fig-anc-c02-004">Figure 2-4</a>:</b></span> Creating <span epub:type="pagebreak" title="13" id="Page_13"></span>a Java project in Eclipse (step 2)</p>
+</figcaption>
+</figure>
+<figure>
+<img class="center" src="../Images/image00506.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-005" href="part0003.html#fig-anc-c02-005">Figure 2-5</a>:</b></span> The <span epub:type="pagebreak" title="14" id="Page_14"></span>project Hello is created</p>
+</figcaption>
+</figure>
+<p>The JRE folder contains all required Java 1.8 libraries supporting the JVM where <code>HelloWorld</code> will run. These library files have <code>.jar</code> extension in their names. Java SDK comes with a jar utility that allows you to create a file archive that contains one or more compiled classes. Although the JRE folder contains classes created by developers of the JRE itself, most real-world applications consist of groups of files (packages) located in one or more jars.</p>
+<p>It doesn’t make much <a id="idp13202960"></a>sense to put the only <code>HelloWorld</code> class inside the jar, but as your sample applications grow, you find out how to group and compress files in jars.</p>
+</section>
+<section>
+<h2><a id="creating_the_helloworld_class_in_eclipse"></a>Creating the HelloWorld Class in Eclipse</h2>
+<p>Your Hello project <a id="idp13207472"></a><a id="idp13209568"></a>will contain one Java class: <code>HelloWorld</code> from <a href="part0002.html#introducing_java">Chapter 1</a>. Select File → New → Class and enter <code>HelloWorld</code> in the Name field in the pop-up window shown in <a id="fig-anc-c02-006" href="part0003.html#fig-c02-006">Figure 2-6</a>.</p>
+<p>Then enter <code>com.practicaljava.lesson2</code> in the Package field. The <i>package name</i> is a new addition to the previous version of <code>HelloWorld</code> from <a href="part0002.html#introducing_java">Chapter 1</a>.</p>
+<figure>
+<img class="center" src="../Images/image00507.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-006" href="part0003.html#fig-anc-c02-006">Figure 2-6</a>:</b></span> Creating <span epub:type="pagebreak" title="15" id="Page_15"></span>a HelloWorld class in Eclipse</p>
+</figcaption>
+</figure>
+</section>
+<section>
+<h2><a id="java_packages"></a>Java Packages</h2>
+<p>Packages in Java are used <a id="idp13220544"></a>to better organize multi-file projects and for data protection. It’s not unusual for a project to have several hundreds of Java classes. Keeping them all in one directory is never a good idea. Consequently, the files will be located in various directories and subdirectories (also known as packages).</p>
+<p>What <span epub:type="pagebreak" title="16" id="Page_16"></span>are the naming conventions for packages? Java developers use <i>reverse-domain name</i> <a id="idp13226640"></a><a id="idp13222976"></a><a id="idp13224208"></a>conventions. Let’s say you work on a project called Sales for a company called Acme, which has an Internet site at <code><u>acme.com</u></code>. Every package name will start with the reverse URL of the company, followed by the project name: <code>com.acme.sales</code>.</p>
+<p>Accordingly, all Java classes that belong to this package are stored in the following directory structure: <code>com/acme/sales</code>.</p>
+<p>If some of the Java classes are specific to domestic sales, whereas others are used in international sales at Acme, you can create two more subdirectories: <code>com/acme/sales/domestic</code> and <code>com/acme/sales/international</code>.</p>
+<p>Whereas directory names are separated by a forward slash or backslash, the corresponding Java package names are separated with periods. Java has a special keyword <code>package</code>, and its declaration has to be the first line of the class (program comments don’t count). For example:</p>
+<pre>
+package com.acme.sales.domestic;</pre>
+<p>Let’s assume that you work for a company called Practical Java on the project named <a href="part0003.html#eclipse_ide">Chapter 2</a>; the name of the package will be <code>com.practicaljava.lesson2</code>, which is exactly what I’ve entered in the Package field shown in <a href="part0003.html#fig-c02-006">Figure 2-6</a>.</p>
+<p>Besides being used for better organization of Java classes, packages help in controlling data access. You learn about this feature in the section <a href="part0007.html#access_levels">access_l</a><a href="part0007.html#access_levels">evels</a> in <a href="part0007.html#packagescomma_interfacescomma_and_encaps">programming_with_abstract_classes_a</a><a href="part0008.html#programming_with_abstract_classes_and_in">nd_in</a>.</p>
+</section>
+<section>
+<h2><a id="completing_code_generation"></a>Completing Code Generation</h2>
+<p>From <a href="part0003.html#fig-c02-006">Figure 2-6</a> you may have <a id="codegen"></a><a id="gencode"></a>noticed that I also checked off the box asking Eclipse to generate the main method for me.</p>
+<p>Click Finish, and in no time Eclipse generates the initial code for the class <code>HelloWorld</code>, as shown in <a id="fig-anc-c02-007" href="part0003.html#fig-c02-007">Figure 2-7</a>.</p>
+<figure>
+<img class="center" src="../Images/image00508.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-007" href="part0003.html#fig-anc-c02-007">Figure 2-7</a>:</b></span> The auto-generated code of the HelloWorld class</p>
+</figcaption>
+</figure>
+<p>The <span epub:type="pagebreak" title="17" id="Page_17"></span>generated code is shown in Eclipse’s editor view. It starts with the <code>package</code> statement, and the class declaration with the method name goes next. The line that starts with two slashes is a single-line comment. Programmers use comments to describe code fragments in a free form to explain to author’s intentions to whoever will read the code. Comments are ignored by the compiler.</p>
+<p>Place the cursor under the <code>TODO</code> comment, type <b>sysout</b>, and then press Ctrl+Space; Eclipse turns this abbreviation into <code>System.out.println();</code>. From the first seconds of coding Eclipse makes you more productive! Eclipse IDE has lots of useful hot key combinations that will allow you to do less manual typing.</p>
+<p>Just add “Hello World!!!!!” between parentheses and save the code by pressing the little diskette image on the toolbar or using the Ctrl+S key combination.</p>
+<p>By default, saving the code results in an invocation of the Java compiler. If you didn’t make any syntax errors, Eclipse creates <code>HelloWorld.class</code> in the <code>bin</code> directory of the Hello project. In case of compilation errors, Eclipse puts a little red round bullet in front of problematic lines.</p>
+<p>Now you can run the program by pressing the round green Play button on the toolbar. The output of the program is shown in the Console view panel in the lower part of the Eclipse workbench, as in <a id="fig-anc-c02-008" href="part0003.html#fig-c02-008">Figure 2-8</a>.</p>
+<figure>
+<img class="center" src="../Images/image00509.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-008" href="part0003.html#fig-anc-c02-008">Figure 2-8</a>:</b></span> The output of the program is shown in the Console view</p>
+</figcaption>
+</figure>
+<p>As you type, Eclipse displays context-sensitive help suggesting a selection of possible values, which minimizes guesswork and typing errors. You can try to bring up the context-sensitive help by pressing Ctrl+Space. In some cases, Eclipse won’t have any suggestions, but sometimes it becomes pretty helpful. For example, place the cursor after the dot behind the <code>System</code> and press Ctrl+Space. You see a list of method names available inside the class <code>System</code>. Selecting <code>out</code> from this list displays the content of online Help for this object.</p>
+<figure>
+<img class="center" src="../Images/image00510.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c02-009"></a>Figure 2-9:</b></span> Ctrl-Space <span epub:type="pagebreak" title="18" id="Page_18"></span>shows context-sensitive proposals and help</p>
+</figcaption>
+</figure>
+<p>In <a href="part0004.html#object-oriented_programming">Chapter 3</a>I explain how to use the debugger of Eclipse IDE. In <a href="part0026.html#java_ee_7_overview">Chapter 25</a> I show you how to start Java servers from Eclipse. In <a href="part0027.html#programming_with_servlets">Chapter 26</a> you use Eclipse IDE for creating web projects. The format of this book doesn’t have space for more detailed coverage of all the features of Eclipse. The next section contains additional online resources that can help <a id="idp13266640"></a><a id="idp13268800"></a>you in getting more comfortable with Eclipse.</p>
+</section>
+<section>
+<h2><a id="additional_materials"></a>Additional Materials</h2>
+<p>The Eclipse IDE Documentation web page at <code><a href="http://www.eclipse.org/documentation/">http://www.eclipse.org/documentation/</a></code> contains comprehensive Eclipse documentation. Select the latest version of Eclipse there and follow the Getting Started section under the Workbench User Guide.</p>
+<p>I can also recommend to you the online Eclipse IDE Tutorial by Lars Vogel. It’s available at <code><a href="http://www.vogella.com/tutorials/Eclipse/article.html">http://www.vogella.com/tutorials/Eclipse/article.html</a></code>. Lars Vogel has also published a list of useful Eclipse shortcuts that will increase your productivity. It’s available at <code><a href="http://www.vogella.com/tutorials/EclipseShortcuts/article.html">http://www.vogella.com/tutorials/EclipseShortcuts/article.html</a></code>.</p>
+<p>You can also watch Eclipse IDE Tutorial on Youtube produced by luv2code. It’s available at <code><a href="http://bit.ly/1uTYOR2">http://bit.ly/1uTYOR2</a></code>.  </p>
+</section>
+<section>
+<h2><a id="try_it-id00004"></a>Try It</h2>
+<p>In this lesson your first task is to write, compile, and run <code>HelloWorld</code> in Eclipse IDE.</p>
+<p>The second task is to create the new Eclipse project named Sale containing one Java class <code>FriendsAndFamily</code>. This class should also have the method <code>main()</code>. Include inside the method <code>main()</code> several <code>System.out.println()</code> lines that announce that your favorite store runs a 30% off sale on selected products. Output the names of the products that go on sale.</p>
+<p>Now your Eclipse project contains two classes with the <code>main()</code> method. Which program will run when you press the green button? Click the class you want to run, and then press the green button. If no class is selected, the class that was run the last time you pressed the green button will run again.</p>
+<section>
+<h3><a id="lesson_requirements-id00005"></a>Lesson Requirements</h3>
+<p>For <span epub:type="pagebreak" title="19" id="Page_19"></span>this lesson, download and install the current version of Eclipse IDE for Java EE Developers from <code><a href="http://www.eclipse.org/downloads">www.eclipse.org/downloads</a></code>.</p>
+</section>
+<section>
+<h3><a id="step-by-step-id00006"></a>Step-by-Step</h3>
+<ol>
+	<li>
+	<p>Create the Hello project in Eclipse IDE.</p>
+	</li>
+	<li>
+	<p>Create a new Java class, <code>HelloWorld</code>, with the method <code>main()</code>, as described earlier.</p>
+	</li>
+	<li>
+	<p>Compile the program by clicking Save.</p>
+	</li>
+	<li>
+	<p>Run the program by clicking the green button in the Eclipse toolbar.</p>
+	</li>
+</ol>
+<p>Repeat the steps for the second task, but this time your program will have several lines of code invoking <code>println()</code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0003.html">Lesson 2</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>. <i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</section></body></html>

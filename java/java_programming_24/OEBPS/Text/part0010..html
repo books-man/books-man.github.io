@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Event Handling in Swing GUI</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="event_handling_in_ui"></a><span class="chapterTitle">Lesson 9<br/>Event Handling in Swing GUI</span></h1>
+
+    <section>
+        <p>Java <span epub:type="pagebreak" title="99" id="Page_99"></span>Swing, like any other UI library, is <i>event-driven</i>.
+            When <a id="idp14960768"></a>a user interacts with a GUI program (such as by clicking a button or pressing a
+            key) a Java Swing program receives <a id="idp14962128"></a>an <i>event</i> that can initiate an appropriate
+            reaction.</p>
+        <p>If you wrote the code to react to a particular event, this code will be invoked. If you haven’t written such
+            code, the event will be fired anyway, but the program won’t respond to it. In this lesson you learn how to
+            handle events in Java GUI programs.</p>
+    </section>
+    <section>
+        <h2><a id="introduction_to_event_listeners"></a>Introduction to Event Listeners</h2>
+        <p>I’m sure you’ve tried to click the <a id="idp14967088"></a><a id="idp14968160"></a>buttons of the calculator
+            from  <a href="part0009.html#introducing_the_graphic_user_interface">Chapter 8</a>, but they were not ready
+            to respond to your actions yet. Swing widgets can process various events, or in the programmers’ jargon can
+            <i>listen to events</i>. To listen to events, a program has to register window components with Java classes
+            called <i>listeners</i>.</p>
+        <p>You should have components listen only to the events they are interested in. For example, when a person
+            clicks a button, it’s not important where exactly the mouse pointer is as long as it is on the button’s
+            surface. That’s why you do not need to register the button with <code>MouseMotionListener</code>. On the
+            other hand, this listener comes in handy for all kinds of drawing programs.</p>
+        <p>To process button clicks, Swing provides <code>ActionListener</code>. All listeners are declared Java
+            interfaces and their methods have to be implemented in an object that listens to events.</p>
+        <p>This is how Java documentation describes the <code>ActionListener</code> interface:</p>
+        <blockquote class="epigraph">
+            <p><i>This is the listener interference for receiving action events. The class that is interested in
+                processing an action event implements this interface, and the object created with that class is
+                registered with a component, using the component’s</i> <code>addActionListener()</code> method. When the
+                action event occurs, that object’s <code>actionPerformed()</code> method is invoked.</p>
+        </blockquote>
+        <p>This <span epub:type="pagebreak" title="100" id="Page_100"></span>interface  <code>ActionListener</code> is
+            defined in the <code>java.awt.event</code> package, as presented in <a id="list-anc-c09-001"
+                                                                                   href="part0010.html#list-c09-001">Listing
+                9-1</a>. It declares only one method.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c09-001"
+                                           href="part0010.html#list-anc-c09-001">Listing 9-1</a>:</span> ActionListener
+                    Interface</h5>
+                <pre>
+public interface ActionListener extends EventListener
+  void actionPerformed(ActionEvent e);
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;Starting from Java 8, interfaces that declare a single
+                    method are called <i>functional interfaces</i>. You learn more about them in <a
+                            href="part0014.html#functional-interfaces">Lesson 15</a>.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The <code>actionPerformed()</code> method <a id="idp14985808"></a><a id="idp14986880"></a>is invoked by the
+            JVM if the action happened. Let’s use this listener in the calculator you created in <a
+                    href="part0009.html#introducing_the_graphic_user_interface">Chapter 8</a>.</p>
+    </section>
+    <section>
+        <h2><a id="ActionListener"></a>Teaching the Calculator to Calculate</h2>
+        <p>The calculator’s buttons <a id="engine1"></a><a id="engine2"></a>should register themselves with a class that
+            implements <code>ActionListener</code>, which means that its method <code>actionPerform()</code> contains
+            the calculation logic. Even though you can implement <code>ActionListener</code> in the
+            <code>Calculator</code> class itself, for better readability and code maintainability it’s best to separate
+            the code defining the UI from the code containing processing logic. Let’s start writing a separate class,
+            <code>CalculatorEngine</code>:</p>
+        <pre>
+import java.awt.event.ActionListener;
+public class CalculatorEngine implements ActionListener {
+  
+}</pre>
+        <p>The preceding class won’t compile; Java gives an error message stating that the class must implement the
+            method <code>actionPerformed(ActionEvent e)</code>.  You remember the rules for interfaces, right? The
+            interface <code>ActionListener</code> declares a single method <code>actionPerformed()</code>, which makes
+            <a id="idp14998944"></a><a id="idp15001312"></a>it a <i>functional interface</i>,<i> </i>as discussed in <a
+                    id="list-anc-c09-002" href="part0010.html#list-c09-002">Listing 9-2</a> fixes this error.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c09-002"
+                                           href="part0010.html#list-anc-c09-002">Listing 9-2</a>:</span> First
+                    implementation of ActionListener interface</h5>
+                <pre>
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+public class CalculatorEngine implements ActionListener {
+   public void actionPerformed(ActionEvent e){
+       // An empty method body
+   }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Even <span epub:type="pagebreak" title="101" id="Page_101"></span>though the <code>actionPerformed()</code>
+            method doesn’t contain any code yet, it’s considered implemented in <a href="part0010.html#list-c09-002">Listing
+                9-2</a> (the curly braces make the compiler happy). JVM calls this method on the class that’s registered
+            as an event listener and implements the <code>ActionListener</code> interface whenever the user clicks the
+            button.</p>
+        <p>The next version of <code>CalulatorEngine</code> (see <a id="list-anc-c09-003"
+                                                                    href="part0010.html#list-c09-003">Listing 9-3</a>)
+            will display a message box from the method <code>actionPerformed()</code>. You can display any messages
+            using the Swing class <code>JOptionPane</code> and its method <code>showConfirmDialog()</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c09-003"
+                                           href="part0010.html#list-anc-c09-003">Listing 9-3</a>:</span> This class
+                    displays a message box</h5>
+                <pre>
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
+public class CalculatorEngineMsg implements ActionListener {
+   public void actionPerformed(ActionEvent e){
+       JOptionPane.showConfirmDialog(null,
+               "Something happened...",
+               "Just a test",
+               JOptionPane.PLAIN_MESSAGE);
+   }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If you register the class <code>CalculatorEngineMsg</code> from <a href="part0010.html#list-c09-003">Listing
+            9-3</a> as a listener for the class <code>Calculator</code> from <a href="part0009.html#list-c08-004">Listing
+            8-4</a>, it displays the message box shown in <a id="fig-anc-c09-001" href="part0010.html#fig-c09-001">Figure
+            9-1</a> when the user clicks inside the calculator window.</p>
+        <figure>
+            <img class="center" src="../Images/image00525.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c09-001" href="part0010.html#fig-anc-c09-001">Figure 9-1</a>:</b></span>
+                    A message box with JOptionPane</p></figcaption>
+        </figure>
+        <p>The class <code>JOptionPane</code> declares several overloaded methods named
+            <code>showConfirmDialog() </code>— I used the version with four arguments in <a
+                    href="part0010.html#list-c09-003">Listing 9-3</a>. The first argument is null, which means that this
+            message box does not have a parent window. The second argument contains the title of the message box. The
+            third contains the message itself, and the fourth argument allows you to select a button(s) to be included
+            in the box; <code>PLAIN_MESSAGE</code> means that it <a id="idp15026000"></a><a id="idp15028992"></a>only
+            needs the OK button.</p>
+        <section>
+            <h3><a id="registering_components_with_actionlisten"></a>Registering Components with
+                <code>ActionListener</code></h3>
+            <p>Which program invokes <a id="idp15032384"></a><a id="idp15034224"></a>the code in the method <code>actionPerformed()</code>
+                shown in <a href="part0010.html#list-c09-003">Listing 9-3</a> and when? Register the calculator’s
+                buttons with the class <code>CalculatorEngine</code>, and Java run time obediently invokes this class’s
+                method <code>actionPerformed()</code> every time any button is clicked.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp15036944"></a>Callback Methods</h3>
+                    <p>The <span epub:type="pagebreak" title="102" id="Page_102"></span>methods that <a
+                            id="idp15039520"></a><a id="idp15040768"></a>are not called by the Java run time on your
+                        application code are often referred to as <i>callback methods</i>.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Add the following two lines at the end of the constructor of the class <code>Calculator</code> (<a
+                    href="part0009.html#list-c08-004">Listing 8-4</a>), and one button (zero) starts responding to
+                clicks with the box from <a href="part0010.html#fig-c09-001">Figure 9-1</a>:</p>
+            <pre>
+CalculatorEngine calcEngine = new CalculatorEngine();
+button0.addActionListener(calcEngine);</pre>
+            <p>The other calculator buttons remain silent because they have not been registered with the action listener
+                yet. Keep adding similar lines to bring all the buttons to life:</p>
+            <pre>
+button1.addActionListener(calcEngine);
+button2.addActionListener(calcEngine);
+button3.addActionListener(calcEngine);
+button4.addActionListener(calcEngine);</pre>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </section>
+        <section>
+            <h3><a id="finding_the_source_of_an_event"></a>Finding the Source of an Event</h3>
+            <p>The next step is <a id="idp15049632"></a><a id="idp15051760"></a>to make the listener a little smarter:
+                It has to display message boxes with different text, depending on which button was pressed. When an
+                action event happens, Java run time calls the method <code>actionPerformed(ActionEvent)</code> on your
+                listener class, and this method provides valuable information about the event in the argument <code>ActionEvent</code>.
+                In particular, the method <code>getSource()</code> in the object <code>ActionEvent</code> supplied to
+                <code>actionPerformed()</code> in <a href="part0010.html#list-c09-003">Listing 9-3</a> tells you what
+                object caused this method invocation.</p>
+            <p>But according to <a id="idp15056624"></a><a id="idp15058352"></a>Java documentation for the class <code>ActionEvent</code>,
+                the method <code>getSource()</code> returns an instance of type <code>Object</code>, which is a
+                superclass of all Java classes, including window components. Since buttons in your calculator can be the
+                only reason for an action event, cast the returned <code>Object</code> to the type <code>JButton</code>:
+            </p>
+            <pre>
+JButton clickedButton = (JButton) evt.getSource();</pre>
+            <p>Only after performing casting from <code>Object</code> to <code>JButton</code> can you call methods that
+                <code>JButton</code> supports; for example, <code>getText()</code>, which returns the button’s label, as
+                shown in <a id="list-anc-c09-004" href="part0010.html#list-c09-004">Listing 9-4</a>. If you press the
+                button labeled 5, you see a message box that reads, “You pressed 5.”</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c09-004" href="part0010.html#list-anc-c09-004">Listing 9-4</a>:</span>
+                        Getting the label of the clicked button</h5>
+                    <pre>
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
+import javax.swing.JButton;
+public class CalculatorEngine implements ActionListener {
+   public void actionPerformed(ActionEvent e){
+       // Get the source object of this action
+       JButton clickedButton=(JButton) e.getSource();
+       // Get the button's label
+       String clickedButtonLabel = clickedButton.getText();
+       // Concatenate the button's label
+       // to the text of the message box
+       JOptionPane.showConfirmDialog(null,
+               "You pressed " + clickedButtonLabel,
+               "Just a test",
+               JOptionPane.PLAIN_MESSAGE);
+   }
+}</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p><span epub:type="pagebreak" title="103" id="Page_103"></span>What if the window events are produced not
+                only by buttons, but by some other components as well? Then don’t cast every object that has arrived
+                with <code>ActionEvent</code> to <code>JButton</code>. Use the operator called <code>instanceof</code>
+                to perform the proper casting. The next example first determines what type of object caused the event,
+                and then performs casting to either <code>JButton</code> or <code>JTextField</code>:</p>
+            <pre>
+public void actionPerformed(ActionEvent evt){
+   JTextField myDisplayField=null;
+   JButton clickedButton=null;
+   Object eventSource = evt.getSource();
+   if (eventSource instanceof JButton){
+       clickedButton = (JButton) eventSource;
+   } else if (eventSource instanceof JTextField){
+       myDisplayField = (JTextField)eventSource;
+   }
+}</pre>
+            <p>Consider the buttons that perform arithmetic operations. Our calculator has to execute different code for
+                each button:</p>
+            <pre>
+public void actionPerformed(ActionEvent e){
+     Object src = e.getSource();
+     if (src == buttonPlus){
+        // Call the method that adds numbers here
+     } else if (src == buttonMinus){
+       // Call the method that subtracts numbers here 
+     }else if (src == buttonDivide){
+      // Call the method that divides numbers here
+     } else if (src == buttonMultiply){
+     // Call the method that multiplies numbers here
+     }
+}</pre>
+        </section>
+        <section>
+            <h3><a id="how_to_pass_data_between_objects"></a>How to Pass Data Between Objects</h3>
+            <p>When <span epub:type="pagebreak" title="104" id="Page_104"></span>you click a numeric <a
+                    id="pass1"></a><a id="pass2"></a><a id="pass3"></a>button on the real calculator, it does not show a
+                message box, but rather displays the number in the text field on top. Here’s a new challenge: You need
+                to be able to reach the attribute <code>displayField</code> from the object <code>Calculator</code> from
+                the method <code>actionPerformed()</code> defined in another class — <code>CalculatorEngine</code>. In
+                other words, two objects need to communicate. There are different ways of arranging this; for instance,
+                in the class <code>CalculatorEngine</code> you can declare a private variable to store a reference to
+                the instance of the object <code>Calculator</code>.</p>
+            <p>The next version of the class <code>CalculatorEngine</code> declares a one-argument constructor, which
+                takes an argument of type <code>Calculator</code>.</p>
+            <p>JVM executes the constructor of the <code>CalculatorEngine</code> class during instantiation of this
+                class in memory. The <code>Calculator</code> object instantiates <code>CalculatorEngine</code> and
+                passes to the engine’s constructor a reference to itself (note <code>this</code>):</p>
+            <pre>
+CalculatorEngine calcEngine = new CalculatorEngine (<strong>this</strong>);</pre>
+            <p>The reference <code>this</code> contains the location of the calculator’s instance in memory. The
+                engine’s constructor can store the value from the variable <code>this</code> in its own variable, say
+                <code>parent</code>, and eventually use it from the method <code>actionPerformed()</code> to access the
+                calculator’s display field.</p>
+            <section>
+                <h4><a id="attentioncomma_bad_practiceexclamation_m"></a>Attention, Bad Practice!</h4>
+                <p>The variable <code>parent</code> in the following code listing serves as a bridge from the object
+                    <code>CalculatorEngine</code> to <code>Calculator</code>. And the easy way to access <code>Calculator</code>’s
+                    <code>displayField</code> from <code>CalculatorEngine</code> is this:</p>
+                <pre>
+parent.displayField.getText();
+...
+parent.displayField.setText(dispFieldText + clickedButtonLabel);</pre>
+                <p>These two lines were taken from the code sample in <a id="list-anc-c09-005"
+                                                                         href="part0010.html#list-c09-005">Listing
+                    9-5</a>. This code works, but it violates one of the principles of object-oriented
+                    programming: encapsulation. The problem is that code from <code>CalculatorEngine</code> has direct
+                    knowledge of the internals of another object: <code>Calculator</code>. The engine “knows" that there
+                    is a field called <code>displayField</code>  in <code>Calculator</code>, and the preceding code gets
+                    and sets its value directly. </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c09-005"
+                                                   href="part0010.html#list-anc-c09-005">Listing 9-5</a>:</span> Bad
+                            execution of object communication</h5>
+                        <pre>
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+public class CalculatorEngine implements ActionListener {
+ Calculator parent; // a reference to the Calculator
+ // Constructor stores the reference to the
+ // Calculator window in the member variable parent
+ CalculatorEngine(Calculator parent){
+   this.parent = parent;
+ }
+ public void actionPerformed(ActionEvent e){
+   // Get the source of this action
+   JButton clickedButton = (JButton) e.getSource();
+   // Get the existing text from the Calculator's
+   // display field. Reaching inside another object is bad.
+   String dispFieldText = <strong>parent.displayField.getText();</strong>
+   // Get the button's label
+   String clickedButtonLabel = clickedButton.getText();
+   <strong>parent.displayField.setText(dispFieldText +</strong>
+                                   <strong>clickedButtonLabel);</strong>
+ }
+}</pre>
+                        <p><span epub:type="pagebreak" title="105" id="Page_105"></span>Imagine that for whatever reason
+                            you decide to use in <code>Calculator</code> something other than
+                            the <code>JTextField</code> widget to display the results of calculations. That other widget
+                            may not even have such application programming interfaces (APIs) as <code>setText()</code> and <code>getText()</code>.
+                            Now you need to modify not only the <code>Calculator</code> class but also the code of
+                            the <code>CalculatorEngine</code> to replace the part that displays or reads the <code>displayField</code>.
+                            This is not the right way to design interactions between objects. </p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <section>
+                    <h4><a id="better_solution_with_a_public_api"></a>A Better Solution with a Public API</h4>
+                    <p>If <code>Calculator</code> needs to communicate with other objects, it should expose a public API
+                        to get or set data but hide details about its internals. The class <code>Calculator</code> from
+                        <a href="part0009.html#list-c08-004">Listing 8-4</a> declares widgets without using any
+                        access-level qualifiers, so default package access level is applied. Hide these user interface
+                        (UI) components, as shown in the following code by using the keyword <code>private</code>:</p>
+                    <pre>
+private JPanel windowContent;
+private JTextField displayField;
+private JButton button0;
+private JButton button1;
+...</pre>
+                    <p>Now <code>CalculatorEngine</code> isn’t able to access <code>displayField</code> directly as it
+                        did in <a href="part0010.html#list-c09-005">Listing 9-5</a>. Defining public <i>getter</i> and
+                        <i>setter</i> methods in <code>Calculator</code> allows outsiders to access
+                        <code>displayField</code> without knowing it exists. <a id="list-anc-c09-006"
+                                                                                href="part0010.html#list-c09-006">Listing
+                            9-6</a> demonstrates how a small change can protect data and enforce encapsulation.</p>
+                    <aside epub:type="sidebar">
+                        <div class="top hr">
+                            <hr/>
+                        </div>
+                        <section class="feature3">
+                            <h5><span class="label"><a id="list-c09-006" href="part0010.html#list-anc-c09-006">Listing 9-6</a>:</span>
+                                Adding a public API to Calculator</h5>
+                            <pre>
+public class Calculator{
+    private JTextField displayField;
+    public void setDisplayValue(String val){
+        displayField.setText(val);
+    }
+    public String getDisplayValue() {
+        return displayField.getText();
+    }
+    // The rest of the code goes here
+}</pre>
+                            <div class="bottom hr">
+                                <hr/>
+                            </div>
+                        </section>
+                    </aside>
+                    <p><span epub:type="pagebreak" title="106" id="Page_106"></span>Now if you decide to replace the
+                        <code>JTextField</code> widget with another one, only the methods <code>setDisplayValue()</code>
+                        and <code>getDisplayValue()</code> need a change; the code of <code>CalculatorEngine</code>
+                        don’t need to be touched. <a id="list-anc-c09-007" href="part0010.html#list-c09-007">Listing
+                            9-7</a> shows the proper way to <a id="idp15127328"></a><a id="idp15129536"></a><a
+                                id="idp15131200"></a>access <code>Calculator</code> from the
+                        <code>CalculatorEngine</code>.</p>
+                    <aside epub:type="sidebar">
+                        <div class="top hr">
+                            <hr/>
+                        </div>
+                        <section class="feature3">
+                            <h5><span class="label"><a id="list-c09-007" href="part0010.html#list-anc-c09-007">Listing 9-7</a>:</span>
+                                Using a public API of Calculator</h5>
+                            <pre>
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+public class CalculatorEngine implements ActionListener {
+ Calculator parent; // a reference to the Calculator
+  // Constructor stores the reference to the
+  // Calculator window in the member variable parent
+ CalculatorEngine(Calculator parent){
+   this.parent = parent;
+ }
+ public void actionPerformed(ActionEvent e){
+   // Get the source of this action
+   JButton clickedButton =  (JButton) e.getSource();
+   // Get the existing text from the Calculator's
+   // display field. Reaching inside another object is bad.
+   String dispFieldText = <strong>parent.getDisplayValue();</strong>
+   // Get the button's label
+   String clickedButtonLabel = clickedButton.getText();
+   <strong>parent.setDisplayValue(dispFieldText +</strong>
+                                   <strong>clickedButtonLabel);</strong>
+ }
+}</pre>
+                            <div class="bottom hr">
+                                <hr/>
+                            </div>
+                        </section>
+                    </aside>
+                </section>
+                <section>
+                    <h2><a id="mvc"></a>Design Pattern Model-View-Controller</h2>
+                    <p>Software <span epub:type="pagebreak" title="107" id="Page_107"></span>engineers <a
+                            id="idp15139904"></a><a id="idp15141280"></a>often have to implement similar architectural
+                        solutions in their projects. Over the years a number of design patterns were published online
+                        and in books. One of such architectural patterns is model-view-controller (MVC). The main idea
+                        of MVC is that you should separate code that deals with UI (view), stores the application data
+                        (model), and triggers the changes of the views and data (controller). The implementation of MVC
+                        may vary depending on the application, but the principle remains the same. </p>
+                    <p>Even in such a simple application as your calculator, you can start separating the code. For
+                        example, the <code>Calculator</code> class represents <i>view</i>, is responsible only for the
+                        UI, and has no application logic. </p>
+                    <p>The event listener <code>CalculatorEngine</code> plays the role of the controller. It serves as a
+                        trigger to engage the application logic when the user clicks on the button or updates the view
+                        when the result has been calculated.</p>
+                    <p>You don’t have the model layer here as you don’t store any data. But if you need to implement a
+                        calculator that remembers the history of calculations, you could create a class <code>CalculationsHistory</code>
+                        that would serve as a model in MVC, as shown in <a id="fig-anc-c09-002"
+                                                                           href="part0010.html#fig-c09-002">Figure
+                            9-2</a>.</p>
+                    <figure>
+                        <img class="center" src="../Images/image00526.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c09-002" href="part0010.html#fig-anc-c09-002">Figure 9-2</a>:</b></span>
+                                MVC in Calculator</p>
+                        </figcaption>
+                    </figure>
+                    <p>Design patterns became a part of the software developer’s jargon. If one programmer says, “We
+                        need to implement MVC here,” both know what this is all about.</p>
+                    <p>I keep bringing your attention to various design patterns in the future chapters of this book.
+                        Meanwhile you can refer to the online resource <a
+                                href="http://en.wikibooks.org/wiki/Computer_Science_Design_Patterns">Computer Science
+                            Design Patterns</a>.  </p>
+                </section>
+                <section>
+                    <h2><a id="more_swing_listeners"></a>More Swing Listeners</h2>
+                    <p>JDK comes with a number of <a
+                            href="http://docs.oracle.com/javase/tutorial/uiswing/events/api.html">event listeners</a>
+                    </p>
+                    <p>located in the package <code>java.awt.event</code>. Here are <a id="listen1"></a>some of them:
+                    </p>
+                    <ul>
+                        <li><code>FocusListener</code> is <span epub:type="pagebreak" title="108" id="Page_108"></span>notified
+                            when <a id="idp15158208"></a><a id="idp15159568"></a>a widget gains or loses focus (for
+                            example, we say that a text field has focus if it has a blinking cursor).
+                        </li>
+                        <li><code>ItemListener</code> reacts to the <a id="idp15161360"></a><a id="idp15163168"></a>selection
+                            of items from a list or a drop-down box.
+                        </li>
+                        <li><code>KeyListener</code> responds to <a id="idp15165088"></a><a id="idp15166592"></a>user
+                            keypresses.
+                        </li>
+                        <li><code>MouseListener</code> responds to <a id="idp15168512"></a><a id="idp15170048"></a>mouse
+                            clicks or the cursor hovering over a widget.
+                        </li>
+                        <li><code>MouseMotionListener</code> tells you<a id="idp15171872"></a><a id="idp15173520"></a>
+                            if the mouse is being moved or dragged. To <i>drag</i> means to move the mouse while holding
+                            its left button down.
+                        </li>
+                        <li><code>WindowListener</code> gives you a <a id="idp15175184"></a><a id="idp15177440"></a>chance
+                            to catch the moments when the user opens, closes, minimizes, or activates the window.
+                        </li>
+                    </ul>
+                    <p><a id="tbl-anc-c09-001" href="part0010.html#tbl-c09-001">Table 9-1</a> shows the names of
+                        selected listener interfaces and the methods declared in these interfaces. For example, <code>FocusListener</code>
+                        declares two methods: <code>focusGained()</code> and <code>focusLost()</code>. This means that
+                        even if your class is interested only in knowing when a particular field gains focus, you also
+                        must include the empty method <code>focusLost()</code>. Java provides <a id="idp15179584"></a><a
+                                id="idp15182304"></a>special <i>adapter classes</i> for most of the event listeners to
+                        spare you from having to manually code empty methods enforced by listener interfaces.</p>
+                    <figure>
+                        <figcaption><p><span class="figureLabel"><a id="tbl-c09-001"
+                                                                    href="part0010.html#tbl-anc-c09-001"><b>Table 9-1:</b></a></span>
+                            Selected Swing Listeners</p></figcaption>
+                        <table id="table9_1">
+                            <tbody>
+                            <tr>
+                                <td><b>Interface</b></td>
+                                <td><b>Methods to Implement</b></td>
+                            </tr>
+                            <tr>
+                                <td><code>FocusListener</code></td>
+                                <td>
+			<pre>
+focusGained(FocusEvent)
+focusLost(FocusEvent)</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>ItemListener</code></td>
+                                <td><code>itemStateChanged(ItemEvent)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>KeyListener</code></td>
+                                <td>
+			<pre>
+keyPressed(KeyEvent)
+keyReleased(KeyEvent)
+keyTyped(KeyEvent)</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>MouseListener</code></td>
+                                <td>
+			<pre>
+mouseClicked(MouseEvent)
+mouseEntered(MouseEvent)
+mouseExited(MouseEvent)
+mousePressed(MouseEvent)
+mouseReleased(MouseEvent)</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>MouseMotionListener</code></td>
+                                <td>
+			<pre>
+mouseDragged(MouseEvent)
+mouseMoved(MouseEvent)</pre>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>WindowListener</code></td>
+                                <td>
+			<pre>
+windowActivated(WindowEvent)
+windowClosed(WindowEvent)
+windowClosing(WindowEvent)
+windowDeactivated(WindowEvent)
+windowDeiconified(WindowEvent)
+windowIconified(WindowEvent)
+windowOpened(WindowEvent)</pre>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </figure>
+                    <p>Java run time has to take care of <a id="listen2"></a>multiple things: update the content of the
+                        screen, apply processing logic and data, and react to events. </p>
+                    <p>Multiple <span epub:type="pagebreak" title="109" id="Page_109"></span>events can be happening at
+                        the same time, and Java run time constantly runs a GUI event loop, placing these events in the
+                        event queue, as shown in <a id="fig-anc-c09-003" href="part0010.html#fig-c09-003">Figure 9-3</a>.
+                    </p>
+                    <figure>
+                        <img class="center" src="../Images/image00527.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c09-003" href="part0010.html#fig-anc-c09-003">Figure 9-3</a>:</b></span>
+                                GUI event loop</p>
+                        </figcaption>
+                    </figure>
+                    <p>The code that updates the GUI should be processed by a special worker thread
+                        (<code>SwingWorker</code>), which we’ll discuss in <a
+                                href="part0018.html#introduction_to_multi-threading">Lesson 17</a>.</p>
+                </section>
+                <section>
+                    <h2><a id="how_to_use_adapters"></a>How to use Adapters</h2>
+                    <p>Swing adapters are classes with <a id="idp15211024"></a><a id="idp15212480"></a>implemented empty
+                        functions required by listener interfaces. Let’s say you need to display a warning message and
+                        save some data on the disk when the user closes the window. According to <a
+                                href="part0010.html#table9_1">table_9-1</a>, a class that implements the <code>WindowListener</code>
+                        interface has to include seven methods. This means that you’ll have to write the code that saves
+                        the data in the method <code>windowClosing()</code> and also include six empty methods.</p>
+                    <p>The package <code>java.awt.event</code> includes a number of adapter classes that implement
+                        corresponding listener interfaces, such as <code>KeyAdapter</code> and
+                        <code>WindowAdapter</code>. Instead of implementing <code>WindowListener</code> in a class that
+                        handles the window’s events, just extend a class from <code>WindowAdapter</code> and override
+                        only the methods you are interested in; for example, the method <code>windowClosing()</code>:
+                    </p>
+                    <pre>
+class MyWindowEventProcessor extends java.awt.event.WindowsAdapter {
+  public void windowClosing(WindowEvent e) {
+    // your code that saves the data goes here.
+  }
+}</pre>
+                    <p>The rest is easy: Register the class <code>MyWindowEventProcessor</code> as an event listener in
+                        your GUI class (for example, <code>Calculator</code>), as shown in <a id="list-anc-c09-008"
+                                                                                              href="part0010.html#list-c09-008">Listing
+                            9-8</a>.</p>
+                    <p>You can register multiple listeners by using adapters in <code>Calculator</code>. For example, to
+                        allow the user to enter a number by pressing numeric keys, create a class based on <code>KeyAdapter</code>,
+                        instantiate it, and register it with <code>Calculator</code>, too.</p>
+                    <aside epub:type="sidebar">
+                        <div class="top hr">
+                            <hr/>
+                        </div>
+                        <section class="feature3">
+                            <h5><span class="label"><a id="list-c09-008" href="part0010.html#list-anc-c09-008">Listing 9-8</a>:</span>
+                                Registering <span epub:type="pagebreak" title="110" id="Page_110"></span>an
+                                adapter-based listener</h5>
+                            <pre>
+MyWindowEventProcessor myWindowListener = new MyWindowEventProcessor();
+addWindowListener(myWindowListener);</pre>
+                            <div class="bottom hr">
+                                <hr/>
+                            </div>
+                        </section>
+                    </aside>
+                    <p>You can achieve the same result using anonymous<i> inner classes</i>, as explained in the next
+                        section.</p>
+                </section>
+                <section>
+                    <h2><a id="inner_classes"></a>Inner Classes</h2>
+                    <p>A class declared inside <a id="idp15230064"></a><a id="idp15231712"></a>another one is called an
+                        inner class. <a id="list-anc-c09-009" href="part0010.html#list-c09-009">Listing 9-9</a> shows an
+                        example of the class <code>TaxOptimizer</code> declared inside the class <code>Tax</code>. The
+                        class <code>TaxOptimizer</code> is a member inner class and has access to all variables of the
+                        class <code>Tax</code>. Placing one class inside another is just a way of saying that the
+                        classes belong together. After compilation, the class <code>Tax</code> file produces two output
+                        files: <code>Tax.class</code> and <code>Tax$TaxOptimizer.class</code>. </p>
+                    <aside epub:type="sidebar">
+                        <div class="top hr">
+                            <hr/>
+                        </div>
+                        <section class="feature3">
+                            <h5><span class="label"><a id="list-c09-009" href="part0010.html#list-anc-c09-009">Listing 9-9</a>:</span>
+                                Tax class including an inner Taxoptimizer class</h5>
+                            <pre>
+class Tax{
+    double grossIncome;
+    int dependents;
+  double calcStateTax(){
+        TaxOptimizer tOpt = new TaxOptimizer();
+        return tOpt.optimize(grossIncome, dependents);
+  }
+      TaxOptimizer getTaxOptimizer(){
+          return new TaxOptimizer();
+      }
+      <strong>class TaxOptimizer</strong>{
+       int taxCode;
+        void setTaxCode(int tCode){
+              taxCode=tCode;
+       }
+       int optimize(double grossIncome, int dep){
+         // Some optimization code goes here
+            return 0;
+       }
+ }
+}</pre>
+                            <div class="bottom hr">
+                                <hr/>
+                            </div>
+                        </section>
+                    </aside>
+                    <p>An <span epub:type="pagebreak" title="111" id="Page_111"></span>inner class defined as <code>static</code>
+                        can access only <code>static</code> variables of the outer class. The inner class can even be
+                        defined inside a method of an outer class. In this case this local inner class is available only
+                        when the outer method is called, and it can access only <code>static</code> variables of the
+                        top-level class.</p>
+                    <p>The method <code>getTaxOptimizer()</code> in <a href="part0010.html#list-c09-009">Listing 9-9</a>
+                        returns an instance of the inner class if external classes need it. For example, if the class
+                        <code>TestTax</code> needs to access the method <code>setTaxCode()</code> from the inner class,
+                        it could do so as follows:</p>
+                    <pre>
+Tax t = new Tax(2, "NY", 50000);
+Tax.TaxOptimizer tOptimizer = t.getTaxOptimizer();
+tOptimizer.setTaxCode(12345);</pre>
+                    <p>Here’s another syntax producing the same result:</p>
+                    <pre>
+Tax t = new Tax(2, "NY", 50000);
+Tax.TaxOptimizer tOptimizer = t.new TaxOptimizer();
+tOptimizer.setTaxCode(12345);</pre>
+                    <section>
+                        <h3><a id="anonymous_inner_classes"></a>Anonymous Inner Classes</h3>
+                        <p>If an inner class does not <a id="idp15249648"></a><a id="idp15251312"></a><a
+                                id="idp15252768"></a>have a name, it’s called <i>anonymous</i>. The use of anonymous
+                            inner classes is pretty easy to understand in examples of implementing Swing adapters.
+                            You’ve learned by now that using adapters is a three-step process: Extend the adapter class,
+                            instantiate it, and register it as an event listener (see <a
+                                    href="part0010.html#list-c09-008">Listing 9-8</a>). With anonymous inner classes you
+                            can perform all three steps in one shot, as in <a id="list-anc-c09-0010"
+                                                                              href="part0010.html#list-c09-0010">Listing
+                                9-10</a>.</p>
+                        <aside epub:type="sidebar">
+                            <div class="top hr">
+                                <hr/>
+                            </div>
+                            <section class="feature3">
+                                <h5><span class="label"><a id="list-c09-0010" href="part0010.html#list-anc-c09-0010">Listing 9-10</a>:</span>
+                                    Using an anonymous class as adapter</h5>
+                                <pre>
+this.addWindowListener(new <strong>WindowAdapter() {</strong>
+           <strong>public void windowClosing(WindowEvent e) {</strong>
+                  <strong>System.exit(0);</strong>
+          <strong>}</strong>
+       <strong>}</strong>
+);</pre>
+                                <div class="bottom hr">
+                                    <hr/>
+                                </div>
+                            </section>
+                        </aside>
+                        <p>Imagine that this code is placed in the <code>Calculator</code> class. The method <code>addWindowListener()</code>
+                            requires a subclass of <code>WindowAdapter</code>, and the section in bold in <a
+                                    href="part0010.html#list-c09-0010">Listing 9-10</a> demonstrates the syntax of
+                            declaring an anonymous class that extends <code>WindowAdapter</code> and overrides the
+                            method <code>windowClosing()</code>.</p>
+                        <p>The <code>new</code> operator instantiates the adapter, and because this is done inside the
+                            parentheses of the method <code>addWindowListener()</code> the newly created object is used
+                            as its argument. This adapter’s implementation doesn’t have a name, and we don’t need to
+                            know its name in this context, do we? The instance of the adapter was created and registered
+                            as an event listener, and this is all that matters.</p>
+                        <aside epub:type="sidebar">
+                            <div class="top hr">
+                                <hr/>
+                            </div>
+                            <section class="feature2">
+                                <h3><a id="idp15268368"></a>Lambda Expressions as an Alternative to Inner Classes</h3>
+                                <p>For many <a id="idp15266704"></a>years <span epub:type="pagebreak" title="112"
+                                                                                id="Page_112"></span>anonymous inner
+                                    classes were used as method (function) wrappers because Java did not allow a
+                                    function to pass as an argument to a method. Java 8 introduced lambda expressions
+                                    that in many cases eliminate the need to use anonymous inner classes. You read about
+                                    lambda expressions in <a href="part0014.html#lambda_expression">Lesson 13</a>. </p>
+                                <div class="bottom hr">
+                                    <hr/>
+                                </div>
+                            </section>
+                        </aside>
+                    </section>
+                    <section>
+                        <h2><a id="try_it-id00030"></a>Try It</h2>
+                        <p>The goal of this lesson is to complete the code of the calculator. It has to look as in <a
+                                href="part0010.html#fig-c09-002">Figure 9-2</a> and implement the functionality of all
+                            the buttons.</p>
+                        <figure>
+                            <img class="center" src="../Images/image00528.jpeg" alt="image"/>
+                            <figcaption>
+                                <p><span class="figureLabel"><b><a id="fig-c09-004"
+                                                                   href="part0010.html#fig-anc-c09-004">Figure 9-4</a>:</b></span>
+                                    The Calculator GUI</p>
+                            </figcaption>
+                        </figure>
+                        <section>
+                            <h3><a id="lesson_requirements-id00031"></a>Lesson Requirements</h3>
+                            <p>For this lesson you should have Java installed.</p>
+                            <aside epub:type="sidebar">
+                                <div class="top hr">
+                                    <hr/>
+                                </div>
+                                <section class="feature1">
+                                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and
+                                        resources for this “Try It” from the book’s web page at</i> <code>www.wrox.com/go/javaprog24hr2e</code><i>.
+                                        You can find them in</i> <code>Lesson9.zip</code><i>.</i></p>
+                                    <div class="bottom hr">
+                                        <hr/>
+                                    </div>
+                                </section>
+                            </aside>
+                        </section>
+                        <section>
+                            <h3><a id="step-by-step-id00032"></a>Step-by-Step</h3>
+                            <ol>
+                                <li>Create a new Eclipse project called Lesson9 and copy the <code>Calculator</code>
+                                    from <a href="part0009.html#list-c08-004">Listing 8-4</a>).
+                                </li>
+                                <li>Create all missing UI components — use <a id="fig-anc-c09-004"
+                                                                              href="part0010.html#fig-c09-004">Figure
+                                    9-4</a> as a prototype.
+                                </li>
+                                <li>Create the event listener <code>CalculatorEngine </code>— all event processing and
+                                    calculations should be performed there.
+                                </li>
+                                <li>From <code>Calculator</code>, pass to the <code>CalculatorEngine</code> engine a
+                                    reference to itself.
+                                </li>
+                                <li>Register with <code>CalculatorEngine</code> all GUI components that can generate
+                                    events.
+                                </li>
+                                <li>
+                                    <p>Implement the code for the following scenario:</p>
+                                    <ol type="a">
+                                        <li>The <span epub:type="pagebreak" title="113" id="Page_113"></span>user enters
+                                            all the digits of the first number.
+                                        </li>
+                                        <li>If the user hits one of the action buttons (+, -, /, or *), this indicates
+                                            that the first number has been entered. Store this number and selected
+                                            action in class variables (declare them first) and erase the number from the
+                                            display text field. You need to convert the <code>String</code> value to
+                                            <code>double</code> with the help of class <code>Double</code>.
+                                        </li>
+                                        <li>The user enters the second number and clicks the = button.</li>
+                                        <li>Convert the <code>String</code> value from the text field into a numeric
+                                            type <code>double</code> so it is able to store numbers with a decimal
+                                            point. Perform the selected action using this value and the number stored in
+                                            the numeric variable from Step b.
+                                        </li>
+                                        <li>Display the result in the display field and store this value in the variable
+                                            that was used in Step b, for future calculations.
+                                        </li>
+                                        <li>Run the calculator. If it works, show it to your friends.</li>
+                                    </ol>
+                                </li>
+                            </ol>
+                            <aside epub:type="sidebar">
+                                <div class="top hr">
+                                    <hr/>
+                                </div>
+                                <section class="feature1">
+                                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                                            href="part0010.html">Lesson 9</a> online at </i><code><a
+                                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                                        will also be able to download the code and resources for this lesson from the
+                                        website.</i></p>
+                                    <div class="bottom hr">
+                                        <hr/>
+                                    </div>
+                                </section>
+                            </aside>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </section>
+</section>
+</body>
+</html>

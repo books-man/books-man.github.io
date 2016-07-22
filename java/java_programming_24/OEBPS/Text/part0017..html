@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Network Programming Basics</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="network_programming"></a><span class="chapterTitle">Lesson 16<br/>Network Programming Basics</span></h1>
+
+    <section>
+        <p>Computers <span epub:type="pagebreak" title="195" id="Page_195"></span>connected to a network can communicate
+            with each other only if they agree on the rules of communication, <a id="idp17094736"></a><a
+                    id="idp17095744"></a>called <i>protocols,</i> that define how to request the data, if the data
+            should be sent in pieces, how to acknowledge received data, if the connection between two computers should
+            remain open, and so on. TCP/IP, UDP/IP, FTP, HTTP, and WebSocket are some examples of network protocols.</p>
+        <p><i>Local area network (LAN)</i> refers to a <a id="idp17098800"></a><a id="idp17100240"></a>computer network
+            connecting devices in a small area—for example, the same office or house, or a rack. Interconnected
+            computers located farther <a id="idp17099888"></a><a id="idp17104128"></a>apart or that belong to different
+            companies are part of a <i>wide area network (WAN)</i>. The Internet consists of millions of networks and
+            individual devices. Connected networks that belong to the same organization are referred to as an <i>intranet.</i>
+            For <a id="idp17102224"></a><a id="idp17106640"></a>security reasons intranets are shielded from the rest of
+            the world by special software called <i>firewalls.</i> This <a id="idp17108384"></a><a id="idp17110352"></a>lesson
+            introduces networking using HTTP protocol and sockets.</p>
+        <p>The World Wide Web (WWW) <a id="idp17111616"></a>uses <i>uniform resource locators (URLs)</i> to identify
+            online resources. For example, the following URL says that there is (or will be generated on the fly) a
+            document called <code>training.html</code> located at the remote host known as <code>mycompany.com</code>,
+            and that the program should use the HTTP protocol to request this document. It also states that this request
+            has to be sent via port 80.</p>
+        <pre>
+http://www.mycompany.com:80/training.html
+</pre>
+        <p>The hostname <a id="idp17114160"></a>must be unique, and it is automatically converted to the Internet
+            Protocol (IP) <a id="idp17118544"></a><a id="idp17117712"></a>address of the physical server by your <i>Internet
+                service provider (ISP)</i>, which is also known as your hosting company. The IP address is a group of
+            four numbers (IPv4)—for example 122.65.98.11—or up to eight hexadecimal numbers (IPv6)—such as
+            2001:cdba:0000:0000:0000:0000:3257:9652 . Most of the individuals connected to the Internet <a
+                    id="idp17122608"></a><a id="idp17120384"></a>are getting <i>dynamic</i> (not <i>permanent</i>) IP
+            addresses assigned to their computers, but for an extra fee you can request a static IP address that can be
+            assigned to any server located in your basement, office, or garage. In enterprises, network computers
+            usually get static (permanent) IP addresses. For individual use, it’s sufficient to have a dynamically
+            assigned IP address as long as your ISP can find your server by resolving a domain name to the current IP
+            address.</p>
+        <p>Finding a resource online is somewhat similar to finding a person by his or her address. The role of an IP
+            address is similar to the role of a street number of a building, and a port plays the role of an apartment
+            number in that <span epub:type="pagebreak" title="196" id="Page_196"></span>building. Many people can live
+            in the same building, just as many programs can run on the same server. A port is simply a unique number
+            assigned to a server program running on the computer.</p>
+        <p>Multiple Java technologies exist for providing data exchange among computers in a network. Java provides
+            classes for network programming in the package <code>java.net</code>. This lesson shows you how to read data
+            from the Internet using the class <code>URL</code> as well as direct socket-to-socket programming. Starting
+            with <a href="part0026.html">Lesson 25</a> you become familiar with other technologies that you can use over
+            the network: Java Servlets, RMI, EJB, Web Services, and JMS.</p>
+    </section>
+    <section>
+        <h2><a id="reading_data_from_the_internet"></a>Reading Data from the Internet</h2>
+        <p>You <a id="read3"></a><a id="read4"></a>learned in <a
+                href="part0015.html#working_with_streams">Chapter 14</a> that to read local file streams, a program has
+            to know the file’s location—for example, <code>c:\practice\training.html</code>. The same holds true for
+            reading remote files—the only difference is that you open the stream over the network. Consider reading
+            remote data using HTTP protocol. Java has a class, <code>java.net.URL</code>, that helps you connect to a
+            remote computer on the Internet and get access to a resource there, provided that it’s not protected from
+            the public. First, create an instance of the <code>URL</code> of your resource:</p>
+        <pre>
+try{
+  URL xyz = new URL("http://www.xyz.com:80/training.html");
+    ...
+}
+catch(MalformedURLException murle){
+      murle.printStackTrace();
+}</pre>
+        <p>The <code>MalformedURLException</code> is <a id="idp17137376"></a><a id="idp17139424"></a>thrown if an
+            invalid URL has been specified—for example, if you typed <code>htp</code> instead of <code>http</code> or
+            included extra spaces. If the <code>MalformedURLException</code> is thrown, it does not indicate that the
+            remote machine has problems; just check “the spelling” of your URL.</p>
+        <p>Creation of the <code>URL</code> object <a id="idp17142656"></a><a id="idp17143728"></a>does not establish a
+            connection with the remote computer; you still need to open a stream and read it. Perform the following
+            steps to read a file from the Internet via HTTP connection:</p>
+        <ol>
+            <li>Create an instance of the class <code>URL</code>.</li>
+            <li>Create an instance of the <code>URLConnection</code> class and open a connection using the
+                <code>URL</code> from Step 1.
+            </li>
+            <li>Get a reference to the input stream of this object by calling the method <code>URLConnection.getInputStream()</code>.
+            </li>
+            <li>Read the data from the stream. Use a buffered reader to speed up the reading process.</li>
+        </ol>
+        <p>While using streams over the networks you’ll have to handle possible I/O exceptions the way you did while
+            reading the local files. The server you are trying to connect to has to be up and running, and, if you’re
+            using HTTP-based protocols, a special software—a web server—has to be “listening to” the specified port on
+            the server. By default, web servers are listening to all HTTP requests on port 80 and to secure HTTPS
+            requests directed to port 443.</p>
+        <p>The program in <a id="list-anc-c016-001" href="part0017.html#list-c016-001">Listing 16-1</a> reads the
+            content of the existing or generated file <code>index.html</code> from <code>google.com</code> and prints
+            its content on the system console. To test this program your computer has to be connected to the Internet. 
+        </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c016-001"
+                                           href="part0017.html#list-anc-c016-001">Listing 16-1</a>:</span> Reading <span
+                        epub:type="pagebreak" title="197" id="Page_197"></span>the content of the home page at
+                    google.com</h5>
+                <pre>
+public class WebSiteReader {
+  public static void main(String args[]){
+       String nextLine;
+       URL url = null;
+       URLConnection urlConn = null;
+       try
+       {
+         // Assume index.html is a default home page name
+          url  = new URL("http://www.google.com" );
+          urlConn = url.openConnection();
+       } catch( IOException e){
+           System.out.println("Can't connect to the provided URL:" +
+                                               e.toString() );
+       } 
+       
+       try( InputStreamReader inStream = new InputStreamReader(
+             urlConn.getInputStream(), "UTF8");
+            BufferedReader buff  = new BufferedReader(inStream);){
+     
+      // Read and print the content of the Google's home page
+        while (true){
+             nextLine =buff.readLine();  
+             if (nextLine !=null){
+                System.out.println(nextLine); 
+             }
+             else{
+               break;
+             } 
+         }
+       } catch(IOException  ioe){
+      System.out.println("Can't read from the Internet: "+
+                                          ioe.toString()); 
+     }
+ }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The code in <a href="part0017.html#list-c016-001">Listing 16-1</a> creates an instance of the class
+            <code>URL</code>, then gets a reference <a id="idp17158816"></a><a id="idp17160544"></a>to an instance of
+            <code>URLConnection</code> to open a connection with the stream, and, finally, opens
+            <code>InputStreamReader</code>, which is chained with <code>BufferedReader</code>. Run this program and you
+            see the output shown in <a id="list-anc-c016-002" href="part0017.html#list-c016-002">Listing 16-2</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c016-002"
+                                           href="part0017.html#list-anc-c016-002">Listing 16-2</a>:</span> The fragment
+                    of console output shown after google.com is read</h5>
+                <pre>
+&lt;!doctype html&gt;&lt;html itemscope="" itemtype="http://schema.org/WebPage"
+lang="en"&gt;
+&lt;head&gt;&lt;meta content="Search the world's information, 
+including webpages, images, videos and more. Google has many special 
+features to help you find exactly what you're looking for." 
+name="description"&gt;&lt;meta content="noodp" name="robots"&gt;
+&lt;meta content="/images/google_favicon_128.png" itemprop="image"&gt;
+&lt;title&gt;Google&lt;/title&gt;&lt;script&gt;(function(){
+window.google={kEI:"kJLGU6f4DJSqyAT6l4K4DA",getEI:function(a){
+for(var c;a&amp;&amp;(!a.getAttribute||!(c=a.getAttribute("eid")));)
+a=a.parentNode;return c||google.kEI},https:function()
+{return"https:"==window.location.protocol},
+kEXPI:"4791,25657,4000116,4007661,4008142,4009033,4009641,
+...
+&lt;/script&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The class <code>WebSiteReader</code> <a id="idp17168800"></a><a id="idp17169872"></a><a id="idp17171328"></a><a
+                id="idp17172416"></a>explicitly creates the object <code>URLConnection</code>. Strictly speaking, you
+            could achieve the same result by using only the class <code>URL</code>:</p>
+        <pre>
+URL url = new URL("http://www.google.com");
+InputStream in = url.openStream();
+BufferedReader buff= new BufferedReader(new InputStreamReader(in));</pre>
+        <p><span epub:type="pagebreak" title="198" id="Page_198"></span>The reason you may consider <a
+                id="idp17175856"></a><a id="idp17177488"></a>using the <code>URLConnection</code> class is that it could
+            give you some additional control over the I/O process. For example, by <a id="idp17181280"></a><a
+                    id="idp17179968"></a>calling its method <code>setDoOutput(true)</code> you specify that this Java
+            program is intended to write to the remote URL, too. In the case of HTTP connections, this will also
+            implicitly set the type of request to <code>POST</code> (see <a
+                    href="part0027.html#programming_with_servlets">Chapter 26</a>). The <a id="idp17183920"></a><a
+                    id="idp17185104"></a>method <code>useCaches()</code> of <code>URLConnection</code> also allows you
+            to specify whether the protocol can use a cached object or should always request a fresh copy of the
+            document at a specified URL. In general, if you are planning to write Java programs that will only use the
+            HTTP protocol, use the class <code>HttpURLConnection</code>, which supports HTTP-specific features, such as
+            processing header fields, getting HTTP response codes, setting request <a id="idp17189680"></a><a
+                    id="idp17188976"></a>properties, and so on.</p>
+    </section>
+    <section>
+        <h2><a id="connecting_through_http_proxy_servers"></a>Connecting Through HTTP Proxy Servers</h2>
+        <p>For security <a id="HTTP"></a><a id="idp17195488"></a>reasons, most enterprises use <i>firewalls</i> (see
+            <code><a href="http://en.wikipedia.org/wiki/Firewall_%28computing%29">http://en.wikipedia.org/wiki/Firewall_%28computing%29</a></code>)
+            to block unauthorized access to their internal networks. As a result their employees can’t directly reach
+            the outside Internet world (or even some internal servers), but go <a id="idp17197664"></a>through <i>HTTP
+                proxy servers</i>. Check the settings of your Internet browser to see if you are also sitting behind a
+            firewall, and find out the hostname and port number of the proxy server if you are. Usually, web browsers
+            store proxy parameters under the Advanced tabs of their Settings or Preferences menus.</p>
+        <p>If your browser has downloaded a page containing a Java applet, the latter knows the parameters of the proxy
+            servers and can make requests to the remote servers through the firewall. But a regular Java application <a
+                    id="idp17199648"></a><a id="idp17200672"></a>should specify <a
+                    href="http://docs.oracle.com/javase/8/docs/api/java/net/doc-files/net-properties.html">networking
+                properties</a>  <code>http.proxyHost</code> and <code>http.proxyPort</code>  to “drill a hole” in the
+            firewall. For example, if the name of your proxy server is <code>proxy.mycompany.com</code> and it runs on
+            port 8080, the following two lines should be added to the Java application that needs to connect to the
+            Internet:</p>
+        <pre>
+System.setProperty("http.proxyHost","http://proxy.mycompany.com");
+System.setProperty("http.proxyPort", 8080);</pre>
+        <p>If you do not want to hardcode these values, pass them to your program from the command line:</p>
+        <pre>
+java -Dhttp.proxyHost=http://proxy.mycompany.com
+Dhttp.proxyPort=8080 WebSiteReader
+</pre>
+        <p><span epub:type="pagebreak" title="199" id="Page_199"></span>The other option for programmatically specifying
+            proxy parameters is to do it via the class <code>java.net.Proxy</code>. The code for the same proxy server
+            parameter would look like this (you can replace the name of <a id="idp17209744"></a>the server with an IP
+            address):</p>
+        <pre>
+Proxy myProxy = new Proxy(Proxy.Type.HTTP,
+        new InetSocketAddress ("http://proxy.mycompany.com", 8080));
+url  = new URL("http://www.google.com/index.html");
+urlConn = url.openConnection(myProxy);
+</pre>
+    </section>
+    <section>
+        <h2><a id="how_to_download_files_from_the_internet"></a>How to Download Files from the Internet</h2>
+        <p>Combine <a id="idp17213104"></a><a id="idp17214928"></a><a id="idp17216320"></a>the class <code>URL</code>
+            with <a id="idp17218288"></a><a id="idp17219472"></a>the writing files techniques and you should be able to
+            download practically any unprotected file (such as images, music, and binary files) from the Internet. The
+            trick is in opening the file stream properly. <a id="list-anc-c016-003" href="part0017.html#list-c016-003">Listing
+                16-3</a> shows the code of a Java class, <code>FileDownload</code>, <a id="idp17222320"></a><a
+                    id="idp17223728"></a>which gets the URL and the destination (local) filename as command-line
+            arguments, connects to this resource, and downloads it into a local file.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c016-003"
+                                           href="part0017.html#list-anc-c016-003">Listing 16-3</a>:</span> Downloading
+                    an arbitrary file from the Internet</h5>
+                <pre>
+class FileDownload{
+  public static void main(String args[]){
+   if (args.length!=2){
+     System.out.println(
+    "Proper Usage:java FileDownload SourceFileURL OutputFileName");
+     System.out.println(
+     "For example: " + 
+        "java FileDownload http://myflex.org/yf/nyc.jpg nyc.jpg");
+     System.exit(-1);
+   }
+    URLConnection fileStream=null;
+    try{
+        URL remoteFile=new URL(args[0]);
+        fileStream=remoteFile.openConnection();
+    } catch (IOException ioe){
+      ioe.printStackTrace();
+    }
+   try(  FileOutputStream fOut=new FileOutputStream(args[1]);
+        InputStream in = fileStream.getInputStream();){
+    // Read a remote file and save it in the local one
+    int data;
+    System.out.println("Starting the download from " + args[0]);
+    while((data=in.read())!=-1){
+         fOut.write(data);
+    }  
+    System.out.println("Finished downloading the file "+args[1]);
+  } catch (Exception e){
+     e.printStackTrace();
+  } 
+ }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <section>
+            <h3><a id="filedownload"></a>Specifying Command-Line Parameters for FileDownload</h3>
+            <p><span epub:type="pagebreak" title="200" id="Page_200"></span>Note how this <code>FileDownload</code> program
+                <a id="idp17231472"></a><a id="idp17232864"></a>starts by checking the number of provided command
+                parameters: If the number is anything but two, the program prints an error message and quits. Here’s an
+                example of how you can run this program from the command line to download a photo of New York City that
+                I made in July of 2014.</p>
+            <pre>
+java FileDownload http://myflex.org/yf/nyc.jpg nyc.jpg
+</pre>
+            <p>If you prefer to run this program from Eclipse, select the Run Configurations menu (use the drop-down
+                menu with the green button on the toolbar), select <code>FileDownload</code> as the main class, and
+                enter <code><a href="http://myflex.org/yf/nyc.jpg nyc.jpg">http://myflex.org/yf/nyc.jpg
+                    nyc.jpg</a></code>  in the Program Arguments box (it’s under the Arguments tab). The file will be
+                downloaded in your project directory, and you can see it in Eclipse by selecting Refresh on the
+                project. </p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="stock_quote_program"></a>The Stock Quote Program</h2>
+        <p>This section <a id="stock"></a>shows you how to write a program that can read stock market price quotes from
+            the Internet. There are many Internet sites providing such quotes; the Internet portal Yahoo! is one of
+            them.</p>
+        <p>Visit <code><a href="http://finance.yahoo.com">http://finance.yahoo.com</a></code>, enter the symbol of any
+            stock (AAPL for example), and press the Search Finance button. You see the pricing information about Apple,
+            Inc.—a fragment of this web page is shown in <a id="fig-anc-c016-001" href="part0017.html#fig-c016-001">Figure
+                16-1</a>.</p>
+        <p>The URL that can be used to get to this page directly is <code><a
+                href="http://http://finance.yahoo.com/q?s=AAPL">http://finance.yahoo.com/q?s=AAPL</a></code><span
+                style="letter-spacing: 0.01em; line-height: 1.3em;"> .</span> </p>
+        <p>Right-click this web page and select View Page Source (or similar) from the pop-up menu to see the HTML
+            contents of this page; you see lots of HTML tags, and the information about AAPL is buried somewhere deep
+            inside. The class <code>WebSiteReader</code> that you used earlier in this lesson reads the content of the
+            Google home page. Modify the line in the class <code>WebSiteReader</code> from <a
+                    href="part0017.html#list-c016-001">Listing 16-1</a> to have it print the content of the Apple’s
+            price quote page on the system console:</p>
+        <pre>
+url = new URL("http://finance.yahoo.com/q?s=AAPL");</pre>
+        <p>You can also store the whole page in a Java <code>String</code> variable instead of printing the lines on the
+            console. In the following code snippet I use the class <code>StringBuilder</code> that’s a more efficient
+            way of concatenating strings than the immutable class <code>String</code> itself. Just modify the <code>while</code>
+            loop in <a href="part0017.html#list-c016-001">Listing 16-1</a>:</p>
+        <pre>
+// Create an instance of StringBuilder with initial capacity ~10Kb
+StringBuilder sb = new StringBuilder(10000);  
+String theWholePage;
+String txt;
+while (txt =buff.readLine() != null ){
+     sb.add(txt);
+ }
+theWholePage=sb.toString()
+</pre>
+        <figure>
+            <img class="center" src="../Images/image00536.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c016-001"
+                                                   href="part0017.html#fig-anc-c016-001">Figure 16-1</a>:</b></span> <a
+                        href="part0017.html#fig-c016-001">Figure 16-1</a>. <span epub:type="pagebreak" title="201"
+                                                                                 id="Page_201"></span>The Apple’s stock
+                    in November of 2014</p>
+            </figcaption>
+        </figure>
+        <p>If you add some smart tokenizing (splitting into parts based on the specified tokens as in <a
+                id="list-anc-c016-004" href="part0017.html#list-c016-004">Listing 16-4</a>) of <code>theWholePage</code> to
+            get rid of all HTML tags and everything but a fragment around (AAPL), you can create your own little Stock
+            Quote program. Although this approach is useful to sharpen your parsing skills, it may not be the best
+            solution, especially if Yahoo! changes the presentation of the stock symbol on this page (e.g., removes
+            parentheses). That’s why the example uses another URL that provides stock quotes in a cleaner <i>comma-separated
+                values (CSV)</i> format. Here’s the URL that should be used for the symbol AAPL:</p>
+        <pre>
+http://quote.yahoo.com/d/quotes.csv?<strong>s=AAPL</strong>&amp;f=sl1d1t1c1ohgv&amp;e=.csv</pre>
+        <p>This URL produces a string that includes the stock symbol, last trade, date and time of the price quote,
+            earning per share (EPS), opening price, day’s range, and volume. </p>
+        <pre>
+"AAPL",108.60,"11/4/2014","4:00pm",-0.80,109.45,109.49,107.72,414989</pre>
+        <p>Now <span epub:type="pagebreak" title="202" id="Page_202"></span>the task of tokenizing the entire web page
+            comes down to parsing this short CSV line. The <code>StockQuote</code> class from <a
+                    href="part0017.html#list-c016-004">Listing 16-4</a> does exactly this: It accepts the stock symbol
+            from the command line, gets the data from Yahoo!, tokenizes the received CSV line, and prints the price
+            quote on the console.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c016-004"
+                                           href="part0017.html#list-anc-c016-004">Listing 16-4</a>:</span> Retrieving
+                    and printing stock quotes</h5>
+                <pre>
+public class StockQuote {
+    
+       static void printStockQuote(String symbol){
+       String csvString;
+       URL url = null;
+       URLConnection urlConn = null;
+       try{
+           url  = new              
+               URL("http://quote.yahoo.com/d/quotes.csv?s="
+                   + symbol + "&amp;f=sl1d1t1c1ohgv&amp;e=.csv" );
+           urlConn = url.openConnection();
+       } catch(IOException ioe){
+           ioe.printStackTrace();
+       }
+       
+       try(InputStreamReader inStream = 
+               new InputStreamReader(urlConn.getInputStream());
+           BufferedReader buff  = new BufferedReader(inStream);){
+        // get the quote as a csv string
+        csvString =buff.readLine();  
+        // parse the csv string
+        StringTokenizer tokenizer=new StringTokenizer(csvString, ",");
+        String ticker = tokenizer.nextToken();
+        String price  = tokenizer.nextToken();
+        String tradeDate = tokenizer.nextToken();  
+        String tradeTime = tokenizer.nextToken();  
+        System.out.println("Symbol: " + ticker + 
+            " Price: " + price + " Date: "  + tradeDate 
+            + " Time: " + tradeTime);
+     } catch(MalformedURLException e){
+         System.out.println("Please check the spelling of " 
+                              + "the URL: " + e.toString() );
+     } catch(IOException  e1){
+      System.out.println("Can't read from the Internet: " + 
+                                           e1.toString() ); 
+     }
+   } 
+  public static void main(String args[]){
+       if (args.length==0){
+          System.out.println("Sample Usage: java StockQuote IBM");
+          System.exit(0);
+       } 
+       
+       printStockQuote(args[0]);
+  }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If you’ve <span epub:type="pagebreak" title="203" id="Page_203"></span>gone through all the previous lessons
+            in this book, reading and understanding the code in <a href="part0017.html#list-c016-004">Listing 16-4</a>
+            should be a piece of cake for you. Test the <code>StockQuote</code> program. Enter AAPL or another stock
+            symbol as an argument in the Run Configurations window of Eclipse, or run it from a command window as
+            follows:</p>
+        <pre>
+java StockQuote AAPL
+</pre>
+        <p>Running <code>StockQuote</code> can produce something <a id="idp17270848"></a>similar to this:</p>
+        <pre>
+Symbol: "AAPL" Price: 108.60 Date: "11/4/2014" Time: "4:00pm"
+</pre>
+    </section>
+    <section>
+        <h2><a id="socket_programming"></a>Socket Programming</h2>
+        <p>Java-based technologies <a id="socket1"></a><a id="socket2"></a>offer many options for network
+            communications, and one of the technologies to consider is <i><a
+                    href="http://docs.oracle.com/javase/tutorial/networking/sockets/definition.html">sockets</a>.</i> A
+            socket is <i>one endpoint</i> in the communication link. In this section you learn how to use the Java <a
+                    id="idp17281616"></a><a id="idp17281360"></a><a id="idp17283264"></a><a id="idp17284416"></a>classes
+            <code>Socket</code> and <code>ServerSocket</code> from the package <code>java.net</code>. Many communication
+            protocols in IP networking are based on sockets. For example, <i>Transmission Control Protocol/Internet
+                Protocol (TCP/IP)</i> maintains a <a id="idp17287264"></a>socket connection for the whole period of
+            communication, whereas <i>User Datagram Protocol (UDP)</i> is <a id="idp17289088"></a>a connectionless
+            protocol, which sends data in small <a id="idp17291632"></a>chunks called <i>datagrams.</i></p>
+        <p>The socket address is a pair: IP address and port. When a Java program creates an instance of the <code>ServerSocket</code>
+            class, this instance becomes a server that just runs in memory and listens on the specified port for other
+            program requests. The following lines create a server that is listening to port 3000:</p>
+        <pre>
+ServerSocket  serverSocket = new ServerSocket(3000);
+client = serverSocket.accept();</pre>
+        <p>The client program should create a client socket—an instance of the class <code>Socket</code>—pointing at the
+            computer/port on which the <code>ServerSocket</code> is running. The client program can connect to the
+            server using hostnames or IP addresses, too; for example:</p>
+        <pre>
+clientSocket = new Socket("124.67.98,101", 3000);
+clientSocket = new Socket("localhost", 3000);
+clientSocket = new Socket("127.0.0.1", 3000);</pre>
+        <p>While deciding which port number to use for the <code>ServerSocket</code>, avoid using port numbers below
+            1024 to avoid conflicts with other system programs. For example, port 80 is typically used by HTTP servers;
+            port 443 is reserved for HTTPS; port 21 is typically used for FTP communications; port 389 is for LDAP
+            servers, and so on. After creating a socket-based connection, both client and server should obtain
+            references to its input/output streams and use them for data exchange.</p>
+        <section>
+            <h3><a id="why_use_socketsquestion_mark"></a>Why Use Sockets?</h3>
+            <p>Why <span epub:type="pagebreak" title="204" id="Page_204"></span>even <a id="idp17299184"></a>use manual
+                socket programming if you can easily establish inter-computer communication with, say, HTTP (it uses
+                sockets internally), start one of many open-source or commercial web servers, and have clients connect
+                to the server as shown in the preceding sample programs in this lesson? Because a socket connection has
+                a lot less overhead than any standard protocol. </p>
+            <p>You can create your own very compact protocol that will allow you to send only the data you need, with no
+                or minimal headers. Socket communication provides a duplex byte stream, whereon the data travels
+                simultaneously in both directions, unlike protocols based on the request-response model. Think of
+                financial trading systems: Speed is the king there, and the ability to send data up and down at the same
+                time saves milliseconds, which makes a difference.</p>
+            <p>Compare with Hypertext Transfer Protocol (HTTP), which is used for request-response based communications
+                and adds a couple of hundreds milliseconds of overhead to your data in the form of the HTTP request and
+                response headers. To lower this overhead, a <a href="http://en.wikipedia.org/wiki/WebSocket">WebSocket
+                    protocol</a> has <a id="idp17305632"></a><a id="idp17309472"></a>been created and standardized.
+                WebSocket protocol is not covered in this book. </p>
+            <p>If you design your application to use sockets, the live connection is maintained for each user connected
+                to <code>ServerSocket</code>. If your program has to maintain several thousand concurrent connections it
+                requires more powerful servers than programs using the request-response system, with which a connection
+                is maintained only during the time of the client’s request.</p>
+        </section>
+        <section>
+            <h3><a id="stock_quote_server_with_sockets"></a>The Stock Quote Server with Sockets</h3>
+            <p>Let’s build a socket-based <a id="quote"></a>client/server application that emulates both a server
+                providing fake price quotes for requested stocks and a client consuming this data. The <code>StockQuoteServer</code>
+                class is our socket server that listens to requests on port 3000 (see <a id="list-anc-c016-005"
+                                                                                         href="part0017.html#list-c016-005">Listing
+                    16-5</a>). </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c016-005"
+                                               href="part0017.html#list-anc-c016-005">Listing 16-5</a>:</span> The
+                        server generating stock quotes</h5>
+                    <pre>
+public class StockQuoteServer {
+ public static void main(java.lang.String[] args) {
+   ServerSocket serverSocket = null;
+   Socket client = null;
+   BufferedReader inbound = null;
+   OutputStream outbound = null;
+   try
+     {
+     // Create a server socket
+     serverSocket = new ServerSocket(3000);
+      System.out.println("Waiting for a quote request...");
+     while (true)
+     {
+       // Wait for a  request
+         client = serverSocket.accept();
+         // Get the streams
+       inbound=new BufferedReader(new
+             InputStreamReader(client.getInputStream()));       
+          outbound = client.getOutputStream();
+         
+            String symbol = inbound.readLine();
+         //Generate a random stock price
+         String price= (new  
+                    Double(Math.random()*100)).toString();
+          outbound.write(("\n The price of "+symbol+
+                              " is " + price + "\n").getBytes());
+  
+        System.out.println("Request for " + symbol + 
+                  " has been processed - the price of " + symbol+
+                         " is " + price + "\n" );    
+        outbound.write("End\n".getBytes());
+    }
+   }
+   catch (IOException ioe) {
+    System.out.println("Error in Server: " + ioe);
+  }  finally{
+      try{
+          inbound.close();
+          outbound.close();   
+        }catch(Exception e){
+          System.out.println(
+          "StockQuoteServer: can't close streams" + e.getMessage());
+        }
+    }  
+  }
+ }
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The <a id="idp17317248"></a><a id="idp17318720"></a>method <code>accept()</code> of the <code>SocketServer</code> class
+                <a id="idp17321072"></a><a id="idp17322256"></a>is the one that puts this program into a wait mode. As
+                soon as it starts you see the message <i>“Waiting for a quote request...”</i> on the system console, and
+                nothing else happens until the request comes in from the client. Creating a <code>SocketServer</code> instance
+                binds it to the specified port, but if this port is already in use by another process you get a <code>BindException</code>.
+                 </p>
+            <p><span epub:type="pagebreak" title="205" id="Page_205"></span>The client programs run in separate Java
+                Virtual Machines (JVMs). When a client connects to the server’s socket, our class
+                <code>StockQuoteServer</code> gets references to its I/O streams and sends randomly generated quotes for
+                the requested stock. In the real world this server would have to be connected to another server
+                providing real-time market data, but for the purposes of this example, generating random numbers as
+                “price quotes” will suffice.</p>
+            <p>The client program shown in <a id="list-anc-c016-006" href="part0017.html#list-c016-006">Listing 16-6</a>
+                has to be started with a command-line parameter such as AAPL, IBM, MSFT, and so on to produce a price
+                quote. Because you might not have access to two connected computers, you can start the
+                <code>Client</code> program on the same one, but it’ll be running in a separate JVM. </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c016-006"
+                                               href="part0017.html#list-anc-c016-006">Listing 16-6</a>:</span> The <span
+                            epub:type="pagebreak" title="206" id="Page_206"></span>client sending requests for stock
+                        quotes</h5>
+                    <pre>
+public class Client {
+public static void main(java.lang.String[] args) {
+ if (args.length==0){
+   System.out.println("Usage: java Client Symbol");
+          System.exit(-1);
+ } 
+  Socket clientSocket = null;
+  try{
+       // Open a client socket connection
+        clientSocket = new Socket("localhost", 3000);
+        System.out.println("Client: " + clientSocket);
+    }catch (UnknownHostException uhe){
+        System.out.println("UnknownHostException: " + uhe);
+    } catch (IOException ioe){
+       System.err.println("IOException: " + ioe);
+   }    
+     
+   try (OutputStream outbound = clientSocket.getOutputStream();
+        BufferedReader inbound = new  BufferedReader(new 
+        InputStreamReader(clientSocket.getInputStream()));  ){
+     
+       // Send stock symbol to the server
+    outbound.write((args[0]+"\n").getBytes());
+    String quote;
+    while (true){
+           quote = inbound.readLine();
+           if (quote.length() == 0) continue;
+           
+           if (quote.equals("End")){
+               break;    
+            }
+           System.out.println("Got the quote for " + args[0]+":" +
+                                                            quote);
+     }
+   }catch (IOException ioe){
+       ioe.printStackTrace();
+    }
+ }
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Have you noticed that <code>StockQuoteServer</code> appends the word “End" to indicate that the price
+                quote has ended? This is an example of a very simple custom-made networking protocol. I just came up
+                with this rule—the word “End” indicates the end of data. While working with sockets it’s your
+                responsibility to decide on the data format being sent from client to <a id="idp17338128"></a>server and
+                back.</p>
+        </section>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp17339632"></a>Non-Blocking Sockets</h3>
+                <p>I <span epub:type="pagebreak" title="207" id="Page_207"></span>used simple blocking sockets in <a
+                        id="idp17334944"></a><a id="idp17336576"></a>the Stock Server example. The stock server calls
+                    the method <code>accept()</code>, which blocks on the socket, which may create a bottleneck in a
+                    multi-client application. The package <a
+                            href="https://docs.oracle.com/javase/8/docs/api/java/nio/channels/package-summary.html">java.nio.channels</a> includes
+                    a number of classes and interfaces that support asynchronous work with data in general and
+                    non-blocking sockets in particular.</p>
+                <p>In real-world applications with multiple clients, consider learning and using nonblocking sockets,
+                    which are implemented in classes <code>SocketChannel</code> and <code>ServerSocketChannel</code> .
+                    Instead of invoking <code>SocketServer.accept()</code>, you’ll need to open the socket channel, bind
+                    it to a particular port, and call <code>accept()</code>, which can be listening to the client’s
+                    connection  either in blocking or in non-blocking mode. To place the channel in a non-blocking mode
+                    invoke <code>configureBlocking(false)</code> on <a id="idp17342640"></a><a id="idp17345648"></a>the
+                    channel. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="try_it-id00062"></a>Try It</h2>
+        <p>The goal of this exercise is to test the socket <a id="idp17350448"></a><a id="idp17349456"></a>communication
+            in action, even if you have only one computer.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00063"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in </i> <code>Lesson16.zip</code><i>.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="hints-id00064"></a>Hints</h3>
+            <p>In this exercise you use two separate command windows to run the socket client and the server. Eclipse
+                IDE enables you to have more than one Console view. Find a little icon that looks like a monitor in the
+                Console view toolbar and click the little triangle next to it to switch between console views while
+                running more than one application.</p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00065"></a>Step-by-Step</h3>
+            <pre>
+java sockets.StockQuoteServer
+java sockets.Client IBM</pre>
+            <ol>
+                <li>Import Eclipse project from <code>Lesson16.zip</code> accompanying the book.</li>
+                <li>Even though you can run both programs from Eclipse, it’s easier to observe the entire process if you
+                    run them from separate command windows. Open two command windows and imagine that they belong to
+                    different computers.
+                </li>
+                <li>In <span epub:type="pagebreak" title="208" id="Page_208"></span>each command window, go to the bin
+                    directory located in the Lesson16 directory under Eclipse workspace. In one of the command windows
+                    start the <code>StockQuoteServer</code> and in the other start the <code>Client</code>. Note that
+                    these classes are located in the package named <code>socket</code>.
+                </li>
+                <li>In each command window, go to the bin directory located in the Lesson16 directory under Eclipse
+                    workspace. In one of the command windows start the <code>StockQuoteServer</code> and in the other
+                    start the <code>Client</code>. Note that these classes are located in the package named
+                    <code>socket</code>.
+                </li>
+                <li>Observe that the server generates prices, and that both client and server print the same price on
+                    the respective console. By starting client and server in different command windows you are starting
+                    two separate JVMs, emulating network communication between computers.
+                </li>
+                <li>Open a couple more command windows and start the <code>Client</code> program in them, providing
+                    different stock symbols as arguments. Observe that the same server can handle multiple clients’
+                    requests. If you have access to a real network in which each computer has Java runtime installed,
+                    run the client and server programs on different computers—just replace the <code>localhost</code> in
+                    the class <code>Client</code> with the network name or IP address of the server’s computer.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0017.html">Lesson 16</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

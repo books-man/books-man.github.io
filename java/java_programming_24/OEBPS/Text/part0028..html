@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>JavaServer Pages</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="javaserver_pages"></a><span class="chapterTitle">Lesson 27<br/>JavaServer Pages</span></h1>
+
+    <section>
+        <p>The <span epub:type="pagebreak" title="379" id="Page_379"></span>JavaServer Pages (JSP) technology <a
+                id="idp20613808"></a><a id="idp20614784"></a>was created as a next step in servlet evolution. JSP 2.3 is
+            part of the Java EE 7 specification, and with JSP you can do everything that you can do with servlets, but
+            more easily. In early Java EE specifications JSP was the only standardized web framework. But starting from
+            Java EE 4 yet another web framework was introduced:  JavaServlet Faces (JSF). While JSF has more features
+            than JSP, I still see a lot more enterprise applications that use JSP, so this edition of the book covers
+            JSP but not JSF. Now let’s see why using servlets is not enough for developing of the presentation tier for
+            all Java EE web applications.</p>
+        <p>Let’s say you’ve created and deployed a servlet, which displays “Hello World.” The servlet gets a hold of the
+            output stream of the response object and executes the following line of code:</p>
+        <pre>
+out.println("&lt;html&gt;&lt;body&gt;Hello World &lt;/body&gt;&lt;/html&gt;");</pre>
+        <p>Now imagine that you run a software company that employs Alex, an expensive Java developer, and Matilda, a
+            junior web designer who doesn’t know Java but does know HTML. What <span epub:type="pagebreak" title="383"
+                                                                                     id="Page_383"></span>if you need to
+            change the layout of this HTML page, such as by adding several empty lines on top? It’s not a big
+            problem—Alex can modify the preceding line of code, recompile it, and redeploy the servlet. But for making
+            small changes in the HTML-based user interface (UI) it’s more cost-efficient to use Matilda. This is where
+            JSP becomes very handy. Ask Matilda to create the following text file, <code>HelloWorld.jsp</code>:</p>
+        <pre>
+&lt;html&gt;
+ &lt;body&gt;
+   Hello World
+ &lt;/body&gt;
+&lt;/html&gt;</pre>
+        <p>Place this file into the document root directory (see <a href="part0027.html#programming_with_servlets">Chapter 26</a>)
+            in your servlet container running at, say, <code>MyBooks.com</code>. Now the users can access this JSP by
+            entering the following URL in their web browsers:</p>
+        <pre>
+http://www.MyBooks.com/HelloWorld.jsp</pre>
+        <p>Upon the first request to this page, the JSP container (all servlet containers support JSP, too)
+            automatically generates, compiles, and deploys a servlet based on the content of the file <code>HelloWorld.jsp</code>.
+            All subsequent <span epub:type="pagebreak" title="380" id="Page_380"></span>calls to this JSP will be
+            processed a lot faster because the servlet <code>HelloWorld</code> will already be deployed, loaded in
+            memory, and running. As a matter of fact, JSP, as well as servlets, can be preloaded so that even the first
+            user’s request is responsive. You might think that you could make a simple web page by creating <code>HelloWorld.html</code>
+            without all this extra code generation. This is true, as long as your page is static and does not use any
+            external dynamically changed data. Remember that HTML is not a programming language but a markup language—it
+            can’t even add two and two, but JSP can (see <code>MyCalculator.jsp</code> in <a id="list-anc-c027-001"
+                                                                                             href="part0028.html#list-c027-001">Listing
+                27-1</a>).</p>
+    </section>
+    <section>
+        <h2><a id="embedding_java_code_into_html"></a>Embedding Java Code into HTML</h2>
+        <p>JSP defines tags that <a id="embed1"></a><a id="embed2"></a><a id="embed3"></a>enable you to embed Java code
+            into an HTML page. When the servlet is automatically generated behind the scenes, this Java code will also
+            be included and executed as part of this servlet. JSP tags are included in angle brackets: for example, the
+            <code>&lt;%=...%&gt;</code> tag displays the value of the variable or expression: <code>
+                &lt;%=2+2%&gt;</code>. During the servlet generation process performed by the JSP engine, these tags are
+            replaced with the regular Java code. For example, the tag <code>&lt;%=2+2%&gt;</code> is automatically
+            replaced by a JSP container with the following Java statement:</p>
+        <pre>
+out.println(2+2);</pre>
+        <p><a href="part0028.html#list-c027-001">Listing 27-1</a> shows the content of the two-plus-two calculator
+            called <code>MyCalculator.jsp</code>. <code>&lt;br&gt;</code> is an HTML tag for inserting line breaks. Note
+            that Alex, the programmer, had to write only the expression inside the JSP tag; the rest was done by
+            Matilda. Consider this task separation an example of the designer-developer workflow.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c027-001"
+                                           href="part0028.html#list-anc-c027-001">Listing 27-1</a>:</span>
+                    MyCalculator.jsp</h5>
+                <pre>
+&lt;html&gt;
+&lt;body&gt;
+   HTML created by Matilda goes here...
+   &lt;br&gt;
+   You may not know that 2 + 2 is &lt;%= 2 + 2%&gt;
+   &lt;br&gt;
+   More HTML created by Matilda goes here...
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Deploying any JSP is a <a id="idp20641888"></a><a id="idp20643776"></a>simple matter of copying the JSP file
+            into the document root directory of your JSP container. Of course, if your JSPs are part of a multifile
+            project, most likely you’ll be deploying them in a war file, as described in <a
+                    href="part0027.html#programming_with_servlets">Chapter 26</a>.</p>
+        <p>As described in <a href="part0027.html#how_to_create_a_servlet_with_eclipse">Lesson 26</a>, create a Dynamic
+            Web Project in Eclipse and name it Lesson27. Right-click the <code>WebContent</code> directory (the document
+            root) and create a new JSP file named <code>index.jsp</code> by selecting the menu File → New → Other → Web
+            → JSP file.</p>
+        <p>While creating the project make sure that GlassFish server is selected as the Target run time. Eclipse
+            generates a file with the following content:</p>
+        <pre>
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+                           "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+        <p><span epub:type="pagebreak" title="381" id="Page_381"></span>Add the following line in the &lt;body&gt;
+            section of this file:</p>
+        <pre>
+&lt;h1&gt;Hello World&lt;/h1&gt;
+</pre>
+        <p>The tag &lt;h1&gt; formats the text as a header, and Eclipse shows you how the future web page will be
+            rendered (see the top portion on <a id="fig-anc-c027-001" href="part0028.html#fig-c027-001">Figure 27-1</a>).
+        </p>
+        <figure>
+            <img class="center" src="../Images/image00583.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c027-001"
+                                                   href="part0028.html#fig-anc-c027-001">Figure 27-1</a>:</b></span>
+                    Viewing the page as you’re adding tags</p>
+            </figcaption>
+        </figure>
+        <p>Right-click the name <code>index.jsp</code> and select Run on Server. If the GlassFish server is not running
+            Eclipse launches it and deploys the Lesson27 project, and you see the Hello World web page in the internal
+            Eclipse web browser, as shown in <a id="fig-anc-c027-002" href="part0028.html#fig-c027-002">Figure 27-2</a>.
+        </p>
+        <figure>
+            <img class="center" src="../Images/image00584.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c027-002"
+                                                   href="part0028.html#fig-anc-c027-002">Figure 27-2</a>:</b></span>
+                    Runninng <span epub:type="pagebreak" title="382" id="Page_382"></span>index.jsp in an Eclipse
+                    internal browser</p>
+            </figcaption>
+        </figure>
+        <p>Enter the same URL in your web browser, and you see the same result. The server is up and running on port
+            8080, and the application is deployed, so it’s irrelevant which web browser you use as a client as long as
+            it supports HTTP protocol.</p>
+        <p>Now test a JSP expression. Make a copy of <code>index.jsp</code> named <code>MyCalculator.jsp</code> in the
+            project Lesson27 (Ctrl+C/Ctrl+V) and replace the content in the <code>&lt;body&gt;</code> part with the
+            content from the <code>&lt;body&gt;</code> section from <a href="part0028.html#list-c027-001">Listing
+                27-1</a>. Run <code>MyCalculator.jsp</code> and you see the web page in Eclipse, as shown in <a
+                    id="fig-anc-c027-003" href="part0028.html#fig-c027-003">Figure 27-3</a>.</p>
+        <p>The expression <code>&lt;%2+2%&gt;</code> has been precompiled and replaced with <code>4</code>. A JSP is
+            nothing more than a servlet that is automatically generated from a file containing valid HTML and JSP tags.
+        </p>
+        <figure>
+            <img class="center" src="../Images/image00585.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c027-003"
+                                                   href="part0028.html#fig-anc-c027-003">Figure 27-3</a>:</b></span>
+                    Running MyCalculator.jsp</p>
+            </figcaption>
+        </figure>
+        <p>I<span style="letter-spacing: 0.01em; line-height: 1.3em;">f you need to change the appearance of the page (colors, fonts, data allocation) without changing the expression (</span><code
+                style="letter-spacing: 0.01em; line-height: 1.3em;">2+2</code><span
+                style="letter-spacing: 0.01em; line-height: 1.3em;">), Matilda can do it easily! After the changes are applied, the JSP is automatically regenerated into a new servlet and redeployed. Usually you do not even have to restart the server. The only exceptions are preloaded JSPs that are configured to be initialized on server startup. Any business logic changes inside the JSP tags will be <a
+                id="idp20669760"></a><a id="idp20670912"></a><a id="idp20672608"></a>programmed by Alex.</span></p>
+    </section>
+    <section>
+        <h2><a id="implicit_jsp_objects"></a>Implicit JSP Objects</h2>
+        <p>Because JSPs are built on <a id="idp20675600"></a><a id="idp20677104"></a><a id="idp20678496"></a>top of
+            servlets, the main concepts remain the same. Following is the list of predefined variables that you can use
+            in JSP pages. These variables are <a id="idp20679344"></a><a id="idp20681184"></a>initialized by the JSP
+            container, and you can use them without explicit declarations.</p>
+        <ul>
+            <li><code>request</code> has <a id="idp20684384"></a><a id="idp20685376"></a>the same use as <code>HttpServletRequest</code>.
+            </li>
+            <li><code>response</code> has the <a id="idp20688080"></a><a id="idp20689312"></a>same use as <code>HttpServletResponse</code>.
+            </li>
+            <li>
+                <p><code>out</code> represents <a id="idp20691680"></a><a id="idp20693616"></a>the output write stream
+                    <code>JspWriter</code>. This variable points at the same object as <code>HttpServletResponse.getWriter()</code>
+                    in servlets. For example, simplest JSP that returns a result from a Java class called <code>CurrencyConverter</code>
+                    might look like this:</p>
+                <pre>
+&lt;html&gt;
+  &lt;body&gt;
+     &lt;% out.println(CurrencyConverter.getDollarRate()); %&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+            </li>
+            <li><code>session</code> represents <a id="idp20698048"></a><a id="idp20699152"></a>an instance of the
+                user’s <code>HTTPSession</code> object.
+            </li>
+            <li><code>exception</code> represents <a id="idp20701824"></a><a id="idp20703040"></a>an instance of the
+                <code>Throwable</code> object and contains error information. This variable is available only from the
+                JSP error page (described later in the section <a href="part0028.html#error_pages">“Error Pages”</a>).
+            </li>
+            <li><code>page</code> represents <a id="idp20706640"></a><a id="idp20708080"></a>the instance of the JSP’s
+                servlet.
+            </li>
+            <li><code>pageContext</code> represents <a id="idp20710160"></a><a id="idp20711376"></a>the JSP context and
+                is used with Tag Libraries (described later in this lesson in the section of that name).
+            </li>
+            <li><code>application</code> provides <a id="idp20713536"></a><a id="idp20714976"></a>access to web context.
+                Its use is similar to that of <code>ServletContext</code>.
+            </li>
+            <li><code>config</code> provides <a id="idp20717152"></a><a id="idp20718832"></a>initialization information
+                used by the JSP container. Its use is similar to that of the class <code>ServletConfig</code>.
+            </li>
+        </ul>
+    </section>
+    <section>
+        <h2><a id="overview_of_the_jsp_tags"></a>Overview of the JSP Tags</h2>
+        <p>Each JSP tag starts and ends with an angle bracket and can be included in any HTML file, but you need to save
+            your JSPs in <code>.jsp</code> files for proper identification and processing by JSP containers. This
+            section is a brief overview of JSP tags. For more detailed coverage refer to the JSP documentation at <code><a
+                    href="http://docs.oracle.com/javaee/5/tutorial/doc/bnagx.html">http://docs.oracle.com/javaee/5/tutorial/doc/bnagx.html</a></code>.
+        </p>
+        <section>
+            <h3><a id="directives"></a>Directives</h3>
+            <p>Directives <span epub:type="pagebreak" title="384" id="Page_384"></span>do not generate screen output,
+                but instruct the JSP container about the rules that have to be applied to the JSP. Some of the JSP
+                directives are <code>page</code>, <code>include</code>, <code>attribute</code>, and <code>taglib</code>.
+            </p>
+            <p>Page directives <a id="idp20728480"></a><a id="idp20730752"></a><a id="idp20732400"></a>start with <code>
+                &lt;%@ page</code> and are only in effect within the current page. Directives are used with such
+                attributes as <code>import</code>, <code>extends</code>, <code>session</code>, <code>errorPage</code>,
+                <code>contentType</code>, and some others. For example, to import the <code>java.io</code> package use
+                this directive:</p>
+            <pre>
+&lt;%@ page import="java.io.*" %&gt;</pre>
+            <p>Include directives <a id="idp20737904"></a><a id="idp20739648"></a><a id="idp20741312"></a>to allow the
+                inclusion of any text from a file or any code from another JSP, at the time when the page is compiled
+                into a servlet, as in the following example:</p>
+            <pre>
+&lt;%@ jsp:include page="calcBankRates.jsp" %&gt;
+&lt;%@ include file="bankRates.txt" %&gt;</pre>
+            <p>To use a third-party library of custom tags you need to specify where this library is located, as in the
+                following example:</p>
+            <pre>
+&lt;%@ taglib uri="my_taglib.tld" prefix="test" %&gt;</pre>
+            <p>The <code>attribute</code> directive <a id="idp20744544"></a><a id="idp20747360"></a>enables you to
+                define attributes of custom tags, like this:</p>
+            <pre>
+&lt;%@ attribute name="corporate_logo_file_name" %&gt;</pre>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </section>
+        <section>
+            <h3><a id="declarations"></a>Declarations</h3>
+            <p>Declarations are used <a id="idp20751600"></a><a id="idp20753104"></a>to declare variables before they
+                are used. You can declare a variable <code>salary</code> like this:</p>
+            <pre>
+&lt;%! double salary; %&gt;</pre>
+            <p>The variable salary is visible only inside this page. You can declare Java methods in the JSP page the
+                same way:</p>
+            <pre>
+&lt;%! private void myMethod(){
+        ...
+ }%&gt;</pre>
+            <p>The code contained in the declaration block turns into the Java code in the generated servlet.</p>
+        </section>
+        <section>
+            <h3><a id="expressions"></a>Expressions</h3>
+            <p>Expressions <a id="idp20759408"></a><a id="idp20760832"></a>start with <code>&lt;%=</code> and can
+                contain any Java expression, which will be evaluated. The result will be displayed in the HTML page,
+                replacing the tag itself, like this:</p>
+            <pre>
+&lt;%= salary*1.2 %&gt;</pre>
+        </section>
+    </section>
+    <section>
+        <h2><a id="scriptlets"></a>Scriptlets</h2>
+        <p>Initially <span epub:type="pagebreak" title="385" id="Page_385"></span>scriptlets were created to give JSP
+            developers a place to put any valid Java code to be included in the generated servlet’s
+            <code>_jspService()</code> method, which is an equivalent of the servlet’s method <code>service()</code>;
+            for example, a scriptlet can look like this:</p>
+        <pre>
+&lt;% lastName = "Smith"; %&gt;</pre>
+        <p>With the creation of JSP Standard Tag Libraries (JSTL) and Expression Language (EL) there is now no need to
+            use scriptlets, but this syntax still works.</p>
+        <p>Although directives, declarations, expressions, and scriplets may mix in your Java code inside the JSP, it’s
+            not a good idea. JSP was created to avoid embedding HTML into Java code, and you should also avoid embedding
+            Java into HTML. You see how to avoid embedding Java into HTML in the section on <a
+                    href="part0028.html#tag_libraries">tag_libraries</a><span
+                    style="letter-spacing: 0.01em; line-height: 1.3em;">. <a
+                    href="http://stackoverflow.com/questions/9416049/removing-java-code-from-jsp-pages">This thread</a> on Stack Overflow has several good recommendations on how to remove Java code from JSP.</span>
+        </p>
+        <section>
+            <h3><a id="comments"></a>Comments</h3>
+            <p>Comments that start with <code>&lt;%--</code> and end with <code>--%&gt;</code> are visible in the JSP
+                source code, but they are not be included in the resulting HTML page:</p>
+            <pre>
+&lt;%-- Some comments --%&gt;</pre>
+            <p>If you’d like to keep the comments in the resulting web page, use regular HTML comment notation:</p>
+            <pre>
+&lt;!-- Some comments --&gt;</pre>
+        </section>
+        <section>
+            <h3><a id="standard_actions"></a>Standard Actions</h3>
+            <p>Although the <a id="idp20777888"></a>directive <code>include</code> adds the content of the included page
+                during compile time, the element <code>jsp:include</code> does it during run time:</p>
+            <pre>
+&lt;jsp:include page "header.jsp" /&gt;</pre>
+            <p>The element <code>forward</code> enables <a id="idp20782192"></a>you to redirect the program flow from
+                the current JSP to another one while preserving the <code>request</code> and <code>response</code>
+                objects. The other way of redirecting the flow is to use <code>response.sendRedirect(someURL)</code> in
+                the Java code, but in this case new <code>request</code> and <code>response</code> objects are created,
+                which forces a web browser to make a new request to the server:</p>
+            <pre>
+&lt;jsp:forward page = "someOther.jsp" /&gt;</pre>
+            <p>The <code>plugin</code> element <a id="idp20787760"></a>ensures that your JSP includes an applet or a
+                Java bean (described later in the <a href="part0028.html#javabeans">“Java Beans”</a> section). During
+                run time the web browser replaces this tag with one of the HTML tags <code>&lt;object&gt;</code> or
+                <code>&lt;embed&gt;</code> to embed the required Java class into the web page:</p>
+            <pre>
+&lt;jsp:plugin type=applet code="PriceQuotes.class" &gt;
+</pre>
+            <p>The nested tag <code>&lt;jsp:param&gt;</code> is used to pass parameters to an applet or a bean:</p>
+            <pre>
+&lt;jsp:plugin type=applet code="Login.class"&gt;
+  &lt;jsp:params&gt;
+    &lt;jsp:param name="userID" value="SCOTT" /&gt;
+    &lt;jsp:param name="password" value="TIGER" /&gt;
+  &lt;/jsp:params&gt;
+&lt;/jsp:plugin&gt;</pre>
+            <p><span epub:type="pagebreak" title="386" id="Page_386"></span>Even though it’s possible to create web
+                pages with embedded Java plug-ins, this is discouraged. These days people use a variety of web browsers
+                and devices, and the chances that the user has the right version of the JRE installed on his or her
+                device are slim. This was the main reason why <a
+                        href="https://docs.oracle.com/javase/tutorial/deployment/applet/">Java Applets</a> (they operate
+                inside web browsers) are rarely being used with the exception of the back-office enterprise applications
+                where the company system administrators can push the right version of the web browser and JRE to each
+                user’s desktop. </p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="error_pages"></a>Error Pages</h2>
+        <p>Say you <a id="idp20795680"></a><a id="idp20797200"></a>have a JSP called <code>calcTax.jsp</code> containing
+            code that may throw Java exceptions. Instead of scaring users with stack trace output screens, prepare a
+            friendly <code>taxErrors.jsp</code> explaining the problem in plain English.</p>
+        <p><code>calcTax.jsp</code> may have an HTML <code>&lt;form&gt;</code> tag in which the user enters gross income
+            and the number of dependents. The request for tax calculations is sent to the server’s <code>CalcTax</code>
+            Java class, which might throw an exception during its processing. Include in  <code>calcTax.jsp</code> the
+            name of the error page that has to be shown in case of exceptions:</p>
+        <pre>
+&lt;html&gt;
+   Some code to calculate tax and other HTML stuff goes here
+         ...
+      &lt;%@ page errorPage=taxErrors.jsp %&gt;
+&lt;/html&gt;</pre>
+        <p>Next comes the error page <code>taxErrors.jsp</code>, which illustrates how to use the JSP variable <code>exception</code>,
+            which displays the error message in a user-friendly way and also contains more technical error description
+            for the technical support team:</p>
+        <pre>
+&lt;html&gt;
+ &lt;body&gt;
+  Unfortunately there was a problem during your tax calculations.
+  We are working on this issue - please try again in 10 minutes.
+  If the problem persists, please contact our award-winning 
+  technical support team at (212) 555-2222 and provide them with 
+  the following information:
+&lt;br&gt;
+&lt;%=exception.toString()&gt;
+ &lt;/body&gt;
+&lt;/html&gt;</pre>
+    </section>
+    <section>
+        <h2><a id="javabeans"></a>Java Beans</h2>
+        <p>JavaBeans <span epub:type="pagebreak" title="387" id="Page_387"></span>specification <a id="idp20808480"></a>defines
+            <i>a bean</i> as a Java class that implements the <code>Serializable</code> interface and that has a public
+            no-argument constructor, private fields, and public setter and getter methods. The similar concept of Data
+            Transfer Objects (DTOs) <a id="idp20810672"></a>was introduced in <a href="part0022.html#list-c021-002">Listing
+                21-2</a>). Java beans are used mainly for data storing and exchange. In JSP they help avoiding mixing
+            Java code and HTML (see also the section <a href="part0028.html#tag_libraries">“Tag Libraries”</a> later in
+            this lesson; they also help to avoid mixing Java and HTML).</p>
+        <p>Think of the MVC pattern implemented in JSP-based web applications. The JSP belongs to the view tier; the
+            servlet can play a role of a controller; and the Java bean can represent a model. Instead of programming
+            business logic inside JSP, separate presentation from business logic processing and data storage. First,
+            this enables you to split the work more easily between Alex and Matilda, and second, you’re able to have
+            more than one presentation solution (for example, a different UI for mobile devices) while reusing the same
+            Java code.</p>
+        <p>Using Java beans is the first step in separating processing logic and presentation. <a id="list-anc-c027-002"
+                                                                                                  href="part0028.html#list-c027-002">Listing
+            27-2</a> shows an example of a bean, called <code>Student</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c027-002"
+                                           href="part0028.html#list-anc-c027-002">Listing 27-2</a>:</span> Student bean
+                </h5>
+                <pre>
+import java.io.Serializable;
+class Student implements Serializable{
+          private String lastName;
+          private String firstName;
+          private boolean undergraduate;
+          Student(){
+              // constructor's code goes here
+          }
+          public String getLastName(){
+                return lastName;
+          }
+          public String getFirstName(){
+                return firstName;
+          }
+          public void setLastName(String value){
+                   lastName = value;
+          }
+          public void setFirstName (String value){
+                   firstName = value;
+          }
+          public void setUndergraduate(boolean value){
+                   undergraduate = value;
+          }
+          public boolean isUndergraduate (){
+                   return undergraduate;
+          }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Don’t <span epub:type="pagebreak" title="388" id="Page_388"></span>confuse JavaBeans with Enterprise Java
+            Beans (EJB), which is a different concept that’s covered in <a
+                    href="part0032.html#introduction_to_enterprise_javabeans">Chapter 31</a>.</p>
+        <section>
+            <h3><a id="using_javabeans_in_jsp"></a>Using JavaBeans in JSP</h3>
+            <p>To use a bean with JSP, first you <a id="idp20822896"></a><a id="idp20824496"></a>need to specify its
+                name and location, and after that you can set or get its properties. Following are some examples of bean
+                usage:</p>
+            <pre>
+&lt;jsp:useBean id="Student" class="com.harvard.Student" /&gt;
+&lt;jsp:getProperty name="Student" property="LastName" /&gt;
+&lt;jsp:setProperty name="Student" property="LastName" value="Smith"/&gt;</pre>
+            <p>The next code snippet populates the <code>Student</code> bean’s properties <code>LastName</code> and
+                <code>FirstName</code>. This code snippet can be located in the HTML document with the tag <code>&lt;form&gt;</code>,
+                which has two HTML text input fields called <code>LName</code> and <code>FName</code>:</p>
+            <pre>
+&lt;jsp:setProperty name="Student" property="LastName" 
+                  value="&lt;%= request.getParameter("LName") %&gt;" /&gt;
+&lt;jsp:setProperty name="Student" property="FirstName" 
+                  value="&lt;%=request.getParameter("FName") %&gt;" /&gt;</pre>
+            <p>If all bean property names are the same as the names of the HTML form fields, mapping the HTML form’s and
+                the bean’s fields becomes even simpler with the asterisk notation:</p>
+            <pre>
+&lt;jsp:setProperty name="Student" property="*" /&gt;</pre>
+        </section>
+        <section>
+            <h3><a id="how_long_does_a_bean_livequestion_mark"></a>How Long Does a Bean Live?</h3>
+            <p>If a JSP variable <a id="idp20836272"></a>is declared inside a scriptlet, it has a local scope. To give
+                it an instance scope, declare the variable using the declaration <code>tag</code>. You can define a
+                bean’s scope using the <code>scope</code> attribute of the tag <code>jsp:useBean</code>. The following
+                list defines the various scopes.</p>
+            <ul>
+                <li>
+                    <p><code>page</code>: The bean is available only within the current page and will be destroyed as
+                        soon as the user exits the page. This is a default scope. For example:</p>
+                    <pre>
+&lt;jsp:useBean id="Student" class="com.harvard.Student" 
+                                      scope="page" /&gt;</pre>
+                </li>
+                <li>
+                    <p><code>request</code>: The bean is alive for as long as the <code>request</code> object is alive.
+                        Even if the control is redirected to a different JSP by means of the tag
+                        <code>jsp:forward</code>, the bean remains available on the new page because it’s using the same
+                        <code>request</code> object, like this:</p>
+                    <pre>
+&lt;jsp:useBean id="Student" class="com.harvard.Student" 
+                                      scope="request" /&gt;</pre>
+                </li>
+                <li>
+                    <p><code>session</code>: The bean is available for all pages until the user’s session ends (see the
+                        section “Session Tracking” in <a href="part0027.html#programming_with_servlets">Chapter 26</a>).
+                    </p>
+                    <pre>
+&lt;jsp:useBean id="Student" class="com.harvard.Student" 
+                                      scope="session" /&gt;</pre>
+                </li>
+                <li>
+                    <p><code>application</code>: The <span epub:type="pagebreak" title="389" id="Page_389"></span>bean
+                        is available for all users and all pages—this is a global bean.</p>
+                    <pre>
+&lt;jsp:useBean id="Student" class="com.harward.Student" 
+                                  scope="application" /&gt;</pre>
+                </li>
+            </ul>
+        </section>
+    </section>
+    <section>
+        <h2><a id="loading_jsp_from_servlets"></a>Loading JSP from Servlets</h2>
+        <p>In line with <a id="idp20853968"></a><a id="idp20855584"></a>the separation of presentation and processing,
+            JSP should have a bare minimum of any processing. When the servlet receives the data to be sent to the user,
+            instead of sending hard-coded HTML tags to the client it should load and send the JSP page to the client.
+            The JSP should be laid out by a web designer.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20857344"></a>Should Servers Be Preparing Web Pages?</h3>
+                <p>While sending a pre-created JSP to the clients is better than hard-coding HTML inside servlets, the
+                    trend is to have the server sending only the data to the client without any layout. In modern web
+                    applications, the UI is programmed using HTML, JavaScript, and Cascading Style Sheets (CSS), and you
+                    should consider sparing servers from laying out web pages. In <a
+                            href="part0034.html#working_with_restful_web_services">Lesson 33</a> you find out how to
+                    create RESTFul Web Services, where server-side POJOs send only the data to the web browser. Learning
+                    how to develop web pages in HTML and JavaScript is out of the scope of this book, but this process
+                    is described in detail in another book I co-authored: <i><a
+                            href="http://shop.oreilly.com/product/0636920028314.do">Enterprise Web Development</a></i>
+                    (O’Reilly, 2014).</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Let’s say you have a servlet that needs to load a JSP based on the user’s selection in the HTML window. If
+            you don’t need to get new copies of the <code>request</code> and <code>response</code> objects you’ll need
+            to create an instance of the <code>RequestDispatcher</code> class and call its method <code>forward()</code>,
+            providing <code>HttpServletRequest</code> and <code>HttpServletResponse</code> as arguments, as shown in <a
+                    id="list-anc-c027-003" href="part0028.html#list-c027-003">Listing 27-3</a>. The servlet <code>MyServlet</code>
+            returns to the web browser, either the JSP showing the data of the Toyota dealership or the JSP showing the
+            data about Nissan vehicles.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c027-003"
+                                           href="part0028.html#list-anc-c027-003">Listing 27-3</a>:</span> Servlet
+                    loading JSP</h5>
+                <pre>
+public class MyServlet extends HttpServlet{
+    public void doGet(HttpServletRequest req, 
+                      HttpServletResponse res)
+                                 throws ServletException {
+      ServletContext context = getServletContext();
+      RequestDispatcher requestDisp = null;
+      String make = req.getParameter("carMake");
+      if (make.equals("Toyota") {
+        requestDisp = context.getRequestDispatcher("/Toyota.jsp");
+        requestDisp.forward(req,res);
+      }
+      else if (make.equals("Nissan") {
+        requestDisp = context.getRequestDispatcher("/Nissan.jsp");
+        requestDisp.forward(req,res);
+      }
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="390" id="Page_390"></span>In some cases the current servlet performs all
+            interactions with the user and just needs to load the code of another servlet or JSP. For this purpose, use
+            the method <code>include()</code> instead of <code>forward()</code>:</p>
+        <pre>
+requestDisp.include(req,res);</pre>
+        <p>Because this redirection happens on the server side, the initial URL is still displayed in the web browser’s
+            address bar. To provide the new URL (to allow the user to bookmark the resulting page, for example), use
+            <code>response.sendRedirect("/some_new_URL")</code>.</p>
+    </section>
+    <section>
+        <h2><a id="tag_libraries"></a>Tag Libraries</h2>
+        <p>Yet another way of <a id="tag1"></a><a id="tag2"></a><a id="tag3"></a>minimizing the amount of code in JSP is
+            to use tag libraries containing custom and reusable tags—either your own original library or a library
+            created by someone else. Each custom tag looks similar to a regular one, but under the hood it can be
+            supported by a Java class (or classes) written by a programmer to provide the required functionality.</p>
+        <p>If you want to create your own custom tags to be used with JSP you have to do the following:</p>
+        <ul>
+            <li>Create a tag library descriptor—an XML file with the extension <code>.tld</code>. It has to be deployed
+                in the directory <code>WEB-INF/tags</code>.
+            </li>
+            <li>Create Java classes that provide business logic supporting the tags. Such classes are usually deployed
+                as jars in the <code>WEB-INF/lib</code> directory.
+            </li>
+            <li>Register the tag library with the web application.</li>
+        </ul>
+        <p><a id="list-anc-c027-004" href="part0028.html#list-c027-004">Listing 27-4</a> shows a sample tag library
+            descriptor file. The tag <code>DowJones</code> should display a Dow Jones index value. The empty value in
+            <code>&lt;bodycontent&gt;</code> means that this is a simple JSP tag with no content and could be used like
+            this: <code>&lt;sts:DowJones/&gt;</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c027-004"
+                                           href="part0028.html#list-anc-c027-004">Listing 27-4</a>:</span> Sample .tld
+                    file</h5>
+                <pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns: xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi: schemaLocation="http://java.sun.com/xml/ns/j2ee
+  http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+  version="2.0" &gt;
+  &lt;tlib-version&gt;1.0&lt;/ tlib-version&gt;
+  &lt;shortname&gt;sts&lt;/shortname&gt;
+  &lt;uri&gt;http://www.mystockserver.com:8080/taglib&lt;/uri&gt;
+  &lt;info&gt;Wall Street tag library&lt;/info&gt;
+  &lt;tag&gt;
+    &lt;name&gt;DowJones&lt;/name&gt;
+    &lt;tagclass&gt;DowJonesHandler&lt;/tagclass&gt;
+    &lt;bodycontent&gt;empty&lt;/bodycontent&gt;
+    &lt;info&gt;Displays the Dow Jones index&lt;/info&gt;
+  &lt;/tag&gt;
+&lt;/taglib&gt;</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="391" id="Page_391"></span>The class supporting a JSP tag (for example,
+            <code>DowJonesHandler</code>) has to implement the interface <code>javax.servlet.jsp.tagext.SimpleTag</code>
+            or extend <code>SimpleTagSupport</code>. The JSP container will call <code>DowJonesHandler</code>’s methods
+            to set the JSP context (<code>setPageContext()</code>) to start the execution of the tag’s code — <code>doStartTag()</code>,
+            and so on. This class gives you a default implementation of the <code>SimpleTag</code> interface and
+            initialized references to the <code>pageContext</code> and parent. Place required logic for the tag in the
+            <code>doTag()</code> method, which is called by the container at request time:</p>
+        <pre>
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+import java.io.*;
+public class DowJonesHandler extends SimpleTagSupport{
+  public int doTag() throws JspException, IOException{
+      String dowQuote;
+     //  Obtain the DowJones quote by accessing
+     //  http://finance.yahoo.com/q?d=t&amp;s=^DJI or similar
+        dowQuote=...;
+     //  and write it to the client
+     JspWriter out = getJspContext().getOut();
+     out.print("The last price is " + dowQuote);
+ }
+}</pre>
+        <p>To make a tag library recognizable by your JSP container, you should register it by inserting the following
+            fragment into the file <code>web.xml</code>:</p>
+        <pre>
+&lt;taglib&gt;
+     &lt;taglib-uri&gt;
+           http://www.mystockserver.com/taglib
+     &lt;/taglib-uri&gt;
+      &lt;taglib-location&gt;
+            /WEB-INF/taglib.tld
+     &lt;/taglib-location&gt;
+&lt;/taglib&gt;</pre>
+        <p>When <span epub:type="pagebreak" title="392" id="Page_392"></span>you’ve done all this, create a simple file
+            called <code>test.jsp</code> and start using your tag library. The sample JSP in <a id="list-anc-c027-005"
+                                                                                                href="part0028.html#list-c027-005">Listing
+                27-5</a> uses the tag <code>&lt;DowJones&gt;</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c027-005"
+                                           href="part0028.html#list-anc-c027-005">Listing 27-5</a>:</span> Using a
+                    custom tag in a JSP</h5>
+                <pre>
+&lt;html&gt;
+&lt;head&gt;
+   &lt;%@ taglib uri=http://www.mystockserver.com/taglib 
+                                               prefix="sts" %&gt;
+&lt;/head&gt;
+&lt;body&gt;
+   Today's Dow Jones index: &lt;sts:DowJones/&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If a tag requires some parameters, they should be specified in the <code>.tld</code> file with the tag <code>
+            &lt;attribute&gt;</code>; for example:</p>
+        <pre>
+&lt;tag&gt;
+   ...
+   &lt;attribute&gt;
+      &lt;name&gt;tradeDate&lt;/name&gt;
+      &lt;required&gt;false&lt;/required&gt;
+   &lt;/attribute&gt;
+&lt;/tag&gt;</pre>
+        <p>The setter method has to be provided in the tag handler class for each parameter. Setters have to be named
+            according to the same naming convention as Java beans:</p>
+        <pre>
+public void setTradeDate(String tradeDate){
+...
+}</pre>
+        <p>Custom tag libraries are created by application developers to fit the needs of a specific project(s). Third
+            parties can also <a id="idp20908848"></a><a id="idp20907360"></a><a id="idp20910480"></a>provide
+            non-standard-based tag libraries. Apache hosts <a href="http://tomcat.apache.org/taglibs/standard/">standard
+                tag libraries</a> based on the JSTL described next.</p>
+    </section>
+    <section>
+        <h2><a id="jstl"></a>JSTL</h2>
+        <p>JSP Standard Tag Library (JSTL) is a <a id="idp20914736"></a><a id="idp20915984"></a><a id="idp20917408"></a>standardized
+            specification for library components that includes actions that are reusable for many JSP-based
+            applications. Standard JSTL guarantees that any Java EE–compliant JSP container will include and support
+            these components. There are five JSTL libraries. They contain an iterator, <code>if</code> statements, tags
+            for XML processing, tags for executing SQL, tags for internationalization, and commonly used functions.</p>
+        <p>Whereas the JSP in <a href="part0028.html#list-c027-003">Listing 27-3</a> had to specify the location of the
+            tag library on your server, standardized libraries have predefined URLs. For example, to use the <code>forEach</code>
+            iterator you’d need to specify the following URI: <code><a href="http://java.sun.com/jsp/jstl/core">http://java.sun.com/jsp/jstl/core</a></code>.
+            XML <span epub:type="pagebreak" title="393" id="Page_393"></span>processing tags are located at the
+            following URI:<code><a href="http://java.sun.com/jsp/jstl/xml">http://java.sun.com/jsp/jstl/xml</a></code>.
+            Accordingly, the code fragment that uses the iterator can look like this:</p>
+        <pre>
+&lt;%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %&gt;
+&lt;c:forEach var="item" items="${sessionScope.cart.items}"&gt;
+     ...
+&lt;/c:forEach&gt;</pre>
+        <p>For learning programming with JSTL and Expression Language please refer to the Oracle tutorial at the
+            following URL: <code><a href="http://download.oracle.com/javaee/5/tutorial/doc/bnake.html">http://download.oracle.com/javaee/5/tutorial/doc/bnake.html</a></code>.
+        </p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00102"></a>Try It</h2>
+        <p>Rewrite the sample stock server application <a id="idp20928000"></a><a id="idp20927104"></a>that you created
+            in the “Try It” of <a href="part0025.html#list-c024-002">Listing 24-2</a> from <a href="part0025.html">Lesson
+                24</a> for generating the price quotes.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00103"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson27.zip file in the download.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00104"></a>Step-by-Step</h3>
+            <ol>
+                <li>
+                    <p>In the document root folderof Eclipse project Lesson27 create an HTML file <code>GetPriceQuote.html</code> that
+                        has a <code>&lt;form&gt;</code> tag with two <code>&lt;input&gt;</code> fields—a text and a
+                        Submit button—so the user can enter the stock symbol and send a request for the price quote.
+                        The <code>action</code> attribute of the form should point at the URL of the <code>StockQuote.jsp</code> .
+                        The <code>&lt;body&gt;</code> section of <code>GetPriceQuote.html</code> may look like this:</p>
+                    <pre>
+&lt;body&gt;
+    &lt;form action=http://localhost:8080/Lesson27/StockQuote.jsp
+          method=Get&gt;
+        &lt;input type="text" name="symbol" 
+               placeholder="Enter stock symbol"&gt; 
+        &lt;input type="submit" value="Get Price Quote"&gt;
+   &lt;/form&gt;
+&lt;/body&gt;
+</pre>
+                </li>
+                <li>
+                    <p> In <span epub:type="pagebreak" title="394" id="Page_394"></span>document root create a new JSP
+                        file named <code>StockQuote.jsp</code> that should display a requested  price quote. </p>
+                </li>
+                <li>
+                    <p><span style="letter-spacing: 0.01em; line-height: 1.3em;">Create a Java package <code>lesson27.tryit</code>.</span>
+                    </p>
+                </li>
+                <li>
+                    <p>Create a <span style="letter-spacing: 0.01em; line-height: 1.3em;">class called</span> <code
+                            style="letter-spacing: 0.01em; line-height: 1.3em;">lesson27.tryit.StockPriceGenerator</code><span
+                            style="letter-spacing: 0.01em; line-height: 1.3em;"> to implement randomly generated stock quotes for the specified stock with code similar to what is shown in</span>
+                        <a href="part0025.html#list-c024-002">Listing 24-2</a><span
+                                style="letter-spacing: 0.01em; line-height: 1.3em;"> from <a href="part0025.html">Lesson 24</a>, but it has to be a POJO. </span>
+                    </p>
+                </li>
+                <li>Create a Java bean <code>lesson27.tryit.Stock</code> that has a private field <code>symbol</code>
+                    and public getter and setter method to get and set the symbol’s value. The class <code>Stock</code>
+                    should implement <code>Serializable</code>.
+                </li>
+                <li>Use JSP tags to include the <code>StockPriceGenerator</code> Java class in
+                    <code>StockQuote.jsp</code>, and display the price quote generated by its method
+                    <code>getQuote()</code> as well as the list of all available stock symbols by calling <code>getNasdaqSymbols()</code>.
+                </li>
+                <li>The JSP should use  <code>StockPriceGenerator</code>, <code>Stock</code>, <code>
+                    &lt;jsp:useBean&gt;</code>, and <code>&lt;jsp:setProperty&gt;</code>. For example:
+                    <pre>
+&lt;%@page import="lesson27.tryit.StockPriceGenerator"%&gt;
+...
+&lt;body&gt;
+  &lt;jsp:useBean id="stock" class="lesson27.tryit.Stock" /&gt;
+  &lt;jsp:setProperty property="*" name="stock" /&gt;
+  &lt;%!StockPriceGenerator stockServer=new StockPriceGenerator();%&gt;
+    
+   Symbol: &lt;%=stock.getSymbol()%&gt;
+   Price: &lt;%=stockServer.getPrice(stock.getSymbol())%&gt;
+&lt;/body&gt;
+</pre>
+                </li>
+                <li>Restart GlassFish server if it’s already running. Run and test <code>GetPriceQuote.html</code> from
+                    Eclipse and your web browser. <a href="part0028.html#fig-c027-003">Figure 27-3</a> shows how it
+                    looks in my Eclipse internal web browser.<br/>
+                     
+                    <figure>
+                        <img class="center" src="../Images/image00586.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c027-004"></a>Figure 27-4:</b></span> Running
+                                GetPriceQuote.html</p>
+                        </figcaption>
+                    </figure>
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0028.html">Lesson 27</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

@@ -1,0 +1,3099 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+<head>
+<meta content="1838130525" name="dtb:uid"/>
+<meta content="4" name="dtb:depth"/>
+<meta content="mobiunpack.py" name="dtb:generator"/>
+<meta content="0" name="dtb:totalPageCount"/>
+<meta content="0" name="dtb:maxPageNumber"/>
+</head>
+<docTitle>
+<text>Java Programming</text>
+</docTitle>
+<navMap>
+    <navPoint id="np_1" playOrder="1">
+    <navLabel>
+    <text>Introduction</text>
+    </navLabel>
+    <content src="Text/part0001.xhtml#introduction"/>
+      <navPoint id="np_2" playOrder="2">
+      <navLabel>
+      <text>Who This Book Is For</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#who_this_book_is_for"/>
+      </navPoint>
+      <navPoint id="np_3" playOrder="3">
+      <navLabel>
+      <text>What This Book Covers</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#what_this_book_covers"/>
+      </navPoint>
+      <navPoint id="np_4" playOrder="4">
+      <navLabel>
+      <text>How This Book Is Structured</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#how_this_book_is_structured"/>
+      </navPoint>
+      <navPoint id="np_5" playOrder="5">
+      <navLabel>
+      <text>What You Need to Use This Book</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#what_you_need_to_use_this_book"/>
+      </navPoint>
+      <navPoint id="np_6" playOrder="6">
+      <navLabel>
+      <text>How To Read This Book</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#ind-1"/>
+      </navPoint>
+      <navPoint id="np_7" playOrder="7">
+      <navLabel>
+      <text>Conventions</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#conventions"/>
+      </navPoint>
+      <navPoint id="np_8" playOrder="8">
+      <navLabel>
+      <text>Source Code</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#source_code"/>
+      </navPoint>
+      <navPoint id="np_9" playOrder="9">
+      <navLabel>
+      <text>Errata</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#errata"/>
+      </navPoint>
+      <navPoint id="np_10" playOrder="10">
+      <navLabel>
+      <text>P2P.Wrox.Com</text>
+      </navLabel>
+      <content src="Text/part0001.xhtml#p2pdotwroxdotcom"/>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_11" playOrder="11">
+    <navLabel>
+    <text>Lesson 1 Introducing Java</text>
+    </navLabel>
+    <content src="Text/part0002.xhtml#introducing_java"/>
+      <navPoint id="np_12" playOrder="12">
+      <navLabel>
+      <text>Why Learn Java?</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#why_learn_javaquestion_mark"/>
+      </navPoint>
+      <navPoint id="np_13" playOrder="13">
+      <navLabel>
+      <text>Setting the Goals</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#setting_the_goals"/>
+      </navPoint>
+      <navPoint id="np_14" playOrder="14">
+      <navLabel>
+      <text>The Life Cycle of a Java Program</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#life_cycle_of_a_java_program"/>
+      </navPoint>
+      <navPoint id="np_15" playOrder="15">
+      <navLabel>
+      <text>JDK and JRE</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#jdk_and_jre"/>
+      </navPoint>
+      <navPoint id="np_16" playOrder="16">
+      <navLabel>
+      <text>Downloading and Installing Java SE</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#downloading_and_installing_java_se"/>
+        <navPoint id="np_17" playOrder="17">
+        <navLabel>
+        <text>Installing JDK 8 for MAC OS</text>
+        </navLabel>
+        <content src="Text/part0002.xhtml#installing_jdk_8_for_mac_os"/>
+        </navPoint>
+        <navPoint id="np_18" playOrder="18">
+        <navLabel>
+        <text>Installing JDK 8 in Windows</text>
+        </navLabel>
+        <content src="Text/part0002.xhtml#installing_jdk_8_in_windows"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_19" playOrder="19">
+      <navLabel>
+      <text>Your First Java Program: Hello World</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#your_first_java_program_hello_world"/>
+        <navPoint id="np_20" playOrder="20">
+        <navLabel>
+        <text>Compiling and Running Hello World</text>
+        </navLabel>
+        <content src="Text/part0002.xhtml#compiling_and_running_hello_world"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_21" playOrder="21">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0002.xhtml#try_it-id00001"/>
+        <navPoint id="np_22" playOrder="22">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0002.xhtml#lesson_requirements-id00002"/>
+        </navPoint>
+        <navPoint id="np_23" playOrder="23">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0002.xhtml#step-by-step-id00003"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_24" playOrder="24">
+    <navLabel>
+    <text>Lesson 2 Eclipse IDE</text>
+    </navLabel>
+    <content src="Text/part0003.xhtml#eclipse_ide"/>
+      <navPoint id="np_25" playOrder="25">
+      <navLabel>
+      <text>Introducing Eclipse IDE</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#introducing_eclipse_ide"/>
+      </navPoint>
+      <navPoint id="np_26" playOrder="26">
+      <navLabel>
+      <text>Downloading and Installing Eclipse</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#downloading_and_installing_eclipse"/>
+      </navPoint>
+      <navPoint id="np_27" playOrder="27">
+      <navLabel>
+      <text>Creating Hello Project in Eclipse</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#creating_hello_project_in_eclipse"/>
+      </navPoint>
+      <navPoint id="np_28" playOrder="28">
+      <navLabel>
+      <text>Creating the HelloWorld Class in Eclipse</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#creating_the_helloworld_class_in_eclipse"/>
+      </navPoint>
+      <navPoint id="np_29" playOrder="29">
+      <navLabel>
+      <text>Java Packages</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#java_packages"/>
+      </navPoint>
+      <navPoint id="np_30" playOrder="30">
+      <navLabel>
+      <text>Completing Code Generation</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#completing_code_generation"/>
+      </navPoint>
+      <navPoint id="np_31" playOrder="31">
+      <navLabel>
+      <text>Additional Materials</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#additional_materials"/>
+      </navPoint>
+      <navPoint id="np_32" playOrder="32">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0003.xhtml#try_it-id00004"/>
+        <navPoint id="np_33" playOrder="33">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0003.xhtml#lesson_requirements-id00005"/>
+        </navPoint>
+        <navPoint id="np_34" playOrder="34">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0003.xhtml#step-by-step-id00006"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_35" playOrder="35">
+    <navLabel>
+    <text>Lesson 3 Object-Oriented Programming with Java</text>
+    </navLabel>
+    <content src="Text/part0004.xhtml#object-oriented_programming"/>
+      <navPoint id="np_36" playOrder="36">
+      <navLabel>
+      <text>Classes and Objects</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#referencingobjects"/>
+      </navPoint>
+      <navPoint id="np_37" playOrder="37">
+      <navLabel>
+      <text>Variables and Data Types</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#variables_and_data_types"/>
+        <navPoint id="np_38" playOrder="38">
+        <navLabel>
+        <text>Declaring Variables</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#declaring_variables"/>
+        </navPoint>
+        <navPoint id="np_39" playOrder="39">
+        <navLabel>
+        <text>Final Variables</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#final_variables_ch03"/>
+        </navPoint>
+        <navPoint id="np_40" playOrder="40">
+        <navLabel>
+        <text>Primitive Data Types</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#primitive_data_types"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_41" playOrder="41">
+      <navLabel>
+      <text>Variable Scope</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#variable_scope"/>
+      </navPoint>
+      <navPoint id="np_42" playOrder="42">
+      <navLabel>
+      <text>Wrappers, Autoboxing, and Unboxing</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#wrapperscomma_autoboxingcomma_and_unboxi"/>
+      </navPoint>
+      <navPoint id="np_43" playOrder="43">
+      <navLabel>
+      <text>Program Comments</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#program_comments"/>
+        <navPoint id="np_44" playOrder="44">
+        <navLabel>
+        <text>First Useful Program</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#first_useful_program"/>
+        </navPoint>
+        <navPoint id="np_45" playOrder="45">
+        <navLabel>
+        <text>Conditional Statement if</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#conditional_statement_if"/>
+        </navPoint>
+        <navPoint id="np_46" playOrder="46">
+        <navLabel>
+        <text>switch Statement</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#switch_statement"/>
+        </navPoint>
+        <navPoint id="np_47" playOrder="47">
+        <navLabel>
+        <text>Inheritance</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#inheritance"/>
+        </navPoint>
+        <navPoint id="np_48" playOrder="48">
+        <navLabel>
+        <text>Method Overriding</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#method_overriding"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_49" playOrder="49">
+      <navLabel>
+      <text>Additional Materials</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#additional_materials-id00007"/>
+      </navPoint>
+      <navPoint id="np_50" playOrder="50">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0004.xhtml#try_it-id00008"/>
+        <navPoint id="np_51" playOrder="51">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#lesson_requirements-id00009"/>
+        </navPoint>
+        <navPoint id="np_52" playOrder="52">
+        <navLabel>
+        <text>Hints</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#hints"/>
+        </navPoint>
+        <navPoint id="np_53" playOrder="53">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0004.xhtml#step-by-step-id00010"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_54" playOrder="54">
+    <navLabel>
+    <text>Lesson 4 Class Methods and Constructors</text>
+    </navLabel>
+    <content src="Text/part0005.xhtml#class_methods_and_constructors"/>
+      <navPoint id="np_55" playOrder="55">
+      <navLabel>
+      <text>Method Arguments</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#method_arguments"/>
+      </navPoint>
+      <navPoint id="np_56" playOrder="56">
+      <navLabel>
+      <text>Method Overloading</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#method_overloading"/>
+      </navPoint>
+      <navPoint id="np_57" playOrder="57">
+      <navLabel>
+      <text>Constructors</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#constructors"/>
+      </navPoint>
+      <navPoint id="np_58" playOrder="58">
+      <navLabel>
+      <text>The Keyword super</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#keyword_super"/>
+      </navPoint>
+      <navPoint id="np_59" playOrder="59">
+      <navLabel>
+      <text>The Keyword this</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#keyword_this"/>
+      </navPoint>
+      <navPoint id="np_60" playOrder="60">
+      <navLabel>
+      <text>Passing by Value or by Reference</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#passing_by_value_or_by_reference"/>
+      </navPoint>
+      <navPoint id="np_61" playOrder="61">
+      <navLabel>
+      <text>Variable Scopes</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#variable_scopes"/>
+      </navPoint>
+      <navPoint id="np_62" playOrder="62">
+      <navLabel>
+      <text>The Keyword static</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#keyword_static"/>
+      </navPoint>
+      <navPoint id="np_63" playOrder="63">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0005.xhtml#try_it-id00012"/>
+        <navPoint id="np_64" playOrder="64">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0005.xhtml#lesson_requirements-id00013"/>
+        </navPoint>
+        <navPoint id="np_65" playOrder="65">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0005.xhtml#step-by-step-id00014"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_66" playOrder="66">
+    <navLabel>
+    <text>Lesson 5 Java Syntax: Bits and Pieces</text>
+    </navLabel>
+    <content src="Text/part0006.xhtml#back_to_java_basics"/>
+      <navPoint id="np_67" playOrder="67">
+      <navLabel>
+      <text>Arrays</text>
+      </navLabel>
+      <content src="Text/part0006.xhtml#arrays"/>
+        <navPoint id="np_68" playOrder="68">
+        <navLabel>
+        <text>More About Strings </text>
+        </navLabel>
+        <content src="Text/part0006.xhtml#idp13923552"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_69" playOrder="69">
+      <navLabel>
+      <text>Loops</text>
+      </navLabel>
+      <content src="Text/part0006.xhtml#loops"/>
+      </navPoint>
+      <navPoint id="np_70" playOrder="70">
+      <navLabel>
+      <text>Debugging Java Programs</text>
+      </navLabel>
+      <content src="Text/part0006.xhtml#debugging_java_programs"/>
+      </navPoint>
+      <navPoint id="np_71" playOrder="71">
+      <navLabel>
+      <text>More About if and switch Statements</text>
+      </navLabel>
+      <content src="Text/part0006.xhtml#more_about_if_and_switch_statements"/>
+        <navPoint id="np_72" playOrder="72">
+        <navLabel>
+        <text>The Flavors of if Statements</text>
+        </navLabel>
+        <content src="Text/part0006.xhtml#flavors_of_if_statements"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_73" playOrder="73">
+      <navLabel>
+      <text>Command-Line Arguments</text>
+      </navLabel>
+      <content src="Text/part0006.xhtml#command-line_arguments"/>
+      </navPoint>
+      <navPoint id="np_74" playOrder="74">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0006.xhtml#try_it-id00015"/>
+        <navPoint id="np_75" playOrder="75">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0006.xhtml#lesson_requirements-id00016"/>
+        </navPoint>
+        <navPoint id="np_76" playOrder="76">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0006.xhtml#step-by-step-id00017"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_77" playOrder="77">
+    <navLabel>
+    <text>Lesson 6 Packages, Interfaces, and Encapsulation</text>
+    </navLabel>
+    <content src="Text/part0007.xhtml#packagescomma_interfacescomma_and_encaps"/>
+      <navPoint id="np_78" playOrder="78">
+      <navLabel>
+      <text>Java Packages</text>
+      </navLabel>
+      <content src="Text/part0007.xhtml#java_packages-id00018"/>
+      </navPoint>
+      <navPoint id="np_79" playOrder="79">
+      <navLabel>
+      <text>Encapsulation</text>
+      </navLabel>
+      <content src="Text/part0007.xhtml#encapsulation"/>
+        <navPoint id="np_80" playOrder="80">
+        <navLabel>
+        <text>Access Levels</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#access_levels"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_81" playOrder="81">
+      <navLabel>
+      <text>The Keyword final</text>
+      </navLabel>
+      <content src="Text/part0007.xhtml#keyword_final"/>
+        <navPoint id="np_82" playOrder="82">
+        <navLabel>
+        <text>final Variables</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#final_variables_ch06"/>
+        </navPoint>
+        <navPoint id="np_83" playOrder="83">
+        <navLabel>
+        <text>final Methods</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#final_methods"/>
+        </navPoint>
+        <navPoint id="np_84" playOrder="84">
+        <navLabel>
+        <text>final Classes</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#final_classes"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_85" playOrder="85">
+      <navLabel>
+      <text>Interfaces</text>
+      </navLabel>
+      <content src="Text/part0007.xhtml#interfaces"/>
+        <navPoint id="np_86" playOrder="86">
+        <navLabel>
+        <text>Marker Interfaces</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#marker_interfaces"/>
+        </navPoint>
+        <navPoint id="np_87" playOrder="87">
+        <navLabel>
+        <text>Default Methods in Interfaces</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#idp14369264"/>
+        </navPoint>
+        <navPoint id="np_88" playOrder="88">
+        <navLabel>
+        <text>Static Methods in Interfaces</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#static_keyword"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_89" playOrder="89">
+      <navLabel>
+      <text>Casting</text>
+      </navLabel>
+      <content src="Text/part0007.xhtml#casting_section"/>
+      </navPoint>
+      <navPoint id="np_90" playOrder="90">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0007.xhtml#try_it-id00019"/>
+        <navPoint id="np_91" playOrder="91">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#lesson_requirements-id00020"/>
+        </navPoint>
+        <navPoint id="np_92" playOrder="92">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0007.xhtml#step-by-step-id00021"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_93" playOrder="93">
+    <navLabel>
+    <text>Lesson 7 Programming with Abstract Classes and Interfaces</text>
+    </navLabel>
+    <content src="Text/part0008.xhtml#programming_with_abstract_classes_and_in"/>
+      <navPoint id="np_94" playOrder="94">
+      <navLabel>
+      <text>Abstract Classes</text>
+      </navLabel>
+      <content src="Text/part0008.xhtml#abstract_classes"/>
+        <navPoint id="np_95" playOrder="95">
+        <navLabel>
+        <text>Assignment</text>
+        </navLabel>
+        <content src="Text/part0008.xhtml#assignment"/>
+        </navPoint>
+        <navPoint id="np_96" playOrder="96">
+        <navLabel>
+        <text>Solution with an Abstract Class</text>
+        </navLabel>
+        <content src="Text/part0008.xhtml#solution_with_an_abstract_class"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_97" playOrder="97">
+      <navLabel>
+      <text>Polymorphism</text>
+      </navLabel>
+      <content src="Text/part0008.xhtml#polymorphism_ch07_section"/>
+        <navPoint id="np_98" playOrder="98">
+        <navLabel>
+        <text>Making the Interface Solution Polymorphic</text>
+        </navLabel>
+        <content src="Text/part0008.xhtml#making_the_interface_solution_polymorphi"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_99" playOrder="99">
+      <navLabel>
+      <text>Interfaces Versus Abstract Classes</text>
+      </navLabel>
+      <content src="Text/part0008.xhtml#interfaces_versus_abstract_classes"/>
+      </navPoint>
+      <navPoint id="np_100" playOrder="100">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0008.xhtml#try_it-id00024"/>
+        <navPoint id="np_101" playOrder="101">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0008.xhtml#lesson_requirements-id00025"/>
+        </navPoint>
+        <navPoint id="np_102" playOrder="102">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0008.xhtml#step-by-step-id00026"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_103" playOrder="103">
+    <navLabel>
+    <text>Lesson 8 Introducing the GUI with Swing</text>
+    </navLabel>
+    <content src="Text/part0009.xhtml#introducing_the_graphic_user_interface"/>
+      <navPoint id="np_104" playOrder="104">
+      <navLabel>
+      <text>Swing Basics</text>
+      </navLabel>
+      <content src="Text/part0009.xhtml#swing_tutorial"/>
+      </navPoint>
+      <navPoint id="np_105" playOrder="105">
+      <navLabel>
+      <text>Layout Managers</text>
+      </navLabel>
+      <content src="Text/part0009.xhtml#layout_managers"/>
+        <navPoint id="np_106" playOrder="106">
+        <navLabel>
+        <text>A Simple Calculator with FlowLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#simple_calculator_with_flowlayout"/>
+        </navPoint>
+        <navPoint id="np_107" playOrder="107">
+        <navLabel>
+        <text>A Brief Introduction to Layout Managers</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#brief_introduction_to_layout_managers"/>
+        </navPoint>
+        <navPoint id="np_108" playOrder="108">
+        <navLabel>
+        <text>FlowLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#flowlayout_section"/>
+        </navPoint>
+        <navPoint id="np_109" playOrder="109">
+        <navLabel>
+        <text>GridLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#gridlayout"/>
+        </navPoint>
+        <navPoint id="np_110" playOrder="110">
+        <navLabel>
+        <text>BorderLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#borderlayout"/>
+        </navPoint>
+        <navPoint id="np_111" playOrder="111">
+        <navLabel>
+        <text>Combining Layout Managers</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#combining_layout_managers"/>
+        </navPoint>
+        <navPoint id="np_112" playOrder="112">
+        <navLabel>
+        <text>BoxLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#boxlayout"/>
+        </navPoint>
+        <navPoint id="np_113" playOrder="113">
+        <navLabel>
+        <text>GridBagLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#gridbaglayout"/>
+        </navPoint>
+        <navPoint id="np_114" playOrder="114">
+        <navLabel>
+        <text>CardLayout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#cardlayout"/>
+        </navPoint>
+        <navPoint id="np_115" playOrder="115">
+        <navLabel>
+        <text>Containers with Absolute Layout</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#containers_with_absolute_layout"/>
+        </navPoint>
+        <navPoint id="np_116" playOrder="116">
+        <navLabel>
+        <text>More About Swing Widgets</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#more_about_swing_widgets"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_117" playOrder="117">
+      <navLabel>
+      <text>Swing GUI Builders</text>
+      </navLabel>
+      <content src="Text/part0009.xhtml#swing_gui_builders"/>
+      </navPoint>
+      <navPoint id="np_118" playOrder="118">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0009.xhtml#try_it-id00027"/>
+        <navPoint id="np_119" playOrder="119">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#lesson_requirements-id00028"/>
+        </navPoint>
+        <navPoint id="np_120" playOrder="120">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0009.xhtml#step-by-step-id00029"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_121" playOrder="121">
+    <navLabel>
+    <text>Lesson 9 Event Handling in Swing GUI</text>
+    </navLabel>
+    <content src="Text/part0010.xhtml#event_handling_in_ui"/>
+      <navPoint id="np_122" playOrder="122">
+      <navLabel>
+      <text>Introduction to Event Listeners</text>
+      </navLabel>
+      <content src="Text/part0010.xhtml#introduction_to_event_listeners"/>
+      </navPoint>
+      <navPoint id="np_123" playOrder="123">
+      <navLabel>
+      <text>Teaching the Calculator to Calculate</text>
+      </navLabel>
+      <content src="Text/part0010.xhtml#ActionListener"/>
+        <navPoint id="np_124" playOrder="124">
+        <navLabel>
+        <text>Registering Components with ActionListener</text>
+        </navLabel>
+        <content src="Text/part0010.xhtml#registering_components_with_actionlisten"/>
+        </navPoint>
+        <navPoint id="np_125" playOrder="125">
+        <navLabel>
+        <text>Finding the Source of an Event</text>
+        </navLabel>
+        <content src="Text/part0010.xhtml#finding_the_source_of_an_event"/>
+        </navPoint>
+        <navPoint id="np_126" playOrder="126">
+        <navLabel>
+        <text>How to Pass Data Between Objects</text>
+        </navLabel>
+        <content src="Text/part0010.xhtml#how_to_pass_data_between_objects"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_127" playOrder="127">
+      <navLabel>
+      <text>Design Pattern Model-View-Controller</text>
+      </navLabel>
+      <content src="Text/part0010.xhtml#mvc"/>
+      </navPoint>
+      <navPoint id="np_128" playOrder="128">
+      <navLabel>
+      <text>More Swing Listeners</text>
+      </navLabel>
+      <content src="Text/part0010.xhtml#more_swing_listeners"/>
+      </navPoint>
+      <navPoint id="np_129" playOrder="129">
+      <navLabel>
+      <text>How to use Adapters</text>
+      </navLabel>
+      <content src="Text/part0010.xhtml#how_to_use_adapters"/>
+      </navPoint>
+      <navPoint id="np_130" playOrder="130">
+      <navLabel>
+      <text>Inner Classes</text>
+      </navLabel>
+      <content src="Text/part0010.xhtml#inner_classes"/>
+        <navPoint id="np_131" playOrder="131">
+        <navLabel>
+        <text>Anonymous Inner Classes</text>
+        </navLabel>
+        <content src="Text/part0010.xhtml#anonymous_inner_classes"/>
+        </navPoint>
+        <navPoint id="np_132" playOrder="132">
+        <navLabel>
+        <text>Try It</text>
+        </navLabel>
+        <content src="Text/part0010.xhtml#try_it-id00030"/>
+          <navPoint id="np_133" playOrder="133">
+          <navLabel>
+          <text>Lesson Requirements</text>
+          </navLabel>
+          <content src="Text/part0010.xhtml#lesson_requirements-id00031"/>
+          </navPoint>
+          <navPoint id="np_134" playOrder="134">
+          <navLabel>
+          <text>Step-by-Step</text>
+          </navLabel>
+          <content src="Text/part0010.xhtml#step-by-step-id00032"/>
+          </navPoint>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_135" playOrder="135">
+    <navLabel>
+    <text>Lesson 10 Error Handling</text>
+    </navLabel>
+    <content src="Text/part0011.xhtml#error_handling"/>
+      <navPoint id="np_136" playOrder="136">
+      <navLabel>
+      <text>Stack Trace</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#stack_trace"/>
+      </navPoint>
+      <navPoint id="np_137" playOrder="137">
+      <navLabel>
+      <text>Java Exceptions</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#java_exceptions"/>
+      </navPoint>
+      <navPoint id="np_138" playOrder="138">
+      <navLabel>
+      <text>Exception Hierarchy</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#exception_hierarchy"/>
+      </navPoint>
+      <navPoint id="np_139" playOrder="139">
+      <navLabel>
+      <text>Try/Catch Blocks</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#trysoliduscatch_blocks"/>
+      </navPoint>
+      <navPoint id="np_140" playOrder="140">
+      <navLabel>
+      <text>Using the throws Clause</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#throws_clause"/>
+      </navPoint>
+      <navPoint id="np_141" playOrder="141">
+      <navLabel>
+      <text>Using the finally Clause</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#finally_clause"/>
+        <navPoint id="np_142" playOrder="142">
+        <navLabel>
+        <text>Try-With-Resources</text>
+        </navLabel>
+        <content src="Text/part0011.xhtml#trywithresources"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_143" playOrder="143">
+      <navLabel>
+      <text>The throw Keyword</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#throw_operator"/>
+      </navPoint>
+      <navPoint id="np_144" playOrder="144">
+      <navLabel>
+      <text>Creating Your Own Exceptions</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#creating_your_own_exceptions"/>
+      </navPoint>
+      <navPoint id="np_145" playOrder="145">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0011.xhtml#bikestore"/>
+        <navPoint id="np_146" playOrder="146">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0011.xhtml#lesson_requirements-id00047"/>
+        </navPoint>
+        <navPoint id="np_147" playOrder="147">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0011.xhtml#step-by-step-id00048"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_148" playOrder="148">
+    <navLabel>
+    <text>Lesson 11 Introduction to Collections</text>
+    </navLabel>
+    <content src="Text/part0012.xhtml#introduction_to_collections"/>
+      <navPoint id="np_149" playOrder="149">
+      <navLabel>
+      <text>Arrays Revisited</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#arrays_revisited"/>
+      </navPoint>
+      <navPoint id="np_150" playOrder="150">
+      <navLabel>
+      <text>Collection Interfaces From java.util</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#collection_interfaces_from_javadotutil"/>
+      </navPoint>
+      <navPoint id="np_151" playOrder="151">
+      <navLabel>
+      <text>Dynamic Arrays with ArrayList</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#classes_arraylist_and_vector"/>
+      </navPoint>
+      <navPoint id="np_152" playOrder="152">
+      <navLabel>
+      <text>Classes Hashtable and Hashmap</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#classes_hashtable_and_hashmap"/>
+        <navPoint id="np_153" playOrder="153">
+        <navLabel>
+        <text>Class Properties</text>
+        </navLabel>
+        <content src="Text/part0012.xhtml#class_properties"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_154" playOrder="154">
+      <navLabel>
+      <text>Classes Enumeration and Iterator</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#enumeration_and_iterator"/>
+      </navPoint>
+      <navPoint id="np_155" playOrder="155">
+      <navLabel>
+      <text>Class LinkedList</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#class_linkedlist"/>
+      </navPoint>
+      <navPoint id="np_156" playOrder="156">
+      <navLabel>
+      <text>Class BitSet</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#class_bitset"/>
+      </navPoint>
+      <navPoint id="np_157" playOrder="157">
+      <navLabel>
+      <text>Choosing the Right Collection</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#idp15848992"/>
+      </navPoint>
+      <navPoint id="np_158" playOrder="158">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0012.xhtml#try_it-id00049"/>
+        <navPoint id="np_159" playOrder="159">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0012.xhtml#lesson_requirements-id00050"/>
+        </navPoint>
+        <navPoint id="np_160" playOrder="160">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0012.xhtml#step-by-step-id00051"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_161" playOrder="161">
+    <navLabel>
+    <text>Lesson 12 Introduction to Generics</text>
+    </navLabel>
+    <content src="Text/part0013.xhtml#introduction_to_generics"/>
+      <navPoint id="np_162" playOrder="162">
+      <navLabel>
+      <text>Generics with Classes</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#idp15942320"/>
+      </navPoint>
+      <navPoint id="np_163" playOrder="163">
+      <navLabel>
+      <text>Declaring Generics</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#defining_generics"/>
+      </navPoint>
+      <navPoint id="np_164" playOrder="164">
+      <navLabel>
+      <text>Wildcards</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#wild_cards"/>
+      </navPoint>
+      <navPoint id="np_165" playOrder="165">
+      <navLabel>
+      <text>Creating Custom Parameterized Classes</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#custom_parameterized_classes"/>
+      </navPoint>
+      <navPoint id="np_166" playOrder="166">
+      <navLabel>
+      <text>Bounded Type Parameters</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#bounded_wild_cards"/>
+      </navPoint>
+      <navPoint id="np_167" playOrder="167">
+      <navLabel>
+      <text>Generic Methods</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#generic_methods"/>
+      </navPoint>
+      <navPoint id="np_168" playOrder="168">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0013.xhtml#try_it-id00052"/>
+        <navPoint id="np_169" playOrder="169">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0013.xhtml#lesson_requirements-id00053"/>
+        </navPoint>
+        <navPoint id="np_170" playOrder="170">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0013.xhtml#step-by-step-id00054"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_171" playOrder="171">
+    <navLabel>
+    <text>Lesson 13 Lambda Expressions and Functional Style Programming</text>
+    </navLabel>
+    <content src="Text/part0014.xhtml#lambda_expression"/>
+      <navPoint id="np_172" playOrder="172">
+      <navLabel>
+      <text>Imperative vs Functional Style</text>
+      </navLabel>
+      <content src="Text/part0014.xhtml#idp16191264"/>
+      </navPoint>
+      <navPoint id="np_173" playOrder="173">
+      <navLabel>
+      <text>What’s Lambda Expression </text>
+      </navLabel>
+      <content src="Text/part0014.xhtml#whats_lambda_expressions"/>
+        <navPoint id="np_174" playOrder="174">
+        <navLabel>
+        <text>Functional Interfaces</text>
+        </navLabel>
+        <content src="Text/part0014.xhtml#functional-interfaces"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_175" playOrder="175">
+      <navLabel>
+      <text>Methods Versus Functions </text>
+      </navLabel>
+      <content src="Text/part0014.xhtml#idp16216096"/>
+        <navPoint id="np_176" playOrder="176">
+        <navLabel>
+        <text>Passing Functions to Methods </text>
+        </navLabel>
+        <content src="Text/part0014.xhtml#passing_functions"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_177" playOrder="177">
+      <navLabel>
+      <text>Iterating Collections with forEach() </text>
+      </navLabel>
+      <content src="Text/part0014.xhtml#foreach"/>
+      </navPoint>
+      <navPoint id="np_178" playOrder="178">
+      <navLabel>
+      <text>Lambdas Versus Inheritance and Polymorphism</text>
+      </navLabel>
+      <content src="Text/part0014.xhtml#polymorphism_ch13_section"/>
+        <navPoint id="np_179" playOrder="179">
+        <navLabel>
+        <text>Eliminating Inheritance </text>
+        </navLabel>
+        <content src="Text/part0014.xhtml#eliminating_inheritance"/>
+        </navPoint>
+        <navPoint id="np_180" playOrder="180">
+        <navLabel>
+        <text>Interfaces Function and BiFunction</text>
+        </navLabel>
+        <content src="Text/part0014.xhtml#BiFunction"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_181" playOrder="181">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0014.xhtml#try_it-id00034_ch13"/>
+        <navPoint id="np_182" playOrder="182">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0014.xhtml#lesson_requirements-id00035_ch13"/>
+        </navPoint>
+        <navPoint id="np_183" playOrder="183">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0014.xhtml#step-by-step-id00036_ch13"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_184" playOrder="184">
+    <navLabel>
+    <text>Lesson 14 Working with I/O Streams</text>
+    </navLabel>
+    <content src="Text/part0015.xhtml#working_with_streams"/>
+      <navPoint id="np_185" playOrder="185">
+      <navLabel>
+      <text>Byte Streams</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#byte_streams"/>
+      </navPoint>
+      <navPoint id="np_186" playOrder="186">
+      <navLabel>
+      <text>Buffered Streams</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#buffered_streams"/>
+      </navPoint>
+      <navPoint id="np_187" playOrder="187">
+      <navLabel>
+      <text>Character Streams</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#character_streams"/>
+      </navPoint>
+      <navPoint id="np_188" playOrder="188">
+      <navLabel>
+      <text>Bringing Together GUI and I/O Streams</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#idp16665952"/>
+      </navPoint>
+      <navPoint id="np_189" playOrder="189">
+      <navLabel>
+      <text>Data Streams</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#data_streams"/>
+      </navPoint>
+      <navPoint id="np_190" playOrder="190">
+      <navLabel>
+      <text>Utility Classes for Working with Files</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#class_file"/>
+        <navPoint id="np_191" playOrder="191">
+        <navLabel>
+        <text>The Class File</text>
+        </navLabel>
+        <content src="Text/part0015.xhtml#idp16730416"/>
+        </navPoint>
+        <navPoint id="np_192" playOrder="192">
+        <navLabel>
+        <text>NIO.2: Using Files, Path, and Paths</text>
+        </navLabel>
+        <content src="Text/part0015.xhtml#idp16752432"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_193" playOrder="193">
+      <navLabel>
+      <text>What NIO Is About</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#idp16726400"/>
+      </navPoint>
+      <navPoint id="np_194" playOrder="194">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0015.xhtml#try_it-id00055"/>
+        <navPoint id="np_195" playOrder="195">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0015.xhtml#lesson_requirements-id00056"/>
+        </navPoint>
+        <navPoint id="np_196" playOrder="196">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0015.xhtml#step-by-step-id00057"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_197" playOrder="197">
+    <navLabel>
+    <text>Lesson 15 Java Serialization</text>
+    </navLabel>
+    <content src="Text/part0016.xhtml#java_serialization"/>
+      <navPoint id="np_198" playOrder="198">
+      <navLabel>
+      <text>The Class ObjectOutputStream</text>
+      </navLabel>
+      <content src="Text/part0016.xhtml#class_objectoutputstream"/>
+      </navPoint>
+      <navPoint id="np_199" playOrder="199">
+      <navLabel>
+      <text>The Class ObjectInputStream</text>
+      </navLabel>
+      <content src="Text/part0016.xhtml#class_objectinputstream"/>
+      </navPoint>
+      <navPoint id="np_200" playOrder="200">
+      <navLabel>
+      <text>The Interface Externalizable</text>
+      </navLabel>
+      <content src="Text/part0016.xhtml#interface_externalizable"/>
+      </navPoint>
+      <navPoint id="np_201" playOrder="201">
+      <navLabel>
+      <text>Class Versioning</text>
+      </navLabel>
+      <content src="Text/part0016.xhtml#class_versioning"/>
+      </navPoint>
+      <navPoint id="np_202" playOrder="202">
+      <navLabel>
+      <text>Serializing into Byte Arrays</text>
+      </navLabel>
+      <content src="Text/part0016.xhtml#serializing_into_byte_arrays"/>
+      </navPoint>
+      <navPoint id="np_203" playOrder="203">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0016.xhtml#try_it-id00059"/>
+        <navPoint id="np_204" playOrder="204">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0016.xhtml#lesson_requirements-id00060"/>
+        </navPoint>
+        <navPoint id="np_205" playOrder="205">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0016.xhtml#step-by-step-id00061"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_206" playOrder="206">
+    <navLabel>
+    <text>Lesson 16 Network Programming Basics</text>
+    </navLabel>
+    <content src="Text/part0017.xhtml#network_programming"/>
+      <navPoint id="np_207" playOrder="207">
+      <navLabel>
+      <text>Reading Data from the Internet</text>
+      </navLabel>
+      <content src="Text/part0017.xhtml#reading_data_from_the_internet"/>
+      </navPoint>
+      <navPoint id="np_208" playOrder="208">
+      <navLabel>
+      <text>Connecting Through HTTP Proxy Servers</text>
+      </navLabel>
+      <content src="Text/part0017.xhtml#connecting_through_http_proxy_servers"/>
+      </navPoint>
+      <navPoint id="np_209" playOrder="209">
+      <navLabel>
+      <text>How to Download Files from the Internet</text>
+      </navLabel>
+      <content src="Text/part0017.xhtml#how_to_download_files_from_the_internet"/>
+        <navPoint id="np_210" playOrder="210">
+        <navLabel>
+        <text>Specifying Command-Line Parameters for FileDownload</text>
+        </navLabel>
+        <content src="Text/part0017.xhtml#filedownload"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_211" playOrder="211">
+      <navLabel>
+      <text>The Stock Quote Program</text>
+      </navLabel>
+      <content src="Text/part0017.xhtml#stock_quote_program"/>
+      </navPoint>
+      <navPoint id="np_212" playOrder="212">
+      <navLabel>
+      <text>Socket Programming</text>
+      </navLabel>
+      <content src="Text/part0017.xhtml#socket_programming"/>
+        <navPoint id="np_213" playOrder="213">
+        <navLabel>
+        <text>Why Use Sockets?</text>
+        </navLabel>
+        <content src="Text/part0017.xhtml#why_use_socketsquestion_mark"/>
+        </navPoint>
+        <navPoint id="np_214" playOrder="214">
+        <navLabel>
+        <text>The Stock Quote Server with Sockets</text>
+        </navLabel>
+        <content src="Text/part0017.xhtml#stock_quote_server_with_sockets"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_215" playOrder="215">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0017.xhtml#try_it-id00062"/>
+        <navPoint id="np_216" playOrder="216">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0017.xhtml#lesson_requirements-id00063"/>
+        </navPoint>
+        <navPoint id="np_217" playOrder="217">
+        <navLabel>
+        <text>Hints</text>
+        </navLabel>
+        <content src="Text/part0017.xhtml#hints-id00064"/>
+        </navPoint>
+        <navPoint id="np_218" playOrder="218">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0017.xhtml#step-by-step-id00065"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_219" playOrder="219">
+    <navLabel>
+    <text>Lesson 17 Concurrency and Multithreading</text>
+    </navLabel>
+    <content src="Text/part0018.xhtml#introduction_to_multi-threading"/>
+      <navPoint id="np_220" playOrder="220">
+      <navLabel>
+      <text>The Class Thread</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#class_thread"/>
+      </navPoint>
+      <navPoint id="np_221" playOrder="221">
+      <navLabel>
+      <text>The Interface Runnable</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#interface_runnable"/>
+        <navPoint id="np_222" playOrder="222">
+        <navLabel>
+        <text>Eliminating Inheritance</text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#idp17461904"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_223" playOrder="223">
+      <navLabel>
+      <text>Sleeping Threads</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#sleeping_threads"/>
+      </navPoint>
+      <navPoint id="np_224" playOrder="224">
+      <navLabel>
+      <text>How to Kill a Thread</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#how_to_kill_a_thread"/>
+      </navPoint>
+      <navPoint id="np_225" playOrder="225">
+      <navLabel>
+      <text>Thread Priorities</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#thread_priorities"/>
+      </navPoint>
+      <navPoint id="np_226" playOrder="226">
+      <navLabel>
+      <text>Thread Synchronization and Race Conditions</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#thread_synchronization_and_race_conditio"/>
+      </navPoint>
+      <navPoint id="np_227" playOrder="227">
+      <navLabel>
+      <text>Thread States</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#thread_states"/>
+      </navPoint>
+      <navPoint id="np_228" playOrder="228">
+      <navLabel>
+      <text>Wait and Notify</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#wait_and_notify"/>
+        <navPoint id="np_229" playOrder="229">
+        <navLabel>
+        <text>Closures in Java </text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#closures"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_230" playOrder="230">
+      <navLabel>
+      <text>Joining Threads</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#joining_threads"/>
+      </navPoint>
+      <navPoint id="np_231" playOrder="231">
+      <navLabel>
+      <text>Goodies From java.util.concurrent</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#goodies_from_javadotutildotconcurrent"/>
+        <navPoint id="np_232" playOrder="232">
+        <navLabel>
+        <text>ReentrantLock Versus Synchronized</text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#reentrantlock_versus_synchronized"/>
+        </navPoint>
+        <navPoint id="np_233" playOrder="233">
+        <navLabel>
+        <text>Executor Framework</text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#executor_framework"/>
+        </navPoint>
+        <navPoint id="np_234" playOrder="234">
+        <navLabel>
+        <text>A Brief Review of Concurrent Collections</text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#brief_introduction_to_concurrent_collect"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_235" playOrder="235">
+      <navLabel>
+      <text>Swingworker Thread</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#swingworker_thread"/>
+      </navPoint>
+      <navPoint id="np_236" playOrder="236">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0018.xhtml#try_it-id00073"/>
+        <navPoint id="np_237" playOrder="237">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#lesson_requirements-id00074"/>
+        </navPoint>
+        <navPoint id="np_238" playOrder="238">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0018.xhtml#step-by-step-id00075"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_239" playOrder="239">
+    <navLabel>
+    <text>Lesson 18 Introduction to GUI with JavaFX</text>
+    </navLabel>
+    <content src="Text/part0019.xhtml#introduction_to_java_applets"/>
+      <navPoint id="np_240" playOrder="240">
+      <navLabel>
+      <text>JavaFX Application Basics</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#unofficial_history_of_java_applets_ch18"/>
+        <navPoint id="np_241" playOrder="241">
+        <navLabel>
+        <text>Using the E(fx)clipse Plug-in</text>
+        </navLabel>
+        <content src="Text/part0019.xhtml#efxclipse"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_242" playOrder="242">
+      <navLabel>
+      <text>Layouts</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#fxlayouts"/>
+        <navPoint id="np_243" playOrder="243">
+        <navLabel>
+        <text>A Sample Application with the HBox Layout</text>
+        </navLabel>
+        <content src="Text/part0019.xhtml#idp18079808"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_244" playOrder="244">
+      <navLabel>
+      <text>A Sample Application with the GridPane Layout</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#idp18015776"/>
+      </navPoint>
+      <navPoint id="np_245" playOrder="245">
+      <navLabel>
+      <text>Skinning with CSS</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#idp18100368"/>
+      </navPoint>
+      <navPoint id="np_246" playOrder="246">
+      <navLabel>
+      <text>Event Handling</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#idp18132144"/>
+      </navPoint>
+      <navPoint id="np_247" playOrder="247">
+      <navLabel>
+      <text>Properties and Binding</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#idp18177584"/>
+      </navPoint>
+      <navPoint id="np_248" playOrder="248">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0019.xhtml#try_it-id00034_ch18"/>
+        <navPoint id="np_249" playOrder="249">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0019.xhtml#lesson_requirements-id00035_ch18"/>
+        </navPoint>
+        <navPoint id="np_250" playOrder="250">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0019.xhtml#step-by-step-id00036_ch18"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_251" playOrder="251">
+    <navLabel>
+    <text>Lesson 19 Developing JavaFX Calculator and Tic-Tac-Toe </text>
+    </navLabel>
+    <content src="Text/part0020.xhtml#developing_a_tic-tac-toe_applet"/>
+      <navPoint id="np_252" playOrder="252">
+      <navLabel>
+      <text>Designing a Calculator with Scene Builder</text>
+      </navLabel>
+      <content src="Text/part0020.xhtml#idp18307392"/>
+        <navPoint id="np_253" playOrder="253">
+        <navLabel>
+        <text>Designing the Calculator GUI with Scene Builder</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#idp18346704"/>
+        </navPoint>
+        <navPoint id="np_254" playOrder="254">
+        <navLabel>
+        <text>Handling Events in the Controller Class</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#idp18402928"/>
+          <navPoint id="np_255" playOrder="255">
+          <navLabel>
+          <text>Recognizing the Source of the Event</text>
+          </navLabel>
+          <content src="Text/part0020.xhtml#idp18428976"/>
+          </navPoint>
+          <navPoint id="np_256" playOrder="256">
+          <navLabel>
+          <text>Passing Data from View to Controller and Back</text>
+          </navLabel>
+          <content src="Text/part0020.xhtml#idp18471968"/>
+          </navPoint>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_257" playOrder="257">
+      <navLabel>
+      <text>Programming Tic-Tac-Toe</text>
+      </navLabel>
+      <content src="Text/part0020.xhtml#strategy"/>
+        <navPoint id="np_258" playOrder="258">
+        <navLabel>
+        <text>The Game Strategy</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#idp18522320"/>
+        </navPoint>
+        <navPoint id="np_259" playOrder="259">
+        <navLabel>
+        <text>Designing Tic-Tac-Toe GUI with FXML and CSS</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#idp18524512"/>
+        </navPoint>
+        <navPoint id="np_260" playOrder="260">
+        <navLabel>
+        <text>Implementing Game Strategy in Tic-Tac-Toe Controller</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#idp18531872"/>
+        </navPoint>
+        <navPoint id="np_261" playOrder="261">
+        <navLabel>
+        <text>Handling the Tic-Tac-Toe Menu Play</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#menuplay"/>
+        </navPoint>
+        <navPoint id="np_262" playOrder="262">
+        <navLabel>
+        <text>Tic-Tac-Toe: What to Try Next</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#idp18654480"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_263" playOrder="263">
+      <navLabel>
+      <text>JavaFX on the Web and Mobile Devices</text>
+      </navLabel>
+      <content src="Text/part0020.xhtml#idp18655744"/>
+      </navPoint>
+      <navPoint id="np_264" playOrder="264">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0020.xhtml#try_it-id00037"/>
+        <navPoint id="np_265" playOrder="265">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#lesson_requirements-id00038"/>
+        </navPoint>
+        <navPoint id="np_266" playOrder="266">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0020.xhtml#step-by-step-id00039"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_267" playOrder="267">
+    <navLabel>
+    <text>Lesson 20 Stream API</text>
+    </navLabel>
+    <content src="Text/part0021.xhtml#introduction_to_streams"/>
+      <navPoint id="np_268" playOrder="268">
+      <navLabel>
+      <text>Stream Basics</text>
+      </navLabel>
+      <content src="Text/part0021.xhtml#unofficial_history_of_java_applets_ch20"/>
+        <navPoint id="np_269" playOrder="269">
+        <navLabel>
+        <text>Intermediate and Terminal Operations</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#idp18730208"/>
+        </navPoint>
+        <navPoint id="np_270" playOrder="270">
+        <navLabel>
+        <text>Parallel Versus Sequential Processing</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#idp18732000"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_271" playOrder="271">
+      <navLabel>
+      <text>Sorting Collections and Streams  </text>
+      </navLabel>
+      <content src="Text/part0021.xhtml#idp18721920"/>
+        <navPoint id="np_272" playOrder="272">
+        <navLabel>
+        <text>Sorting Java Collections</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#idp18814736"/>
+        </navPoint>
+        <navPoint id="np_273" playOrder="273">
+        <navLabel>
+        <text>Sorting Streams</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#idp18881568"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_274" playOrder="274">
+      <navLabel>
+      <text>Other Stream Sources</text>
+      </navLabel>
+      <content src="Text/part0021.xhtml#idp18881984"/>
+        <navPoint id="np_275" playOrder="275">
+        <navLabel>
+        <text>Creating Finite Size Streams</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#idp18919328"/>
+        </navPoint>
+        <navPoint id="np_276" playOrder="276">
+        <navLabel>
+        <text>Creating Infinite-Size Streams</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#idp18925008"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_277" playOrder="277">
+      <navLabel>
+      <text>Short-Circuit Operations</text>
+      </navLabel>
+      <content src="Text/part0021.xhtml#short_circuit"/>
+      </navPoint>
+      <navPoint id="np_278" playOrder="278">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0021.xhtml#try_it-id00034_ch20"/>
+        <navPoint id="np_279" playOrder="279">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#lesson_requirements-id00035_ch20"/>
+        </navPoint>
+        <navPoint id="np_280" playOrder="280">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0021.xhtml#step-by-step-id00036_ch20"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_281" playOrder="281">
+    <navLabel>
+    <text>Lesson 21 Working with Relational DBMS Using JDBC</text>
+    </navLabel>
+    <content src="Text/part0022.xhtml#working_with_databases_using_jdbc"/>
+      <navPoint id="np_282" playOrder="282">
+      <navLabel>
+      <text>JDBC Driver Types</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#jdbc_driver_types"/>
+      </navPoint>
+      <navPoint id="np_283" playOrder="283">
+      <navLabel>
+      <text>Installing Derby DB and Creating a Database</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#creating_a_database_with_derby"/>
+      </navPoint>
+      <navPoint id="np_284" playOrder="284">
+      <navLabel>
+      <text>Sample JDBC Program</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#sample_jdbc_program"/>
+      </navPoint>
+      <navPoint id="np_285" playOrder="285">
+      <navLabel>
+      <text>Processing Result Sets</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#processing_result_sets"/>
+      </navPoint>
+      <navPoint id="np_286" playOrder="286">
+      <navLabel>
+      <text>The PreparedStatement Class</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#preparedstatement_class"/>
+      </navPoint>
+      <navPoint id="np_287" playOrder="287">
+      <navLabel>
+      <text>The CallableStatement Class</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#callablestatement_class"/>
+      </navPoint>
+      <navPoint id="np_288" playOrder="288">
+      <navLabel>
+      <text>The ResultSetMetaData Class</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#resultsetmetadata_class"/>
+      </navPoint>
+      <navPoint id="np_289" playOrder="289">
+      <navLabel>
+      <text>Scrollable Result Sets and Rowset</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#scrollable_result_sets_and_rowset"/>
+      </navPoint>
+      <navPoint id="np_290" playOrder="290">
+      <navLabel>
+      <text>Transactional Updates</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#transactional_updates"/>
+      </navPoint>
+      <navPoint id="np_291" playOrder="291">
+      <navLabel>
+      <text>Connection Pools and DataSource</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#connection_pools_and_datasources"/>
+      </navPoint>
+      <navPoint id="np_292" playOrder="292">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0022.xhtml#try_it-id00076"/>
+        <navPoint id="np_293" playOrder="293">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0022.xhtml#lesson_requirements-id00077"/>
+        </navPoint>
+        <navPoint id="np_294" playOrder="294">
+        <navLabel>
+        <text>Hint</text>
+        </navLabel>
+        <content src="Text/part0022.xhtml#hint"/>
+        </navPoint>
+        <navPoint id="np_295" playOrder="295">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0022.xhtml#step-by-step-id00078"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_296" playOrder="296">
+    <navLabel>
+    <text>Lesson 22 Rendering Tabular Data in the GUI</text>
+    </navLabel>
+    <content src="Text/part0023.xhtml#swing_with_jtable"/>
+      <navPoint id="np_297" playOrder="297">
+      <navLabel>
+      <text>JTable and the MVC Paradigm</text>
+      </navLabel>
+      <content src="Text/part0023.xhtml#jtable_and_the_mvc_paradigm"/>
+      </navPoint>
+      <navPoint id="np_298" playOrder="298">
+      <navLabel>
+      <text>The Model</text>
+      </navLabel>
+      <content src="Text/part0023.xhtml#model"/>
+        <navPoint id="np_299" playOrder="299">
+        <navLabel>
+        <text>Mandatory Callbacks of Table Models</text>
+        </navLabel>
+        <content src="Text/part0023.xhtml#mandatory_callbacks_of_table_models"/>
+        </navPoint>
+        <navPoint id="np_300" playOrder="300">
+        <navLabel>
+        <text>Optional Callbacks of Table Models</text>
+        </navLabel>
+        <content src="Text/part0023.xhtml#optional_callbacks_of_table_models"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_301" playOrder="301">
+      <navLabel>
+      <text>Introduction to Renderers</text>
+      </navLabel>
+      <content src="Text/part0023.xhtml#introduction_to_renderers"/>
+      </navPoint>
+      <navPoint id="np_302" playOrder="302">
+      <navLabel>
+      <text>Summary</text>
+      </navLabel>
+      <content src="Text/part0023.xhtml#summary-id00079"/>
+      </navPoint>
+      <navPoint id="np_303" playOrder="303">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0023.xhtml#try_it-id00080"/>
+        <navPoint id="np_304" playOrder="304">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0023.xhtml#lesson_requirements-id00081"/>
+        </navPoint>
+        <navPoint id="np_305" playOrder="305">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0023.xhtml#step-by-step-id00083"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_306" playOrder="306">
+    <navLabel>
+    <text>Lesson 23 Annotations and Reflection</text>
+    </navLabel>
+    <content src="Text/part0024.xhtml#annotations_and_reflection"/>
+      <navPoint id="np_307" playOrder="307">
+      <navLabel>
+      <text>Javadoc Annotations</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#idp19514096"/>
+      </navPoint>
+      <navPoint id="np_308" playOrder="308">
+      <navLabel>
+      <text>Java Annotations Basics</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#java_annotations_basics"/>
+        <navPoint id="np_309" playOrder="309">
+        <navLabel>
+        <text>@Override</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#commercial_atoverride"/>
+        </navPoint>
+        <navPoint id="np_310" playOrder="310">
+        <navLabel>
+        <text>@Deprecated</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#commercial_atdeprecated"/>
+        </navPoint>
+        <navPoint id="np_311" playOrder="311">
+        <navLabel>
+        <text>@Inherited</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#commercial_atinherited"/>
+        </navPoint>
+        <navPoint id="np_312" playOrder="312">
+        <navLabel>
+        <text>@FunctionalInterface</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#idp19592784"/>
+        </navPoint>
+        <navPoint id="np_313" playOrder="313">
+        <navLabel>
+        <text>@Documented</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#commercial_atdocumented"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_314" playOrder="314">
+      <navLabel>
+      <text>Custom Annotations</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#custom_annotations"/>
+      </navPoint>
+      <navPoint id="np_315" playOrder="315">
+      <navLabel>
+      <text>Reflection</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#reflection"/>
+      </navPoint>
+      <navPoint id="np_316" playOrder="316">
+      <navLabel>
+      <text>Run-Time Annotation Processing</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#run-time_annotation_processing"/>
+      </navPoint>
+      <navPoint id="np_317" playOrder="317">
+      <navLabel>
+      <text>Summary</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#summary-id00085"/>
+      </navPoint>
+      <navPoint id="np_318" playOrder="318">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0024.xhtml#try_it-id00086"/>
+        <navPoint id="np_319" playOrder="319">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#lesson_requirements-id00087"/>
+        </navPoint>
+        <navPoint id="np_320" playOrder="320">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0024.xhtml#step-by-step-id00088"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_321" playOrder="321">
+    <navLabel>
+    <text>Lesson 24 Remote Method Invocation</text>
+    </navLabel>
+    <content src="Text/part0025.xhtml#remote_method_invocation"/>
+      <navPoint id="np_322" playOrder="322">
+      <navLabel>
+      <text>Developing Applications with RMI</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#developing_applications_with_rmi"/>
+      </navPoint>
+      <navPoint id="np_323" playOrder="323">
+      <navLabel>
+      <text>Defining Remote Interfaces</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#defining_remote_interfaces"/>
+      </navPoint>
+      <navPoint id="np_324" playOrder="324">
+      <navLabel>
+      <text>Implementing Remote Interfaces</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#implementing_remote_interfaces"/>
+      </navPoint>
+      <navPoint id="np_325" playOrder="325">
+      <navLabel>
+      <text>Registering Remote Objects</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#registering_remote_objects"/>
+      </navPoint>
+      <navPoint id="np_326" playOrder="326">
+      <navLabel>
+      <text>Writing RMI Clients</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#writing_rmi_clients"/>
+      </navPoint>
+      <navPoint id="np_327" playOrder="327">
+      <navLabel>
+      <text>Security Considerations</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#security_considerations"/>
+      </navPoint>
+      <navPoint id="np_328" playOrder="328">
+      <navLabel>
+      <text>Finding Remote Objects</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#finding_remote_objects"/>
+      </navPoint>
+      <navPoint id="np_329" playOrder="329">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0025.xhtml#try_it-id00089"/>
+        <navPoint id="np_330" playOrder="330">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0025.xhtml#lesson_requirements-id00090"/>
+        </navPoint>
+        <navPoint id="np_331" playOrder="331">
+        <navLabel>
+        <text>Hints</text>
+        </navLabel>
+        <content src="Text/part0025.xhtml#hints-id00091"/>
+        </navPoint>
+        <navPoint id="np_332" playOrder="332">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0025.xhtml#step-by-step-id00092"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_333" playOrder="333">
+    <navLabel>
+    <text>Lesson 25 Java EE 7 Overview</text>
+    </navLabel>
+    <content src="Text/part0026.xhtml#java_ee_7_overview"/>
+      <navPoint id="np_334" playOrder="334">
+      <navLabel>
+      <text>The Big Picture</text>
+      </navLabel>
+      <content src="Text/part0026.xhtml#big_picture"/>
+        <navPoint id="np_335" playOrder="335">
+        <navLabel>
+        <text>JCP, JSR, and Other Acronyms</text>
+        </navLabel>
+        <content src="Text/part0026.xhtml#jcpcomma_jsrcomma_and_other_acronyms"/>
+        </navPoint>
+        <navPoint id="np_336" playOrder="336">
+        <navLabel>
+        <text>Tiers of Java EE Applications</text>
+        </navLabel>
+        <content src="Text/part0026.xhtml#tiers_of_java_ee_applications"/>
+        </navPoint>
+        <navPoint id="np_337" playOrder="337">
+        <navLabel>
+        <text>Containers Versus Application Servers</text>
+        </navLabel>
+        <content src="Text/part0026.xhtml#containers_versus_application_servers"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_338" playOrder="338">
+      <navLabel>
+      <text>Profiles and Pruning</text>
+      </navLabel>
+      <content src="Text/part0026.xhtml#profiles_and_pruning"/>
+      </navPoint>
+      <navPoint id="np_339" playOrder="339">
+      <navLabel>
+      <text>Why Java EE?</text>
+      </navLabel>
+      <content src="Text/part0026.xhtml#miscellaneous_concepts"/>
+      </navPoint>
+      <navPoint id="np_340" playOrder="340">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0026.xhtml#try_it-id00093"/>
+        <navPoint id="np_341" playOrder="341">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0026.xhtml#lesson_requirements-id00094"/>
+        </navPoint>
+        <navPoint id="np_342" playOrder="342">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0026.xhtml#step-by-step-id00096"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_343" playOrder="343">
+    <navLabel>
+    <text>Lesson 26 Programming with Servlets</text>
+    </navLabel>
+    <content src="Text/part0027.xhtml#programming_with_servlets"/>
+      <navPoint id="np_344" playOrder="344">
+      <navLabel>
+      <text>The Big Picture</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#big_picture-id00097"/>
+      </navPoint>
+      <navPoint id="np_345" playOrder="345">
+      <navLabel>
+      <text>The Thin Client</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#thin_client"/>
+      </navPoint>
+      <navPoint id="np_346" playOrder="346">
+      <navLabel>
+      <text>How to Write a Servlet</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#how_to_write_a_servlet"/>
+      </navPoint>
+      <navPoint id="np_347" playOrder="347">
+      <navLabel>
+      <text>How to Deploy a Servlet</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#how_to_deploy_a_servlet"/>
+      </navPoint>
+      <navPoint id="np_348" playOrder="348">
+      <navLabel>
+      <text>Configuring Glassfish in Eclipse IDE</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#installing_the_glassfish_plug-in_for_ecl"/>
+      </navPoint>
+      <navPoint id="np_349" playOrder="349">
+      <navLabel>
+      <text>How to Create a Servlet in Eclipse</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#how_to_create_a_servlet_with_eclipse"/>
+        <navPoint id="np_350" playOrder="350">
+        <navLabel>
+        <text>Deploying a Web Application as WAR</text>
+        </navLabel>
+        <content src="Text/part0027.xhtml#idp20369424"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_351" playOrder="351">
+      <navLabel>
+      <text>Browser-Servlet Data Flow</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#browser-servlet_data_flow"/>
+      </navPoint>
+      <navPoint id="np_352" playOrder="352">
+      <navLabel>
+      <text>HTTP Get and Post Requests</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#http_get_and_post_requests"/>
+      </navPoint>
+      <navPoint id="np_353" playOrder="353">
+      <navLabel>
+      <text>Session Tracking</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#session_tracking"/>
+        <navPoint id="np_354" playOrder="354">
+        <navLabel>
+        <text>Cookies</text>
+        </navLabel>
+        <content src="Text/part0027.xhtml#cookies"/>
+        </navPoint>
+        <navPoint id="np_355" playOrder="355">
+        <navLabel>
+        <text>URL Rewriting</text>
+        </navLabel>
+        <content src="Text/part0027.xhtml#url_rewriting"/>
+        </navPoint>
+        <navPoint id="np_356" playOrder="356">
+        <navLabel>
+        <text>Server-Side HttpSession</text>
+        </navLabel>
+        <content src="Text/part0027.xhtml#server-side_httpsession"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_357" playOrder="357">
+      <navLabel>
+      <text>Filters</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#filters"/>
+      </navPoint>
+      <navPoint id="np_358" playOrder="358">
+      <navLabel>
+      <text>Asynchronous Servlets</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#asynchronous_servlets"/>
+      </navPoint>
+      <navPoint id="np_359" playOrder="359">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0027.xhtml#try_it-id00098"/>
+        <navPoint id="np_360" playOrder="360">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0027.xhtml#lesson_requirements-id00099"/>
+        </navPoint>
+        <navPoint id="np_361" playOrder="361">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0027.xhtml#step-by-step-id00101"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_362" playOrder="362">
+    <navLabel>
+    <text>Lesson 27 JavaServer Pages</text>
+    </navLabel>
+    <content src="Text/part0028.xhtml#javaserver_pages"/>
+      <navPoint id="np_363" playOrder="363">
+      <navLabel>
+      <text>Embedding Java Code into HTML</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#embedding_java_code_into_html"/>
+      </navPoint>
+      <navPoint id="np_364" playOrder="364">
+      <navLabel>
+      <text>Implicit JSP Objects</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#implicit_jsp_objects"/>
+      </navPoint>
+      <navPoint id="np_365" playOrder="365">
+      <navLabel>
+      <text>Overview of the JSP Tags</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#overview_of_the_jsp_tags"/>
+        <navPoint id="np_366" playOrder="366">
+        <navLabel>
+        <text>Directives</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#directives"/>
+        </navPoint>
+        <navPoint id="np_367" playOrder="367">
+        <navLabel>
+        <text>Declarations</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#declarations"/>
+        </navPoint>
+        <navPoint id="np_368" playOrder="368">
+        <navLabel>
+        <text>Expressions</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#expressions"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_369" playOrder="369">
+      <navLabel>
+      <text>Scriptlets</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#scriptlets"/>
+        <navPoint id="np_370" playOrder="370">
+        <navLabel>
+        <text>Comments</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#comments"/>
+        </navPoint>
+        <navPoint id="np_371" playOrder="371">
+        <navLabel>
+        <text>Standard Actions</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#standard_actions"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_372" playOrder="372">
+      <navLabel>
+      <text>Error Pages</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#error_pages"/>
+      </navPoint>
+      <navPoint id="np_373" playOrder="373">
+      <navLabel>
+      <text>Java Beans</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#javabeans"/>
+        <navPoint id="np_374" playOrder="374">
+        <navLabel>
+        <text>Using JavaBeans in JSP</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#using_javabeans_in_jsp"/>
+        </navPoint>
+        <navPoint id="np_375" playOrder="375">
+        <navLabel>
+        <text>How Long Does a Bean Live?</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#how_long_does_a_bean_livequestion_mark"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_376" playOrder="376">
+      <navLabel>
+      <text>Loading JSP from Servlets</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#loading_jsp_from_servlets"/>
+      </navPoint>
+      <navPoint id="np_377" playOrder="377">
+      <navLabel>
+      <text>Tag Libraries</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#tag_libraries"/>
+      </navPoint>
+      <navPoint id="np_378" playOrder="378">
+      <navLabel>
+      <text>JSTL</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#jstl"/>
+      </navPoint>
+      <navPoint id="np_379" playOrder="379">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0028.xhtml#try_it-id00102"/>
+        <navPoint id="np_380" playOrder="380">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#lesson_requirements-id00103"/>
+        </navPoint>
+        <navPoint id="np_381" playOrder="381">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0028.xhtml#step-by-step-id00104"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_382" playOrder="382">
+    <navLabel>
+    <text>Lesson 28 Developing Web Applications with WebSockets</text>
+    </navLabel>
+    <content src="Text/part0029.xhtml#websockets"/>
+      <navPoint id="np_383" playOrder="383">
+      <navLabel>
+      <text>HTTP Drawbacks</text>
+      </navLabel>
+      <content src="Text/part0029.xhtml#idp20980592"/>
+        <navPoint id="np_384" playOrder="384">
+        <navLabel>
+        <text>HTTP Hacks for Server-Side Data Push</text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#idp20986832"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_385" playOrder="385">
+      <navLabel>
+      <text>Client-Server Communication with Websockets</text>
+      </navLabel>
+      <content src="Text/part0029.xhtml#idp20980848"/>
+        <navPoint id="np_386" playOrder="386">
+        <navLabel>
+        <text>Web Browser as a WebSocket Client </text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#idp21016480"/>
+        </navPoint>
+        <navPoint id="np_387" playOrder="387">
+        <navLabel>
+        <text>Communication with the Server Using WebSockets</text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#idp21024288"/>
+        </navPoint>
+        <navPoint id="np_388" playOrder="388">
+        <navLabel>
+        <text>Sending Messages</text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#idp21149296"/>
+        </navPoint>
+        <navPoint id="np_389" playOrder="389">
+        <navLabel>
+        <text>Receiving Messages Using @OnMessage</text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#idp21173648"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_390" playOrder="390">
+      <navLabel>
+      <text>Encoders and Decoders</text>
+      </navLabel>
+      <content src="Text/part0029.xhtml#decoders"/>
+      </navPoint>
+      <navPoint id="np_391" playOrder="391">
+      <navLabel>
+      <text>Publishing to All Clients</text>
+      </navLabel>
+      <content src="Text/part0029.xhtml#broadcasting"/>
+      </navPoint>
+      <navPoint id="np_392" playOrder="392">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0029.xhtml#try_it-id00106"/>
+        <navPoint id="np_393" playOrder="393">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#lesson_requirements-id00107"/>
+        </navPoint>
+        <navPoint id="np_394" playOrder="394">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0029.xhtml#step-by-step-id00109"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_395" playOrder="395">
+    <navLabel>
+    <text>Lesson 29 Introducing JNDI</text>
+    </navLabel>
+    <content src="Text/part0030.xhtml#introducing_jndi"/>
+      <navPoint id="np_396" playOrder="396">
+      <navLabel>
+      <text>Naming and Directory Services</text>
+      </navLabel>
+      <content src="Text/part0030.xhtml#java_naming_and_directory_interface"/>
+      </navPoint>
+      <navPoint id="np_397" playOrder="397">
+      <navLabel>
+      <text>Using the Class InitialContext </text>
+      </navLabel>
+      <content src="Text/part0030.xhtml#idp21366304"/>
+        <navPoint id="np_398" playOrder="398">
+        <navLabel>
+        <text>Getting a Reference to InitialContext</text>
+        </navLabel>
+        <content src="Text/part0030.xhtml#initial_context"/>
+        </navPoint>
+        <navPoint id="np_399" playOrder="399">
+        <navLabel>
+        <text>Injecting JNDI Resources</text>
+        </navLabel>
+        <content src="Text/part0030.xhtml#resource_injection"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_400" playOrder="400">
+      <navLabel>
+      <text>Administering JNDI Objects in Glassfish</text>
+      </navLabel>
+      <content src="Text/part0030.xhtml#administering_jndi_objects_in_glassfish"/>
+      </navPoint>
+      <navPoint id="np_401" playOrder="401">
+      <navLabel>
+      <text>Datasource and JNDI</text>
+      </navLabel>
+      <content src="Text/part0030.xhtml#datasource_and_jndi"/>
+      </navPoint>
+      <navPoint id="np_402" playOrder="402">
+      <navLabel>
+      <text>Lightweight Directory Access Protocol</text>
+      </navLabel>
+      <content src="Text/part0030.xhtml#lightweight_directory_access_protocol"/>
+      </navPoint>
+      <navPoint id="np_403" playOrder="403">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0030.xhtml#try_it-id00114"/>
+        <navPoint id="np_404" playOrder="404">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0030.xhtml#lesson_requirements-id00115"/>
+        </navPoint>
+        <navPoint id="np_405" playOrder="405">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0030.xhtml#step-by-step-id00116"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_406" playOrder="406">
+    <navLabel>
+    <text>Lesson 30 Introducing JMS and MOM</text>
+    </navLabel>
+    <content src="Text/part0031.xhtml#introducing_jms_and_mom"/>
+      <navPoint id="np_407" playOrder="407">
+      <navLabel>
+      <text>Messaging Concepts and Terminology</text>
+      </navLabel>
+      <content src="Text/part0031.xhtml#messaging_concepts_and_terminology"/>
+      </navPoint>
+      <navPoint id="np_408" playOrder="408">
+      <navLabel>
+      <text>Two Modes of Message Delivery</text>
+      </navLabel>
+      <content src="Text/part0031.xhtml#two_modes_of_message_delivery"/>
+      </navPoint>
+      <navPoint id="np_409" playOrder="409">
+      <navLabel>
+      <text>Introducing OpenMQ MOM</text>
+      </navLabel>
+      <content src="Text/part0031.xhtml#idp21584480"/>
+      </navPoint>
+      <navPoint id="np_410" playOrder="410">
+      <navLabel>
+      <text>JMS API Overview</text>
+      </navLabel>
+      <content src="Text/part0031.xhtml#jms_api_overview"/>
+        <navPoint id="np_411" playOrder="411">
+        <navLabel>
+        <text>Types of Messages</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#types_of_messages"/>
+        </navPoint>
+        <navPoint id="np_412" playOrder="412">
+        <navLabel>
+        <text>How to Send a Message Directly to MOM</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#how_to_send_a_message"/>
+        </navPoint>
+        <navPoint id="np_413" playOrder="413">
+        <navLabel>
+        <text>How to Receive a Message Directly from MOM</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#how_to_receive_a_message"/>
+        </navPoint>
+        <navPoint id="np_414" playOrder="414">
+        <navLabel>
+        <text>How to Publish a Message</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#how_to_publish_a_message"/>
+        </navPoint>
+        <navPoint id="np_415" playOrder="415">
+        <navLabel>
+        <text>How to Subscribe for a Topic</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#how_to_subscribe_for_a_topic"/>
+        </navPoint>
+        <navPoint id="np_416" playOrder="416">
+        <navLabel>
+        <text>Message Acknowledgments and Transactions Support</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#ack_section"/>
+        </navPoint>
+        <navPoint id="np_417" playOrder="417">
+        <navLabel>
+        <text>Message Selectors</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#message_selectors"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_418" playOrder="418">
+      <navLabel>
+      <text>Sending Messages from Java EE Containers </text>
+      </navLabel>
+      <content src="Text/part0031.xhtml#idp21619264"/>
+        <navPoint id="np_419" playOrder="419">
+        <navLabel>
+        <text>Administering JMS Objects in GlassFish</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#idp21840016"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_420" playOrder="420">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0031.xhtml#try_it-id00110"/>
+        <navPoint id="np_421" playOrder="421">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#lesson_requirements-id00111"/>
+        </navPoint>
+        <navPoint id="np_422" playOrder="422">
+        <navLabel>
+        <text>Hints</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#hints-id00112"/>
+        </navPoint>
+        <navPoint id="np_423" playOrder="423">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0031.xhtml#step-by-step-id00113"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_424" playOrder="424">
+    <navLabel>
+    <text>Lesson 31 Introduction to Enterprise JavaBeans</text>
+    </navLabel>
+    <content src="Text/part0032.xhtml#introduction_to_enterprise_javabeans"/>
+      <navPoint id="np_425" playOrder="425">
+      <navLabel>
+      <text>Who Needs EJB Containers?</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#who_needs_ejb_containersquestion_mark"/>
+      </navPoint>
+      <navPoint id="np_426" playOrder="426">
+      <navLabel>
+      <text>Types of EJBs</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#types_of_ejbs"/>
+      </navPoint>
+      <navPoint id="np_427" playOrder="427">
+      <navLabel>
+      <text>Stateless Session Beans</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#stateless_session_beans"/>
+        <navPoint id="np_428" playOrder="428">
+        <navLabel>
+        <text>The Bean</text>
+        </navLabel>
+        <content src="Text/part0032.xhtml#bean"/>
+        </navPoint>
+        <navPoint id="np_429" playOrder="429">
+        <navLabel>
+        <text>The Client’s View</text>
+        </navLabel>
+        <content src="Text/part0032.xhtml#clientapostrophes_view"/>
+        </navPoint>
+        <navPoint id="np_430" playOrder="430">
+        <navLabel>
+        <text>Asynchronous Methods and Concurrency</text>
+        </navLabel>
+        <content src="Text/part0032.xhtml#asynchronous_methods"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_431" playOrder="431">
+      <navLabel>
+      <text>Stateful Session Beans</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#stateful_session_beans"/>
+      </navPoint>
+      <navPoint id="np_432" playOrder="432">
+      <navLabel>
+      <text>Singleton Beans</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#singleton_beans"/>
+      </navPoint>
+      <navPoint id="np_433" playOrder="433">
+      <navLabel>
+      <text>Deploying EJB</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#deploying_ejb"/>
+      </navPoint>
+      <navPoint id="np_434" playOrder="434">
+      <navLabel>
+      <text>Message-Driven Beans</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#message-driven_beans"/>
+      </navPoint>
+      <navPoint id="np_435" playOrder="435">
+      <navLabel>
+      <text>EJB and Transactions </text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#idp22181456"/>
+      </navPoint>
+      <navPoint id="np_436" playOrder="436">
+      <navLabel>
+      <text>Timer Service</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#timer_service"/>
+      </navPoint>
+      <navPoint id="np_437" playOrder="437">
+      <navLabel>
+      <text>Summary</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#summary-id00117"/>
+      </navPoint>
+      <navPoint id="np_438" playOrder="438">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0032.xhtml#try_it-id00118"/>
+        <navPoint id="np_439" playOrder="439">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0032.xhtml#lesson_requirements-id00119"/>
+        </navPoint>
+        <navPoint id="np_440" playOrder="440">
+        <navLabel>
+        <text>Hint</text>
+        </navLabel>
+        <content src="Text/part0032.xhtml#hint-id00120"/>
+        </navPoint>
+        <navPoint id="np_441" playOrder="441">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0032.xhtml#step-by-step-id00121"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_442" playOrder="442">
+    <navLabel>
+    <text>Lesson 32 Overview of the Java Persistence API</text>
+    </navLabel>
+    <content src="Text/part0033.xhtml#introduction_to_the_java_persistence_api"/>
+      <navPoint id="np_443" playOrder="443">
+      <navLabel>
+      <text>The Big Picture</text>
+      </navLabel>
+      <content src="Text/part0033.xhtml#big_picture-id00122"/>
+      </navPoint>
+      <navPoint id="np_444" playOrder="444">
+      <navLabel>
+      <text>Mapping Objects to Database Tables</text>
+      </navLabel>
+      <content src="Text/part0033.xhtml#mapping_objects_to_database_tables"/>
+      </navPoint>
+      <navPoint id="np_445" playOrder="445">
+      <navLabel>
+      <text>Querying Entities</text>
+      </navLabel>
+      <content src="Text/part0033.xhtml#jpql"/>
+        <navPoint id="np_446" playOrder="446">
+        <navLabel>
+        <text>JPQL</text>
+        </navLabel>
+        <content src="Text/part0033.xhtml#idp22396480"/>
+        </navPoint>
+        <navPoint id="np_447" playOrder="447">
+        <navLabel>
+        <text>Criteria API</text>
+        </navLabel>
+        <content src="Text/part0033.xhtml#idp22397072"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_448" playOrder="448">
+      <navLabel>
+      <text>Entity Manager</text>
+      </navLabel>
+      <content src="Text/part0033.xhtml#entitymanager"/>
+      </navPoint>
+      <navPoint id="np_449" playOrder="449">
+      <navLabel>
+      <text>Bean Validation</text>
+      </navLabel>
+      <content src="Text/part0033.xhtml#bean_validation"/>
+      </navPoint>
+      <navPoint id="np_450" playOrder="450">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0033.xhtml#try_it-id00123"/>
+        <navPoint id="np_451" playOrder="451">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0033.xhtml#lesson_requirements-id00124"/>
+        </navPoint>
+        <navPoint id="np_452" playOrder="452">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0033.xhtml#step-by-step-id00125"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_453" playOrder="453">
+    <navLabel>
+    <text>Lesson 33 Working with RESTful Web Services</text>
+    </navLabel>
+    <content src="Text/part0034.xhtml#working_with_restful_web_services"/>
+      <navPoint id="np_454" playOrder="454">
+      <navLabel>
+      <text>The Soap Web Services</text>
+      </navLabel>
+      <content src="Text/part0034.xhtml#soap_web_services"/>
+      </navPoint>
+      <navPoint id="np_455" playOrder="455">
+      <navLabel>
+      <text>The RESTful Web Services</text>
+      </navLabel>
+      <content src="Text/part0034.xhtml#restful_web_services"/>
+      </navPoint>
+      <navPoint id="np_456" playOrder="456">
+      <navLabel>
+      <text>Working with JSON-Formatted Data </text>
+      </navLabel>
+      <content src="Text/part0034.xhtml#json_section"/>
+        <navPoint id="np_457" playOrder="457">
+        <navLabel>
+        <text>Reading JSON with the Streaming API</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#idp22708016"/>
+        </navPoint>
+        <navPoint id="np_458" playOrder="458">
+        <navLabel>
+        <text>Writing JSON with the Streaming API</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#idp22717008"/>
+        </navPoint>
+        <navPoint id="np_459" playOrder="459">
+        <navLabel>
+        <text>Writing JSON with the Object Model API</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#idp22736544"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_460" playOrder="460">
+      <navLabel>
+      <text>The RESTful Stock Server</text>
+      </navLabel>
+      <content src="Text/part0034.xhtml#restful_stock_server"/>
+        <navPoint id="np_461" playOrder="461">
+        <navLabel>
+        <text>Creating the Application</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#theapp"/>
+        </navPoint>
+        <navPoint id="np_462" playOrder="462">
+        <navLabel>
+        <text>Creating the Java Bean Stock</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#idp22767392"/>
+        </navPoint>
+        <navPoint id="np_463" playOrder="463">
+        <navLabel>
+        <text>Creating the Endpoint StockService</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#endpoints"/>
+        </navPoint>
+        <navPoint id="np_464" playOrder="464">
+        <navLabel>
+        <text>Creating RESTFful Clients</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#idp22878720"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_465" playOrder="465">
+      <navLabel>
+      <text>Contexts and Dependency Injection</text>
+      </navLabel>
+      <content src="Text/part0034.xhtml#cdi_section"/>
+      </navPoint>
+      <navPoint id="np_466" playOrder="466">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0034.xhtml#try_it-id00126"/>
+        <navPoint id="np_467" playOrder="467">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#lesson_requirements-id00127"/>
+        </navPoint>
+        <navPoint id="np_468" playOrder="468">
+        <navLabel>
+        <text>Hints</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#hints-id00128"/>
+        </navPoint>
+        <navPoint id="np_469" playOrder="469">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0034.xhtml#step-by-step-id00129"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_470" playOrder="470">
+    <navLabel>
+    <text>Lesson 34 Java Logging API</text>
+    </navLabel>
+    <content src="Text/part0035.xhtml#logging"/>
+      <navPoint id="np_471" playOrder="471">
+      <navLabel>
+      <text>Java Logging API</text>
+      </navLabel>
+      <content src="Text/part0035.xhtml#idp22988240"/>
+        <navPoint id="np_472" playOrder="472">
+        <navLabel>
+        <text>Hello World with the Java Logging API</text>
+        </navLabel>
+        <content src="Text/part0035.xhtml#idp23013360"/>
+        </navPoint>
+        <navPoint id="np_473" playOrder="473">
+        <navLabel>
+        <text>Using Handlers and Setting Log Levels</text>
+        </navLabel>
+        <content src="Text/part0035.xhtml#handlers"/>
+        </navPoint>
+        <navPoint id="np_474" playOrder="474">
+        <navLabel>
+        <text>Formatters and Filters</text>
+        </navLabel>
+        <content src="Text/part0035.xhtml#idp23047520"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_475" playOrder="475">
+      <navLabel>
+      <text>Logging Frameworks</text>
+      </navLabel>
+      <content src="Text/part0035.xhtml#idp22986768"/>
+      </navPoint>
+      <navPoint id="np_476" playOrder="476">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0035.xhtml#try_it-id00130"/>
+        <navPoint id="np_477" playOrder="477">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0035.xhtml#lesson_requirements-id00131"/>
+        </navPoint>
+        <navPoint id="np_478" playOrder="478">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0035.xhtml#step-by-step-id00132"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_479" playOrder="479">
+    <navLabel>
+    <text>Lesson 35 Introduction to Unit Testing with JUnit Framework</text>
+    </navLabel>
+    <content src="Text/part0036.xhtml#testing"/>
+      <navPoint id="np_480" playOrder="480">
+      <navLabel>
+      <text>Introduction to JUnit</text>
+      </navLabel>
+      <content src="Text/part0036.xhtml#junit"/>
+        <navPoint id="np_481" playOrder="481">
+        <navLabel>
+        <text>Installing JUnit</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#idp23304304"/>
+        </navPoint>
+        <navPoint id="np_482" playOrder="482">
+        <navLabel>
+        <text>Changing the Default Directory Structure in Eclipse</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#idp23310432"/>
+        </navPoint>
+        <navPoint id="np_483" playOrder="483">
+        <navLabel>
+        <text>Your First JUnit Test Case </text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#idp23325232"/>
+        </navPoint>
+        <navPoint id="np_484" playOrder="484">
+        <navLabel>
+        <text>JUnit Annotations</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#idp23326704"/>
+        </navPoint>
+        <navPoint id="np_485" playOrder="485">
+        <navLabel>
+        <text>Applying Annotations for Testing Tax </text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#idp23384208"/>
+        </navPoint>
+        <navPoint id="np_486" playOrder="486">
+        <navLabel>
+        <text>Test Suites</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#idp23384592"/>
+        </navPoint>
+        <navPoint id="np_487" playOrder="487">
+        <navLabel>
+        <text>JUnit Test Runners</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#testrunners"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_488" playOrder="488">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0036.xhtml#try_it-id00135"/>
+        <navPoint id="np_489" playOrder="489">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#lesson_requirements-id00136"/>
+        </navPoint>
+        <navPoint id="np_490" playOrder="490">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0036.xhtml#step-by-step-id00138"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_491" playOrder="491">
+    <navLabel>
+    <text>Lesson 36 Build Automation with Gradle</text>
+    </navLabel>
+    <content src="Text/part0037.xhtml#gradle"/>
+      <navPoint id="np_492" playOrder="492">
+      <navLabel>
+      <text>Hello World in Ant </text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#helloant"/>
+      </navPoint>
+      <navPoint id="np_493" playOrder="493">
+      <navLabel>
+      <text>Hello World in Maven</text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#idp23535280"/>
+      </navPoint>
+      <navPoint id="np_494" playOrder="494">
+      <navLabel>
+      <text>Gradle Basics</text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#idp23576256"/>
+        <navPoint id="np_495" playOrder="495">
+        <navLabel>
+        <text>Hello World in Gradle</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#hellogradle"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_496" playOrder="496">
+      <navLabel>
+      <text>Changing Gradle Conventions</text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#changing_conventions"/>
+      </navPoint>
+      <navPoint id="np_497" playOrder="497">
+      <navLabel>
+      <text>Managing Dependencies with Gradle</text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#idp23705104"/>
+        <navPoint id="np_498" playOrder="498">
+        <navLabel>
+        <text>Repositories</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#repos"/>
+        </navPoint>
+        <navPoint id="np_499" playOrder="499">
+        <navLabel>
+        <text>Dependencies and Configurations</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#idp23753792"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_500" playOrder="500">
+      <navLabel>
+      <text>Using Gradle in Eclipse IDE</text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#idp23727328"/>
+        <navPoint id="np_501" playOrder="501">
+        <navLabel>
+        <text>Gradle Eclipse Plug-ins</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#idp23877488"/>
+        </navPoint>
+        <navPoint id="np_502" playOrder="502">
+        <navLabel>
+        <text>Eclipse IDE and Gradle</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#idp23874368"/>
+        </navPoint>
+      </navPoint>
+      <navPoint id="np_503" playOrder="503">
+      <navLabel>
+      <text>Try It</text>
+      </navLabel>
+      <content src="Text/part0037.xhtml#try_it-id00139"/>
+        <navPoint id="np_504" playOrder="504">
+        <navLabel>
+        <text>Lesson Requirements</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#lesson_requirements-id00140"/>
+        </navPoint>
+        <navPoint id="np_505" playOrder="505">
+        <navLabel>
+        <text>Step-by-Step</text>
+        </navLabel>
+        <content src="Text/part0037.xhtml#step-by-step-id00142"/>
+        </navPoint>
+      </navPoint>
+    </navPoint>
+    <navPoint id="np_506" playOrder="506">
+    <navLabel>
+    <text>Lesson 37 Java Technical Interviews</text>
+    </navLabel>
+    <content src="Text/part0038.xhtml#java_technical_interviews"/>
+      <navPoint id="np_507" playOrder="507">
+      <navLabel>
+      <text>Getting the Interview</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#getting_the_interview"/>
+      </navPoint>
+      <navPoint id="np_508" playOrder="508">
+      <navLabel>
+      <text>Doing Well at the Interview</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#doing_well_at_the_interview"/>
+      </navPoint>
+      <navPoint id="np_509" playOrder="509">
+      <navLabel>
+      <text>Considering the Offer</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#considering_the_offer"/>
+      </navPoint>
+      <navPoint id="np_510" playOrder="510">
+      <navLabel>
+      <text>Interviewing Enterprise Developers</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#interviewing_enterprise_developers"/>
+      </navPoint>
+      <navPoint id="np_511" playOrder="511">
+      <navLabel>
+      <text>To Get or Not to Get Certified?</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#to_get_or_not_to_get_certifiedquestion_m"/>
+      </navPoint>
+      <navPoint id="np_512" playOrder="512">
+      <navLabel>
+      <text>Technical Questions and Answers</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#technical_questions_and_answers"/>
+      </navPoint>
+      <navPoint id="np_513" playOrder="513">
+      <navLabel>
+      <text>Epilogue</text>
+      </navLabel>
+      <content src="Text/part0038.xhtml#epilogue"/>
+      </navPoint>
+      <navPoint id="np_514" playOrder="514">
+      <navLabel>
+      <text>End User License Agreement</text>
+      </navLabel>
+      <content src="Text/part0045.xhtml"/>
+      </navPoint>
+    </navPoint>
+  </navMap>
+</ncx>

@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Java EE 7 Overview</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="java_ee_7_overview"></a><span class="chapterTitle">Lesson 25<br/>Java EE 7 Overview</span></h1>
+
+    <section>
+        <p>Starting <span epub:type="pagebreak" title="345" id="Page_345"></span>from this lesson <a
+                id="idp19981456"></a>you’ll be learning about Java Enterprise Edition (Java EE, formerly J2EE), which is
+            a powerful, mature, and widely used platform for development of distributed applications. The word <i>enterprise</i>
+            doesn’t imply that it is meant only for large-scale applications. Java EE components are used for the
+            development of everything from an application for a local pizza parlor’s website running on a
+            five-hundred-dollar computer to a super-powerful Wall Street trading application that runs on a
+            <i>cluster</i> of hundreds of interconnected servers.</p>
+        <p>This lesson is an overview of the Java EE architecture, concepts, components, and terms that will be covered
+            in detail in the remaining lessons of this book. The goal of these lessons is to give you an understanding
+            of how to approach the development of Java EE applications by showing you how to build small applications
+            rather than making you read the 1,000-page manuscript that would otherwise be required for detailed coverage
+            of this subject.</p>
+        <p>There are an abundance of online materials and books published on the subject of Java EE, and when you figure
+            out which components are a good fit for your project, finding materials on the selected topic will not be
+            difficult at all. My task is to help you in making that decision and getting you started in the quickest
+            possible way. Oracle’s white paper "<a
+                    href="http://www.oracle.com/technetwork/java/javaee/javaee7-whitepaper-1956203.pdf">Introduction to
+                Java Platform Enterprise Edition 7</a>"  is a good complement for this lesson. If you start browsing the
+            Internet trying to find more information on Java EE, you can easily get confused by trying to compare the
+            features of different versions of Java EE components. I highly recommend that you stay focused on the
+            features of Java EE 7, which is the most current platform and the easiest to use. It was released in 2013.
+        </p>
+    </section>
+    <section>
+        <h2><a id="big_picture"></a>The Big Picture</h2>
+        <p>Go to your favorite online job search engine and search for job listings with the keyword <i>Java</i>. You’ll
+            find thousands of job descriptions, but recruiters are looking for software developers that know more than
+            just the Core Java that was covered in the first 24 lessons of this book. Here’s an example of one of the
+            job ads:</p>
+        <p><b>Title</b>: Java Software Developer</p>
+        <p><b>Skills</b>: Java, JMS, Spring, Websphere MQ, EJB, Servlets, JDK, JUnit, Oracle, SQL</p>
+        <p>The <span epub:type="pagebreak" title="346" id="Page_346"></span>candidate should know:</p>
+        <ul>
+            <li>Core Java</li>
+            <li>Have expertise in EJB and Servlets</li>
+            <li>Have experience with RESTFulWeb Services and JAX-RS</li>
+            <li>JDBC (Oracle) and JPA </li>
+            <li>JUnit</li>
+            <li>SQL</li>
+            <li>Eclipse IDE</li>
+            <li>Spring Framework</li>
+            <li>WebSphere Application Server </li>
+            <li>JMS and WebSphere MQ </li>
+        </ul>
+        <p>How many items from this list of skills did you recognize? You know Core Java (also known as Java SE), JDBC,
+            Eclipse, and hopefully SQL. After studying the remaining lessons you’ll understand what most of the other
+            skills are, why they are required, and how they all fit together. You’ll also have technical knowledge of
+            many of the buzzwords listed there.</p>
+        <section>
+            <h3><a id="jcpcomma_jsrcomma_and_other_acronyms"></a>JCP, JSR, and Other Acronyms</h3>
+            <p>The Java community is <a id="idp19997760"></a>accustomed to using lots of acronyms. Initially these
+                acronyms might sound intimidating and confusing, but with a little effort they will make perfect sense
+                and explain the way the Java ecosystem lives and functions.</p>
+            <p>Each version of Java EE includes a set of <a id="idp19999824"></a><a id="idp20004864"></a><a
+                    id="idp20001216"></a><a id="idp20002256"></a>specifications for various technologies, such as
+                Servlets, JavaServer Pages (JSP), Enterprise Java Beans (EJB), and Java Messaging Service (JMS). Each of
+                these specifications has been defined by an organization called the <a id="idp20006304"></a>Java
+                Community Process (JCP). If a person or a group of people decides to propose a specification for some
+                future technology, it creates a Java Specification Request (JSR) <a id="idp20010656"></a>and forms a
+                group of experts to work on this specification. JSRs are numbered. For example, the specification for
+                Servlets 3.1 is described in JSR 340.</p>
+            <p>If you decide to get familiar with any specific JSR, visit the website <code><a href="http://jcp.org">http://jcp.org</a></code>.
+                Both Java EE and Java SE implement multiple JSRs. In other words, Java EE is based on standards. If
+                you’d like to see which JSRs are included in Java EE 7, visit <code><a
+                        href="http://en.wikipedia.org/wiki/Java_EE_version_history#Java_EE_7_.28June_12.2C_2013.29">http://en.wikipedia.org/wiki/Java_EE_version_history#Java_EE_7_.28June_12.2C_2013.29</a></code>.
+                This book doesn’t cover all of the JSRs, but it explains some of the main ones. Most importantly, this
+                book tries to show you how to architect Java applications that use the Java EE 7 platform.  </p>
+        </section>
+        <section>
+            <h3><a id="tiers_of_java_ee_applications"></a>Tiers of Java EE Applications</h3>
+            <p>A typical distributed <a id="tiers"></a><a id="idp20016384"></a>Java application can be divided into
+                three or four logical tiers. (If the application is getting data directly from a DBMS, as described in
+                <a href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a>, it has a two-tier
+                client-server architecture, and Java EE components are not needed.) <a id="fig-anc-c025-001"
+                                                                                       href="part0026.html#fig-c025-001">Figure
+                    25-1</a> shows selected technologies and some of the ways of building a distributed application that
+                includes Java EE tiers or layers.</p>
+            <figure>
+                <img class="center" src="../Images/image00567.gif" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c025-001" href="part0026.html#fig-anc-c025-001">Figure 25-1</a>:</b></span>
+                        Architecting <span epub:type="pagebreak" title="347" id="Page_347"></span>Java EE applications
+                    </p>
+                </figcaption>
+            </figure>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp20022832"></a>Full Java EE Diagram</h3>
+                    <p>To see the full Java EE diagram, see the “Profiles” section in the document titled <a
+                            href="http://download.oracle.com/otn-pub/jcp/java_ee-7-fr-eval-spec/JavaEE_Platform_Spec.pdf">Java
+                        Platform, Enterprise Edition (Java EE) Specification, v7</a>.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The  client tier can be implemented on a user’s desktop, notebook, mobile phone, or any other device that
+                has embedded JRE or can connect with Java on the web server. Applications that <a id="idp20025488"></a>interconnect
+                multiple devices are known as <a href="http://en.wikipedia.org/wiki/Internet_of_Things">Internet of
+                    Things</a> (IoT); they can utilize small sensors with embedded Java and servers that use Java EE
+                technologies. You can create a client as an independent Java application, an applet, or <a
+                        id="idp20027360"></a><a id="idp20029088"></a>a <i>thin client</i> (an HTML/JavaScript file
+                running in a web browser). The word <i>thin</i> refers to the fact that no business processing (except
+                the input validation) is being done on the client side, so the server has to work hard processing all
+                application logic for all clients, and Java EE shines on the server side.</p>
+            <p>If you’re building <a id="idp20031152"></a>a web application, the web tier (also known as the <i>presentation
+                tier</i>) comes into the picture. You have your choice of JSP, JavaServer Face (JSF), Servlets, or Web
+                Services. These components are responsible for the look of your thin client. Java Swing and JavaFX are
+                often <a id="idp20033712"></a><a id="idp20035360"></a>used as <i>fat clients</i> working with the
+                server-side applications. The word <i>fat</i> here refers to the fact that the client can contain some
+                business logic, which lowers the load on the server. Any non-graphical user interface (GUI) Java
+                application can be a client of the server-side application created with the help of one or more Java EE
+                technologies.</p>
+            <p>The business logic of <a id="idp20037680"></a>your application is deployed in the <i>business tier</i>,
+                which is represented by EJBs in the Java EE world. In the past EJBs were pretty heavy components and
+                third-party frameworks such as Spring became a popular alternative for implementing the business tier.
+                But Java EE regains its market share in this department because it’s a <a id="idp20039808"></a>light
+                POJO- and annotation-based technology that incorporates the best <span epub:type="pagebreak" title="348"
+                                                                                       id="Page_348"></span>features of
+                the third-party framework. POJO stands for <i>plain old Java object</i>—a Java class that can be written
+                any way you want and doesn’t have to extend any framework class or implement mandatory interfaces.</p>
+            <p>This term is easily understood by people who witnessed the evolution of EJBs that started with Java
+                classes that had to be written and deployed in a certain convoluted way and accompanied by heavy XML
+                configuration files. Things changed drastically, and now EJBs have turned into POJOs marked with
+                annotations. If for some reason you skipped <a href="part0024.html#annotations_and_reflection">Chapter 23</a>
+                on annotations, you should go back and study it; otherwise you won’t understand most of the remaining
+                material in this book.</p>
+            <p>While drawing the diagram for <a href="part0026.html#fig-c025-001">Figure 25-1</a>, I moved the Web
+                Services box a couple of times between the tiers. On one hand, Web Services (see <a
+                        href="part0034.html#working_with_restful_web_services">Chapter 33</a>) are based on web
+                communication protocols; on the other hand they can serve as a façade that hides anything, including an
+                entire legacy application written in COBOL or other languages on mainframes. In the real world, Web
+                Services span all server-side tiers and could even be placed in a separate box in the data tier.</p>
+            <p>Using DBMSes remains the most popular way to store data in enterprise Java EE applications, but it’s not
+                the only way. The data can be served by an external web service or arrive as a real-time <a
+                        id="idp20053168"></a>feed from some messaging infrastructure. MOM stands for <i>message-oriented
+                    middleware</i>, and you find out what it is in <a href="part0031.html#introducing_jms_and_mom">Chapter 30</a>.
+            </p>
+            <p>Without some practical example, all these new buzzwords may not make much sense to you. You see examples
+                in the upcoming lessons, but for now, I’m just briefly discussing several (not all) ways or
+                re-architecting of the Stock Market application that you’ve seen already implemented with sockets and
+                RMI.</p>
+            <ul>
+                <li>Have a JavaFX client to connect to <code>StockQuoteServlet</code>, which creates what is known as a
+                    <i>session EJB</i> called <code>StockMarketQuote</code>, which connects to external stock exchange
+                    software and requests a price quote on the specified symbol(s). This session bean has a timer that
+                    updates and sends to the client the price quotes every second.
+                </li>
+                <li>Do as described in the previous bullet, but replace the JavaFX application with a thin HTML
+                    client.
+                </li>
+                <li>The same as before, but replace the Servlet with a JSP.</li>
+                <li>The same as before, but replace the JSP with a JSF.</li>
+                <li>The same as above, but replace JSF with RESTFul Web Service.</li>
+                <li>The same as above, but replace HTTP with WebSocket protocol.</li>
+                <li>The same as before, but replace the Web Service with a session EJB that interacts with a
+                    message-driven bean (MDB) that subscribes via MOM to the external stock exchange application that
+                    sends back new prices only when they change.
+                </li>
+                <li>The same as before, but add another session bean that will process every price quote received by MDB
+                    and apply a modeling algorithm, and on certain conditions send a message to buy or sell a specific
+                    number of shares of the suggested stock to a third-party trading system via a call to a Web Service.
+                </li>
+            </ul>
+            <p>I can keep going. As you can see, there are many ways to design a distributed Java EE application. This
+                is what Java <a id="idp20056032"></a>architects do for a living.</p>
+        </section>
+        <section>
+            <h3><a id="containers_versus_application_servers"></a>Containers Versus Application Servers</h3>
+            <p>Java EE tiers are <a id="container1"></a><a id="container2"></a><a id="container3"></a><a
+                    id="container4"></a>implemented in <i>containers</i>. Containers contain Java objects. In the Java
+                EE world containers not only contain, but also control the birth, life, and death of Java components.
+                For example, you don’t need to use the <code>new</code> operator to create a new instance of an EJB; the
+                container creates a pool of them based on configuration <span epub:type="pagebreak" title="349"
+                                                                              id="Page_349"></span>parameters. Basically,
+                a container is an area inside JVM that can support a life cycle of certain types of Java objects, such
+                as servlet, EJB, and so on. The word container applies to clients too; for example, Java SE run time
+                serves as a container for Java client applications. </p>
+            <p>Containers perform useful functions, and one of them is thread safety. It’s great that multiple clients
+                can connect and make requests to the same server, but can you be sure that a thread initiated by Mary
+                won’t interfere with John’s thread? An EJB container implements a single-threaded model ensuring that
+                each client’s request operates in a dedicated thread. Containers may offer transactional support with
+                Java Transaction API (JTA) and <a id="idp20079520"></a><a id="idp20077424"></a>persist data for you with
+                Java Persistence API (JPA).</p>
+            <p>In the first few lessons I used a blueprint analogy to explain the relationship between Java classes and
+                objects. I’m using this analogy again, but this time I’m explaining the relationship between the Java EE
+                specification and application servers. The Java EE is a specification, and when its release is
+                published, vendors who want to implement it in their software products create application servers that
+                support this specification.</p>
+            <p>Multiple vendors offer their versions of a Java EE application server. The question is what version of
+                the Java EE specification they support. Currently four application servers—GlassFish (Oracle), WildFly
+                (Red Hat), WebLogic (Oracle), and Tmax JEUS (TMaxSoft)—support Java EE 7.  To see the latest list of
+                servers that support Java EE 7 visit<a
+                        href="http://www.oracle.com/technetwork/java/javaee/overview/compatibility-jsp-136984.html"> the
+                    Java EE Compatibility</a> web page.</p>
+            <p>Java EE application servers have to support multiple containers; for example, a Servlet container and an
+                EJB container. Some vendors prefer to create products supporting only certain technologies defined in
+                the Java EE specification. For example, Tomcat (Apache Foundation), Jetty (Eclipse Foundation), and
+                Resin (Caucho) offer support for selected technologies (such as Servlets and JSP), which makes them
+                suitable for implementing web applications, but if you are planning to create web applications based on
+                one of these products, you need to figure out what other tools or frameworks are needed to support
+                transactions, the business tier, data persistence, and more. TomEE (Apache Foundation) supports
+                Servlets, JSP, EJB, and other Java EE technologies.</p>
+            <p>This book uses GlassFish 4.1 from Oracle, which is fully compliant with Java EE 7. I have selected the
+                most widely used technologies in Java EE development today. In particular you’ll be learning about the
+                following:</p>
+            <ul>
+                <li>Java Servlets (JSR 340)</li>
+                <li>JavaServer Pages (JSR 245)</li>
+                <li>Enterprise Java Beans (JSR 345)</li>
+                <li>Java Persistence API (JSR 338)</li>
+                <li>Context and Dependency Injection (JSR 346)</li>
+                <li>Java Message Service (JSR 343)</li>
+                <li>Java API for RESTFul Web Services (JSR 339)</li>
+                <li>Java API for JSON Processing (JSR 353)</li>
+                <li>Java API for WebSocket (JSR 356)</li>
+            </ul>
+            <p>You may feel overwhelmed with all these terms, but I try to explain them in easy-to-understand
+                language.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="profiles_and_pruning"></a>Profiles and Pruning</h2>
+        <p>Although <span epub:type="pagebreak" title="350" id="Page_350"></span>Java EE offers a full <a
+                id="idp20084480"></a><a id="idp20086192"></a><a id="idp20087472"></a>stack of server technologies, most
+            of the real-world applications don’t need all of them. In the past, to get Java EE certified, a vendor of an
+            application server had to implement all JSRs that were listed in the Java EE specification. But most of the
+            applications don’t use all technologies included in the full <a href="https://jcp.org/en/jsr/detail?id=342">Java
+                EE specification</a>. This is how that concept of a profile came about. A profile is a preconfigured
+            subset of Java technologies geared toward solving a specific type of application. Currently, besides the
+            full profile, there is the <a href="https://java.net/downloads/javaee-spec/WebProfile.pdf">Web Profile</a>,
+            which is designed specifically for the development of web applications. The Web Profile defines required
+            components (for example, Servlets, JSF, JSP, CDI, EJB Lite, JPA, JTA), but vendors may include technologies
+            from the full Java EE specification, too. In the future, new profiles may be created to address specific
+            needs of developers.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20092112"></a>Java SE Profiles</h3>
+                <p>Java SE 8 also has profiles. So-called <a
+                        href="https://blogs.oracle.com/jtc/entry/a_first_look_at_compact">compact profiles</a> were
+                    introduced to offer configurable lightweight run-times for small devices with embedded Java. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><i>Pruning</i> is a way to reduce the size of the Java EE platform. The pruning process starts with marking
+            in JavaDoc the technologies that are candidates for removal. Then, based on the reaction of the Java
+            community, they will be either removed from the future specifications or not. It’s up to the application
+            server vendor to define the process of removal, but it’s done carefully so the existing application won’t
+            break. Some of the technologies (such as JAXR 1.0) are optional for implementation in Java EE 7 servers.</p>
+    </section>
+    <section>
+        <h2><a id="miscellaneous_concepts"></a>Why Java EE?</h2>
+        <p>You may say, “I want my RMI-based <a id="idp20102800"></a>stock server application back. Why make things so
+            complex?” The reason is that a single instance of <code>UnicastRemoteObject</code> in your RMI <code>StockServer</code>
+            may need to process tens of thousands of concurrent user requests. Because of this you’ll need to write code
+            ensuring that such concurrent processing is thread safe.</p>
+        <p>Servlet and EJB containers are scalable, and they take care of all multithreading issues, enabling you to
+            write application code as if the application were the only user! This alone should be a <a
+                    id="idp20095472"></a><a id="idp20100464"></a>good reason for using the Java EE stack as opposed to
+            RMI. Without going into a detailed comparison between RMI and other Java EE technologies, I’ll just add that
+            if you need to deploy your <code>StockServer</code> application on the web, corporate firewalls may not
+            allow clients to open certain ports and use the JRMP communication protocol required by RMI.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20107856"></a>Java EE and Multithreading</h3>
+                <p>One of the major changes in Java EE 7 compared to previous versions is that you are allowed to
+                    introduce multiple threads in your application code that run inside Java EE containers. It was not
+                    allowed before—only the container could create and manage threads. Now with the help of such classes
+                    as  <code>ManagedExecutorService</code> and  <code>ManagedThreadFactory</code> you can create
+                    threads from your code, too.    </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Java <span epub:type="pagebreak" title="351" id="Page_351"></span>EE is a very robust, reliable, and scalable
+            platform and you will appreciate what its container will do for your code. This section mentions a couple of
+            concepts.</p>
+        <p>If you want Java EE containers to help you, help them by providing configuration parameters (annotations)
+            that specify how many instances of the same session bean <code>StockMarketQuote</code> you want pre-created
+            for you by the EJB container. Each of these session beans may be “rented” from a pool to the client’s
+            request, and then put back. How many beans do you need? I don’t know. It depends on the load on your
+            system—the number of concurrent (simultaneous) requests for price quotes that have to be supported by your
+            system.</p>
+        <p>Java EE <a id="idp20108368"></a>implements <i>dependency injection</i>. An object doesn’t have to reach out
+            to get the resources it needs because the container can inject its resources (and your code can inject
+            application objects) into your object using annotations. You see examples of CDI later in the book.</p>
+        <p>WebSocket protocol allows you to switch from the request-response-based communications typical in web
+            applications to a simultaneous two-way data exchange between the client and server. The server can initiate
+            data push without waiting for the client requests. Consequently, creating real-time web applications becomes
+            a lot easier.</p>
+        <p>JSON stands <a id="idp20110144"></a>for JavaScript Object Notation. JSON became a de facto standard data
+            format used in data communication between web browsers and servers. Java EE 7 defines a standard way of
+            generating and parsing JSON data.</p>
+        <p>Interceptors offer a mechanism by which containers can intercept methods invoked on your session beans. When
+            the call is intercepted, you can specify additional code to be called before or after the method is
+            executed. For example, imagine that you need to add logging before certain methods are called. Adding
+            interceptors is an easy way to do this.</p>
+        <p>Messaging allows you to introduce asynchronous processing into the business workflow of your application.
+            Instead of making direct requests to business objects of your application, your code can place messages into
+            queues maintained by special servers—Message-Oriented Middleware (MOM). </p>
+        <p>Starting in <a href="part0027.html">Lesson 26</a> you have a chance to apply these concepts and features.
+            Oracle published a complete<a href="http://docs.oracle.com/javaee/7/tutorial/doc/"> Java EE 7 Tutorial</a>
+            that covers each and every technology in detail. The tutorial uses <a href="https://glassfish.java.net/">GlassFish
+                server</a>, and this book uses it, too.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp20114336"></a>Java EE Code Samples</h3>
+                <p>More than 200 code samples illustrating various Java EE 7 technologies are available at <a
+                        href="https://github.com/javaee-samples/javaee7-samples">https://github.com/javaee-samples/javaee7-samples</a>.
+                </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="try_it-id00093"></a>Try It</h2>
+        <p>This <span epub:type="pagebreak" title="352" id="Page_352"></span>lesson was a <a id="idp20122528"></a><a
+                id="idp20123904"></a>high-level overview of the Java EE 7 platform. The hands-on exercises starting in
+            the next lesson require that you have an application server installed, and installing the GlassFish server
+            is your next assignment.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00094"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00096"></a>Step-by-Step</h3>
+            <p>One instance of the GlassFish server may run several domains, and domain1 is the default. The command to
+                stop a domain looks similar, but instead of using the command <code>start-domain</code> use <code>stop-domain</code>. 
+            </p>
+            <ol>
+                <li>Download GlassFish Server Open Source Edition. At the time of this writing the latest version,
+                    GlassFish 4.1, is available at the following URL: <code><a
+                            href="https://glassfish.java.net/download.html">https://glassfish.java.net/download.html</a></code>.
+                </li>
+                <li>Download and unzip the file titled Java EE Full Platform.</li>
+                <li>
+                    <p>In the command (or Terminal) window switch to the directory <code>glassfish4/bin</code>. If you
+                        use Mac OS, start the server using the following command:</p>
+                    <pre>
+./asadmin start-domain domain1 
+</pre>
+                    Windows users start the server using the following command:
+                    <pre>
+asadmin.bat start-domain domain1 
+</pre>
+                    On my computer after starting GlassFish the Terminal window looked like <a id="fig-anc-c025-002"
+                                                                                               href="part0026.html#fig-c025-002">Figure
+                    25-2</a>.
+                    <figure>
+                        <img class="center" src="../Images/image00568.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c025-002" href="part0026.html#fig-anc-c025-002">Figure 25-2</a>:</b></span>
+                                Starting GlassFish from the Terminal window in Mac OS</p>
+                        </figcaption>
+                    </figure>
+                </li>
+                <li>By default GlassFish Server runs on port 8080 and the port for server administration is 4848. Open
+                    your web browser and enter <code><a href="http://localhost:8080">http://localhost:8080</a></code>—you
+                    should see the GlassFish welcome page.
+                </li>
+                <li>Open the GlassFish administration console by entering in your browser <code><a
+                        href="http://localhost:4848">http://localhost:4848</a></code>. The web browser should display
+                    the window shown in <a id="fig-anc-c025-003" href="part0026.html#fig-c025-003">Figure 25-3</a>.
+                    <figure>
+                        <img class="center" src="../Images/image00569.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c025-003" href="part0026.html#fig-anc-c025-003">Figure 25-3</a>:</b></span>
+                                The <span epub:type="pagebreak" title="353" id="Page_353"></span>GlassFish admin console
+                            </p>
+                        </figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <p>Download the Oracle GlassFish Server Quick Start Guide from <code><a
+                            href="https://glassfish.java.net/docs/4.0/quick-start-guide.pdf">https://glassfish.java.net/docs/4.0/quick-start-guide.pdf</a></code> for
+                        a description of the administrative commands for working with the GlassFish server. </p>
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0026.html">Lesson 25</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

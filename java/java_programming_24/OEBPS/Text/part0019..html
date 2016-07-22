@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introduction to GUI with JavaFX</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_java_applets"></a><span class="chapterTitle">Lesson 18<br/>Introduction to GUI with JavaFX</span>
+    </h1>
+
+    <section>
+        <p>JavaFX <span epub:type="pagebreak" title="233" id="Page_233"></span>was created to <a id="idp17920496"></a>compete
+            with formerly popular Rich Internet Application (RIA) <a id="idp17922720"></a><a id="idp17921664"></a>frameworks,
+            such as <a id="idp17924384"></a><a id="idp17925392"></a>Adobe Flex and Microsoft Silverlight. In reality
+            JavaFX never became competitive in the RIA space, but it presents a better and more modern alternative for
+            Swing when it comes to developing a graphical user interface (GUI) in Java. Whereas Swing was built on top
+            of the old AWT library, JavaFX is not. Also, while JavaFX is bundled with Java SE 8, it’s not a part of it.
+        </p>
+        <p>With JavaFX you can <a id="idp17926800"></a><a id="idp17928288"></a>develop the GUI either in Java or use a
+            mix of FXML and Java. The FXML is an XML-based markup language that enables you to define GUI components in
+            a declarative way. The sources of such GUI definitions would be stored in a text files with the extension
+            .<code>fxml</code>, which represent a view in the Model View Controller (MVC) architecture. The business
+            code and access to data would be still written in Java using a rich library of JavaFX components. Using FXML
+            for GUI promotes <a id="idp17929568"></a><a id="idp17931360"></a>the clean separation of the code between
+            the MVC layers. JavaFX offers a design <a id="idp17935024"></a>tool called <a
+                    href="http://www.oracle.com/technetwork/java/javase/downloads/sb2download-2177776.html">Scene
+                Builder</a> that allows designing the GUI by dragging the GUI components from a toolbar onto the
+            window’s real estate.</p>
+        <p>In this lesson you’ll learn how to program JavaFX application in Java.  In <a href="part0020.html">Lesson
+            19</a> you’ll see how to use Scene Builder to make a GUI design process a lot more enjoyable and simple by
+            using FXML.</p>
+        <p>You can find JavaFX documentation at the following Oracle website:  <code><a
+                href="http://docs.oracle.com/javase/8/javase-clienttechnologies.htm">http://docs.oracle.com/javase/8/javase-clienttechnologies.htm</a></code>.
+        </p>
+        <p>In this lesson you discover the basics of creating GUI with JavaFX 8.  In the next lesson you create a
+            tic-tac-toe game with JavaFX .</p>
+    </section>
+    <section>
+        <h2><a id="unofficial_history_of_java_applets_ch18"></a>JavaFX Application Basics</h2>
+        <p>JavaFX uses theater terminology. To <a id="idp17936880"></a><a id="idp17942400"></a>create an application,
+            you instantiate a <i>stage</i> object first. Pretend that you’re a play director and need to set up one or
+            more <i>scenes</i> (think views).  The backbone of each <a id="idp17944080"></a>scene is a <i><a
+                    href="http://docs.oracle.com/javafx/2/architecture/jfxpub-architecture.htm#A1106328">scene graph</a></i>—a
+            hierarchical tree of GUI <i>nodes</i> (think GUI containers and components).  Each node can be styled using
+            the <a id="idp17949200"></a><a id="idp17948176"></a>Cascading Style Sheet (CSS) file. You can also apply
+            effects and transitions to nodes. You can assign event handlers to nodes if need be. On the top of the scene
+            graph you <a id="idp17950720"></a><a id="idp17952320"></a>create a <i>root node</i>.</p>
+        <p>JavaFX <span epub:type="pagebreak" title="234" id="Page_234"></span>classes are located in the packages
+            <code>javafx.stage</code> and <code>javafx.scene</code>. The main class of a JavaFX <a id="idp17954880"></a>application
+            extends <code>Application</code> and has the following structure:</p>
+        <pre>
+public class Main extends Application {
+    public void start(Stage primaryStage) {
+        // Create your stage and scenes here
+    }
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+        <p>The JavaFX framework <a id="idp17958080"></a><a id="idp17960048"></a><a id="idp17961088"></a><a
+                id="idp17962272"></a><a id="idp17963312"></a><a id="idp17964704"></a><a id="idp17966096"></a>calls
+            the <code>Application</code> ’s methods <code>launch()</code>,  <code>init()</code> , and then  <code>start()</code>.
+            The method <code>init()</code> is called on the launcher thread, and is the right place to create all
+            required GUI components. The <code>start()</code> method is the main entry point to the JavaFX application.
+            The <code>start()</code> method is called on the application thread and is the right place for creating
+            objects to be placed on the first scene of the stage, which plays a similar role as <code>JFrame</code> or
+            <code>JDialog</code> in <a id="idp17970688"></a><a id="idp17973120"></a>Swing.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp17958624"></a>Embedding Swing in JavaFX</h3>
+                <p>Swing and the Java FX application run on different threads. To reuse existing Swing components inside
+                    JavaFX applications, use the class <code>SwingNode</code>.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <section>
+            <h3><a id="efxclipse"></a>Using the E(fx)clipse Plug-in</h3>
+            <p>Modern IDE <a id="efx1"></a><a id="efx2"></a><a id="efx3"></a>speed up JavaFX programming by providing
+                code generators, embedded Scene Builder and good support of FXML. The best IDE for developing JavaFX
+                application is <a href="https://netbeans.org/features/java-on-client/javafx.html">NetBeans</a>. <a
+                        href="http://blog.jetbrains.com/idea/2014/11/intellij-idea-14-is-released/">IntelliJ IDEA</a>
+                goes next. Since we use Eclipse IDE in this book, we’ll need to install an Eclipse plug-in called <a
+                        href="https://www.eclipse.org/efxclipse/index.html">E(fx)clipse</a>.</p>
+            <p>Open the Eclipse menu Help → Install New Software. Click the Add button and include the following URL in
+                the location field to get the latest version: <code><a
+                        href="http://download.eclipse.org/efxclipse/updates-nightly/site/">http://download.eclipse.org/efxclipse/updates-nightly/site</a></code> as
+                shown in <a id="fig-anc-c018-001" href="part0019.html#fig-c018-001">Figure 18-1</a>.<br/>
+                 </p>
+            <figure>
+                <img class="center" src="../Images/image00537.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c018-001" href="part0019.html#fig-anc-c018-001">Figure 18-1</a>:</b></span>
+                        Adding the location of the E(fx)clipse plug-in</p>
+                </figcaption>
+            </figure>
+            <p> Click <span epub:type="pagebreak" title="235" id="Page_235"></span>OK, and check all components as shown
+                in <a id="fig-anc-c018-002" href="part0019.html#fig-c018-002">Figure 18-2</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00538.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c018-002" href="part0019.html#fig-anc-c018-002">Figure 18-2</a>:</b></span>
+                        Selecting the plug-in’s components for installation</p>
+                </figcaption>
+            </figure>
+            <p>Complete the install by clicking Next and then clicking Finish. Eclipse restarts and you’re ready to
+                create JavaFX projects.</p>
+        </section>
+        <p>Create a <a id="idp17995120"></a><a id="idp17996512"></a>new HelloFX project. Select
+            File→New→Other→JavaFX→JavaFX Project and give your project a name HelloFX. You see a new project with
+            content like that shown in <a id="fig-anc-c018-003" href="part0019.html#fig-c018-003">Figure 18-3</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00539.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c018-003"
+                                                   href="part0019.html#fig-anc-c018-003">Figure 18-3</a>:</b></span> The
+                    newly generated JavaFX project</p>
+            </figcaption>
+        </figure>
+        <p>This <span epub:type="pagebreak" title="236" id="Page_236"></span>project has auto-generated a
+            <code>Main</code> class that launches the application; it also auto-generated the empty file <code>application.css</code>,
+            where you can add styles. The generated class <code>Main</code> looks like this:</p>
+        <pre>
+public class Main extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            BorderPane root = new BorderPane();
+            Scene scene = new Scene(root,400,400);
+            scene.getStylesheets().add(getClass()
+                 .getResource("application.css").toExternalForm());
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
+} </pre>
+        <p>Run the <code>Main</code> program, and a window with no title and no content opens. This windows has a width
+            and height of 400 pixels. The reference to the stage is given by the <code>Application</code> to the <a
+                    id="idp18004800"></a>method <code>start()</code> as an argument. After that the code assigns the
+            <code>BorderPane</code> layout (see the <a href="part0019.html#fxlayouts">Layouts</a> section) to the root
+            node and creates a 400 x 400 scene with this empty node. The auto-generated file
+            <code>application.css</code> is empty, but if it had some styles defined, the scene would be styled
+            accordingly.</p>
+        <p>In the next section you modify <a id="idp18009232"></a><a id="idp18011760"></a><a id="idp18013184"></a>this
+            code to use JavaFX layouts. </p>
+    </section>
+    <section>
+        <h2><a id="fxlayouts"></a>Layouts</h2>
+        <p>Similarly to <a id="layoutFX1"></a><a id="FXlayout2"></a>Java Swing layout managers (see <a
+                href="part0009.html#layout_managers">Lesson 9</a>), JavaFX has layouts that help with arranging GUI
+            controls on the scene and keeping the arrangement for different stage sizes. In addition to using the
+            built-in layouts, you can customize the positioning of the nodes on the scene using CSS.</p>
+        <p>This section includes only two code samples of using layouts, and it assumes that you’ve mastered Lessons <a
+                href="part0009.html#introducing_the_graphic_user_interface">8</a> and <a
+                href="part0010.html#event_handling_in_ui">9</a> and understand the concept.  Refer to the <a
+                href="http://docs.oracle.com/javafx/2/layout/jfxpub-layout.htm">product documentation</a> to see how
+            other layouts work.</p>
+        <p> JavaFX has the following layout <a id="idp18022416"></a><a id="idp18027040"></a><a id="idp18028736"></a>container
+            classes (<i>layout panes</i>):</p>
+        <ul>
+            <li><code>HBox</code></li>
+            <li><code>VBox</code></li>
+            <li><code>FlowPane</code></li>
+            <li><code>GridPane</code></li>
+            <li><code>BorderPane</code></li>
+            <li><code>StackPane</code></li>
+            <li><code>TilePane</code></li>
+            <li><code>AnchorPane</code></li>
+        </ul>
+        <p>The <code>HBox</code> <span epub:type="pagebreak" title="237" id="Page_237"></span>class (the horizontal box)
+            <a id="idp18036592"></a><a id="idp18037632"></a>places controls in a row next to each other. The vertical
+            box <code>VBox</code> places <a id="idp18039328"></a><a id="idp18040832"></a>controls vertically. The <code>FlowPane</code>
+            <a id="idp18042704"></a><a id="idp18043984"></a>places the nodes in a row and then wraps to the next row if
+            there is no room in the current one.</p>
+        <p>The <code>GridPane</code> is <a id="idp18046016"></a><a id="idp18047552"></a>similar to Swing’s <code>GridBagLayout</code> described
+            in <a href="part0009.html#gridbaglayout">Lesson 8</a>. It enables you to arrange user interface (UI)
+            controls in rows and columns and assign constraints to each cell.</p>
+        <p>The <code>BorderPane</code> can <a id="idp18051312"></a><a id="idp18052752"></a>split the scene into as many
+            as five regions, similar to Swing’s <a href="part0009.html#borderlayout"><code>BorderLayout</code></a>, but
+            in JavaFX these areas are called <code>left</code>,<code> top</code>, <code>right</code>,
+            <code>bottom</code>, and <code>center</code>. </p>
+        <p>The <code>TilePane</code> layout <a id="idp18058704"></a><a id="idp18059856"></a>is similar to the <code>FlowPane</code>,
+            but it places each node in a cell of the same size (like tiles on the wall). Say, you need to display
+            several images in a tile layout. Adding the <code>ImageView</code> nodes to the <code>TilePane</code> shows
+            them as tiles next to each other. </p>
+        <p>The <code>StackPane</code> layout <a id="idp18062592"></a><a id="idp18064832"></a>is similar to the
+            Swing’s <code>CardLayout</code>. Only one child node is shown at a time covering the other nodes.</p>
+        <p>The <code>AnchorPane</code> enables <a id="idp18067504"></a><a id="idp18068928"></a>you to anchor nodes at
+            the left, top, right, and bottom of the scene. Imagine a music player application with the Rewind button on
+            the left and the Fast Forward button on the right. Say you want to ensure that the Rewind button always
+            remains 20 pixels away from the left border of the window and 10 pixels from the bottom. You want to
+            maintain this positioning even if the user resizes the window. For that you can use
+            the <code>leftAnchor</code> and <code>bottomAnchor</code> properties. For example,</p>
+        <p><code>AnchorPane.setLeftAnchor(rewindBtn, 20);<br/>
+            AnchorPane.setBottomAnchor(rewindBtn, 10);</code></p>
+        <p>Each of these layouts can be configured in terms of alignments, padding, margins and other properties.</p>
+        <p>Typically you’ll be going through the following steps with any layout:</p>
+        <p>1. Create instances of child nodes to be used within the layout container.</p>
+        <p>2. Create an instance of the selected layout class (for example, <code>HBox</code>). This instance serves as
+            a container and a layout manager for all child nodes that you add to it.</p>
+        <p>3. Add the child nodes to the container using either the <code>add()</code> or <code>addAll()</code> method.
+        </p>
+        <p>4. If this layout instance needs to be used inside another layout (for example, an <code>HBox</code> can be
+            placed inside the <code>BorderPane</code>), add the instance created in Step 1 to the parent container by
+            using the method <code>add()</code>.</p>
+        <p>Let’s see how it works using the <code>HBox</code> example.</p>
+        <section>
+            <h3><a id="idp18079808"></a>A Sample Application with the HBox Layout</h3>
+            <p>Say you need to <a id="idp18080832"></a><a id="idp18082784"></a>ask the user to enter his or her e-mail
+                and send it to some Java code that knows how to process it. This example use sthe following JavaFX
+                components: <code>Label</code>, <code>Button</code>, and <code>TextField</code>, which are located in
+                the <code>javafx.scene.control</code> package.</p>
+            <p>With <span epub:type="pagebreak" title="238" id="Page_238"></span>the help of the E(fx)clipse plug-in,
+                create a new JavaFX Main class <code>HBoxSample</code> (use File→New→Other→JavaFX→Classes). It creates
+                the following class:</p>
+            <pre>
+public class HBoxSample extends Application {
+    public void start(Stage primaryStage) {    
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+            <p>Now you need to create instances of <code>Label</code>, <code>TextField</code>, and <code>Button</code>
+                set their properties, and add them to the instance of <code>HBox</code>. Add the following code to the
+                <code>start()</code> method:</p>
+            <pre>
+Label emailLbl = new Label("Email:");
+        
+TextField emailTxt = new TextField();
+emailTxt.setPrefColumnCount(20);
+emailTxt.setPromptText("Your email");     
+        
+Button submitBtn = new Button("Submit");
+        
+HBox emailBox = new HBox(5);  // spacing between children 5 px
+emailBox.setPadding(new Insets(3));  // space around HBox
+emailBox.getChildren().addAll(emailLbl, emailTxt, submitBtn);
+        
+Scene scene = new Scene(emailBox,750,100);
+primaryStage.setScene(scene);
+primaryStage.show();
+</pre>
+            <p>Run the <code>HBoxSample</code> program, and you see a window similar to the one shown in <a
+                    id="fig-anc-c018-004" href="part0019.html#fig-c018-004">Figure 18-4</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00540.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c018-004" href="part0019.html#fig-anc-c018-004">Figure 18-4</a>:</b></span>
+                        Running the HBoxSample</p>
+                </figcaption>
+            </figure>
+        </section>
+        <p>The prompt “Your email” is not shown in the text field because it has focus, but as soon as this control
+            loses focus you see it.</p>
+        <p>Make a small change to this program by replacing instantiation of the <code>HBox</code> with
+            <code>VBox</code>, and these components will be laid out vertically one under another (you need to increase
+            the <a id="idp18098768"></a><a id="idp18096352"></a>height of the scene to see all three components). </p>
+    </section>
+    <section>
+        <h2><a id="idp18015776"></a>A Sample Application with the GridPane Layout</h2>
+        <p><code>GridPane</code> divides <span epub:type="pagebreak" title="239" id="Page_239"></span>the <a
+                id="grid1"></a><a id="grid2"></a>selected scene area into rows and columns and places nodes into the
+            grid cells. Cells don’t have to be of the same size—nodes can span. If the screen size changes, the content
+            doesn’t wrap and maintains the grid. </p>
+        <p>Before placing the node into a cell, you have to specify grid constraints, such as <code>rowIndex</code> and
+            <code>columnIndex</code> (the coordinate of the cell, which starts with 0,0). The <code>rowSpan</code> and
+            <code>columnSpan</code> allow to make the cell as wide (or as tall) as several other cells. The <code>GridPane</code>
+            <a href="http://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/GridPane.html">documentation</a>
+            describes lots of various constraints that can define the behavior of each cell’s content if the windows are
+            resized. This section shows you a basic example that uses some of the constraints.</p>
+        <p>This example creates a login window where the user can enter the ID and password, and then press the Sign In
+            button. The scene uses the <code>GridPane</code> layout. The first row contains a<code> Label</code> and
+            <code>TextField</code> for the user ID; the second row has a setup for the password; and the third row of
+            the grid has one button (Sign In) that should span two columns. <a id="fig-anc-c018-005"
+                                                                               href="part0019.html#fig-c018-005">Figure
+                18-5</a> below shows how the window should look.</p>
+        <figure>
+            <img class="center" src="../Images/image00541.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c018-005"
+                                                   href="part0019.html#fig-anc-c018-005">Figure 18-5</a>:</b></span> The
+                    Sign In window</p>
+            </figcaption>
+        </figure>
+        <p>Following is the code of the class <code>GridPaneSample</code> that rendered this window:</p>
+        <pre>
+public class GridPaneSample extends Application {
+    public void start(Stage primaryStage) {
+        
+        final int TWO_COLUMN_SPAN = 2; 
+        
+        Label userIdLbl = new Label("User ID:");
+        TextField userIdTxt = new TextField();
+        Label userPwdLbl = new Label("Password:");
+        PasswordField userPwdTxt = new PasswordField();
+        <span epub:type="pagebreak" title="245" id="Page_245"></span>GridPane root = new GridPane();
+        root.setVgap(20);
+        root.setPadding(new Insets(10));
+        root.setAlignment(Pos.CENTER);
+        
+        // Using static methods for setting node constraints 
+        GridPane.setConstraints(userIdLbl, 0, 0);
+        GridPane.setConstraints(userIdTxt, 1, 0);
+        GridPane.setConstraints(userPwdLbl, 0, 1);
+        GridPane.setConstraints(userPwdTxt, 1, 1);
+        root.getChildren().addAll(userIdLbl, userIdTxt, 
+                                  userPwdLbl, userPwdTxt);
+        
+        Button signInBtn = new Button ("Sign In");
+        
+        // Allow the button to be wider overriding preferred width       
+        signInBtn.setPrefWidth(Double.MAX_VALUE);
+ 
+        // using instance method for directly adding the node
+        root.add(signInBtn,0,2,TWO_COLUMN_SPAN,1); 
+    
+        Scene scene = new Scene(root,250,150);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="240" id="Page_240"></span>The code creates two instances of the <code>Label</code> ,
+            one  <code>TextField</code> and one <code>PasswordField</code>, to mark entered characters. I could have
+            created the instance of the <code>Button</code> too, but decided to do it a bit later to demonstrate a
+            different way of setting constraints.</p>
+        <p>Then the code calls a <a id="idp18120592"></a><a id="idp18119792"></a>static method
+            <code>setConstraints()</code> on the class <code>GridPane</code> to allocate the GUI controls to the
+            appropriate cells. The coordinates of the top-left cell are (0,0). The label User ID goes there. The next
+            cell to the right has the coordinates (1,0). Note that the column’s number goes first. The label Password
+            goes to the cell (0,1), and the text field for the password is placed in the cell (1,1).</p>
+        <p>Note that the width of the second column is noticeably wider than the first one. The width of the column is
+            automatically determined to accommodate the widest node. The same applies to the height of the rows.</p>
+        <p>After that the code creates an instance of a <code>Button</code> and sets its preferred width to large.
+            Without setting the width, I was not able to specify that this button should span two columns.  To
+            demonstrate a different syntax of setting constraints, I’ve placed the button to the cell (0,2) using the
+            <code>GridPane</code> instance method <code>add()</code>. The third and fourth arguments are for specifying
+            the row and column spans. My button’s cell is twice as wide as regular cells of this grid. </p>
+        <p>The examples in the <a id="idp18126912"></a><a id="idp18124640"></a>next sections further modify the class
+            <code>GridPaneSample</code> to demonstrate event handling and skinning. </p>
+    </section>
+    <section>
+        <h2><a id="idp18100368"></a>Skinning with CSS</h2>
+        <p>Using CSS became a de facto <a id="skin1"></a><a id="skin2"></a><a id="skin3"></a>standard way of styling UI
+            in web applications. This process is known as <i>skinning</i>. You can apply different skins on the same GUI
+            components to change the look of the UI.  Applying the skin comes <span epub:type="pagebreak" title="241"
+                                                                                    id="Page_241"></span>down to loading
+            the CSS file into your JavaFX application. Even though you can style JavaFX GUI components programmatically
+            (for example, using <code>setFont()</code> or <code>setFill()</code>) separating styling from programming
+            allows professional web designers to take care of the look and feel while software developers implement
+            application logic. Besides, changing the style doesn’t require recompilation and redeployment of your
+            application.  </p>
+        <p>Covering CSS is out of scope of this book, but you can get familiar with the CSS syntax by going through the
+            <a href="http://www.w3.org/TR/CSS21/">CSS specification</a> (JavaFX supports CSS 2.1) or by reading a CSS
+            books. This section shows you a simple example of how the look of the GUI can be changed without the need to
+            modify the Java code. Keep in mind, though, that JavaFX style names are similar, but they’re not the same as
+            those defined in the CSS specification. JavaFX styles start with the prefix <code>fx-</code>.</p>
+        <p>You can <a id="idp18141408"></a>create <i>CSS selectors</i> to style a specific GUI component, a type of
+            components (for example, all labels ), or create a reusable style that can be applied programmatically to
+            selected components. </p>
+        <p>To style a specific component, the component has to have a unique ID, which can be set in your Java code
+            using the method <code>setId()</code>.  For example, if a button has an ID of  <code>submitBtn</code>, you
+            can add the following section to the CSS file to make its background color red (you can find the names of
+            the main CSS colors <a href="http://www.w3schools.com/cssref/css_colornames.asp">online</a>) :</p>
+        <pre>
+#submitBtn{
+    -fx-background-color: red;
+}
+</pre>
+        <p>In CSS, the ID type selectors start with the # sign. To make the style in the preceding code work, your Java
+            code should have something like this:</p>
+        <pre>
+Button signInBtn = new Button ("Sign In");
+signInBtn.setId("submitBtn");  
+</pre>
+        <p><span epub:type="pagebreak" title="246" id="Page_246"></span>If you want to apply a style to several
+            components of the same type, you need to define a <i>type selector</i>. For example, to make the text of all
+            <code>Label</code> components red, you can define the following CSS type selector:</p>
+        <pre>
+.label{
+  -fx-text-fill: red;
+}   
+</pre>
+        <p>Note that CSS type selectors start with the dot. To create a CSS <i>class selector</i> that can be applied to
+            any component, define under the selector under an arbitrary name and apply it programmatically to the
+            components of your choice.  For example, you can specify the following class selector:</p>
+        <pre>
+.bluelabel{
+   -fx-text-fill: blue;
+   -fx-font-weight: bold;
+   -fx-font-family:verdana;
+   -fx-font-style:italic;
+}
+</pre>
+        <p>This class selector <a id="idp18153440"></a>defines rules that displays the text of the label in blue
+            <b>bold</b> verdana font in <i>italic style</i>. To apply this class selector to a specific label,  your
+            Java code should have something like this:</p>
+        <pre>
+Label userPwdLbl = new Label("Password:");
+userPwdLbl.getStyleClass().add("bluelabel");
+</pre>
+        <p>For <span epub:type="pagebreak" title="242" id="Page_242"></span>this particular label, the style <code>bluelabel</code>
+            overrides the type selector that may have been applied to all other labels on stage.</p>
+        <p>You may ask, “How am I supposed to know which style properties are available for a given JavaFX
+            component?" For styles that are supported by JavaFX, refer to the online document titled "<a
+                    href="http://docs.oracle.com/javase/8/javafx/api/javafx/scene/doc-files/cssref.html">JavaFX CSS
+                Reference Guide</a>." </p>
+        <p>It’s time to find out how to apply all these styling techniques to the <code>GridPaneSample</code> from the
+            previous section. I named the new version of this class <code>GridPaneSampleCSS</code>, and its code is
+            shown next.  I’ve added only three lines to the <code>GridPaneSample</code> code, which are shown in bold. 
+        </p>
+        <pre>
+public class GridPaneSampleCSS extends Application {
+    public void start(Stage primaryStage) {
+        
+        final int TWO_COLUMN_SPAN = 2; 
+        
+        Label userIdLbl = new Label("User ID:");
+        TextField userIdTxt = new TextField();
+        Label userPwdLbl = new Label("Password:");
+        <strong>userPwdLbl.getStyleClass().add("bluelabel");</strong>
+        PasswordField userPwdTxt = new PasswordField();
+        GridPane root = new GridPane();
+        root.setVgap(20);
+        root.setPadding(new Insets(10));
+        root.setAlignment(Pos.CENTER);
+        
+        // Using static methods for setting node constraints 
+        GridPane.setConstraints(userIdLbl, 0, 0);
+        GridPane.setConstraints(userIdTxt, 1, 0);
+        GridPane.setConstraints(userPwdLbl, 0, 1);
+        GridPane.setConstraints(userPwdTxt, 1, 1);
+        root.getChildren().addAll(userIdLbl, userIdTxt, 
+                                  userPwdLbl, userPwdTxt);
+        
+        Button signInBtn = new Button ("Sign In");
+    <strong>    signInBtn.setId("submitBtn");</strong>  // used in CSS
+        
+        // Allow the button to be wider overriding preferred width
+        signInBtn.setPrefWidth(Double.MAX_VALUE);
+        // using instance method for directly adding the node
+        root.add(signInBtn,0,2,TWO_COLUMN_SPAN,1); 
+        
+        Scene scene = new Scene(root,250,180);
+<strong>        scene.getStylesheets().add(getClass()
+                  .getResource("application.css").toExternalForm());</strong>
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+        <p>This <span epub:type="pagebreak" title="243" id="Page_243"></span>application loads the
+            <code>application.css</code> file with the following content:</p>
+        <pre>
+#submitBtn{
+    -fx-background-color: lightskyblue;
+    -fx-font-family:verdana;
+    -fx-font-size:20;
+    -fx-font-weight: bold;
+    -fx-stroke:navy;
+    -fx-font-style:italic;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 5;
+}
+.label{
+    -fx-text-fill: red;
+}    
+.bluelabel{
+   -fx-text-fill: blue;
+   -fx-font-weight: bold;
+   -fx-font-family:verdana;
+   -fx-font-style:italic;
+}
+</pre>
+        <p>First, it defines the style for the JavaFX component with the ID <code>submitBtn</code>. Then it defines a
+            rule that all labels should be red. There is no need to write any JavaFX code to apply these styles. There
+            is also a class selector named <code>bluelabel</code>, which can be applied selectively. Note that you need
+            to add a <code>-fx-</code>  prefix to the standard CSS properties for them to be recognizable by JavaFX
+            applications.  Running the program <code>GridPanelSampleCSS</code> produces the output shown in <a
+                    id="fig-anc-c018-006" href="part0019.html#fig-c018-006">Figure 18-6</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00542.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c018-006"
+                                                   href="part0019.html#fig-anc-c018-006">Figure 18-6</a>:</b></span> The
+                    styled Sign In window</p>
+            </figcaption>
+        </figure>
+        <p>For further details of skinning the JavaFX GUI, read <a id="idp18172832"></a><a id="idp18171936"></a><a
+                id="idp18174944"></a>Oracle’s online tutorial "<a
+                href="http://docs.oracle.com/javafx/2/css_tutorial/jfxpub-css_tutorial.htm">Skinning JavaFX Applications
+            with CSS</a>." </p>
+    </section>
+    <section>
+        <h2><a id="idp18132144"></a>Event Handling</h2>
+        <p>Similarly <span epub:type="pagebreak" title="244" id="Page_244"></span>to the <a id="JavaFXevent"></a><a
+                id="eventJavaFX"></a>Swing framework events covered in <a href="part0010.html#event_handling_in_ui">Lesson
+            9</a>, JavaFX applications are also event-driven. In JavaFX, an event object is represented by the instance
+            of the class <code>javafx.event.Event</code>.  There are different ways of handling events. Depending on how
+            you structured your application, you can assign event handlers either in Java or in FXML. <a
+                    href="part0020.html#developing_a_tic-tac-toe_applet">Lesson 19</a> shows you how to hook up event
+            handlers to GUI components declared in FXML. But if your program is written in purely in Java, you’ll be
+            assigning event handlers  in Java as well. But in any case, the code that handles events will be always
+            written in Java. </p>
+        <p>Before writing event handlers for your application you need to decide which events are important and have to
+            be handled in your application. For example, there is no need to write and event handler for the label from
+            the Sign In application. But we do need to handle the Sign In and Cancel button click events. If the user ID
+            would be represented by an email, we would need to intercept and handle the moment when the text field loses
+            focus. In this lesson I’ll only show you how to handle the button clicks.  For detailed coverage of handling
+            JavaFX events read the <a href="http://docs.oracle.com/javafx/2/events/jfxpub-events.htm">Oracle
+                tutorial</a>. </p>
+        <p>You can handle events using one of the following techniques:</p>
+        <ul>
+            <li>Create an instance of an anonymous class overriding its <code>handle()</code> callback method. Pass it
+                to the the event handler for a specific event. 
+            </li>
+            <li>Use lambda expressions.</li>
+            <li>Use Java <i><a href="part0014.html#methodreference">method references</a></i>. </li>
+        </ul>
+        <p>This example creates yet another version of the Sign In window, but this time the window has the Sign In and
+            Cancel buttons as well as the Forgot Password hyperlink.  Each of these controls use a different way of
+            handling the click event. The new Sign In window will look like the one in <a id="fig-anc-c018-007"
+                                                                                          href="part0019.html#fig-c018-007">Figure
+                18-7</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00543.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c018-007"
+                                                   href="part0019.html#fig-anc-c018-007">Figure 18-7</a>:</b></span> The
+                    Sign In window with event handlers</p>
+            </figcaption>
+        </figure>
+        <p>The event handler for the Sign In button is implemented using an anonymous inner class. The event handler for
+            the Cancel button is implemented using a lambda expression. Finally, I implement the click handler for the
+            Forgot Password<i></i> hyperlink using a method reference. The code of the class
+            <code>GridPaneSampleEvents</code> is shown next.</p>
+        <pre>
+public class GridPaneSampleEvents extends Application {
+    public void start(Stage primaryStage) {
+        
+        Label userIdLbl = new Label("User ID:");
+        TextField userIdTxt = new TextField();
+        Label userPwdLbl = new Label("Password:");
+        PasswordField userPwdTxt = new PasswordField();
+        Button signInBtn = new Button ("Sign In");
+        Button cancelBtn = new Button ("Cancel");
+        Hyperlink forgotPwdLink = new Hyperlink("Forgot password");
+        GridPane root = new GridPane();
+        root.setVgap(20);
+        root.setPadding(new Insets(10));
+        root.setAlignment(Pos.CENTER);
+        
+        // Using static methods for setting node constraints 
+        GridPane.setConstraints(userIdLbl, 0, 0);
+        GridPane.setConstraints(userIdTxt, 1, 0);
+        GridPane.setConstraints(userPwdLbl, 0, 1);
+        GridPane.setConstraints(userPwdTxt, 1, 1);
+        GridPane.setConstraints(signInBtn, 0, 2);
+        //Cancel button: span 1, right aligned
+        GridPane.setConstraints(cancelBtn, 1,2, 1, 1, HPos.RIGHT,
+                                                      VPos.CENTER);
+        GridPane.setConstraints(forgotPwdLink, 0, 3,2,1);
+        root.getChildren().addAll(userIdLbl, userIdTxt, userPwdLbl, 
+                    userPwdTxt,signInBtn, cancelBtn, forgotPwdLink);
+            
+        <strong>// Event handlers
+</strong>
+        //1. Anonymous class 
+        signInBtn.setOnAction(new EventHandler&lt;ActionEvent&gt;(){
+            public void handle(ActionEvent evt){
+              System.out.println(
+                      "Anonymous class handler. Sign in clicked.");
+            }
+        });
+        
+        // lambda expression
+        cancelBtn.setOnAction(evt -&gt; 
+            System.out.println("Lambda handler. Cancel clicked.")
+        );
+        
+        // method reference
+        forgotPwdLink.setOnAction(this::forgotPwdHandler);
+        
+        // Show the window
+        Scene scene = new Scene(root,250,200);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    
+    private void forgotPwdHandler(ActionEvent evt){
+        System.out.println(
+              "Method reference handler. Forgot password clicked");
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+        <p>If you run this program, and click Sign In, Cancel, or Forgot Password, the console output shows the
+            following:</p>
+        <pre>
+Anonymous class handler. Sign in clicked.
+Lambda handler. Cancel clicked.
+Method reference handler. Forgot password clicked.</pre>
+        <p>Although each of the event handlers works the same, I prefer the lambda expression version because it’s
+            concise and is easy to read. Each of the JavaFX GUI controls has a set of <code>setOnXXX()</code> methods
+            (for example, <code>setOnAction()</code> and <code>setOnMouseMoved()</code>) that should <a
+                    id="idp18202832"></a><a id="idp18204928"></a>be called for the events you’re interested in handling.
+        </p>
+    </section>
+    <section>
+        <h2><a id="idp18177584"></a>Properties and Binding</h2>
+        <p>Although Java <a id="properties1"></a><a id="properties2"></a><a id="FXbind"></a><a id="FXbinding"></a>developers
+            casually use the words properties referring to class attributes, JavaFX properties are more than just class
+            attributes. JavaFX defines an interface<code> javafx.beans.property.Property</code>, which has a very useful
+            functionality enabling you <a href="http://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm"><i>to
+                bind</i></a> the GUI components (the view) with properties of the Java classes  (the model) and automate
+            notifications of the GUI components when the value in the model changes or vice versa. </p>
+        <p>Imagine that you’re developing a financial application that receives notification from the server about the
+            stock price changes. When a Java object receives a new price, you need to modify the content of the
+            corresponding GUI component. With JavaFX you can simply bind a property <code>price</code> of a Java class
+            to the property of, say, a <code>Label</code> component. No more coding is required. As soon as the <code>price</code>
+            value changes, the <code>Label</code> is automatically updated.  JavaFX properties greatly simplify the
+            process of synchronization of the data and the GUI.</p>
+        <p>Existing implementations <a id="idp18215296"></a><a id="idp18218432"></a>of the <code>Property</code>
+            interface serve as wrappers to Java attributes adding the change notification functionality. The interface
+            <code>Property</code> declares the following <a id="idp18224096"></a><a id="idp18225280"></a><a
+                    id="idp18226880"></a><a id="idp18228016"></a><a id="idp18229088"></a><a id="idp18230464"></a><a
+                    id="idp18231536"></a><a id="idp18232608"></a><a id="idp18233968"></a><a id="idp18235120"></a>methods:
+            <code>bind()</code>,  <code>unbind()</code>,  <code>bindBidirectional()</code> , 
+            <code>unbindBidirctional()</code>, and <code>isBound()</code>. Can you bind any value to  a JavaFX property?
+            No—the value has to be of an <code>ObservableValue</code> <a id="idp18238912"></a><a id="idp18240576"></a><a
+                    id="idp18241952"></a>type. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp18219536"></a>Observer Design Pattern</h3>
+                <p>In software development there is a design pattern called <i>Observer</i>. It’s used to implement
+                    scenarios when one object (<i>the observer</i>) wants to watch changes in other object(s) (<i>the
+                        observables</i>). For example, if  a Twitter user (the observable) posts a tweet, all of his
+                    followers  (observers) are notified. You can <span epub:type="pagebreak" title="247"
+                                                                       id="Page_247"></span>read more about this and
+                    other design patterns at <code><a href="http://www.javacamp.org/designPattern/">http://www.javacamp.org/designPattern</a></code>.
+                </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>JavaFX property <a id="idp18247456"></a><a id="idp18248848"></a>classes are located in the package <code>javafx.beans.property</code>.
+            For each property type there are two classes: read-only and read-write. For example, if you need to work
+            with a <code>String</code> property, use either <code>SimpleStringProperty</code> or <code>ReadOnlyStringWrapper</code>.
+            Both of these implement the <code>StringProperty</code> interface. Similarly named classes exist for other
+            data types and some collections too.</p>
+        <p>As you always do in this book, you can learn by coding. This time you’re going to modify the <code>GridPaneSampleEvents</code>
+            class from the previous section by placing an additional <code>Label</code> component at the bottom of the
+            Sign In window. It’ll display the messages about the events as the user clicks the buttons and the
+            hyperlink. Initially this label does not have any text:</p>
+        <pre>
+Label messageLbl = new Label();
+</pre>
+        <p>JavaFX properties <a id="idp18255408"></a>are observables. Hence you can add a listener (observer) to the
+            property to be notified when the property value changes. But it’s much easier to simply use a property in a
+            binding expressions. You <i>bind</i> this label to the string property, and as soon as the value of
+            this  property changes, the label component <code>messageLbl</code> displays this value.</p>
+        <pre>
+private StringProperty message = new SimpleStringProperty();
+messageLbl.textProperty().bind(message);
+</pre>
+        <p>In the previous section, the class <code>GridePaneSampleEvents</code> was just printing messages on the
+            system console when the user clicked the buttons or the hyperlink. The new class
+            <code>GridPaneSampleBinding</code> modifies the property <code>message</code> instead, for example:</p>
+        <pre>
+cancelBtn.setOnAction(evt -&gt; 
+   message.set("Cancel clicked.")
+);
+</pre>
+        <p>The click on the <code>cancelBtn</code> changes the value of the the <code>message</code> property, which was
+            bound to the text property of <code>messageLbl</code>; the GUI changes automatically!  <a
+                    id="fig-anc-c018-008" href="part0019.html#fig-c018-008">Figure 18-8</a> below shows how the Sign In
+            window will look like after the user has pressed the Cancel button.</p>
+        <figure>
+            <img class="center" src="../Images/image00544.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c018-008"
+                                                   href="part0019.html#fig-anc-c018-008">Figure 18-8</a>:</b></span>
+                    Binding <span epub:type="pagebreak" title="248" id="Page_248"></span>in action</p>
+            </figcaption>
+        </figure>
+        <p> The complete code of the <code>GridPaneSampleBinding</code> class is shown here:</p>
+        <pre>
+public class GridPaneSampleBinding extends Application {
+    //Declaring a JavaFX property
+    private StringProperty message = new SimpleStringProperty();
+    
+    public void start(Stage primaryStage) {
+        
+        Label userIdLbl = new Label("User ID:");
+        TextField userIdTxt = new TextField();
+        Label userPwdLbl = new Label("Password:");
+        PasswordField userPwdTxt = new PasswordField();
+        Button signInBtn = new Button ("Sign In");
+        Button cancelBtn = new Button ("Cancel");
+        Hyperlink forgotPwdLink = new Hyperlink("Forgot password");
+        
+        // A label to display messages using binding
+        Label messageLbl = new Label();
+        // binding the StringProperty to a GUI component
+        messageLbl.textProperty().bind(message);
+        
+        GridPane root = new GridPane();
+        root.setVgap(20);
+        root.setPadding(new Insets(10));
+        root.setAlignment(Pos.CENTER);
+        
+        // Using static methods for setting node constraints 
+        GridPane.setConstraints(userIdLbl, 0, 0);
+        GridPane.setConstraints(userIdTxt, 1, 0);
+        GridPane.setConstraints(userPwdLbl, 0, 1);
+        GridPane.setConstraints(userPwdTxt, 1, 1);
+        GridPane.setConstraints(signInBtn, 0, 2);
+        
+        //Cancel button: span 1, right aligned
+        GridPane.setConstraints(cancelBtn, 1,2, 1, 1, 
+                                      HPos.RIGHT, VPos.CENTER);
+        GridPane.setConstraints(forgotPwdLink, 0, 3,2,1);
+        
+        // Message label: span 2
+        GridPane.setConstraints(messageLbl, 0,4,2,1);
+        root.getChildren().addAll(userIdLbl, userIdTxt, userPwdLbl,
+        userPwdTxt,signInBtn, cancelBtn, forgotPwdLink, messageLbl);
+        
+        // event handlers
+        //1. Anonymous class 
+        signInBtn.setOnAction(new EventHandler&lt;ActionEvent&gt;(){
+            public void handle(ActionEvent evt){
+                  message.set("Sign in clicked.");   
+            }
+        });
+        
+        // lambda expression
+        cancelBtn.setOnAction(evt -&gt; 
+           message.set("Cancel clicked.")
+        );
+        
+        // method reference
+        forgotPwdLink.setOnAction(this::forgotPwdHandler);
+        
+        // Show the window
+        Scene scene = new Scene(root,250,220);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    
+    private void forgotPwdHandler(ActionEvent evt){
+        message.set("Forgot password clicked");
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="249" id="Page_249"></span>The binding can be bidirectional. If the value
+            of the GUI component changes, it can change the value of the underlying model (remember MVC?), and if the
+            value of the model changes then the GUI is updated, too.  If you want to stop binding at any time, use the
+            method <code>unbind()</code>—for example:</p>
+        <pre>
+messageLbl.textProperty().unbind();
+</pre>
+        <p>I tried to fit as much information as possible in this introductory lesson so you can start working on the <a
+                id="idp18271648"></a><a id="idp18273088"></a><a id="idp18275648"></a><a id="idp18277344"></a>assignment.
+             In <a href="part0020.html">Lesson 19</a> you apply all these techniques while developing a game.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00034_ch18"></a>Try It</h2>
+        <p>Re-create the the <a id="idp18280928"></a><a id="idp18282416"></a>calculator from <a
+                href="part0009.html#introducing_the_graphic_user_interface">Chapter 8</a> as a JavaFX application.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00035_ch18"></a>Lesson Requirements</h3>
+            <p>You <span epub:type="pagebreak" title="250" id="Page_250"></span>should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code samples from this
+                        lesson from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the <code>Lesson18.zip</code>.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00036_ch18"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new JavaFX project in Eclipse.</li>
+                <li>Create a class <code>Calculator</code> that extends <code>Application</code> (you can rename the
+                    <code>Main</code> class).
+                </li>
+                <li>Using JavaFX layouts, re-create the <code>Calculator</code> GUI.</li>
+                <li>Create the class <code>CalculatorController</code> that implements <code>EventHandler</code> to
+                    process clicks on the buttons with digits.
+                </li>
+                <li>Use JavaFX binding between the display field of the <code>Calculator</code> and a
+                    <code>String</code> property of the <code>CalculatorController</code> to display the entered number
+                </li>
+                <li>Implement at least one operation (e.g., addition) and display the result using binding. See <a
+                        href="part0020.html#try_it-id00037">Try It section</a> of <a href="part0020.html">Lesson 19</a>
+                    for a sample implementation of calculator’s functionality. 
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0019.html">Lesson 18</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

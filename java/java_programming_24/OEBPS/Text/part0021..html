@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Stream API</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_streams"></a><span class="chapterTitle">Lesson 20<br/>Stream API</span></h1>
+
+    <section>
+        <p>In <span epub:type="pagebreak" title="281" id="Page_281"></span>this lesson you’ll learn how to work with the
+            <a id="idp18713536"></a><a id="idp18712608"></a>new Stream application programming interface (API)
+            introduced in Java 8 (not to be confused with I/O Streams). Stream API enables you to write data processing
+            in a simpler and more understandable way.  Most of the examples in this chapter illustrate iterating and
+            manipulating data from Java collections, but you should know from the very start that the Stream API is not
+            just another type of a data collection. It’s an abstraction over a bunch of data that your program needs to
+            process. </p>
+        <p>The data can come from a collection, from some function that generates data, or from an I/O stream. Using the
+            Stream API and lambda expressions, you can write simple-to-read and efficient iterators that will result in
+            a subset of the incoming data or some kind of a data aggregation.</p>
+        <p>All new classes and interfaces supporting the Stream API are located in the package <a
+                href="http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html">java.util.stream</a>,
+            and the <code>Stream</code> interface is the main player there. Some old classes (for example, <code>BufferedReader</code>)
+            located in other packages now include new methods returning the reference to its data as a
+            <code>Stream</code>.</p>
+    </section>
+    <section>
+        <h2><a id="unofficial_history_of_java_applets_ch20"></a>Stream Basics</h2>
+        <p>A stream is an abstraction that represents zero or more values. Think of it as a fancy iterator that enables
+            you to declare one or more operations on the data and then perform these operations <a id="basics"></a><i>in
+                one pass</i>. But whereas a regular Java <code>Iterator</code> works sequentially, streams can also be
+            processed in parallel. </p>
+        <p>Let’s start with a simple example. This chapter uses a collection of beers to make working with stream API
+            more fun. The class <code>Beer</code> is shown here:</p>
+        <pre>
+public class Beer { 
+  public String name; 
+  public String country; 
+  public float price; 
+  
+  Beer(String name, String country,float price){ 
+       this.name=name;
+       this.country=country; 
+       this.price=price; } 
+  
+  public String toString(){ 
+            return "Name: " + name + ", price: " + price; 
+  }
+}</pre>
+        <p><span epub:type="pagebreak" title="282" id="Page_282"></span>Say you have a collection
+            named <code>beers</code> that can be populated by the method <code>loadCellar()</code>.  Now you want to
+            create another collection that includes only American beers. This is how you can do it using the Stream API:
+        </p>
+        <pre>
+List&lt;Beer&gt; beers = loadCellar(); // populating beer collection
+List&lt;Beer&gt; americanBeers = new ArrayList&lt;&gt;();
+americanBeers = beers.stream() 
+                     .filter(brr -&gt; "USA".equals(brr.country))
+                     .collect(Collectors.toList());        
+</pre>
+        <p>Calling the method <code>stream()</code> sets the <code>beers</code> collection as a source of the stream.
+            Then your code filters out only the beer objects where country is not the United States. Finally, the code
+            invokes the method <code>collect()</code> to place filtered beers into another list:
+            <code>americanBeers</code>.  In this example I’ve chained only two operations—filter and collect. But you
+            can specify a lot more, including map, reduce, find, sort, and match.</p>
+        <p>Note that I’ve used a lambda expression to specify the filter criteria. Another interesting thing to note in
+            the preceding code is type inference; the variable <code>brr</code> was never declared.  Because I’ve used
+            generics in declaring the <code>beers</code> collection, the Java compiler knows that it stores objects of
+            the  <code>Beer</code> type, and if we’re using lambdas to process these objects,  <code>Beer</code> is
+            assumed as the argument type. </p>
+        <section>
+            <h3><a id="idp18730208"></a>Intermediate and Terminal Operations</h3>
+            <p>There are <a id="idp18735216"></a><a id="idp18736784"></a><a id="idp18738096"></a><a
+                    id="idp18739488"></a>two types of operations that you can apply to a stream: <i>intermediate</i> and <i>terminal</i>.
+                You can specify multiple intermediate operations and only one terminal at the end. In the <a
+                        id="idp18743488"></a><a id="idp18742208"></a><a id="idp18744000"></a><a id="idp18745424"></a>example, 
+                <code>filter()</code> is an intermediate operation and <code>collect()</code>  is a terminal operation. 
+            </p>
+            <p>Each intermediate operation declares <i>what</i> you want to do with the stream data before applying the
+                terminal operation, which produces a concrete result, for example sum or average, print some output, or
+                a new collection (as in the case of this example).</p>
+            <p>How can you say that a particular operation is intermediate or terminal? Intermediate operations always
+                return a <code>Stream</code>, whereas terminal ones return anything but a <code>Stream</code> (including <code>void</code>
+                ). As a matter of fact, stream operations can be chained into a pipeline because each intermediate
+                operation returns a <code>Stream</code>. </p>
+            <section>
+                <h4><a id="idp18753008"></a>Lazy Operations</h4>
+                <p>Intermediate <a id="idp18749760"></a>operations don’t even try to read data until the terminal
+                    operation is invoked. The whole idea of using intermediate operations is to express your intentions
+                    in a declarative form. Consider the following code snippet:</p>
+                <pre>
+OptionalDouble averagePrice = beers.stream()
+                .filter(brr -&gt; "USA".equals(brr.country))
+                .mapToDouble(brrr -&gt; brrr.price)
+                .average();  
+</pre>
+                <p><span epub:type="pagebreak" title="283" id="Page_283"></span>I explain you this code a bit later, but
+                    it reveals the intentions: “We want to filter out non-American beers and then apply the map
+                    operation to extract the beer price. Finally we calculate an average beer price.” Neither <code>filter()</code>
+                    nor <code>mapToDouble()</code> is invoked until the <code>average()</code> method is called (I prove
+                    it to you in the next code sample). But knowing upfront what are you planning to do with the data
+                    allows Java to create the most efficient plan for executing this code. By lazy execution I mean that
+                    <code>mapToDouble()</code> isn’t performed on the beers that are not produced in the United States. 
+                </p>
+                <p>Before giving you the proof that intermediate operations are not being called until the terminal
+                    operation is invoked, you should have an understanding of what the terms <i>filter</i>, <i>map,</i>
+                    and <i>reduce</i> mean. Assuming that you know the basics of working with relational databases, the
+                    explanations use the analogy of SQL statements. </p>
+                <ul>
+                    <li><b>Filter</b>: Select <a id="idp18760768"></a><a id="idp18763472"></a>the object that meet
+                        certain criteria. It’s like using <code>select *</code> with a  <code>where</code> clause in the
+                        SQL statement.  The size of the resulting collection can be smaller than the original, but the
+                        resulting objects include all attributes (think columns). 
+                    </li>
+                    <li><b>Map:</b> Select only <a id="idp18766448"></a><a id="idp18767936"></a>a subset of properties
+                        of the objects without filtering. It’s like selecting specific columns in the SQL query without
+                        the <code>where</code> clause, for example  <code>select price from beers</code>.  Map creates a
+                        new stream as a result of applying the specified function to each stream element. The size of
+                        the resulting stream is the same as the original.
+                    </li>
+                    <li><b>Reduce:</b> Aggregate <a id="idp18770112"></a>the data. The relevant SQL examples would be
+                         <code>select count(*)</code> or <code>select sum(price)</code> .
+                    </li>
+                </ul>
+                <p>Now let’s look at the proof that intermediate operations don’t access the data. In the class <code>LazyStreamsDemo</code>
+                     I’m not going to chain the operations on the stream: </p>
+                <pre>
+public class LazyStreamsDemo {
+    // Populate beer collection
+    static List&lt;Beer&gt; loadCellar(){
+      List&lt;Beer&gt; beerStock = new ArrayList&lt;&gt;();
+      beerStock.add(new Beer("Stella", "Belgium", 7.75f));
+      beerStock.add(new Beer("Sam Adams", "USA", 7.00f));
+      beerStock.add(new Beer("Obolon", "Ukraine", 4.00f));
+      beerStock.add(new Beer("Bud Light", "USA", 5.00f));
+      beerStock.add(new Beer("Yuengling", "USA", 5.50f));
+      beerStock.add(new Beer("Leffe Blonde", "Belgium", 8.75f));
+      beerStock.add(new Beer("Chimay Blue", "Belgium", 10.00f));
+      beerStock.add(new Beer("Brooklyn Lager", "USA", 8.25f));
+      return beerStock;
+    }
+    public static void main(String[] args) {
+    List&lt;Beer&gt; beers = loadCellar(); 
+    // First intermediate operation
+    Stream&lt;Beer&gt; americanBeers = beers.stream()
+                 .filter(brrsssss -&gt; {
+                     System.out.println("Inside filter: " +
+                                            brrsssss.country);
+                     return "USA".equals(brrsssss.country);
+                 });
+    // Second intermediate operation
+    DoubleStream americanBeerPrices = americanBeers
+                   .mapToDouble(brrr -&gt; {
+                      System.out.println("Inside mapToDouble: "
+                              + brrr.name + ": " + brrr.price);
+                     return brrr.price ;
+                 });
+    // Commented out terminal operation
+    //System.out.println("The average American beer price is $"+
+    //       americanBeerPrices.average().getAsDouble());
+    }
+}
+</pre>
+                <p><span epub:type="pagebreak" title="284" id="Page_284"></span>The preceding program creates a stream
+                    from the beers collection and then applies two intermediate operations: <code>filter()</code> and
+                    <code>mapToDouble()</code>. The first one filters out non-American beers, and the second performs
+                    the map operation to keep only the beer price, ignoring beer’s other fields. The <code>LazyStreamsDemo</code>
+                    class has a terminal operation that’s supposed to calculate an average price of  American beers, but
+                    I commented it out on purpose. </p>
+                <p>Note that each intermediate operation has a <code>println()</code> statement. If you run the program
+                    <code>LazyStreamsDemo</code> as is,  you don’t see any outputs on the system console. The
+                    intermediate operations are not invoked on a stream until the terminal operation is specified! The
+                    intermediate operations just declare your intentions. Now uncomment the last two lines in <code>LazyStreamsDemo</code> and
+                    rerun it. This time you see plenty of output:</p>
+                <pre>
+Inside filter: Belgium
+Inside filter: USA
+Inside mapToDouble: Sam Adams: 7.0
+Inside filter: UkraineInside filter: USA
+Inside mapToDouble: Bud Light: 5.0
+Inside filter: USA
+Inside mapToDouble: Yuengling: 5.5
+Inside filter: Belgium
+Inside filter: BelgiumInside filter: USA
+Inside mapToDouble: Brooklyn Lager: 8.25
+The average American beer price is $6.4375</pre>
+                <p>The <code>mapToDouble()</code> operation worked only for the American beers.  Note that <code>mapToDouble()</code>
+                    returns a stream of type <code>DoubleStream</code>. It’s a special type of a stream that works on
+                    primitive <code>double</code> values. We use it to calculate the average value of
+                     <code>double</code> beer prices.  There are also <code>IntegerStream</code> and
+                    <code>LongStream</code> to work with <code>int</code> and <code>long</code> data types,
+                    respectively. </p>
+                <p>To <span epub:type="pagebreak" title="285" id="Page_285"></span>summarize, treat intermediate
+                    operations as a laundry list of required actions that are performed along with a terminal operation
+                    in one pass. Neither intermediate nor terminal operations can’t modify the source data. Streams are
+                    immutable.</p>
+            </section>
+        </section>
+        <section>
+            <h3><a id="idp18732000"></a>Parallel Versus Sequential Processing</h3>
+            <p>A party of<a id="idp18789680"></a><a id="idp18791056"></a><a id="idp18792832"></a><a
+                    id="idp18793968"></a> ten walk into an Octoberfest tent. They are seated at a table, and the waiter
+                stops by. One of the guys say, “Please bring us ten mugs of Leffe Blonde, and do it as follows: go to
+                the bar, fill the first mug and bring it here;  then return and do the same with the second one. Repeat
+                ten times.”  The waiter politely replies, “Please don’t tell me how to bring your beer.”  He went to the
+                bar that had ten beer dispensers, filled all ten in parallel, and brought them all at the same time. The
+                waiter optimized the process. He just needed the customers to tell him <i>what</i> to do but not
+                <i>how</i> to do it.</p>
+            <p>Parallel processing rules!  I’ve already mentioned this while describing iterating collections with the 
+                <code>forEach()</code> method in <a href="part0014.html#foreach">Lesson 13</a>. The same applies to
+                streams. When you invoke the method <code>stream()</code> on a data source, there is a chance that
+                the  data processing will be optimized and performed in parallel; the Java runtime may internally split
+                the data into chunks, perform the operations in parallel, and reconstruct the result.</p>
+            <p>If you want to make <a id="idp18796912"></a><a id="idp18804576"></a><a id="idp18800000"></a>sure that the
+                processing is performed in parallel, use the method <code>parallelStream()</code> on your data, which
+                may internally create multiple threads for processing the stream’s data.  Java 7 introduced the
+                Fork/Join framework for implementing parallelism, but it was not simple to code. In Java 8 the Fork/Join
+                routine is hidden from application developers inside the stream implementation.</p>
+            <p>However, there is no guarantee that your application code will perform faster with
+                <code>parallelStream()</code>. You need to benchmark your code by comparing the speed of <code>parallelStream()</code>
+                versus the speed of  <code>stream()</code>. The results depends on your application code as well as on
+                the Java internals for your data source. Even the Java documentation<a id="idp18801728"></a> states that
+                <code>parallelStream()</code> returns <a
+                        href="http://docs.oracle.com/javase/8/docs/api/java/util/Collection.html#stream--">a possibly
+                    parallel stream</a>. </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp18803520"></a>When to Use Parallel Streams</h3>
+                    <p>If you’re interested in deeper understanding of when to use parallel streams, read the online
+                        article "<a href="http://gee.cs.oswego.edu/dl/html/StreamParallelGuidance.html">When to use
+                            Parallel Streams</a>" written by a group of Java experts led by Dr. Doug Lea.  </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp18721920"></a>Sorting Collections and Streams  </h2>
+        <p>Sometimes you need to sort data values in ascending or descending order.  Hence the Java runtime needs to be
+            able to compare values. It’s a simple task for primitive data types:  3 is greater than 2, and 27 is less
+            than 28. But how do you compare complex data types such as objects?  What does it mean to sort the
+            collection of <code>Beer</code> objects? Which of the <code>Beer</code> ’s properties should be compared to
+            place beers in a sorted order: prices, names, countries, or a combinations of these attributes?</p>
+        <p>A programmer needs to specify the rules for object comparison—for example, sort beers by price in an
+            ascending order. Let’s see how to specify sorting rules for general Java collections first and then how to
+            sort streams.</p>
+        <section>
+            <h3><a id="idp18814736"></a>Sorting Java Collections</h3>
+            <p>A collection <a id="idp18815552"></a><a id="idp18817328"></a>can <span epub:type="pagebreak" title="286"
+                                                                                      id="Page_286"></span>consist of
+                multiple objects, but you just need to know how to compare two objects to place them in a certain order.
+                Then the method <code>sort()</code> on your collection compares each pair of objects.  On rare
+                occasions, people need to apply different sorting algorithms, and most likely invoking the method <code>sort()</code> is
+                all you need. Java interfaces <code>Comparable</code> and <code>Comparator</code> enable you to specify
+                the comparison rules. </p>
+            <section>
+                <h4><a id="idp18815680"></a>Using the Comparable Interface</h4>
+                <p>If a class <a id="idp18822096"></a><a id="idp18825600"></a><a id="idp18827296"></a><a
+                        id="idp18828432"></a>implements the <code>Comparable</code> interface, a program can compare the
+                    current instance of an object with another object of the same type.  You need to add <code>implements
+                        Comparable</code> to the class declaration and implement the <a id="idp18831712"></a><a
+                            id="idp18831040"></a>method <code>compareTo()</code> there.  See how the <code>Beer</code>
+                    class may look if we want to be able to compare beers by price.</p>
+                <pre>
+public class Beer implements Comparable&lt;Beer&gt;{
+    public String name;
+    public String country;
+    public float price;
+    Beer(String name, String country,float price){
+        this.name=name;
+        this.country=country;
+        this.price=price;
+    }
+    public int compareTo(Beer otherBeer) {
+        
+        if (this.price &gt; otherBeer.price){
+            return 1;   // This beer is "larger" than the other 
+        } else if (this.price &lt; otherBeer.price) {
+            return -1;  // This beer is "smaller" than the other
+        } else {
+            return 0;   // The beers are "equal"
+        }    
+    }
+    
+    public String toString(){
+        return "Name: " + name + ", price: " + price;
+    }
+}
+</pre>
+                <p>The method <code>compareTo()</code> takes one argument—the object to be compared with. If according
+                    to our rule this beer value is “larger” than the other, the method <code>compareTo()</code> must
+                    return 1. If this beer value is “smaller”, then it returns a -1. If values are “equal,"  <code>compareTo()</code>
+                    returns zero. The current example compares prices.</p>
+                <p>We’re going to reuse the same beer collection used earlier in this lesson. The following code snippet
+                    uses the class <code>java.util.Collections</code> and shows you how you can sort it by prices:</p>
+                <pre>
+List&lt;Beer&gt; beers = loadCellar();  // populate beer collection
+        
+Collections.sort(beers);         
+beers.forEach(System.out::println);
+</pre>
+                <p>Here’s the expected output:</p>
+                <pre>
+Name: Obolon, price: 4.0
+Name: Bud Light, price: 5.0
+Name: Yuengling, price: 5.5
+Name: Sam Adams, price: 7.0
+Name: Stella, price: 7.75
+Name: Brooklyn Lager, price: 8.25
+Name: Leffe Blonde, price: 8.75
+Name: Chimay Blue, price: 10.0</pre>
+                <p><code>Comparable</code> interface can sort objects by a single attribute only, which limits its use.
+                    If you’d want to sort beers by names and prices, you need to consider another solution using the
+                    <code>Comparator</code> interface.  </p>
+            </section>
+            <section>
+                <h4><a id="idp18842912"></a>Using the Comparator Interface</h4>
+                <p><span epub:type="pagebreak" title="287" id="Page_287"></span>You can use <a id="idp18844240"></a><a
+                        id="idp18846528"></a><a id="idp18848160"></a><a id="idp18849264"></a>the class that implements
+                    the <code>Comparator</code> interface to specify the rules for comparison of any two objects of a
+                    certain type.  For example, you can have the class <code>Beer</code> that doesn’t implement any
+                    interfaces and separately the class <code>PriceComparator</code> that implements the <code>Comparator</code>
+                    interface and has the rules for comparing prices.  As of Java 8, you don’t even need to create a
+                    separate class with comparison rules; you can use lambdas instead. And yes, <code>Comparator</code>
+                    is a functional interface with only one abstract method: <code>compare()</code>.   </p>
+                <p> Let’s see a couple of examples of  sorting beers by one or more attributes using the <code>Comparator</code>
+                    interface and lambda expressions. These examples use the original class <code>Beer</code> that
+                    doesn’t implement any interfaces:</p>
+                <pre>
+public class Beer {
+    public String name;
+    public String country;
+    public float price;
+    Beer(String name, String country,float price){
+        this.name=name;
+        this.country=country;
+        this.price=price;
+    }
+    public String toString(){
+        return "Name: " + name + ", price: " + price;
+    }
+}
+</pre>
+                <p>The class <code>Comparator</code> has a method <code>comparing()</code>, which takes a lambda
+                    expression that extracts the attribute that needs to be used for  comparison—for example, <code>price</code>: 
+                </p>
+                <pre>
+List&lt;Beer&gt; beers = loadCellar();  // load the beer collection
+System.out.println("=== Sorting by ascending price");        
+beers.sort(Comparator.comparing(beer -&gt; beer.price)); 
+beers.forEach(System.out::println);
+</pre>
+                <p><span epub:type="pagebreak" title="288" id="Page_288"></span>Running this code against your beer
+                    collection properly sorts the beers by ascending price. It prints the following:</p>
+                <pre>
+=== Sorting by ascending price
+Name: Obolon, price: 4.0
+Name: Bud Light, price: 5.0
+Name: Yuengling, price: 5.5
+Name: Sam Adams, price: 7.0
+Name: Stella, price: 7.75
+Name: Brooklyn Lager, price: 8.25
+Name: Leffe Blonde, price: 8.75
+Name: Chimay Blue, price: 10.0
+</pre>
+                <p>The method <code>reversed()</code> allows sorting in descending order, for example:</p>
+                <pre>
+Comparator&lt;Beer&gt; priceComparator = 
+                       Comparator.comparing(beer -&gt; beer.price);
+System.out.println("=== Sorting by descending price");
+beers.sort(priceComparator.reversed());
+beers.forEach(System.out::println);
+</pre>
+                <p>The following is the output of the preceding code snippet:</p>
+                <pre>
+=== Sorting by descending price
+Name: Chimay Blue, price: 10.0
+Name: Leffe Blonde, price: 8.75
+Name: Brooklyn Lager, price: 8.25
+Name: Stella, price: 7.75
+Name: Sam Adams, price: 7.0
+Name: Yuengling, price: 5.5
+Name: Bud Light, price: 5.0
+Name: Obolon, price: 4.0
+</pre>
+                <p>If you want to sort by multiple fields you should use method chaining with one or more invocations
+                    of <code>thenComparing()</code>. The following code shows how you can sort beers by name and price:
+                </p>
+                <pre>
+System.out.println("=== Sorting by name and price");
+beers.sort(Comparator.comparing((Beer beer) -&gt; beer.name)
+                .thenComparing(beer -&gt; beer.price));
+beers.forEach(System.out::println);
+</pre>
+                <p>The method <code>comparing()</code> <a id="idp18867408"></a><a id="idp18868544"></a><a
+                        id="idp18869920"></a><a id="idp18871024"></a>expects to get <i>a method extractor</i> as an
+                    argument. The method extractor (a getter) returns a field that should be used for comparison. The
+                    preceding code snippet uses lambda expressions instead of method extractors, which requires you to
+                    specify the type in case of method chaining. That’s why this example uses explicit casting <code>(Beer
+                        beer)</code>. </p>
+                <p>If I had getters in the <code>Beer</code> class, I could have used method references and casting
+                    wouldn’t be required:</p>
+                <pre>
+beers.sort(Comparator.comparing(Beer::getName)
+                .thenComparing(Beer::getPrice));
+</pre>
+            </section>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp18843520"></a>Mutable Collections</h3>
+                    <p>Using <code>Collections.sort()</code> with both <code>Comparable</code> and
+                        <code>Comparator</code> interfaces modifies (re-orders) the original data collection. Hence a
+                        collection is <i>mutable</i>. This is not the case when  sorting streams, which is <a
+                                id="idp18879968"></a><a id="idp18878576"></a>explained next.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="idp18881568"></a>Sorting Streams</h3>
+            <p><span epub:type="pagebreak" title="289" id="Page_289"></span>Now that you are <a id="idp18883120"></a><a
+                    id="idp18884592"></a>familiar with the basics of general sorting of data collections, it’s time to
+                see how you can use Stream API for sorting any data sources. As a reminder, when you work with streams,
+                the original data source stays <i>immutable</i>—no changes are made to the data source. To store the
+                sorted data in another collection or an array you need to use the terminal operation
+                <code>collect()</code>.</p>
+            <p>The method sorted <a id="idp18887248"></a><a id="idp18889024"></a><a id="idp18891072"></a><a
+                    id="idp18892208"></a>works together with <code>Comparator</code>, and to sort your beer collection
+                by price just write something like this:</p>
+            <pre>
+beers.stream()
+        .sorted(Comparator.comparing(b -&gt; b.price))
+        .forEach(System.out::println);
+</pre>
+            <p>Sorting by multiple fields is done similarly to the code sample from the section on
+                <code>Comparator</code>.  The next example shows you how to sort beers by country and price. Slightly
+                modify the method <code>toString()</code> from <code>Beer</code> to print the country too:</p>
+            <pre>
+public String toString(){
+   return "Country: " + country +  
+                " Name: " + name + ", price: " + price;
+}
+</pre>
+            <p>This is how sorting by beer country and price can look like:</p>
+            <pre>
+ beers.stream()
+       .sorted(Comparator.comparing((Beer b) -&gt; b.country)
+                         .thenComparing(b -&gt; b.price))
+       .forEach(System.out::println);
+</pre>
+            <p>Running this code snippet produces the following output:</p>
+            <pre>
+Country: Belgium Name: Stella, price: 7.75
+Country: Belgium Name: Leffe Blonde, price: 8.75
+Country: Belgium Name: Chimay Blue, price: 10.0
+Country: USA Name: Bud Light, price: 5.0
+Country: USA Name: Yuengling, price: 5.5
+Country: USA Name: Sam Adams, price: 7.0
+Country: USA Name: Brooklyn Lager, price: 8.25
+Country: Ukraine Name: Obolon, price: 4.0
+</pre>
+            <p><span epub:type="pagebreak" title="290" id="Page_290"></span>To store the result of the stream sorting in
+                a new <code>List</code> collection, you need to add a terminal operation:</p>
+            <pre>
+List&lt;Beer&gt; sortedBeers = beers.stream()
+        .sorted(Comparator.comparing(b -&gt; b.price))
+        .collect(Collectors.toList());
+</pre>
+            <p>Now you have two collections. The original  (<code>beers</code>) collection is unsorted and the new one
+                ( <code>sortedBeers</code> ) is sorted.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp18904016"></a>Parallel Streams and Sorting</h3>
+                    <p>If you <a id="idp18906288"></a><a id="idp18908352"></a><a id="idp18910016"></a>decide to
+                        use <code>parallelStream()</code>,   the method <code>forEach()</code> can’t be used with the
+                        sorted data. Per Oracle <a
+                                href="http://docs.oracle.com/javase/8/docs/api/java/util/stream/IntStream.html#forEach-java.util.function.IntConsumer-">documentation</a>,
+                        “For parallel stream pipelines, this operation does not guarantee to respect the encounter order
+                        of the stream, as doing so would sacrifice the benefit of parallelism." You need to use the
+                        <code>forEachOrdered()</code> method instead.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp18881984"></a>Other Stream Sources</h2>
+        <p>So far, all the code samples in this chapter use a collection of objects as a stream’s data source. But this
+            doesn’t have to be the case. You can process both finite and infinite data sources with the Stream API. </p>
+        <section>
+            <h3><a id="idp18919328"></a>Creating Finite Size Streams</h3>
+            <p>You can take a bunch <a id="idp18918160"></a>of arbitrary values and turn them into a stream using
+                the <code>Stream.of()</code> method. For example, the following code snippet creates and prints a stream
+                of strings of a <i>finite size</i>:</p>
+            <pre>
+Stream&lt;String&gt; beerNames = Stream.of("Leffe Blonde",
+                                     "Chimay Blue","Sam Adams");
+beerNames.forEach(System.out::println);</pre>
+            <p>The method <code>builder()</code> is yet another way of creating finite size streams. The following code
+                snippet creates a stream of three long primitives and finds the maximum value. Because 
+                <code>max()</code> returns the  <code>OptionalLong</code> type (it may or may not have a value), I call
+                the <code>getAsLong()</code> to get the primitive <code>long</code>. After running this code,  <code>maxValue</code> is
+                equal to 21.</p>
+            <pre>
+      long maxValue = LongStream.builder()
+                   .add(10)
+                   .add(21)
+                   .add(15)
+                   .build()
+                   .max().getAsLong();
+</pre>
+        </section>
+        <section>
+            <h3><a id="idp18925008"></a>Creating Infinite-Size Streams</h3>
+            <p>Although <a id="idp18926368"></a>data <span epub:type="pagebreak" title="291" id="Page_291"></span>collections
+                have finite size, you can use the Stream API for working with infinite streams of data. </p>
+            <section>
+                <h4><a id="idp18927840"></a> </h4>
+                <h4>Generating Stream Data</h4>
+                <p>The method <code>Stream.generate()</code>  can <a id="idp18931008"></a><a id="idp18932336"></a><a
+                        id="idp18933712"></a><a id="idp18934784"></a>take a lambda expression that generates values by
+                    some arbitrary algorithm.  This lambda has to be an implementation of the functional
+                    interface  <code>java.util.function.Supplier</code> . Implementing a <code>Supplier</code> comes
+                    down to writing a function that returns some result. </p>
+                <p>The following <a id="idp18938400"></a><a id="idp18937776"></a>class <code>StreamOfDates</code> uses
+                    the class <code>LocalDateTime</code>, which is a part of the new <a
+                            href="http://docs.oracle.com/javase/tutorial/datetime/">Java 8 Date and Time API</a> located
+                    in the package <a href="http://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html">java.time</a>.
+                    The supplier repeatedly sleeps for  a second (1000 millisec) and then queries the system time using
+                    the method <code>now()</code>.  The method <code>Stream.generate()</code> generates an <i>infinite
+                        stream</i> that is feeding the stream with the current time about every second. </p>
+                <pre>
+import java.time.LocalDateTime;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+public class StreamOfDates {
+   
+  public static void main(String[] args){
+    
+     // Implementing a Supplier interface
+    Supplier&lt;LocalDateTime&gt; myStopWatch = () -&gt; { 
+           try{
+               Thread.sleep(1000);
+           } catch (InterruptedException e){
+               e.printStackTrace();
+           }
+           return LocalDateTime.now(); // get the current time
+           };
+        
+     // Generating a stream using lambda expression
+  
+     Stream&lt;LocalDateTime&gt; timeStream = 
+                                   Stream.generate(myStopWatch);
+           
+     timeStream.forEach(System.out::println);          
+   }
+}
+</pre>
+                <p>Running this program starts producing an output that never stops and looks like this (without
+                    ellipses):</p>
+                <pre>
+2014-09-18T17:41:36.017
+2014-09-18T17:41:37.026
+2014-09-18T17:41:38.027
+2014-09-18T17:41:39.028
+2014-09-18T17:41:40.028
+2014-09-18T17:41:41.029
+2014-09-18T17:41:42.029
+2014-09-18T17:41:43.030
+2014-09-18T17:41:44.031
+2014-09-18T17:41:45.033
+...</pre>
+                <p><span epub:type="pagebreak" title="292" id="Page_292"></span>You see how to stop an infinite stream
+                    in the section <a href="part0021.html#short_circuit">Short-Circuit Operations</a>. </p>
+                <p>Yet another way of generating the infinite stream is the method <code>iterate()</code>, which
+                    requires a rule for generating the next data value. </p>
+                <pre>
+LongStream evenNumbers = LongStream.iterate(0, num -&gt; num+2);
+evenNumbers.forEach(System.out::println);
+</pre>
+                <p>The preceding code prints even numbers, but because they are being generated extremely fast, you
+                    might need to limit the number of generated values (see the section <a
+                            href="part0021.html#short_circuit">Short-Circuit Operations</a>) to see the expected
+                    results.</p>
+            </section>
+            <section>
+                <h4><a id="idp18928464"></a>Using Stream API with I/O Streams</h4>
+                <p>As of Java 8, <a id="idp18953552"></a><a id="idp18955504"></a>some of the classes used for processing
+                     I/O streams include new methods that allow data processing with the Stream API. For example, the
+                    class <code>java.io.BufferedReader</code> has a new method <a
+                            href="http://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html#method.summary">lines()</a>
+                    that returns a <code>Stream</code>, the elements of which are lines read from this <code>BufferedReader</code>object.
+                    As with other data sources, the <a
+                            href="http://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"
+                            title="interface in java.util.stream"><code>Stream</code></a> is lazily populated—that is,
+                    read only occurs during the terminal operation.  </p>
+                <p>You can see it in action by rewriting the class <code>WebSiteReader</code> from <a
+                        href="part0017.html">Lesson 16</a>. That class was reading and printing the content of the web
+                    page www.google.com. The new version of this class is called <code>WebSiteReaderStream</code>.</p>
+                <pre>
+public class WebSiteReaderStream {
+  public static void main(String args[]){
+       String nextLine;
+       URL url = null;
+       URLConnection urlConn = null;
+       try
+       {
+         // Assume index.html is a default home page name  
+          url  = new URL("http://www.google.com" );
+          urlConn = url.openConnection();
+       } catch( IOException e){
+           System.out.println(
+                    "Can't connect to the provided URL:" + 
+                                               e.toString() );
+       } 
+       
+       try( InputStreamReader inStream = new InputStreamReader( 
+               urlConn.getInputStream(), "UTF8");
+               BufferedReader buff  = 
+                             new BufferedReader(inStream);){   
+     
+      // Read and print the content of the Google home page
+      // using Stream API       
+           
+         buff.lines()
+               .forEach(System.out::println);  
+          
+       } catch(IOException  e1){
+      System.out.println("Can't read from the Internet: "+ 
+                                          e1.toString() ); 
+     }
+ }
+}
+</pre>
+                <p><span epub:type="pagebreak" title="293" id="Page_293"></span>Not only does the reading part of the
+                    stream becomes simpler—just call the <code>lines()</code>—but you can now add some intermediate
+                    operations to perform some filtering as the data is coming in. For example, you can create a
+                    matching pattern using <a href="http://docs.oracle.com/javase/tutorial/essential/regex/">regular
+                        expressions</a> (not covered in this book) and read only those data that match this pattern. You
+                    can research this further by finding examples that use the Java class <a
+                            href="http://docs.oracle.com/javase/8/docs/api/java/util/regex/Matcher.html">Matcher</a>. 
+                </p>
+            </section>
+        </section>
+    </section>
+    <section>
+        <h2><a id="short_circuit"></a>Short-Circuit Operations</h2>
+        <p>In some <a id="idp18970064"></a><a id="idp18971424"></a>cases you want to stop stream processing prematurely.
+            Say you want to show only the first five elements from the stream. Short-circuit operations serve this
+            purpose.  Revisit the example that prints even numbers. With it you generated an infinite stream of even
+            numbers. To print only the first five numbers you use the short-circuit operation <code>limit()</code>:</p>
+        <pre>
+LongStream evenNumbers = LongStream
+                    .iterate(0, num -&gt; num+2)
+                    .limit(5);
+            
+evenNumbers.forEach(System.out::println);
+</pre>
+        <p>This code prints the following five numbers:</p>
+        <pre>
+0
+2
+4
+6
+8
+</pre>
+        <p>Another short-circuit method is the  <code>findFirst()</code> element of the stream. This method returns an
+            object of type <code>Optional</code>, which was introduced in Java 8.  It allows avoiding <code>NullPointerException</code>
+            if the requested object is not found. If the requested value is not found, the method
+            <code>findFirst()</code> returns an empty <code>Optional</code> object. The next code sample prints the
+            first element from the beers collection:</p>
+        <pre>
+Optional&lt;Beer&gt; firstBeer = beers.stream()
+                 .findFirst();
+              
+System.out.println("The first beer in collection: " + 
+              firstBeer.orElse(new Beer("No name","No country",0 )));
+</pre>
+        <p>Running <span epub:type="pagebreak" title="294" id="Page_294"></span>this code against your collection of
+            beers prints the following:</p>
+        <pre>
+The first beer in collection: Name: Stella, price: 7.75
+</pre>
+        <p>If your collection is empty, the <code>println()</code> method uses the code from the <code>orElse()</code>
+            method. An attempt to simply print <code>firstBeer</code> from an empty collection would output <code>Optional.empty</code>. 
+        </p>
+        <p>Some other short-circuit methods on the class <code>Stream</code> are <code>skip()</code>,
+             <code>findAny()</code>, <code>allMatch()</code>, <code>noneMatch()</code>, and <code>anyMatch()</code>. 
+        </p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00034_ch20"></a>Try It</h2>
+        <p>In the following assignments <a id="idp18989040"></a><a id="idp18990416"></a>you need to use method
+            references while working with streams. You also try using short-circuit operations.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00035_ch20"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page a</i><i>t</i> <code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson20.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00036_ch20"></a>Step-by-Step</h3>
+            <p>In this exercise you need to use static method references with streams.  </p>
+            <ol>
+                <li>Import the project Lesson20 into the Eclipse IDE.</li>
+                <li>In the class <code>StreamOfDates</code>, add a static method
+                    titled <code>myStopWatchFunction()</code> and move the code from the lambda expression <code>myStopWatch</code>
+                    there. This is how the lambda expression <code>myStopWatch</code> was originally implemented:
+                    <pre>
+    Supplier&lt;LocalDateTime&gt; myStopWatch = () -&gt; { 
+           try{
+               Thread.sleep(1000);
+           } catch (InterruptedException e){
+               e.printStackTrace();
+           }
+           return LocalDateTime.now(); // get the current time
+           };</pre>
+                </li>
+                <li>Remove the declaration of the lambda expression <code>Supplier myStopWatch</code> from the class.
+                </li>
+                <li>The existing invocation of the method generate() looks like this:
+                    <pre>
+Stream.generate(myStopWatch)</pre>
+                    <span epub:type="pagebreak" title="295" id="Page_295"></span>Replace the argument of the method
+                    <code>generate()</code> with the method reference  <code>StreamOfDates::myStopWatchFunction</code>.
+                      
+                </li>
+                <li>Run the program. It should start printing the infinite messages with the current time.</li>
+                <li>Add the short-circuit operation <code>limit()</code> so the program stops after printing the current
+                    time five times.
+                </li>
+                <li>Are <code>limit()</code> and <code>findFirst()</code> intermediate or terminal operations?</li>
+                <li>Modify the class <code>Beer</code> to include getters and change the <code>Comparator</code> code
+                    sample that use to use method references instead of lambda expressions.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0021.html">Lesson 20</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

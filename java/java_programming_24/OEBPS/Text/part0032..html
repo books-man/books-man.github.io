@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introduction to Enterprise JavaBeans</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_enterprise_javabeans"></a><span class="chapterTitle">Lesson 31<br/>Introduction to Enterprise JavaBeans</span>
+    </h1>
+
+    <section>
+        <p>This <span epub:type="pagebreak" title="445" id="Page_445"></span>lesson <a id="idp21901216"></a>introduces
+            you to one of the Java EE technologies, Enterprise JavaBeans (<a
+                    href="http://download.oracle.com/otndocs/jcp/ejb-3_2-fr-spec/index.html">JSR 345</a>), which can be
+            used for implementing the business tier in a distributed application (refer to <a
+                    href="part0026.html#fig-c025-001">Figure 25-1</a> in <a href="part0026.html">Lesson 25</a>). <a
+                    href="part0027.html#programming_with_servlets">Chapter 26</a> and <a
+                    href="part0028.html#javaserver_pages">Chapter 27</a> were about various ways of programming the
+            presentation tier on the web; in <a href="part0031.html#introducing_jms_and_mom">Chapter 30</a> and <a
+                    href="part0030.html#introducing_jndi">Chapter 29</a> you learned how to organize communication
+            between the different tiers of the application using messaging. The application business logic was
+            programmed in POJOs.</p>
+        <p>In this lesson you see how to program the business tier in EJBs, which are also POJOs, but managed by an EJB
+            container. Java EE 7 includes EJB 3.2 and the Java Persistence API (JPA) 2.1 that offer you a standardized
+            way to implement solutions for business logic and data persistence. Using EJBs as JMS listeners makes your
+            enterprise application more scalable without the need to write additional code.  </p>
+        <p>This lesson introduces you to various types of EJBs, and the <a
+                href="part0033.html#introduction_to_the_java_persistence_api">next lesson</a> is about persisting data
+            with JPA. </p>
+    </section>
+    <section>
+        <h2><a id="who_needs_ejb_containersquestion_mark"></a>Who Needs EJB Containers?</h2>
+        <p>What’s wrong with POJOs? Why <a id="idp21911408"></a><a id="idp21912800"></a>not just implement business
+            logic there? You certainly can, but most likely you’d need to spend additional time manually programming a
+            multithreaded environment for them. The chances are that your application needs transactional support. If
+            the business logic is located in POJO 1 and POJO 2, and the second one fails, you want to roll back whatever
+            has been completed by the first one.</p>
+        <p>It’s great that you <a id="idp21916384"></a>know how to program message receivers using JMS, but how can you
+            make this solution scalable? What if you need a couple of dozen message listeners that concurrently dequeue
+            the messages? Don’t forget about the tasks of integrating your POJOs with other tiers to perform
+            authentication and JDBC operations.</p>
+        <p>EJB containers take care of all these infrastructure-related concerns without requiring manual programming on
+            your side. Application servers allow you to configure <a id="idp21917568"></a><a id="idp21922464"></a><a
+                    id="idp21919792"></a>pools of <i>message-driven beans</i> (MDBs) if you need <span
+                    epub:type="pagebreak" title="446" id="Page_446"></span>multiple message listeners. You can turn on
+            transactional support if need be. You don’t need to worry about multithreading problems if your beans
+            operate in an EJB container. Turning a POJO into an EJB is as simple as adding Java annotations in the EJB
+            classes. Intercommunication among beans is done via dependency injection or singleton beans.</p>
+        <p>If you need to scale a distributed application, EJB containers offer clustering and failover support.
+            Security authorization is also the container’s responsibility. Without the need to manually code all these
+            infrastructural functionalities, the code of your EJBs becomes really light.</p>
+        <p>The other <a id="idp21930176"></a><a id="idp21925936"></a><a id="idp21927600"></a><a id="idp21928720"></a>interesting
+            service offered by EJB containers is <i>asynchronous method invocation</i>, which enables asynchronous
+            processing.</p>
+        <p>EJB <a id="idp21931840"></a><a id="idp21934272"></a>supports <a
+                href="https://docs.oracle.com/javaee/7/tutorial/ejb-embedded.htm#GKCQZ">embeddable containers</a>. You
+            can run EJB applications in a Java SE environment outside of any application servers. This is a good idea
+            for tasks such as testing because there’s no need to depend on the readiness of a Java EE server; you can
+            just test your EJBs locally. Creating an embeddable container comes down to executing one line of code:</p>
+        <pre>
+EJBContainer myContainer = EJBContainer.createEJBContainer();</pre>
+        <p>If the originally selected application server doesn’t deliver the performance or reliability you expected,
+            deploy your EJBs in a different Java EE 7-compliant server without changing a line of code.</p>
+    </section>
+    <section>
+        <h2><a id="types_of_ejbs"></a>Types of EJBs</h2>
+        <p>There are two major types of EJB: <i>session beans</i> and <i>message-driven beans</i>. MDBs specialize in
+            retrieving messages from JMS queues or topics—this is all they can do. Your application business logic
+            resides in the session beans. There are three types of session beans:</p>
+        <ul>
+            <li>A <i>stateless</i> session <a id="idp21939680"></a><a id="idp21944480"></a><a id="idp21946016"></a>bean
+                is one that contains business logic but doesn’t support state. In other words, it doesn’t “remember” any
+                data specific to the client. If the same client invokes two methods in a row on the stateless bean
+                <code>FindBooks</code>, the container may decide to use two separate instances of the
+                <code>FindBooks</code> bean, as it doesn’t store any intermediate data specific to the client.
+            </li>
+            <li>A <i>stateful</i> session <a id="idp21948240"></a><a id="idp21949840"></a><a id="idp21952496"></a>bean
+                is one that contains business logic and state. The EJB container allocates a specific instance of the
+                session bean to the client and can store results between subsequent method invocations.
+            </li>
+            <li>A <i>singleton</i> session <a id="idp21954288"></a><a id="idp21956064"></a><a id="idp21957744"></a>bean
+                is instantiated once per application. Think of a singleton bean as a global repository in which one bean
+                can put some data to be used by another bean. Singleton session beans not only provide easy access to
+                common data but also ensure that there are no race conditions in cases of concurrent access.
+            </li>
+        </ul>
+        <p>Older EJB specifications <a id="idp21959360"></a><a id="idp21960800"></a>defined <i>entity beans</i> for data
+            persistence. Formally they still exist in the current EJB specification, but they are pruned (made optional
+            for implementation by the vendors of Java EE 7-compliant application servers).</p>
+        <p>An EJB container creates and maintains pools of session beans. The instances of the stateless beans are
+            allocated to clients for much less time than stateful ones. Therefore, if you are working on a multiuser
+            application with hundreds or thousands of concurrent requests to the EJB container, stateless beans offer a
+            much more scalable solution because a smaller pool can serve more users’ requests.</p>
+        <p>But <span epub:type="pagebreak" title="447" id="Page_447"></span>even with stateful session beans, the EJB
+            container is playing smart, and those instances sitting in memory without active interaction with the client
+            are being <i>passivated</i>—removed from memory and stored on the disk. When the client issues another
+            request to a stateful bean that has been passivated, the container <i>activate</i>s it again.</p>
+    </section>
+    <section>
+        <h2><a id="stateless_session_beans"></a>Stateless Session Beans</h2>
+        <p>I’ll introduce you to <a id="stateless1"></a><a id="stateless2"></a><a id="stateless3"></a>stateless session
+            beans by creating a simple example featuring an EJB that contains the business logic to return the message
+            “Hello World.”</p>
+        <section>
+            <h3><a id="bean"></a>The Bean</h3>
+            <p>Having a class that <a id="idp21973248"></a>just returns “Hello World” and lives in a the container can
+                be easily implemented as a stateless session bean: It has only one method, and there is no state to
+                remember. <a id="list-anc-c031-001" href="part0032.html#list-c031-001">Listing 31-1</a> shows you how to
+                program such a bean.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c031-001"
+                                               href="part0032.html#list-anc-c031-001">Listing 31-1</a>:</span>
+                        HelloWorld session bean, take 1</h5>
+                    <pre>
+@Stateless
+public class HelloWorldBean {
+    public String sayHello(){
+        return "Hello World!";
+    }
+}</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Basically, you create a POJO and annotate it with one or more Java annotations. There are no special
+                interfaces to be implemented to turn a POJO into an EJB. Accordingly <a id="idp21980256"></a><a
+                        id="idp21981808"></a><a id="idp21983136"></a><a id="idp21984848"></a><a id="idp21986240"></a><a
+                        id="idp21987664"></a>there are <code>@Stateful</code>, <code>@MessageDriven</code>, and <code>@Singleton</code>
+                annotations to mark other types of session beans.</p>
+            <p>The preceding <a id="idp21990560"></a>version of <code>HelloWorldBean</code> doesn’t specify how the
+                clients can access this so-called <i>no interface view</i> bean, which means that when a client gets a
+                reference to the bean it can only be of the bean’s data type (<code>HelloWorldBean</code> in our case).
+                You cannot declare a reference variable of an interface type because the bean doesn’t implement
+                any. Classes that are deployed in the same archive file can access the method <code>sayHello()</code>
+                using <a href="part0030.html#resource_injection">resource injection</a> with the <code>@EJB</code>
+                annotation:</p>
+            <pre>
+@EJB HelloWorldBean myBean;
+myBean.sayHello();
+</pre>
+        </section>
+        <section>
+            <h3><a id="clientapostrophes_view"></a>The Client’s View</h3>
+            <p>The bean shown in <a href="part0032.html#list-c031-001">Listing 31-1</a> runs on the server, but the
+                client that invokes the <code>sayHello()</code> method can run either in the same Java Virtual Machine
+                (JVM) (for example, a servlet or another bean) or in another one (for example, a standalone Java SE
+                application or Java EE class deployed in another container). Beans may or may not implement interfaces.
+                If <code>HelloWorldBean</code> will be used only by clients running in the same JVM, you can mark it
+                with an optional <code>@LocalBean</code> annotation <a id="idp22001120"></a><a id="idp22002464"></a>to
+                show that it’s a no-interface bean. If <code>HelloWorldBean</code> in <span epub:type="pagebreak"
+                                                                                            title="448"
+                                                                                            id="Page_448"></span>addition
+                to a no-interface view can also be exposed to other clients, the <code>@LocalBean</code> has to
+                explicitly annotate the bean.</p>
+            <p>If you’d like to expose only certain business methods to local clients, you can create a business
+                interface, declare these methods there, have your bean implement them, and mark the bean with a <code>@Local</code>
+                annotation. The <code>@Local</code> annotation can be used with either a business interface or with the
+                session bean itself.</p>
+            <p>If you’d like to expose some methods to remote clients, create an interface, declare the business methods
+                there, implement them in the bean, and mark it as <code>@Remote</code>. </p>
+            <section>
+                <h4><a id="local_no-interface_beans"></a>Local No-Interface Beans</h4>
+                <p>I am <a id="idp22010032"></a><a id="idp22011680"></a>planning to use <code>HelloWorldBean</code> from
+                    the servlet running in the same JVM, so the final version of the code looks like <a
+                            id="list-anc-c031-002" href="part0032.html#list-c031-002">Listing 31-2</a>.  </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c031-002" href="part0032.html#list-anc-c031-002">Listing 31-2</a>:</span>
+                            HelloWorld session bean, take 2</h5>
+                        <pre>
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+@LocalBean
+@Stateless
+public class HelloWorldBean {
+    public String sayHello(){
+        // You can instantiate and use other POJOs 
+        // here if need be
+        return "Hello World!";
+    }
+}</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p>Any EJB can use regular Java classes to implement business logic: For example,
+                    the <code>sayHello()</code> method can create instances of other Java classes with
+                    the <code>new</code> operator and invoke their business methods if need be. Or even better, you can
+                    instantiate POJOs using Context Dependency Injection (CDI), which is explained in <a
+                            href="part0034.html#working_with_restful_web_services">Lesson 33</a>.</p>
+                <p>Now it’s time to do it hands-on. Create a new Dynamic Web Project in Eclipse named
+                    <code>Lesson31</code>. Then create a new servlet class, <code>HelloWorldServlet</code>, in the
+                    package <code>lesson31.client</code> (select File → New → Servlet). You use only the
+                    <code>doGet()</code> method in this servlet. This servlet becomes your client, communicating with
+                    the EJB. </p>
+                <p>Next create a Java class called <code>HelloWorldBean</code> in the package <code>lesson31.ejb</code> by
+                    selecting File → New → Other → EJB → Session Bean (EJB 3.x). Do not select any local or remote
+                    business interfaces. By default, Eclipse generates a no-interface view bean and annotates it as
+                    <code>@Stateless</code> <code>@LocalBean</code>. Eclipse creates a class with a default constructor.
+                    Add to this class the method <code>sayHello()</code> shown earlier in <a
+                            href="part0032.html#list-c031-002">Listing 31-2</a>, and the EJB is ready for use.</p>
+                <p>The <span epub:type="pagebreak" title="449" id="Page_449"></span>next step is to inject the <code>HelloWorldBean</code>
+                    into the servlet code with the <code>@EJB</code> annotation:</p>
+                <pre>
+@EJB HelloWorldBean myBean;</pre>
+                <p>Eclipse marks this line with a red error bullet. Right-click it and select Quick Fix to automatically
+                    insert two import statements: one for the <code>@EJB</code> annotation and the other for <code>HelloWorldBean</code>.
+                </p>
+                <p>Using JNDI remains an alternative to injecting the bean into the client. Java EE supports portable
+                    JNDI names that don’t depend on the application server’s implementation. Instead of the
+                    <code>@EJB</code> annotation you could (but we won’t) use the following code:</p>
+                <pre>
+Context ctx = new InitialContext();
+HelloWorldBean myBean = (HelloWorldBean)
+                  ctx.lookup("java:global/Lesson31/HelloWorldBean");</pre>
+                <p>Now add the following two lines in the <code>doGet()</code> method of the servlet to make it invoke
+                    the method <code>sayHello()</code> on the EJB:</p>
+                <pre>
+PrintWriter out = response.getWriter();
+out.println(myBean.sayHello());</pre>
+                <p>That’s all there is to it. The complete code of the servlet is shown in <a id="list-anc-c031-003"
+                                                                                              href="part0032.html#list-c031-003">Listing
+                    31-3</a>.</p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c031-003" href="part0032.html#list-anc-c031-003">Listing 31-3</a>:</span>
+                            Servlet client for HelloWorldBean</h5>
+                        <pre>
+package lesson31.client;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lesson31.ejb.HelloWorldBean;
+@WebServlet(urlPatterns = { "/HelloWorldServlet" })
+public class HelloWorldServlet extends HttpServlet {
+  @EJB HelloWorldBean myBean;       
+  protected void doGet(HttpServletRequest request, 
+                       HttpServletResponse response) 
+                        throws ServletException, IOException { 
+     
+      PrintWriter out = response.getWriter(); 
+      out.println(myBean.sayHello()); }
+}
+</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p>Deploy <span epub:type="pagebreak" title="450" id="Page_450"></span>the project <code>Lesson31</code>
+                    in GlassFish server (right-click the server name and use Add and Remove menu) and start the server.
+                    Right-click the servlet HelloWorldServlet and select Run As → Run on Server. The servlet calls the
+                    method on the EJB, and you see what’s shown in <a id="fig-anc-c031-001"
+                                                                      href="part0032.html#fig-c031-001">Figure 31-1</a>
+                    in the Eclipse internal web browser.</p>
+                <figure>
+                    <img class="center" src="../Images/image00607.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c031-001" href="part0032.html#fig-anc-c031-001">Figure 31-1</a>:</b></span>
+                            Running the servlet, an EJB client</p>
+                    </figcaption>
+                </figure>
+                <p>You can copy the servlet’s URL in your web browser and the resulting web page will be the same.</p>
+                <p>Printing Hello World from an EJB may not look too impressive, but my goal was to illustrate how to
+                    move the application logic from servlet to the EJB.   </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature2">
+                        <h3><a id="idp22044752"></a>Automatic Redeployments on the Server</h3>
+                        <p>While working on your project you might want to make sure that the server performs automatic
+                            redeployment of your application when the Java code changes. Just double-click the GlassFish
+                            server in the Servers view, which will open the Overview window describing the server.
+                            Expand the Publishing panel there and select the option Automatically Publish When Resources
+                            Change.</p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+            <section>
+                <h4><a id="local_beans"></a>Local Beans</h4>
+                <p>Now to <a id="localbean"></a>expose a business method to local clients, you can declare the interface
+                    marked with the <code>@Local</code> annotation. In Eclipse create a new session bean named <code>HelloWorldLocal</code>,
+                    select the Local checkbox, and enter <code>Authorizable</code> as the name of the business
+                    interface, as shown in <a id="fig-anc-c031-002" href="part0032.html#fig-c031-002">Figure 31-2</a>. 
+                </p>
+                <figure>
+                    <img class="center" src="../Images/image00608.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c031-002" href="part0032.html#fig-anc-c031-002">Figure 31-2</a>:</b></span>
+                            Creating <span epub:type="pagebreak" title="451" id="Page_451"></span>an EJB with a business
+                            interface</p>
+                    </figcaption>
+                </figure>
+                <p>Eclipse generates the interface <code>Authorizable</code> and the EJB class that should implement it.
+                </p>
+                <p>After I’ve added the declaration of the method <code>authorize()</code>, this interface looks as
+                    follows:</p>
+                <pre>
+package lesson31.ejb;
+import javax.ejb.Local;
+@Local
+public interface Authorizable {
+   public String authorize();
+}
+</pre>
+                <p>Now you can implement the method <code>authorize()</code> and add <code>sayHello()</code> as before.
+                </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c031-004"></a>Listing 31-4:</span> Local <span
+                                epub:type="pagebreak" title="452" id="Page_452"></span>interface and bean</h5>
+                        <pre>
+package lesson31.ejb;
+import javax.ejb.Stateless;
+@Stateless
+public class HelloWorldLocal implements Authorizable {
+     public String authorize(){
+            return "The user is authorized!";
+     }
+     
+     public String sayHello(){
+         return "Hello World!";
+     }
+}
+</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p>The difference between <code>HelloWorldBean</code> and <code>HelloWorldLocal</code> is that the
+                    former doesn’t implement any interfaces, but the latter does. Accordingly, the latter exposes a
+                    <code>Authorizable</code> view to <a id="idp22061040"></a>the local clients.</p>
+            </section>
+            <section>
+                <h4><a id="remote_beans"></a>Remote Beans</h4>
+                <p>For clients that may <a id="idp22064848"></a>access the bean remotely (for example, from a standalone
+                    Java program via a JNDI lookup), you can expose only the interface(s) that you want the remote
+                    client to see. Declare an interface marked with <code>@Remote</code> and have your bean class
+                    implement it. </p>
+                <p>An EJB can implement both remote and local interfaces, and you can expose different methods for
+                    remote and local clients, too. For example, the following bean <code>HelloWorldLocalRemote</code>
+                    exposes only the method <code>sayHello()</code> to the clients that run in a different JVM.</p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c031-005"></a>Listing 31-5:</span> An EJB that implements
+                            local and remote interfaces</h5>
+                        <pre>
+@Local public interface Authorizable {
+    public String authorize(); }
+@Remote
+public interface Greeting { 
+   public String sayHello();
+}
+@Stateless
+public class HelloWorldLocalRemote 
+                       implements Authorizable, Greeting {
+     public String authorize(){
+            return "The user is authorized!";
+     }
+     
+     public String sayHello(){
+         return "Hello World!";
+     }
+}
+</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p>The <span epub:type="pagebreak" title="453" id="Page_453"></span>clients find remote beans by
+                    performing JNDI lookups. Because the remote client runs in different JVMs, all arguments of the
+                    remote methods must be serializable. </p>
+            </section>
+        </section>
+        <section>
+            <h3><a id="asynchronous_methods"></a>Asynchronous Methods and Concurrency</h3>
+            <p>There is one more <a id="idp22072192"></a><a id="idp22076160"></a>feature in stateless beans that I’d
+                like you to be aware of: <i>asynchronous methods</i>. Imagine that <code>sayHello()</code> is a
+                long-running method performing some lengthy calculations, and you’d like to call it and continue with
+                other operations without waiting for it to complete. In a Core Java application you would start a thread
+                that would eventually return the <code>Future</code> object, as explained in <a
+                        href="part0018.html#executor_framework">Lesson 17</a>.</p>
+            <p>Prior to Java EE 7, it was not safe to create and start threads from the Java EE container, which was
+                taking care of all multithreading issues for you. So asynchronous methods were introduced to start a
+                parallel process and free the EJB for handling other clients’ requests.</p>
+            <p>Just mark the <a id="idp22084272"></a><a id="idp22085744"></a>bean’s method with the
+                <code>@Asynchronous</code> annotation and have it return an object of type
+                <code>javax.ejb.AsyncResult</code>, which is an implementation of the <code>Future</code> interface:</p>
+            <pre>
+@Asynchronous
+public Future&lt;String&gt; modelStockPrices(){
+    // Some lengthy calculations go here
+    //...
+   return new AsyncResult&lt;String&gt;("The best stock to buy is...");
+}</pre>
+            <p>The client would make a call to <code>modelStockPrices()</code> then execute some other code without
+                waiting for <code>modelStockPrices()</code> to complete. At some point it would request
+                <code>Future</code> by making a blocking call, <code>get()</code>, as in the following code snippet:</p>
+            <pre>
+//Asynchronous call
+Future&lt;String&gt; myFutureStockToBuy = myBean.modelStockPrices();
+// Some other code that is executed immediately without
+// waiting for modelStockPrices() to complete goes here
+// Sometime later the client's code makes a blocking call and starts
+// waiting for the result of modelStockPrices()
+String stockRecommendations = myFutureStockToBuy.get();</pre>
+            <p>You can also use asynchronous methods if a client needs to start more than one method on the EJB to run
+                in parallel threads. The methods don’t even need to return values; say one is generating large PDF files
+                and the other prepares shipments based on today’s orders. In this case you don’t even need to process
+                returned values; just <span epub:type="pagebreak" title="454" id="Page_454"></span>declare the methods
+                as asynchronous and invoke them from the client (fire and forget). They start immediately and run in
+                parallel. Such asynchronous methods need to return <code>void</code> instead of  <code>
+                    &lt;Future&gt;</code>.</p>
+            <p>The Java EE 7 specification includes <a href="https://jcp.org/en/jsr/detail?id=236">JSR 236</a>
+                (Concurrency Utilities) that allows you to create threads from the application code. These threads are
+                controlled by the Java EE container, so your application remains thread safe. In Java EE code, you can
+                use <code>javax.enterprise.concurrent.ManagedExecutorService</code>, which is a peer of the Java
+                SE <code>ExecutorService</code>. You can obtain the reference to the <code>ManagedExecutorService</code>
+                using standard resource injection:</p>
+            <pre>
+@Resource(lookup="java:comp/DefaultManagedExecutorService")
+ManagedExecutorService myExecutor;
+</pre>
+            <p>The JNDI lookup is supported as well. After obtaining the reference to the instance of <code>ManagedExecutorService</code>,
+                 you can execute a task—the class that implements either <code>Runnable</code> or <code>Callable</code>
+                interface; for example:</p>
+            <pre>
+myExecutor.execute(new Runnable(...));
+Future future = meExecutor.submit(new Callable(...));
+</pre>
+            <p>The rest of the <a id="idp22113840"></a><a id="idp22120624"></a><a id="idp22122288"></a>thread processing
+                is done similarly to the <a href="part0018.html#executor_framework">Executor Framework</a> routines with
+                the help of <a href="https://docs.oracle.com/javaee/7/tutorial/concurrency-utilities.htm#GKJIQ8">Concurrency
+                    Utilities for Java EE</a>.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="stateful_session_beans"></a>Stateful Session Beans</h2>
+        <p>Although stateless <a id="idp22127392"></a><a id="idp22129120"></a><a id="idp22130512"></a>session beans are
+            given to the client just for the time one method execution takes, stateful beans are allocated to the client
+            for longer. They have state; they remember the results of the execution of previous method(s). For example,
+            you can use a stateful bean to implement shopping cart functionality, enabling the user to add more than one
+            item to the cart while browsing the company’s catalog. When the client ends the session the stateful bean
+            can be allocated to another client.</p>
+        <p>Suppose you have a stateful EJB called <code>MyShoppingCart</code>. The client’s application looks up this
+            bean using JNDI (or gets it injected) and makes the first call to the method <code>addItem()</code>. Then
+            the user continues browsing and adds another item to the shopping cart. Then the user decides to complete
+            the purchase and calls the method <code>placeOrder()</code>. All these method invocations are done on the
+            same instance of the stateful bean <code>MyShoppingCart</code>:</p>
+        <pre>
+MyShoppingCart myCart = (MyShoppingCart)
+               ctx.lookup("java:global/OnlineStore/MyShoppingCart");
+// The client is browsing the catalog and finds the first item 
+// to buy
+// ...
+myCart.addItem(myFirstItem);
+// The client continue browsing the catalog and finds the second 
+// item to buy
+...
+myCart.addItem(mySecondItem);
+// The client is ready to complete the purchase
+// ...
+myCart.placeOrder();</pre>
+        <p><span epub:type="pagebreak" title="455" id="Page_455"></span>To complete the shopping process and release the
+            stateful bean for other users, the program needs to call one of the bean’s <code>MyShoppingCart</code>
+            methods marked with the <code>@Remove</code> annotation. In the preceding example the method <code>placeOrder()</code>
+            should be marked with this annotation. You should also provide another <code>@Remove</code> method on the
+            bean to allow the client to cancel the order and release the bean.</p>
+        <p>There is one more way to release a stateful bean—by using the <code>@StatefulTimeout</code> annotation, which
+            enables you to specify how long a bean can stay allocated to the client without any activity. When this time
+            expires the session times out and the bean is released.</p>
+    </section>
+    <section>
+        <h2><a id="singleton_beans"></a>Singleton Beans</h2>
+        <p>Pretty often an <a id="idp22141424"></a><a id="idp22143504"></a><a id="idp22144752"></a>application needs a
+            place to keep data that are shared by all the beans. This is when a singleton bean comes in handy. Another
+            use case for a singleton is to control access to some external resources. For example, if a limited number
+            of connections are available to some external Web Service, you can create a singleton that implements
+            throttling for EJBs that need these connections. A singleton bean can be used as global storage (or a cache)
+            for the application; the state of this bean is shared among clients.</p>
+        <p>Only one singleton bean with any given name can exist per JVM per application. If you need several singletons
+            in an application, give them different names. An EJB container doesn’t create pools of singleton beans. To
+            create a singleton EJB just mark a POJO with the <code>@Singleton</code> annotation:</p>
+        <pre>
+@Singleton
+public class MyGlobalStorage {
+...
+}</pre>
+        <p>When is the singleton bean created? It’s up to the EJB container to decide, unless you specifically want to
+            request that this bean be created on application startup. This is called <i>eager initialization,</i> and <a
+                    id="idp22149248"></a>there is a special annotation, <code>@Startup</code>, for it:</p>
+        <pre>
+@Startup
+@Singleton
+public class MyGlobalStorage {
+    // a storage for objects to be shared
+    private Map&lt;String, Object&gt; = new HashMap&lt;&gt;();
+    addToStorage(String key, Object objToStore){...}
+    removeFromStorage(String key){...}
+}</pre>
+        <p>Let’s <span epub:type="pagebreak" title="456" id="Page_456"></span>say that you’d like to create a program
+            that at certain times sends some messages into a queue. Write a singleton bean, request that the EJB
+            container instantiates it on application start-up, and start pushing the messages immediately after the
+            singleton has been constructed. There is another handy annotation, <code>@PostConstruct</code>, that causes
+            the container to invoke a method immediately after the bean’s constructor is finished:</p>
+        <pre>
+@Startup
+@Singleton
+public class MyStockQuoteServer {
+...
+@PostConstruct
+void sendPriceQuotes(){
+   // The code connecting to the stock prices feed and
+   // sending messages to a queue goes here
+ }
+}</pre>
+        <p>To get access to the business methods of a singleton, the client Java classes need to call the public static
+            method <code>getInstance()</code> on the specific singleton, as shown in the following code snippet. If
+            you’ll be implementing the singleton design pattern manually in Java SE you need to declare a private
+            constructor and a public static <code>getInstance()</code> in the class:</p>
+        <pre>
+MyGlobalStorage.getInstance()
+               .addToStorage("emplOfTheMonth", bestEmployee);</pre>
+        <p>But in Java EE, the EJB container takes care of this. The EJB container allows concurrent access to singleton
+            beans, and by default it applies the <i>container-managed concurrency</i> policy, sparing the developer
+            worry about race conditions and such. You just need to use the <code>@Lock</code> annotation, specifying
+            whether you want a resource to be locked during the read or write operation. If you prefer to write
+            thread-synchronization code by yourself, switch to <i>bean-managed concurrency</i>. You set the type of
+            concurrency using the <code>@ConcurrencyManagement</code> annotation, as shown here:</p>
+        <pre>
+@Singleton
+@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
+public class MyGlobalStorage {
+...
+}</pre>
+    </section>
+    <section>
+        <h2><a id="deploying_ejb"></a>Deploying EJB</h2>
+        <p>Before <a id="idp22162352"></a><a id="idp22163792"></a>deployment to any application server, EJBs are usually
+            packaged into one <a href="part0032.html#jars">archive file</a>, which could be a jar; an <i>Enterprise
+                Archive</i> (ear), <a id="idp22165952"></a><a id="idp22167920"></a>which is a Java archive with
+            an <code>.ear</code> file name extension; or a <code>.war</code> in case of web applications. Even a simple
+            web application should be compressed and deployed as one file. If your client’s code is located in a web
+            application it’s convenient to keep the EJB inside a <code>.war</code> file, too. </p>
+        <p>The right way to package the application in an archive file is to use a build automation system like Ant,
+            Maven, or Gradle (see <a href="part0037.html">Lesson 36</a>). But for training purposes you can create a
+            <code>.war</code> file in Eclipse, too.  Right-click the Deployment Descriptor section in the Eclipse
+            project Lesson31 and select Export  → WAR file. In a second you get the file <code>Lesson31.war</code> that
+            contains both the servlet and the EJB.</p>
+        <p>This <span epub:type="pagebreak" title="457" id="Page_457"></span>file can be deployed in any Java
+            EE-compliant application server. This <code>.war</code> file is small: less than 4 KB! Java EE makes EJB
+            components really lightweight. If you have multiple EJB classes, put them in one or more jars in the <code>WEB-INF/lib</code>
+            directory.</p>
+        <p>If your client is not a small web application, or you want to keep EJBs deployed separately, you can package
+            them inside a separate <code>.jar</code> or <code>.ear</code> file. The root directory that you’ll be using
+            to create <code>.ear</code> files has to have all compiled Java classes and, if applicable, the optional
+            <code>ejb-jar.xml</code> file. As a matter of fact, you can create an <code>.ear</code> file that contains
+            not only your EJBs, but also the <code>.war</code> file.</p>
+        <p>The optional configuration file <code>ejb-jar.xml</code> allows you to specify metadata for the EJB, and if
+            you need to change the metadata on a production system without recompiling the code, make the changes
+            in <code>ejb-jar.xml</code>. They override the values specified via annotations. For standalone
+            applications, this file is stored in the application server’s directory <code>META-INF</code>. If the EJBs
+            are packaged with the web application inside the <code>.war</code> file, the <code>ejb-jar.xml</code> has to
+            be located in the directory <code>WEB-INF</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="jars"></a>Java Archives - JARs</h3>
+                <p>A typical Java <a id="idp22183040"></a>application, library or framework consists of multiple
+                    classes, interfaces and configuration files. To simplify deployment and distribution, all these
+                    files are packaged into a small number of Java archives (JARs). Most of the third party libraries
+                    are distributed as JARs. Both JRE and Java SDK include dozens of JARs. In Eclipse you can see them
+                    by opening project properties. </p>
+                <p>Java comes with a <i>jar</i> utility that is used to archive multiple Java classes and other files
+                    into a file having the name extension <code>.jar</code>. Internal formats
+                    of <code>.jar</code> and <code>.zip</code> files are the same. <br/>
+                          <br/>
+                    To create a jar that will contain all files with extension .class, open the  Command or Terminal
+                    window, get into the folder where your classes are,  and type the following command:</p>
+                <pre>
+jar cvf myClasses.jar *.class
+</pre>
+                <p>After the word jar you should specify the options for this command. In the last
+                    example <code>c</code> is for creating a new archive, <code>v</code> is for displaying what goes in
+                    there, and <code>f</code> means that the file name of the new archive is provided.</p>
+                <p>To <i>unjar</i> (extract) the files from the archive <code>myClasses.jar</code>, type the following
+                    command:</p>
+                <pre>
+jar xvf myClasses.jar
+</pre>
+                <p>All files will be extracted into the current directory. In this example the option <code>x</code> is
+                    for extracting files from the archive.</p>
+                <p>If you just want to see the content of the jar without extracting the files, use the next command
+                    where <code>t</code> is for the table of contents:</p>
+                <pre>
+jar tvf myClasses.jar
+</pre>
+                <p>If a JAR includes a <a href="http://docs.oracle.com/javase/tutorial/deployment/jar/appman.html">manifest
+                    file</a> that includes the <code>Main-Class</code> entry, you can run such a Java application from a
+                    command line without the need to unzip the JAR:</p>
+                <pre>
+java -jar myApplication.jar
+</pre>
+                <p>If <span epub:type="pagebreak" title="458" id="Page_458"></span>your project needs to include a
+                    third-party library you should add its JAR(s) to the <code>CLASSPATH</code> environment variable.
+                    For example, in <a href="part0022.html#sample_jdbc_program">Lesson 21</a> we had to add the file
+                    <code>derbyclient.jar</code> that contained database drivers for Derby DB  to
+                    the <code>CLASSPATH</code>. In Eclipse IDE you do this by adding external JARs to the Build Class
+                    Path of the project. For more information read Oracle’s tutorial "<a
+                            href="http://docs.oracle.com/javase/tutorial/deployment/jar">Packaging programs in JAR
+                        Files</a>." </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="message-driven_beans"></a>Message-Driven Beans</h2>
+        <p>MDBs (message-driven beans) <a id="idp22203184"></a><a id="idp22204832"></a>perform only one function: They
+            retrieve messages from queues and topics via the JMS API. The clients never need to look them up or invoke
+            their methods. The client just needs to drop a message in a queue or publish it to a topic, and the MDBs
+            that were listening to the messages at these destinations get invoked automatically.</p>
+        <p>MDBs must implement the <code>MessageListener</code> interface. All configuration parameters can be specified
+            in the parameters of the <code>@MessageDriven</code> annotation, as shown in the following example.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c031-006"></a>Listing 31-6:</span> MDB MyMessageBean</h5>
+                <pre>
+@MessageDriven(mappedName="jms/testQueue", activationConfig = {
+       @ActivationConfigProperty(propertyName = "acknowledgeMode",
+                              propertyValue = "Auto-acknowledge"),
+       @ActivationConfigProperty(propertyName = "destinationType",
+                              propertyValue = "javax.jms.Queue")
+    })
+public class MyMessageBean implements MessageListener {
+MessageDrivenContext ctx;
+    // A no-argument constructor is required
+    public MyListener() {}
+    public void onMessage(Message message){
+        // The business logic is implemented here.
+    }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>When a message appears in the queue named <code>testQueue</code>, the EJB container picks one of the MDBs
+            from the pool and invokes its callback method <code>onMessage()</code>, passing the message from the queue
+            as an argument. Unlike with the standalone message receivers described in <a
+                    href="part0031.html#introducing_jms_and_mom">Chapter 30</a>, with MDBs the container gives you
+            excellent freebies: distributed transaction processing, automatic pooling, co-location of receivers and
+            other beans, and simple assignment of queues or topics to the receivers in deployment descriptors. In
+            addition, you can easily configure the number of receivers by specifying the pool size in the deployment
+            descriptor.</p>
+        <p>You <span epub:type="pagebreak" title="459" id="Page_459"></span>can use any client to send a message in a
+            queue. It can be a standalone client (as shown in <a href="part0031.html#how_to_send_a_message">how_to_send_a_message</a>),
+            a servlet, an EJB, and so on.</p>
+    </section>
+    <section>
+        <h2><a id="idp22181456"></a>EJB and Transactions </h2>
+        <p>Java EE specification <a id="idp22216992"></a><a id="idp22218192"></a><a id="idp22220016"></a>includes Java
+            Transaction API (JTA), which is a standard interface for demarcating transactions in EJB and web containers.
+            <a href="part0022.html">Lesson 21</a> explains how to do <a href="part0022.html#transactional_updates">transactional
+                updates</a> while working with relational databases. But a logical unit of work may include actions
+            other than updating the database. For example, your application may need to update a database and send a
+            message using JMS in one transaction. If any of these operation fails, the entire transaction should be
+            rolled back.</p>
+        <p>More than one EJB can perform actions that should be considered a single transaction. The term <i>transaction
+            scope</i> defines all participants of the transaction, which may be declared on the same or different EJBs.
+            For example, one session bean can have a method <code>saveOrder()</code>, which implements the logic for
+            saving order and calls a method  <code>notifySupplier()</code>on another bean. If any of these methods
+            fails, the entire transaction should be rolled back. </p>
+        <p> Say, a transaction started in the method <code>saveOrder()</code>, which called
+            <code>notifySupplier()</code>. Should the code of the latter work as a part of the existing transaction or
+            create a new one? Should a method simply ignore an existing transaction and its failure should not affect
+            the transaction? There are other questions to answer, too.</p>
+        <p> JTA transactions in EJB containers can be of two types: <i>container-managed</i> and <i>bean-managed</i>.
+            Container-managed transactions are managed by the EJB container, and you just specify transactional behavior
+            in a declarative way by using the annotations <code>@TransactionAttribute</code> <a id="idp22228112"></a><a
+                    id="idp22229408"></a>that instruct the EJB container when to consider a transaction successful. With
+            a bean-managed transaction you’d need to invoke the methods  <code>begin()</code>, <code>commit()</code>,
+            and <code>rollback()</code>of the <code>UserTransaction</code> interface.</p>
+        <p>But using container-managed declarative transaction is a lot easier. The enum
+            <code>TransactionAttributeType</code> declares a handful of transaction attributes: </p>
+        <ul>
+            <li><code>MANDATORY</code>: This method must always be a part of the transaction of the invoking method. If
+                the invoking method has no transaction, the exception <code>EJBTransactionRequired</code> is thrown. 
+            </li>
+            <li><code>REQUIRED</code> : This method must be invoked within a transaction scope. If the invoking method
+                was not transactional, the container will create a new transaction.
+            </li>
+            <li><code>REQUIRES_NEW</code>: Always start a new transaction for this method even if the invoking method
+                has its own transaction
+            </li>
+            <li><code>SUPPORT</code>: Execute the code of this method as a part of the transaction of the invoking
+                method.
+            </li>
+            <li><code>NOT_SUPPORTED</code>: Suspend the transaction of the invoking method until this method is
+                complete. If the invoking method is not executed within a transaction, this method also won’t be
+                transactional.  
+            </li>
+            <li><code>NEVER</code>: This method must never be a part of the transaction. If the invoking method has a
+                transaction, the <code>EJBException</code> is thrown.
+            </li>
+        </ul>
+        <p>If the class is annotated with a transaction attribute, it applies to all methods from the class. You can
+            override the class attribute on the method level. The next example shows a stateless bean that declares that
+            container must create a new transaction for each method except <code>method3()</code>, which should never be
+            executed inside a transaction:</p>
+        <pre>
+@Stateless 
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+class MySessionBean {
+  public void method1(){...}
+  
+  public void method2(){...}
+  
+  @TransactionAttribute(TransactionAttributeType.NEVER)
+  public void method3(){...}
+}
+</pre>
+        <p>Message-driven bean can use only <code>NOT_SUPPORTED</code> or <code>REQUIRED</code> transaction attributes.
+        </p>
+    </section>
+    <section>
+        <h2><a id="timer_service"></a>Timer Service</h2>
+        <p><span epub:type="pagebreak" title="460" id="Page_460"></span>Many enterprise <a id="idp22245824"></a>applications
+            require the use of schedulers to perform certain repetitive tasks at certain times. Cron is a widely used
+            scheduler for UNIX-based applications. Windows also has a task scheduler (Control Panel → Scheduled Tasks).
+            The open-source<a id="idp22247568"></a><a id="idp22248672"></a> Quartz Scheduler is also popular among Java
+            developers.</p>
+        <p>EJB supports <a id="idp22250016"></a><a id="idp22252256"></a>the <code>@Schedule</code> annotation, which
+            takes a calendar-based expression so you can schedule the execution of required functionality in your beans.
+            For example, you can create expressions that invoke some business method every second, minute, hour, Monday,
+            weekday, midnight, and so on.</p>
+        <p>The next code snippet shows how you can create a timer that invokes the method <code>getPriceQuotes()</code>
+            every second during weekdays from 9:30<span style="font-size: 0.94rem;"> a</span>.m. to 4:00 p.m.:</p>
+        <pre>
+@Stateless
+public class MyStockQuoteFeed {
+    @Schedule(second="*", minute="*", hour="9:30-16:00", 
+              dayOfWeek="Mon-Fri")
+    public List getPriceQuotes(){
+        // The code to connect to price quote feed goes here
+        ...
+    }
+}</pre>
+        <p>You can also create timers programmatically using the <code>TimeService</code> class and its methods <code>createTimer()</code>,
+            <code>createSingleActionTimer()</code>, <code>createIntervalTimer()</code>, and
+            <code>createCalendarTimer()</code>.</p>
+        <p>In addition to using <code>@Schedule</code> and programmatic timers, you can configure timers in the
+            deployment descriptor <code>ejb-jar.xml</code>.</p>
+    </section>
+    <section>
+        <h2><a id="summary-id00117"></a>Summary</h2>
+        <p>Enterprise Java Beans technology is a powerful solution for creating a scalable, easy-to-develop and -deploy,
+            and lightweight solution for enterprise applications. Even a small-scale applications can benefit from EJB.
+            If your <span epub:type="pagebreak" title="461" id="Page_461"></span>application doesn’t need all the
+            features mandated by the EJB specification, consider using EJB Lite, which is a subset of the full
+            specification.</p>
+        <p>It’s not possible to cover all the features offered by EJB containers in one short lesson. I’ve introduced
+            you to the main EJB concepts, but if you’d like more in-depth coverage, read the <a
+                    href="https://docs.oracle.com/javaee/7/tutorial/partentbeans.htm#BNBLR">EJB section</a> in Oracle’s
+            Java EE 7 tutorial.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00118"></a>Try It</h2>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;You can download <a id="idp22265520"></a><a
+                        id="idp22267072"></a>the code and resources for this “Try It” from the book’s web page at <code><a
+                        href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>. You can
+                    find them in <code>Lesson31.zip</code>.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The assignment for this lesson is to implement the <code>StockServer</code> class as an EJB and to use the
+            timer to automatically generate and print stock price quotes every second. The new quotes should be sent to
+            <code>testQueue</code> via the JMS API and consumed by a message-driven bean. Reuse the code of the sample
+            stock server application of the <code>StockServerImpl</code> from <a href="part0025.html#list-c024-002">Listing
+                24-2</a> to generate the price quotes.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00119"></a>Lesson Requirements</h3>
+            <p>You should have Java and GlassFish installed.</p>
+        </section>
+        <section>
+            <h3><a id="hint-id00120"></a>Hint</h3>
+            <p>If you want to push the stock prices to the end users, consider creating a JMS topic (for example, <code>PriceQuotes</code>)
+                to which the method <code>getQuote()</code> publishes the latest prices. The Java client should
+                subscribe to this topic to get the fresh quotes every second.</p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00121"></a>Step-by-Step</h3>
+            <ol>
+                <li>
+                    <p>In Eclipse project Lesson31, create a new stateless session bean, <code>StockServerBean</code>,
+                        that includes the method <code>getQuote()</code>. The initial version of the bean may look as
+                        follows:</p>
+                    <pre>
+@Stateless
+public class StockServerBean {
+  private String price=null;
+  private List&lt;String&gt; nasdaqSymbols = new ArrayList&lt;&gt;();
+  public StockServerBean(){
+    // Define some hard-coded NASDAQ symbols
+    nasdaqSymbols.add("AAPL");
+    nasdaqSymbols.add("MSFT");
+    nasdaqSymbols.add("YHOO");
+    nasdaqSymbols.add("AMZN");
+ }
+ public void getQuote(String symbol){
+   if(nasdaqSymbols.indexOf(symbol.toUpperCase()) != -1) {
+       // Generate a random price for valid symbols
+       price = (new Double(Math.random()*100)).toString();
+   }
+   System.out.println("The price of "+ symbol + " is " + price);
+  }
+}</pre>
+                </li>
+                <li>Use the <code>@Schedule</code> annotation to have the <code>getQuote()</code> method invoked every
+                    second.
+                </li>
+                <li>Replace the <code>println()</code> statement in the method <code>getQuote()</code> with the code
+                    sending a text message with the generated price quote to the queue <code>MyJMSTestQueue</code>
+                    configured in <a href="part0030.html#introducing_jndi">Chapter 29</a>.
+                </li>
+                <li>Create an MDB called <code>MyPriceConsumer</code> to retrieve and print messages from the queue
+                    <code>MyJMSTestQueue</code>.
+                </li>
+                <li>Deploy this application <span epub:type="pagebreak" title="462" id="Page_462"></span>in GlassFish
+                    and test it.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0032.html">Lesson 31</a></i><i> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

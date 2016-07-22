@@ -1,0 +1,1031 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Build Automation with Gradle</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="gradle"></a><span class="chapterTitle">Lesson 36<br/>Build Automation with Gradle</span></h1>
+
+    <section>
+        <p>While <span epub:type="pagebreak" title="527" id="Page_527"></span>studying Java and trying to work on
+            hands-on assignments, you’ve been compiling, deploying, and running Java programs in the integrated
+            development environment (IDE). These actions were <a id="idp23524608"></a>required to <i>build projects</i>.
+            For a real-world project, the build process usually includes more steps before the application goes into
+            production. For example:</p>
+        <ul>
+            <li>Running unit and integration tests</li>
+            <li>Creating scripts for continuous integration</li>
+            <li>Working with version control systems and code repositories</li>
+            <li>Managing dependencies (ensuring that the right versions of the third-party libraries are linked to the
+                code)
+            </li>
+            <li>Generating program documentation</li>
+            <li>Deploying the application on development, quality assurance (QA), and production servers</li>
+            <li>Sending notification e-mails about successful or failed builds</li>
+        </ul>
+        <p>In the enterprise setup, creating, customizing and maintaining build scripts is a project in its own, which
+            should be started in early stages of application development.</p>
+        <p>The build process should not depend on any particular IDE or on the presence of any guru-developer who knows
+            how to compile all the code, link it with required libraries, and deploy it to the right computer.
+            Compiling, building, and deploying the code should be run by scripts. A typical enterprise Java project
+            consists of more than one software module and hundreds of classes, and it is developed by a team (or teams)
+            of programmers, who may use different IDEs.</p>
+        <p><a href="http://en.wikipedia.org/wiki/Continuous_integration">Continuous Integration</a> (CI) is a <a
+                id="idp23532512"></a>practice that requires developers to check the code into a code repository several
+            times a day, and every check-in may initiate a new automated build of the entire project. Besides, there
+            could be scheduled builds that run nightly or weekly regardless of whether the new code was checked
+            in. Teams that practice <a href="http://en.wikipedia.org/wiki/Test-driven_development">test-driven
+                development</a> (TDD) include running of multiple tests into the build script to get the reports and act
+            on any issues early. <a href="http://en.wikipedia.org/wiki/Continuous_delivery">Continuous Delivery</a>
+            practice goes even further than CI; delivery of software to the test or production servers is scripted and
+            automated, too. When a programmer sees a “Who broke the build?” message in the team’s chat window, his first
+            thought is, “It better not be me." </p>
+        <p>Implementing <span epub:type="pagebreak" title="528" id="Page_528"></span>build scripts improves the
+            discipline in the team . You better think (or test) twice before submitting a piece of the new functionality
+            to the code repository without testing it as it might break the build.</p>
+        <p>This lesson starts with very brief introduction to the older build tools Ant and Maven, and then you get
+            familiar with the modern build automation tool called <a href="https://www.gradle.org/">Gradle</a>. </p>
+    </section>
+    <section>
+        <h2><a id="helloant"></a>Hello World in Ant </h2>
+        <p>About <a id="anthello1"></a><a id="anthello2"></a><a id="anthello3"></a>fifteen years years ago, <a
+                href="http://ant.apache.org/">Apache Ant</a> was the most popular build tool in the Java world. The
+            build in Ant is described in a file that contains several <i>targets</i> that the build should achieve a
+            sequence—for example, <code>compile</code>, <code>jar</code>, and <code>run</code>. A target consists of <i>tasks</i>,
+            such as  <code>mkdir</code> and <code>javac</code>. </p>
+        <p>Say you wrote a class <code>HelloWorld</code>, saved it in the file <code>HelloWorld.java</code>, and want to
+            configure an Ant build process. Create a file <code>build.xml</code> with the following content:</p>
+        <pre>
+&lt;project default="main"&gt; 
+  &lt;target name="clean"&gt; 
+     &lt;delete dir="build"/&gt; 
+  &lt;/target&gt; 
+  
+   &lt;target name="compile" depends="clean"&gt; 
+     &lt;mkdir dir="build/classes"/&gt; 
+     &lt;javac srcdir="src" destdir="build/classes"/&gt; 
+  &lt;/target&gt; 
+  &lt;target name="jar"  depends="compile"&gt; 
+      &lt;mkdir dir="build/jar"/&gt; 
+      &lt;jar destfile="build/jar/HelloWorld.jar" 
+                                           basedir="build/classes"&gt; 
+        &lt;manifest&gt; 
+          &lt;attribute name="Main-Class" value="HelloWorld"/&gt; 
+        &lt;/manifest&gt; 
+     &lt;/jar&gt; 
+  &lt;/target&gt; 
+  &lt;target name="run" depends="jar"&gt; 
+    &lt;java jar="build/jar/HelloWorld.jar" fork="true" /&gt; 
+  &lt;/target&gt; 
+    
+  &lt;target name="main" depends="clean, compile, jar, run"&gt;
+  &lt;/target&gt;    
+&lt;/project&gt;
+</pre>
+        <p>This file describes five targets: <code>clean</code>, <code>compile</code>, <code>jar</code>,
+             <code>run</code>, and <code>main</code>. The <code>clean</code> task deletes the directory
+            <code>build</code>. The <code>compile</code> target consists of two tasks: create a directory build and
+            compile all classes located in the directory <code>src</code>  into the directory <code>build/classes</code>.
+        </p>
+        <p>The <code>jar</code> target creates a directory <code>build/jar</code> and then creates a jar file from
+            compiled classes assigning the class <code>HelloWorld</code> as a runnable program. The <code>run</code>
+            target launches the application. The <code>main</code> target runs by <span epub:type="pagebreak"
+                                                                                        title="529"
+                                                                                        id="Page_529"></span>default if
+            you go to the directory where the <code>build.xml</code> is located and enter the <code>ant</code> command
+            without parameters.</p>
+        <p>You may also add custom <code>&lt;property&gt;</code> tags (for example, naming the source or destination
+            directories) and the <code>&lt;path&gt;</code> element listing JAR files that otherwise should have been
+            added to the <code>CLASSPATH</code> environment variable. </p>
+        <p>Most of the targets depend on the success of another (see the <code>depends</code> attributes). The target’s
+            executional unit fails if any of the targets listed in the <code>depends</code> attribute fail. Writing such
+            detailed instructions on what has to be done is known as the <i>imperative way</i> of describing builds.  
+        </p>
+        <p>You can run one or more targets by specifying their names in the command line. For example, this is how to
+            run several targets with one command:</p>
+        <pre>
+ant clean compile jar run
+</pre>
+        <p>All Java IDEs support Ant, and you can run the target without even going to the command window. For <a
+                id="idp23569664"></a><a id="idp23569088"></a><a id="idp23571088"></a>example, Eclipse has an Ant view,
+            and you can run each of the tasks from the right-click menu, as shown in <a id="fig-anc-c036-001"
+                                                                                        href="part0037.html#fig-c036-001">Figure
+                36-1</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00626.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c036-001"
+                                                   href="part0037.html#fig-anc-c036-001">Figure 36-1</a>:</b></span> Ant
+                    view in Eclipse IDE </p>
+            </figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2><a id="idp23535280"></a>Hello World in Maven</h2>
+        <p>In 2004 <a href="http://maven.apache.org/">Apache Maven</a> was <a id="mavenhello1"></a><a
+                id="idp23579696"></a><a id="mavenhello2"></a>released, and it soon became the de facto standard for
+            building Java projects. Maven is not just a build tool; it’s a project management tool. Based on the project
+            object model (POM) defined in one or more <code>pom.xml</code> files, Maven can manage the project’s build
+            process and pull all dependencies either from a local server or a <a href="http://search.maven.org/">central
+                repository</a>. Maven’s  functionality can be extended using numerous existing plug-ins or with those
+            you write on your own.</p>
+        <p>The smallest unit of work in Maven is called <i>a goal</i>. You can start development with the generation of
+            the standard project structure by opening a Command or a Terminal window and entering the <code>mvn</code> command
+            with the goal <code>archetype:generate</code>:</p>
+        <pre>
+mvn archetype:generate -DgroupId=hello.app -DartifactId=Lesson36 
+-DarchetypeArtifactId=maven-archetype-quickstart 
+-DinteractiveMode=false
+</pre>
+        <p>In <span epub:type="pagebreak" title="530" id="Page_530"></span>several seconds the directories and files
+            shown in <a id="fig-anc-c036-002" href="part0037.html#fig-c036-002">Figure 36-2</a> are generated in the
+            directory <code>Lesson36</code>.</p>
+        <figure>
+            <img class="center" src="../Images/image00627.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c036-002"
+                                                   href="part0037.html#fig-anc-c036-002">Figure 36-2</a>:</b></span>
+                    Maven-generated project</p>
+            </figcaption>
+        </figure>
+        <p>Per Maven’s conventions, the source code is located in the directory <code>src/main/java</code>, and the
+            compiled code goes into the directory <code>target</code> (it doesn’t exist yet). The file
+            <code>App.java</code> contains the Java class with the code to print Hello World on the console. The file
+            <code>AppTest.java</code> creates the code for unit testing using the JUnit framework covered in <a
+                    href="part0036.html#testing">Lesson 35</a>. The content of the generated file <code>pom.xml</code>
+            is shown here:</p>
+        <pre>
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+              http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;hello.app&lt;/groupId&gt;
+<strong>  &lt;artifactId&gt;Lesson36&lt;/artifactId&gt;</strong>
+  &lt;packaging&gt;jar&lt;/packaging&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;Lesson36&lt;/name&gt;
+  &lt;url&gt;http://maven.apache.org&lt;/url&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;junit&lt;/groupId&gt;
+<strong>      &lt;artifactId&gt;junit&lt;/artifactId&gt;</strong>
+      &lt;version&gt;3.8.1&lt;/version&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;
+</pre>
+        <p>With <span epub:type="pagebreak" title="531" id="Page_531"></span>Maven you can, but don’t have to, specify
+            step-by-step instructions for the build process. You describe the project in a <i>declarative way</i> by
+            specifying packaging and dependencies. You described <i>what</i> has to be done, but not <i>how</i> to do it
+            as it’s done with Ant. For example, when you declare that a <code>&lt;packaging&gt;</code> element of the
+            project is <a href="part0032.html#deploying_ejb">JAR, WAR, or EAR</a>, you don’t have to specify detailed
+            executional units because Maven automatically creates a number of goals that have to be executed to create a
+            requested packaging.   </p>
+        <p>Maven <a id="idp23598288"></a>promotes the <i>convention over configuration</i> paradigm, where each project
+            has a standardized layout. For example, Maven knows that the source code of the project is located in the
+            directory <code>src/main/java</code>. Standard conventions work well unless you need to create build scripts
+            for several modules that use different conventions. Customizing builds requires writing Maven plug-ins so
+            the final build consists of a mix of XML and scripts written in the Java or Groovy languages. </p>
+        <p>The results of a Maven build are called artifacts. In the example, the artifact named Lesson36 depends on the
+            artifact junit of version 3.8.1 (the current version of junit is 4.12).</p>
+        <p>Maven’s <a href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html">build life
+            cycle</a> consists of phases (such as <code>install</code> and <code>clean</code>) , which can run goals
+            (for example, <code>clean:clean</code> or <code>dependency:copy-dependencies</code>). To build the project,
+            you need to go to the directory that contains <code>pom.xml</code> and execute the phase
+            <code>package</code>, which compiles and deploys it according to the <code>&lt;packaging&gt;</code> tag:</p>
+        <pre>
+mvn package
+</pre>
+        <p>The phase package compiles and creates the JAR file, attaching the prefix specified in <code>
+            &lt;version&gt;</code> to the filename. You can find this file in the directory <code>target</code> as shown
+            in <a id="fig-anc-c036-003" href="part0037.html#fig-c036-003">Figure 36-3</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00628.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c036-003"
+                                                   href="part0037.html#fig-anc-c036-003">Figure 36-3</a>:</b></span> The
+                    target directory after running the phase package</p>
+            </figcaption>
+        </figure>
+        <p>If <span epub:type="pagebreak" title="532" id="Page_532"></span>you didn’t want to package the compiled
+            classes into a JAR, you could just run the <code>mvn</code> compile command and Maven would compile the
+            classes into the <code>target/classes</code> directory. To see the Hello World message on the console run
+            the following command:</p>
+        <pre>
+java -cp target/Lesson36-1.0-SNAPSHOT.jar hello.app.App
+</pre>
+        <p>To run tests that were generated in the test directory run the <code>verify</code> goal: </p>
+        <pre>
+mvn verify</pre>
+        <p>Both Ant and Maven describe the control flow of the build in XML format. Because XML is not a programming
+            language, the ability to customize and adapt builds for changing environments may <a id="idp23619904"></a><a
+                    id="idp23617120"></a><a id="idp23618128"></a>not be easy. In our Hello World projects, XML files
+            were rather small, but in real-world projects they could consist of hundreds of lines. </p>
+    </section>
+    <section>
+        <h2><a id="idp23576256"></a>Gradle Basics</h2>
+        <p>Gradle is written in Java, and <a id="idp23622576"></a>it doesn’t use XML to describe builds. Gradle uses a
+            <a id="idp23625312"></a><a id="idp23624976"></a>Domain Specific Language (DSL) based on Groovy, which is a
+            dynamic language that runs in Java Virtual Machine (JVM). The build script is written in a text file, which
+            has a <code>.gradle</code> extension. But this file is not just data formatted in XML or another way. It’s a
+            program. </p>
+        <p>The <a id="idp23628256"></a><a id="idp23629072"></a>main Gradle concepts are <i>projects</i> and <i>tasks</i>.
+            By default, the name of the directory where the build script is located is a name of the project. Each build
+            consist of tasks. A task is an equivalent of the Ant’s target. A task consists of <i>actions</i>. Gradle may
+            decide to run certain tasks in parallel or not run at all. For example, if the source code has not been
+            changed, Gradle won’t run the compile task.</p>
+        <p>Installing Gradle is a pretty simple process described in these <a
+                href="https://gradle.org/docs/current/userguide/installation.html">installation instructions</a>. Just
+            download and unzip the file with the latest Gradle release and add the Gradle’s <code>bin</code> directory
+            to the <code>PATH</code> environment variable on your computer. </p>
+        <p>Gradle has a user guide in both HTML and PDF formats, which you can find in the <code>docs/userguide</code>
+            directory of your Gradle install. There is also a javadoc for the Gradle API in the directory <code>docs/javadoc</code>.
+            There you can find a description of interfaces <code>Project</code>, <code>Task</code>,  <code>Action</code>,
+            and many others.</p>
+        <p>Similarly to Maven, Gradle uses a certain convention about the default project directory layout (<a
+                href="part0037.html#changing_conventions">it can be customized</a>). Because we’ll be creating a Java
+            build, the default location of the Java source files is the directory <code>src/main/java</code>.  The
+            directory <code>src/main/resources</code> is a default location for all project resources that are usually
+            packaged inside a JAR file with compiled Java classes. By default, the build output goes into the directory
+            called <code>build</code>.</p>
+        <p>The next section starts familiarizing you with Gradle by showing you how to compile and run a <code>HelloWorld</code>
+            class that should print Hello World on the system console.</p>
+        <section>
+            <h3><a id="hellogradle"></a>Hello World in Gradle</h3>
+            <p>In this example <a id="gradlehello1"></a><a id="gradlehello2"></a><a id="gradlehello3"></a>you’re going
+                to place the  <code>HelloWorld</code> class in the package <code>hello</code>. Start with creating a
+                directory <code>src/main/java/hello</code> and save the file <code>HelloWorld.java</code> there.</p>
+            <section>
+                <h4><a id="idp23650800"></a>Building Hello World</h4>
+                <p>Although <span epub:type="pagebreak" title="533" id="Page_533"></span>core Gradle doesn’t provide
+                    much functionality, you can use it as a build tool for different programming languages. All
+                    language-specific features are provided as plug-ins, and you add only those that are needed for your
+                    project. Some plug-ins are available out of the box, and you can extend Gradle by writing your own
+                    plug-ins. </p>
+                <p>Here’s a simple script, <code>build.gradle</code>, that can perform several tasks. In particular, it
+                    can compile Java classes located in the directory <code>src/main/java</code>:</p>
+                <pre>
+apply plugin: 'java'
+</pre>
+                <p>The file <code>build.gradle</code> should be located in the same directory as <code>src</code>. To
+                    run the build, open the Command or Terminal window in this directory and run the <code>build</code> task:
+                </p>
+                <pre>
+gradle build</pre>
+                <p>Although you’ve never declared the <code>build</code> task in <code>build.gradle</code>, it’s already
+                    a part of the Java plug-in. You’d need to read the documentation to learn what a specific plug-in
+                    can do for you. For example, <a
+                            href="http://www.gradle.org/docs/current/userguide/java_plugin.html">the documentation</a> for
+                    the <code>java</code> plug-in describes 22 tasks (for example,
+                    <code>clean</code>, <code>compileJava</code>, <code>jar</code>, and <code>build</code>).  The test
+                    task runs the tests created with JUnit covered in <a href="part0036.html#junit">Lesson 35</a>. After
+                    running the build task, my Terminal window looked like <a id="fig-anc-c036-004"
+                                                                              href="part0037.html#fig-c036-004">Figure
+                        36-4</a>.</p>
+                <figure>
+                    <img class="center" src="../Images/image00629.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c036-004" href="part0037.html#fig-anc-c036-004">Figure 36-4</a>:</b></span>
+                            Running the Gradle build command the first time </p>
+                    </figcaption>
+                </figure>
+                <p>Note that the <code>build</code> task initiated a series of other
+                    tasks: <code>compileJava</code>, <code>processResources</code>, <code>classes</code>, <code>jar</code>,
+                    and so on . Actually, some of the tasks were marked as UP-TO-DATE—they were not run because you
+                    don’t have any resources under <code>src/main/resources</code> or test classes under <code>src/test/java</code>.
+                    You also haven’t included another plug-in that can check the quality of your code. Now run the
+                    Gradle build task again. The output looks a little different, as shown in <a id="fig-anc-c036-005"
+                                                                                                 href="part0037.html#fig-c036-005">Figure
+                        36-5</a>.</p>
+                <figure>
+                    <img class="center" src="../Images/image00630.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c036-005" href="part0037.html#fig-anc-c036-005">Figure 36-5</a>:</b></span>
+                            Running <span epub:type="pagebreak" title="534" id="Page_534"></span>Gradle build again</p>
+                    </figcaption>
+                </figure>
+                <p>This time Gradle had nothing to do because everything, including compiled classes and the JAR, was up
+                    to date. This feature is called <i>incremental build</i>—Gradle doesn’t run the tasks, which would
+                    produce the same results.</p>
+                <p>The <code>compileJava</code> task supports incremental Java compilation, which saves time by
+                    compiling only those classes that have been modified.</p>
+                <p>I started the build having only class <code>HelloWorld</code> in the
+                    folder <code>src/main/java/hello</code>. Gradle’s <code>build</code> task has created the <code>build</code> directory
+                    with the content shown in <a id="fig-anc-c036-006" href="part0037.html#fig-c036-006">Figure 36-6</a>.
+                </p>
+                <figure>
+                    <img class="center" src="../Images/image00631.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c036-006" href="part0037.html#fig-anc-c036-006">Figure 36-6</a>:</b></span>
+                            The <span epub:type="pagebreak" title="535" id="Page_535"></span>Hello World project after
+                            running the Gradle build task </p>
+                    </figcaption>
+                </figure>
+                <p>The <code>classes</code> directory contains the compiled classes, and the <code>lib</code> directory
+                    contains the JAR file with <code>HelloWorld.class</code> inside (it was created by the task <code>jar</code>). 
+                </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature2">
+                        <h3><a id="idp23679072"></a>Specifying the Build Filename</h3>
+                        <p>By default, Gradle assumes that the name of the build script is <code>build.gradle</code>.
+                            But if you’d like to keep more than one build file in the same directory, you can always use
+                            the <code>-b</code> command-line option and enter the build filename; for example:</p>
+                        <pre>
+gradle -b mySecondBuildFile.gradle build
+</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+            <section>
+                <h4><a id="idp23651376"></a>Running Hello World</h4>
+                <p>You can run the compiled <code>HelloWorld</code> class as any other Java program by entering the
+                    following command:</p>
+                <pre>
+java -cp build/classes/main hello.HelloWorld
+</pre>
+                <p>On the other hand, you can add to <code>build.gradle</code> the <code>application</code> plug-in that
+                    has tasks to run programs. Because your project may have multiple classes, you also need to specify
+                    the name of the class with the <code>main()</code> method that you want to run:</p>
+                <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="hello.HelloWorld"
+</pre>
+                <p>Now <span epub:type="pagebreak" title="536" id="Page_536"></span>enter <code>gradle run</code> on the
+                    command line, and you see the Hello World message printed on the console. </p>
+                <p>Next, configure the manifest property of the jar object (yes, Gradle tasks are objects). To make the
+                    JAR executable, it has to include the manifest file that specifies the class with
+                    the <code>main()</code> method in our application. In the Hello World example, you have a single
+                    class, which has the <code>main()</code> method. But in larger projects you have multiple files, and
+                    only one of them is the main one. The following build file takes care of the manifest:</p>
+                <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="hello.HelloWorld"
+jar {
+  manifest {
+    attributes 'Main-Class': 'hello.HelloWorld'
+  }
+}
+</pre>
+                <p>After running the build task, you can go to the <code>build/libs</code> directory and run the <code>HelloWorld</code> application
+                    as follows:</p>
+                <pre>
+java -jar HelloWorld.jar
+</pre>
+                <p>If you want to see the content of the manifest file that Gradle created and placed inside the JAR,
+                    visit the <code>build/tmp/jar</code> directory where you’ll find a  <code>MANIFEST.MF</code> file
+                    with the following content:</p>
+                <pre>
+Manifest-Version: 1.0
+Main-Class: hello.HelloWorld
+</pre>
+            </section>
+            <p>Your <code>build.gradle</code> file looks a lot shorter than the <code>build.xml</code> shown in the
+                section <a href="part0037.html#helloant">Hello World with Ant</a>, but with Ant it’s easier to
+                understand what the build process can do. On the other hand, on large projects you need to write lots of
+                Ant targets whereas Gradle plug-ins include <a id="idp23698944"></a><a id="idp23701008"></a><a
+                        id="idp23702896"></a>multiple tasks out of the box.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="changing_conventions"></a>Changing Gradle Conventions</h2>
+        <p>Software developers may be accustomed to <a id="conv"></a>certain project layouts, which may not necessarily
+            match Gradle default conventions. This section shows you how to change Gradle’s conventions on where the
+            sources and resources are located, and where the output files should go. </p>
+        <p>Say that I want to keep the Java source code in the <code>src</code> directory, and
+            not <code>src/main/java</code>, which is Gradle’s default. I want to keep additional resource files in the
+            <code>resources</code> directory instead of <code>src/main/resources</code>. I also want to change my output
+            directory from <code>build</code> to <code>bin</code> .  </p>
+        <p>The <a href="http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.SourceSet.html">SourceSet API</a>
+            enables you to change Gradle conventions of the Java projects. A source set is a concept of a Java plug-in
+            that represents a group of files (classes and resources) that are compiled and executed together. The <span
+                    epub:type="pagebreak" title="537" id="Page_537"></span>Java plug-in defines two standard source
+            sets: <code>main</code> and <code>test</code>. Because you haven’t written any test classes; you can just
+            redefine the directory for the source set <code>main</code>.</p>
+        <p>For illustration purposes, this example also shows you how to have Gradle create the <code>libs</code>
+            directory as a sibling to <code>src</code> and <code>bin</code>using the property <code>libsDirName</code>. Use
+            the same <code>HelloWorld</code> example to try this out. I’m using the <code>build.gradle</code> from the
+            previous section and adding a <code>sourceSets</code> code block to it:</p>
+        <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="hello.HelloWorld"
+jar {
+  manifest {
+    attributes 'Main-Class': 'hello.HelloWorld'
+  }
+}
+sourceSets{
+   main{
+     java{
+        srcDirs=['src']
+        output.classesDir='bin'
+     }
+     resources {
+        srcDir 'resources'
+     }
+   }
+}
+libsDirName='../libs'
+</pre>
+        <p>Now move <code>hello/HelloWorld.java</code> from <code>src/main/java</code> to <code>src</code> and run the
+            preceding build to see the <code>bin</code> and <code>libs</code> directory at the same level as
+            <code>src,</code> as shown in <a id="fig-anc-c036-007" href="part0037.html#fig-c036-007">Figure 36-7</a>.
+        </p>
+        <figure>
+            <img class="center" src="../Images/image00632.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c036-007"
+                                                   href="part0037.html#fig-anc-c036-007">Figure 36-7</a>:</b></span>
+                    Running <span epub:type="pagebreak" title="538" id="Page_538"></span>the build after changing
+                    Gradle’s defaults</p>
+            </figcaption>
+        </figure>
+        <p>I’m not encouraging you to change the default project layout, but in some cases you need to introduce Gradle
+            in the existing projects with a different directory structure, so having this type of <a
+                    id="idp23728672"></a>flexibility helps.</p>
+    </section>
+    <section>
+        <h2><a id="idp23705104"></a>Managing Dependencies with Gradle</h2>
+        <p>Real-world Java projects <a id="idp23728480"></a><a id="idp23730320"></a>often depend on external libraries.
+            For example, the <a href="part0022.html#sample_jdbc_program">JDBC example</a> from <a href="part0022.html">Lesson
+                21</a> wouldn’t work without the Derby DB drivers packaged in the file <code>derbyclient.jar</code>.
+            Hence, to create a build script for the application that works with Derby DB, you need to add this JAR to
+            the <code>build.gradle</code> script.</p>
+        <p>But knowing <i>what</i> JAR files to add is not enough. You also need to specify <i>where</i> these files are
+            located.  Accordingly, the <code>dependencies</code> code block answers the <i>what</i> question, and <code>repositories</code>
+            points at the location <i>where</i> these files are stored.</p>
+        <p>Dependency Management is well described in the <a
+                href="http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html">Gradle
+            tutorial</a>, but this section shows you how to work with repositories and dependencies while working on a
+            concrete example, namely the <code>EmployeeList</code> program from <a
+                    href="part0022.html#sample_jdbc_program">Lesson 21</a>. This program retrieves a list of employees
+            from the Derby DB database. Start with creating a directory <code>derbySample</code>; the
+            <code>build.gradle</code> goes there. Then create subdirectories <code>src/main/java</code> and copy to
+            there the file <code>EmployeeList.java</code> from <a href="part0022.html">Lesson 21</a>:</p>
+        <pre>
+// Class EmployeeList displays Employees from the table EMP 
+// using JDBC drivers of type 4
+import java.sql.*;
+class EmployeeList {
+  public static void main(String argv[]) {
+   
+   String sqlQuery = "SELECT * from Employee"; 
+   // Open autocloseable Connection, Statement 
+   // and get the result set
+   try (Connection conn = DriverManager.getConnection( 
+                          "jdbc:derby://localhost:1527/Lesson21");
+        Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(sqlQuery); ) {  
+      // Process the result set - print Employees
+      while (rs.next()){ 
+         int empNo = rs.getInt("EMPNO");
+            String eName = rs.getString("ENAME");
+         String job = rs.getString("JOB_TITLE");
+         System.out.println(""+ empNo + ", " + eName + ", " + job );
+      }
+   } catch( SQLException se ) {
+      System.out.println ("SQLError: " + se.getMessage ()
+           + " code: " + se.getErrorCode ());
+   } catch( Exception e ) {
+      System.out.println(e.getMessage());  
+   } 
+ }
+}
+</pre>
+        <p>In the directory <code>derbySample</code>, create the <code>gradle.build</code> file that looks like this:
+        </p>
+        <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="EmployeeList"</pre>
+        <p><span epub:type="pagebreak" title="539" id="Page_539"></span>Running the task <code>gradle build</code>
+            produces no errors and creates the file <code>EmployeeList.class</code> in the directory <code>build/classes/main</code> and
+            <code>derbySample.jar</code> in the directory <code>build/libs</code>. But when I executed the command
+            <code>gradle run</code> it gave me the runtime exception "<span>No suitable driver,</span>" as shown in <a
+                    id="fig-anc-c036-008" href="part0037.html#fig-c036-008">Figure 36-8</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00633.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c036-008"
+                                                   href="part0037.html#fig-anc-c036-008">Figure 36-8</a>:</b></span>
+                    Running Gradle results in an exception</p>
+            </figcaption>
+        </figure>
+        <p>You <span epub:type="pagebreak" title="540" id="Page_540"></span>know why: Java could not find JDBC drivers
+            to work with Derby DB. In other words, the application <code>EmployeeList</code> depends on the file <code>derbyclient.jar</code>.,
+            which was not included in the <code>CLASSPATH</code>. I broke the build! Let’s fix it by adding repositories
+            and dependencies.</p>
+        <section>
+            <h3><a id="repos"></a>Repositories</h3>
+            <p>Repositories of the <a id="idp23756000"></a><a id="idp23757712"></a><a id="idp23759376"></a>code that a
+                project depends on can be local or remote. You may have a dedicated server within the organization where
+                all third-party and homemade JARs are located. In another scenario, the JAR (or JARs) you project may be
+                created as a part of another project build and published in a predefined location. </p>
+            <p>There are many software source code hosting facilities on the Internet. Some of them are public, and some
+                are private. Some of them host <a
+                        href="http://en.wikipedia.org/wiki/Comparison_of_source_code_software_hosting_facilities">source
+                    code</a>, and some host-compiled code (or binaries). In the Java world, the most popular
+                repositories of the compiled code are Maven Central, Apache Ivy, and Bintray by JFrog. This section uses
+                Maven Central to look for the <code>derbyclient.jar</code>. A quick search in Maven Central produces the
+                result shown in <a id="fig-anc-c036-009" href="part0037.html#fig-c036-009">Figure 36-9</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00634.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c036-009" href="part0037.html#fig-anc-c036-009">Figure 36-9</a>:</b></span>
+                        Derby Client at Maven Central</p>
+                </figcaption>
+            </figure>
+            <p>Every artifact in Maven Central has such attributes as <code>group id</code>, <code>artifact id</code>,
+                and <code>version</code>. If you click on the Latest Version link, you find a detailed information about
+                this artifact, and you can even copy the string with dependencies for automatic download of this
+                artifact. You use <code>group id</code>, <code>artifact id</code>, and <code>version</code> in the
+                dependencies section of the build in the next section. For now, just add Maven Central in the
+                repositories block of the build script:</p>
+            <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="EmployeeList"
+repositories{   
+   mavenCentral() 
+}
+</pre>
+            <p>I’ll use Maven Central repository, but if you want to store the artifacts in one of your company servers,
+                you could specify it as follows:</p>
+            <pre>
+repositories{   
+    mavenLocal()
+}
+</pre>
+            <p>By <span epub:type="pagebreak" title="541" id="Page_541"></span>default, Gradle uses the
+                directory <i><code
+                        style="margin: 0px; padding: 0px; border: 0px;  font-size: inherit; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit;   vertical-align: baseline;">USER_HOME/.m2/repository </code></i>on
+                the local computer. This location can be changed in the file <code>settings.gradle</code> (see <a
+                        href="http://www.gradle.org/docs/current/dsl/org.gradle.api.initialization.Settings.html">Gradle
+                    documentation</a> for details).</p>
+            <p>You’re done with the first part. Your build script knows where to look for project dependencies, which
+                are covered in the next section.</p>
+        </section>
+        <section>
+            <h3><a id="idp23753792"></a>Dependencies and Configurations</h3>
+            <p>Your build <a id="conf1"></a><a id="conf2"></a><a id="conf3"></a>process may depend on certain JARs
+                during different phases of its control flow. In some cases, your code won’t even compile if a certain
+                JAR is not available in the <code>CLASSPATH</code>. For example, when you’ve been creating Dynamic Web
+                Projects in Eclipse, all references to the Java EE classes, interfaces, or annotations (for example,
+                <code>HttpServlet</code>  or <code>@Stateless</code>) were known to the project during the compilation.
+                The reason being that when Eclipse creates a Dynamic Web Project for a specific target server, it adds
+                all JARS (dependencies) to the project. Open the Build Path of any of your GlassFish Eclipse projects,
+                and you’ll find there an entry called GlassFish System Libraries that includes dozens of JARs.  </p>
+            <p>In some cases (as with the  <code>EmployeeList</code> program), the code compiles but generates errors
+                during the run time. The same applies to compiling and running test programs. </p>
+            <p>In Gradle, when you declare a dependency, you need to specify the <i>configuration</i> where this
+                dependency should be used. Run the task <code>gradle dependencies</code> in the Command window to see a
+                list of available configurations for Java projects, as shown in <a id="fig-anc-c036-0010"
+                                                                                   href="part0037.html#fig-c036-0010">Figure
+                    36-10</a>.</p>
+            <p>As you can see, dependencies <a
+                    href="http://www.gradle.org/docs/current/userguide/java_plugin.html#tab:configurations">can be
+                configured</a> for compilation, run time, archiving, and testing tasks. Add the dependencies section to
+                your <code>gradle.build</code> from the <code>derbySample</code> directory:</p>
+            <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="EmployeeList"
+repositories{   
+   mavenCentral() 
+}
+dependencies {
+  runtime group: 'org.apache.derby', name: 'derbyclient', 
+                  version: '10.11.1.1'
+}</pre>
+            <p>If you execute the <code>gradle run</code> task now, the “No suitable driver” exception isn’t thrown. The
+                task <code>run</code> downloads the dependency from Maven Central and the JDBC driver is found. You get
+                the server connection error because the Derby DB server is not running, but it’s a different problem to
+                address (see <a id="fig-anc-c036-0011" href="part0037.html#fig-c036-0011">Figure 36-11</a>).</p>
+            <figure>
+                <img class="center" src="../Images/image00635.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c036-0010" href="part0037.html#fig-anc-c036-0010">Figure 36-10</a>:</b></span>
+                        Running <span epub:type="pagebreak" title="542" id="Page_542"></span>Gradle dependencies shows
+                        available configurations</p>
+                </figcaption>
+            </figure>
+            <figure>
+                <img class="center" src="../Images/image00636.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c036-0011" href="part0037.html#fig-anc-c036-0011">Figure 36-11</a>:</b></span>
+                        Gradle’s run task downloads dependency derbyclient-10.11.1.1.jar</p>
+                </figcaption>
+            </figure>
+            <p> The shorter way of declaring the same dependency would look like this:</p>
+            <pre>
+dependencies {
+  runtime 'org.apache.derby:derbyclient:10.11.1.1'
+}</pre>
+            <p>If you wouldn’t need to specifically request the version 10.11.1.1, you could request any version of the
+                <code>derbyclient.jar</code> that’s greater than 10:</p>
+            <pre>
+dependencies {
+   runtime 'org.apache.derby:derbyclient:10+'
+}</pre>
+            <p>Gradle <span epub:type="pagebreak" title="543" id="Page_543"></span>caches the downloaded artifacts and
+                stores them in your home directory under the <code>.gradle</code> directory. On my computer, I found the
+                downloaded file <code>derbyclient-10.11.1.1.jar</code> in the following directory:</p>
+            <pre>
+/Users/yfain11/.gradle/caches/modules-2/files-2.1/org.apache.derby
+</pre>
+            <p>If you want to be able to print <span>the exact location of the cached runtime artifacts on your computer, you can add the task <code>showMeCache</code> (the name can be different) to your <code>gradle.build</code> file:</span>
+            </p>
+            <pre>
+task showMeCache &lt;&lt; {
+  configurations.runtime.each { println it }
+}
+</pre>
+            <p>Running <code>gradle showMeCache</code> prints the location of the derbyclient JAR. Similarly, the task
+                printing the cache content of the compile configurations could look like this:</p>
+            <pre>
+task showMeCache &lt;&lt; {
+  configurations.compile.each { println it }
+}</pre>
+            <section>
+                <h4><a id="idp23805024"></a>Packaging Dependencies Inside a JAR</h4>
+                <p>Knowing that <a id="idp23806400"></a>dependencies are cached in the <code>.gradle</code> directory
+                    helps if you want to know where they are located during development, but if you’re deploying the
+                    <code>debrySample.jar</code> on another computer the derbyclient JAR won’t be there. At this point
+                    the <code>derbySample.jar</code> includes only one file: <code>EmployeeList.class</code>. It doesn’t
+                    even have a manifest file making this JAR executable. You can customize and add the jar task to your
+                    build script so it packages the <code>derbyclient-10.11.1.1.jar</code> inside
+                    <code>derbySample.jar</code>.</p>
+                <p>So far you have Derby client as a <code>runtime</code> dependency. But the
+                    <code>derbySample.jar</code> is created before you run the application. So specify your dependency
+                    earlier in the compile configuration. This way the <code>build</code> task  downloads it during the
+                    project compilation. You also need to customize the jar section to copy the dependencies inside the
+                    output jar. This is how I did it:</p>
+                <pre>
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName="EmployeeList"
+repositories{   
+   mavenCentral() 
+}
+dependencies {
+   compile 'org.apache.derby:derbyclient:10+'
+}
+jar {
+   from configurations.compile.collect {entry -&gt; zipTree entry}
+   manifest {attributes 'Main-Class': 'EmployeeList'
+  }
+}
+</pre>
+                <div><span epub:type="pagebreak" title="544" id="Page_544"></span>It takes just one line to loop through
+                    the file hierarchies of all <code>compile</code> configurations. In this case, the file hierarchy
+                    represents the content of <code>derbyclient-10.11.1.1.jar</code>, and the following action extracts
+                    all its content:
+                </div>
+                <div>
+<pre>
+from configurations.compile.collect {zipTree it}</pre>
+                    <p>The method <code>collect</code> gets a reference to all compile configurations, and the <code>zipTree</code>
+                        method extracts the entire file hierarchy from the file in a zip format. Then the
+                        <code>jar</code> task includes these file hierarchies inside the output JAR. After running
+                        <code>gradle build</code> I unzipped the <code>derbySample.jar</code>. It included all derby
+                        classes that were initially located inside the file <code>derbyclient-10.11.1.1.jar</code>, as
+                        shown in <a id="fig-anc-c036-0012" href="part0037.html#fig-c036-0012">Figure 36-12</a>.</p>
+                    <figure>
+                        <img class="center" src="../Images/image00637.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c036-0012"
+                                                               href="part0037.html#fig-anc-c036-0012">Figure 36-12</a>:</b></span>
+                                The content of the derbySample.jar</p>
+                        </figcaption>
+                    </figure>
+                    <p>Now the <code>derbySample.jar</code> is a self-contained application, and if you open a Command
+                        window and change the directory to <code>build/libs</code>, you can run the application by
+                        running the standard Java command:</p>
+                    <pre>
+java -jar derbySample.jar
+</pre>
+                    <p>The <span epub:type="pagebreak" title="545" id="Page_545"></span>file
+                        <code>derbySample.jar</code> can be copied on any server now. You can read about available file
+                        operations in <a href="http://www.gradle.org/docs/current/userguide/working_with_files.html">Chapter
+                            16</a> of the Gradle User Guide.</p>
+                    <p>If you really want to see the employee list retrieved from the database created in <a
+                            href="part0022.html">Lesson 21</a>, <a href="part0022.html#creating_a_database_with_derby">start
+                        Derby DB server</a> in a separate command window and rerun the preceding command. <a
+                            id="fig-anc-c036-0013" href="part0037.html#fig-c036-0013">Figure 36-13</a> shows my result.
+                    </p>
+                    <figure>
+                        <img class="center" src="../Images/image00638.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c036-0013"
+                                                               href="part0037.html#fig-anc-c036-0013">Figure 36-13</a>:</b></span>
+                                Getting employees from Derby DB database </p>
+                        </figcaption>
+                    </figure>
+                </div>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature2">
+                        <h3><a id="idp23830176"></a>Gradle Wrapper</h3>
+                        <p>When a team of <a id="idp23831648"></a>programmers works on a project, you may run into a
+                            situation when developers have different versions of Gradle run time. If a new developer
+                            joins the team, she may not even have Gradle installed yet. The <a
+                                    href="http://www.gradle.org/docs/current/userguide/gradle_wrapper.html">Gradle
+                                Wrapper</a> allows to run build scripts without worrying about incompatible versions of
+                            the runtime. The Wrapper ensures that the build script runs with a specific version of
+                            Gradle. It automatically downloads and installs the proper version of Gradle if need be.</p>
+                        <p>You need to create the wrapper task. For example:</p>
+                        <pre>
+task wrapper (type: Wrapper) { 
+    gradleVersion = '2.2.1'
+}
+</pre>
+                        <p>Then run it:</p>
+                        <pre>
+gradle wrapper
+</pre>
+                        <p>This creates two scripts for executing Gradle commands—<code>gradlew</code> and <code>gradlew.bat</code>—and
+                            a directory <code>gradle/wrapper</code> with two files in it:
+                            <code>gradle-wrapper.jar</code> and <code>gradle-wrapper.properties</code>. The JAR file
+                            contains the library to download and unpack Gradle’s distribution. The properties file
+                            contains the wrapper’s metadata. If you already have the right version of Gradle running,
+                            the <code>wrapper</code> task won’t do anything.</p>
+                        <p>After all these files have been added to your project, you should use <code>gradlew</code>
+                            instead of <code>gradle</code> to execute all your build tasks. When a person without Gradle
+                            (or with the wrong version) runs any task for the first time using the <code>gradlew</code>
+                            script, the Gradle distribution is downloaded and unpacked in
+                            <code>.gradle/wrapper/dist</code> in her home directory.</p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+            <section>
+                <h4><a id="idp23840672"></a>Building a WAR file</h4>
+                <p>If <span epub:type="pagebreak" title="546" id="Page_546"></span>you need to compile a <a
+                        id="idp23844416"></a>web application and package it in a WAR file, you need to add the
+                    <code>war</code> plug-in (it extends the<code>java</code> plug-in) to your build file:</p>
+                <pre>
+apply plugin: 'war'</pre>
+                <p>But your code becomes dependent on the availability of certain JARs that come with your Java EE
+                    server. In Eclipse IDE, when you create a Dynamic Web Project and select GlassFish (or any other
+                    Java server) as a target run time, and all required JARS become automatically available for your
+                    project during the compilation and run time. But Gradle doesn’t use IDE settings, and it needs to
+                    know where these files are located. Say that your web application has the following Java
+                    servlet:</p>
+                <pre>
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+@WebServlet("/books")
+public class FindBooksServlet extends HttpServlet {
+   // the servlet's code goes here
+}</pre>
+                <p>Unless you add a repository and dependencies section to your build script, this servlet won’t compile
+                    because it won’t find the declaration of the annotation <code>@WebServlet</code> and the class
+                    <code>HttpServlet</code>. If you run the command <code>gradle dependencies</code>, you see that in
+                    addition to all configurations available for the <code>java</code> plug-in, the <code>war</code>
+                    plug-in adds two more: <code>providedCompile</code> and <code>providedRuntime</code>. </p>
+                <p>The <code>providedCompile</code> configuration is for specifying an additional <code>CLASSPATH</code>
+                    for libraries that shouldn’t be part of the WAR file. The word <i>provided</i> means that these
+                    libraries are provided in the environment where the task runs. <code>providedRuntime</code> has a
+                    similar use, but it adds a <code>CLASSPATH</code> for the run time. Add <code>providedCompile</code>
+                    and a <code>repository</code> to the build file: </p>
+                <pre>
+apply plugin: 'war'
+repositories {
+    mavenCentral()
+}
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1+'
+}
+</pre>
+                <p>If you run the <code>gradle war</code> command now, the JAR with servlet 3.1 API is downloaded, the
+                    code compiles, and the WAR (not JAR) file is created in the directory <code>build/libs</code> of
+                    your project. The size of this file is rather small as it contains only the application code.</p>
+                <p>If you’d like to add not only the servlets but the entire Java EE API, the dependencies section could
+                    look like this:</p>
+                <pre>
+dependencies {
+    providedCompile 'javax:javaee-api:7+'
+}</pre>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature2">
+                        <h3><a id="idp23859104"></a>Bintray Repository</h3>
+                        <p>In <span epub:type="pagebreak" title="547" id="Page_547"></span>all code samples, I’ve been
+                            using Maven Central as a repository. However, instead of <code>mavenCentral()</code> you <a
+                                    id="idp23862240"></a><a id="idp23864496"></a><a id="idp23866512"></a>could use
+                            <code>jcenter()</code> if you’re getting the JARs from <a href="https://bintray.com/">Bintray</a>. 
+                        </p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp23727328"></a>Using Gradle in Eclipse IDE</h2>
+        <p>Gradle supports <a id="idp23870304"></a><a id="idp23871664"></a>all major Java IDEs. Each IDE has its own
+            proprietary project structure, which depends on the project type. For example, when you create a Dynamic Web
+            Project in Eclipse, it creates certain directories (for example, <code>WebContent</code>and
+            <code>WEB-INF</code>), which would not be created for a regular Java project. To add a JAR to the Java
+            <code>CLASSPATH</code>, you open project properties and add the required file using the Project Build Path
+            window.</p>
+        <p>Eclipse stores the project structure in the files <code>.project</code>, <code>.classpath</code>, and in an
+            optional directory <code>.settings</code> . If a zip file or a directory contains an Eclipse project file,
+            you can create an Eclipse project by selecting File → Import → General → Existing Project into Workspace. 
+        </p>
+        <p>The creators of Gradle added support of Eclipse projects in the form of Gradle plug-ins for Eclipse, which
+            are covered in the next section.</p>
+        <section>
+            <h3><a id="idp23877488"></a>Gradle Eclipse Plug-ins</h3>
+            <p>Gradle comes <a id="idp23878544"></a><a id="idp23881216"></a><a id="idp23882912"></a>with two <a
+                    href="http://www.gradle.org/docs/current/userguide/eclipse_plugin.html">Eclipse plug-ins</a>: <code>eclipse</code>
+                and <code>eclipse-wtp</code>:</p>
+            <ul>
+                <li>The <code>eclipse</code> plug-in is used for creating regular Eclipse Java projects. </li>
+                <li>The <code>eclipse-wtp</code> plug-in is used for creating Dynamic Web Projects. Internally it uses
+                    the settings from <a href="https://www.eclipse.org/webtools/">Web Toolkit Platform</a>—hence the wtp
+                    suffix. If you decide to use <code>eclipse-wtp</code>, it supports all the tasks available in
+                    the <code>eclipse</code> plug-in, too.
+                </li>
+            </ul>
+            <p>To see the <code>eclipse</code> plug-in in action, create a copy of the <code>HelloWorld</code> directory
+                from <a href="part0037.html#hellogradle">hellogradle</a> and call it <code>HelloWorldEcipse</code>. It
+                has the <code>HelloWorld</code> class in the directory <code>src/main/java/hello</code>. The <code>build.gradle </code>file
+                should have the following content:</p>
+            <pre>
+apply plugin: 'java'
+apply plugin: 'eclipse'
+</pre>
+            <p>Run the <code>gradle eclipse</code> command, and it generates two new files—<code>.classpath</code> and
+                <code>.project</code>—and the directory <code>.settings</code>. Open Eclipse and select File → Import
+                → General → Existing Projects into Workspace, and point at the <code>HelloWorldEclipse</code> as the
+                root directory. Eclipse imports the project, and you can run it as you did all other projects. <a
+                        id="fig-anc-c036-0014" href="part0037.html#fig-c036-0014">Figure 36-14</a> shows how the
+                imported project looks on my computer.</p>
+            <figure>
+                <img class="center" src="../Images/image00639.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c036-0014" href="part0037.html#fig-anc-c036-0014">Figure 36-14</a>:</b></span>
+                        Gradle-generated <span epub:type="pagebreak" title="548" id="Page_548"></span>project in Eclipse
+                    </p>
+                </figcaption>
+            </figure>
+            <p>A simple <code>build.gradle</code> file for generating an Eclipse Dynamic Web Project can look like this:
+            </p>
+            <pre>
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'</pre>
+            <p>The <code>war</code> <a href="http://www.gradle.org/docs/current/userguide/war_plugin.html">plug-in</a>
+                extends the <code>java</code> plug-in and adds support for assembling WAR files for web application
+                deployments. </p>
+            <p>To generate an Eclipse Dynamic Web Project you still need to run the <code>gradle eclipse</code> command,
+                but the content of generated files  <code>.project </code>and  <code>.classpath</code> will be
+                different. In the “Try It” section of this lesson you generate, import, and deploy an Eclipse project
+                using the <code>eclipse-wtp</code> plug-in. </p>
+            <p>If you need to regenerate Eclipse project files from scratch, run the <code>gradle cleanEclipse</code>
+                command to delete the existing project files.</p>
+        </section>
+        <section>
+            <h3><a id="idp23874368"></a>Eclipse IDE and Gradle</h3>
+            <p>Gradle supports IDEs, <a id="idp23907408"></a><a id="idp23910288"></a>and IDEs support Gradle. <a
+                    href="http://marketplace.eclipse.org/content/gradle-integration-eclipse-44">Gradle Integration for
+                Eclipse</a> is an Eclipse IDE plug-in created by Pivotal. It allows creating and importing Gradle
+                projects, and you can run builds right from the Eclipse IDE.   </p>
+            <p>After installing the plug-in, I imported the <code>HelloWorldEclipse</code> project from the previous
+                section by using File → Import → Gradle → Gradle Project. The right-click menu on the
+                <code>build.gradle</code> now has an option Run As → Gradle Build. You can either manually enter the
+                task to run or open the tasks view by selecting Window → Show View → Gradle → Gradle Tasks. <a
+                        id="fig-anc-c036-0015" href="part0037.html#fig-c036-0015">Figure 36-15</a> shows a Gradle Task
+                View in Eclipse for my imported project <code>HelloWorldEclipse</code>.</p>
+            <figure>
+                <img class="center" src="../Images/image00640.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c036-0015" href="part0037.html#fig-anc-c036-0015">Figure 36-15</a>:</b></span>
+                        Gradle <span epub:type="pagebreak" title="549" id="Page_549"></span>Tasks View in Eclipse IDE
+                    </p>
+                </figcaption>
+            </figure>
+            <p>You can select and execute a task by pressing the green play button on the status bar on the top. </p>
+            <p>Eclipse Marketplace has yet another product that includes Gradle Integration. It’s called <a
+                    href="http://marketplace.eclipse.org/content/gradle-ide-pack">Gradle ID Pack</a>, and it offers
+                additional utilities for code block highlighting, an archive editor, and more.  </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp23919952"></a>If Gradle Integration for Eclipse Won’t Install</h3>
+                    <p>If you run into issues during the Gradle Integration plug-in installation, turn off all
+                        Spring-related options on the confirmation window displayed during install. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <p>This concludes my introduction to Gradle. I haven’t covered the subject of creating custom tasks in Gradle.
+            For this and other Gradle features, please refer to the book <i>Building and Testing with Gradle</i>, which
+            is available as a free <a
+                    href="http://gradleware.com/registered-access?content=books%2Fbuilding-and-testing%2F">online
+                version</a> .</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00139"></a>Try It</h2>
+        <p>In this assignment you need <a id="idp23923024"></a><a id="idp23925376"></a>to create and use a Gradle build
+            script to generate an Eclipse Dynamic Web Project. Then you import it into the Eclipse IDE, deploy it under
+            GlassFish, and confirm that the web application works. In this assignment you use the
+            <code>FindBooksServlet</code> class from <a href="part0027.html">Lesson 26</a>. </p>
+        <section>
+            <h3><a id="lesson_requirements-id00140"></a>Lesson Requirements</h3>
+            <p>You <span epub:type="pagebreak" title="550" id="Page_550"></span>should have Java, GlassFish, and Gradle
+                installed.</p>
+            <p><i>You can download the code and resources for this “Try It” from the book’s web page at  </i><code><a
+                    href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>. You can
+                find them in the Lesson36 folder in the download.</i></p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00142"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a directory <code>FindBookGradle</code> with two subdirectories: <code>src</code> and <code>WEB-INF</code>.
+                </li>
+                <li>
+                    <p>Inside the directory <code>FindBookGradle</code> create the <code>build.gradle</code> file with
+                        the following content:</p>
+                    <pre>
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+</pre>
+                </li>
+                <li>
+                    <p>Under the <code>src</code> directory, create subdirectories <code>main</code> and
+                        <code>java</code> and copy the file <code>FindBooksServlet.java</code> from the <a
+                                href="part0027.html">Lesson 26</a> code samples into <code>src/main/java</code>.</p>
+                </li>
+                <li>
+                    <p>In the Command or Terminal window, change the directory to <code>FindBookGradle</code> and run
+                        the command <code>gradle eclipse</code>. After this task completes, you find there files <code>.classpath</code>, <code>.project</code>,
+                        and the directory <code>.settings</code>.</p>
+                </li>
+                <li>
+                    <p>Open Eclipse in the Java EE perspective. You should have GlassFish server configured there.
+                        Select File → Import → General → Existing Projects into Workspace.
+                        Select <code>FindBookGradle</code> as a root directory and press the Finish button. The project
+                        is imported to Eclipse.</p>
+                </li>
+                <li>
+                    <p>In the project properties menu, select Targeted Runtimes, and then select GlassFish 4 as your
+                        server. Click OK.</p>
+                </li>
+                <li>
+                    <p>Right-click the GlassFish server in the Servers view and deploy the project
+                        <code>FindBookGradle</code> using the Add and Remove menu. Because you are deploying the copy of
+                        the <code>FindBookServlet</code> from <a href="part0027.html">Lesson 26</a>, make sure that the
+                        project <code>Lesson26</code> is not deployed in GlassFish.</p>
+                </li>
+                <li>
+                    <p>Enter the URL <code><a href="http://localhost:8080/FindBookGradle/books">http://localhost:8080/FindBookGradle/books</a></code> in
+                        your web browser, and you should see the message <code>Hellow from FindBooks</code>. </p>
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0037.html">Lesson 36</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

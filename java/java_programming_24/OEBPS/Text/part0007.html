@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Packages, Interfaces, and Encapsulation</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="packagescomma_interfacescomma_and_encaps"></a><span class="chapterTitle">Lesson 6<br/>Packages, Interfaces, and Encapsulation</span></h1>
+
+<section>
+<p>A <span epub:type="pagebreak" title="61" id="Page_61"></span>programming language is <a id="idp14203840"></a><a id="idp14205504"></a><a id="idp14206864"></a><a id="idp14208224"></a><a id="idp14209376"></a><a id="idp14210528"></a>considered <i>object-oriented</i> if it supports <i>inheritance</i>, <i>encapsulation</i>, and <i>polymorphism</i>. You know by now that Java supports inheritance, which lets you design a class by deriving it from an existing one. This feature allows you to reuse existing code without copy-pasting code fragments from other classes. The class <code>NJTax</code> from <a href="part0004.html#list-c03-005">Listing 3-5</a> was designed this way.</p>
+<p>In <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a> and <a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a> you learn what encapsulation means, and continue studying coding techniques and best practices. Although this lesson shows you several short code examples illustrating certain programming topics, the next one brings all the pieces you’ve learned so far together in one larger application.</p>
+</section>
+<section>
+<h2><a id="java_packages-id00018"></a>Java Packages</h2>
+<p>A decent size project can <a id="pack"></a>have hundreds of Java classes, and you need to organize them in <i>packages</i> (think file directories). This will allow you to categorize files, control access to your classes (see the section <a href="part0007.html#access_levels">“Access Levels”</a> later in this chapter), and avoid potential naming conflicts: If both you and your colleague coincidentally decide to name a class <code>Util</code>, this won’t be a problem as long as these classes are located in different packages.</p>
+<p>Sometimes you’ll be using third-party libraries of Java classes written in a different department or even outside your firm. To minimize the chances that package names will be the same, it’s common <a id="idp14223376"></a><a id="idp14224800"></a><a id="idp14226960"></a><a id="idp14228288"></a>to use so-called <i>reverse domain name</i> notation. For example, if you work for a company called Acme, which has the website <code>acme.com</code>, you can prefix all package names with <code>com.acme</code>. To place a Java class in a certain package, add the package statement at the beginning of the class (it must be the first non-comment statement in the class). For example, if the class <code>Tax</code> has been developed for the accounting department, you can declare it as follows:</p>
+<pre>
+package com.acme.accounting;
+class Tax {
+  // the code goes here
+}</pre>
+<p>If <span epub:type="pagebreak" title="62" id="Page_62"></span>you declare the class <code>Tax</code> as shown in the preceding code, the file <code>Tax.java</code> must be stored in the corresponding directory tree:</p>
+<pre>
+<em>com
+   </em><em>acme</em>
+     <em>accounting</em></pre>
+<p>Java classes are also organized into packages, and the fully qualified name of a class consists of the package name followed by the class name. For example, the full name of the Java class <code>Double</code> is <code>java.lang.Double</code>, where <code>java.lang</code> is the package name. As a matter of fact, <code>java.lang</code> is the only package name that you don’t have to explicitly mention in your code in order for its classes to be found, unless all classes are located in the same package.</p>
+<p>The program documentation on all Java 8 packages is available at <code><a href="http://download.oracle.com/javase/8/docs/api/">http://download.oracle.com/javase/8/docs/api/</a></code>.</p>
+<p>Let’s say your <code>Tax</code> class needs to connect to some URL with the help of the class <code>URL</code> located in the <code>java.net</code> package. You can write code containing the fully qualified name of this second class:</p>
+<pre>
+java.net.URL myURL = new java.net.URL ("http://www.acme.com");</pre>
+<p>But instead of using this rather long notation, include the <code>import</code> statement right above the class declaration, and then use just the name of the class:</p>
+<pre>
+import java.net.URL;
+class Tax{
+   URL myURL = new URL("http://www.acme.com");
+   ...
+}</pre>
+<p>If you need to import several classes from the same package, use the wild card (*) in the <code>import</code> statement rather then listing each of the classes on a separate line:</p>
+<pre>
+import java.net.*;</pre>
+<p>But using the wild card makes your program less readable. The preceding code sample makes it not clear which specific classes from the <code>java.net</code> package are used in the program. Don’t be lazy and list import statements for each class separately. It doesn’t affect the size of the compiled code, but it will make your program easier to understand <a id="idp14248192"></a>to whomever reads it in the future (even you, by the way). </p>
+</section>
+<section>
+<h2><a id="encapsulation"></a>Encapsulation</h2>
+<p>Encapsulation is the <a id="idp14250688"></a>ability to hide and protect data stored in Java objects. You may ask, “Who are the bad guys who want to illegally access my data?” It’s not about bad guys. When a developer creates a Java class, he or she plans for a certain use pattern of this code by other classes. For example, the variable <code>grossIncome</code> should not be modified directly; instead, it should be modified via a method that performs some validation procedures to ensure that the value to be assigned meets application-specific rules.</p>
+<p>A <span epub:type="pagebreak" title="63" id="Page_63"></span>Java developer may decide to “hide” 15 out of 20 variables, say, so other classes can’t access them. Imagine how many parts exist in a car and how many functions those parts can perform. Does the driver need to know about all of them? Of course not. The driver needs to know how to start and stop the car, signal turns, open the windows, turn on the wipers, and do a few dozen other simple operations, which in programming jargon can <a id="idp14257344"></a><a id="idp14252432"></a>be called the car’s <i>public interface</i>. Java has special keywords to control which elements of your programs should be made public, and which should not.</p>
+<section>
+<h3><a id="access_levels"></a>Access Levels</h3>
+<p>Java classes, methods, and <a id="idp14255152"></a><a id="idp14260224"></a><a id="idp14261472"></a><a id="idp14263360"></a><a id="idp14264432"></a>member variables can have <code>public</code>, <code>private</code>, <code>protected</code>, and <code>package</code> access levels; for example:</p>
+<pre>
+public class Tax {
+   private double grossIncome;
+   private String state;
+   private int dependents;
+   protected double calcTax(){
+      // the method code goes here
+   }
+}</pre>
+<p>The keyword <code>public</code> means <a id="idp14269664"></a><a id="idp14271136"></a>that this element (a class, a method, or a variable) can be accessed from any other Java class. The keyword <code>protected</code> makes the element “visible” not only in the current class but also to its subclasses, even if they are located in different packages.</p>
+<p>The keyword <code>private</code> is the most <a id="idp14273648"></a><a id="idp14275280"></a>restrictive one, as it makes a member variable or a method accessible only inside this class. For example, our class <code>Tax</code> may need some additional methods that could be internally called from the method <code>calcTax()</code>. The users of the class <code>Tax</code> do not need to know about these methods, and they should be declared as <code>private</code>.</p>
+<p>If you do not specify any access level, the default is <i>package</i> (it’s not a keyword), which means that only classes located in the same package will have access to this method or variable. Java classes should expose only the methods that outsiders have to know, such as <code>calcTax()</code>.</p>
+<p>If you are not sure which access level to give to methods or variables, just make them all <code>private</code>; as you’re doing later development, if some other class needs to access them, you can always change the access level to be less restrictive. This will protect all the internals of your application from misuse. Think of it this way: “I want to sell my class <code>Tax</code> to various accounting firms across the country. If their software developers integrate my class with their existing systems, what are the methods that they must know about to be able to calculate tax?” If car designers did not ask themselves similar questions, drivers would need to press dozens of buttons just to start the engine.</p>
+</section>
+</section>
+<section>
+<h2><a id="keyword_final"></a>The Keyword final</h2>
+<p>The keyword <code>final</code> can have different meanings depending on the context. It’s explained in the next sections.</p>
+<section>
+<h3><a id="final_variables_ch06"></a>final Variables</h3>
+<p>You <span epub:type="pagebreak" title="64" id="Page_64"></span>can use the <a id="idp14284144"></a><a id="idp14285840"></a><a id="idp14289600"></a>keyword <code>final</code> while declaring variables, methods, and classes. A <code>final</code> variable becomes a constant (see <a href="part0004.html#object-oriented_programming">Chapter 3</a>) that can be initialized only once and can’t change its value during the run time. Some people may argue that a constant and a variable that can get initialized only once are not the same thing, but the fact that you can’t change their values makes them very similar.</p>
+<p>Even though you can declare constants inside a method, it’s more common to declare them on the class level so they can be reused by several methods of the same class: </p>
+<pre>
+final int BOILING_TEMP = 212; // in Fahrenheit</pre>
+</section>
+<section>
+<h3><a id="final_methods"></a>final Methods</h3>
+<p>If you declare a <a id="idp14295552"></a><a id="idp14297760"></a>class method with a <code>final</code> keyword, this method can’t be overridden if someone decides to extend the class. At the moment it may seem obvious to you that a particular method will never ever need to be overridden. What are the chances that the formula to convert Fahrenheit to Celsius will be changed any time soon?</p>
+<pre>
+static final double convertToCelsius(double far){
+           return ((far - 32) * 5 / 9);
+}</pre>
+<p>But in many cases developers create reusable libraries of Java classes, finalizing functionality that’s not written in stone. Although it may seem to you that a particular method will never need to be overridden, you might not have predicted all use patterns of this class. If this happens, some other developer will have to jump through hoops to create another version of your method in a subclass.</p>
+<p>Many years ago the Java compiler optimized (inlined) final methods. It doesn’t do that anymore — all methods are optimized by the Hotspot JVM. Just think twice before making a method <code>final</code></p>
+</section>
+<section>
+<h3><a id="final_classes"></a>final Classes</h3>
+<p>If you declare a <a id="idp14300912"></a><a id="idp14302512"></a>class as <code>final</code>, no one will be able to subclass it. For example, the class <code>String</code> has been created as immutable and therefore was declared as <code>final</code> (see <code><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html">http://docs.oracle.com/javase/8/docs/api/java/lang/String.html</a></code>). If a class is declared as <code>final</code>, all its methods become implicitly <code>final</code>.</p>
+</section>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature2">
+<h3><a id="idp14310832"></a>final in Exception handling</h3>
+<p>There is one more use of <a id="idp14311968"></a><a id="idp14313328"></a>the final keyword. You can use it in the error-handling blocks (<code>try-catch</code>). You see an example of using <code>finally</code> in <a href="part0011.html">Lesson 10</a> covering error handling</p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h2><a id="interfaces"></a>Interfaces</h2>
+<p>There <span epub:type="pagebreak" title="65" id="Page_65"></span>are different <a id="inter_ch06"></a>approaches to how to start designing a class. Most people start with thinking over the behavior it should support. For example, an employee should get paid; hence the class <code>Employee</code>  should implement <code>Payable</code> interface. The name <i>Payable</i> is an arbitrary one. What represents payable behavior? Let’s say that you want to implement it in a method with a signature <code>boolean increasePay(int percent)</code>.</p>
+<p>Of course, you can just add such a method straight to the class <code>Employee</code> and implement business logic right there. The other choice is to just declare this method in a separate entity called an <i>interface</i>, and then have your class implement this interface:</p>
+<pre>
+class Employee implements Payable{
+   // the implementation goes here
+}
+</pre>
+<p><a id="list-anc-c06-001" href="part0007.html#list-c06-001">Listing 6-1</a> shows an interface with one method declaration.</p>
+<p>You should have a reason for declaring some methods separately from the class that will implement them, and you see these reasons in the next lesson when you learn about polymorphism. For now, just get familiar with the syntax of defining and using interfaces. Interfaces before Java 8 didn’t allow for any method implementations — just declarations. Let’s start with the case when an interface has only declared behavior.</p>
+<p>When a class declares that it implements a certain interface, <i>it guarantees</i> to provide implementation for all methods declared in this interface. And a class can implement more than one interface: just separate their names with commas.</p>
+<p>Let’s say there are two types of workers in your organization — employees and contractors — and that you create the classes <code>Employee</code> and <code>Contractor</code> to implement functionalities that reflect specifics of these different groups. Each person is entitled to a pay raise, though for employees this means a salary increase and for contractors it’s an increase of an hourly or daily rate.</p>
+<p>Instead of creating two different methods in these classes (for example, <code>increateSalary()</code> and <code>increaseRate()</code>), it’s better to define an interface called, say, <code>Payable</code> that contains the declaration of the method <code>increasePay()</code>, and to have both classes implement it, as in <a href="part0007.html#list-c06-001">Listing 6-1</a>, <a id="list-anc-c06-002" href="part0007.html#list-c06-002">Listing 6-2</a>, and <a id="list-anc-c06-003" href="part0007.html#list-c06-003">Listing 6-3</a>. Every method declared in the interface automatically becomes <code>public</code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c06-001" href="part0007.html#list-anc-c06-001">Listing 6-1</a>:</span> Payable interface</h5>
+<pre>
+public interface Payable {
+       boolean increasePay(int percent);
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c06-002" href="part0007.html#list-anc-c06-002">Listing 6-2</a>:</span> Class Employee</h5>
+<pre>
+public class Employee implements Payable {
+       public boolean increasePay(int percent) {
+              // implement salary raise here
+       }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c06-003" href="part0007.html#list-anc-c06-003">Listing 6-3</a>:</span> Class Contractor</h5>
+<pre>
+public class Contractor implements Payable {
+       public boolean increasePay(int percent) {
+              // implement hourly rate increase here
+       }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Because both <code>Employee</code> and <code>Contractor</code> contain the clause <code>implements Payable</code>, you must implement the <code>increasePay()</code> method in each of the classes, or your code won’t compile. Creating classes with common interfaces leads to a <span epub:type="pagebreak" title="66" id="Page_66"></span>cleaner design of your application and makes the code more readable. But what’s more important is that, with the help of interfaces, you can introduce polymorphic behavior to your program, which is illustrated in <a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>.</p>
+<p>Besides method signatures, Java interfaces can contain declarations of <code>final</code> variables. For example, you can create a <code>final</code> variable in the <code>Payable</code> interface for the maximum percentage of a pay increase (all variables declared in the interface automatically become <code>public static final</code>):</p>
+<pre>
+int INCREASE_CAP = 20;</pre>
+<p>Because both the <code>Employee</code> and <code>Contractor</code> classes implement <code>Payable</code>, they can both (or just the <code>Contractor</code>) include <code>if</code> statements in the implementation of <code>increasePay()</code> to ensure that the provided percentage increase is less than <code>INCREASE_CAP</code>. If the cap changes in the future, you need to change it in only one place — the <code>Payable</code> interface. Moreover, if a new type of worker is introduced later (for example, <code>ForeignContractor</code>), the implementation of  <code>increasePay()</code> may be completely different.</p>
+<p>Some software developers create Java interfaces that contain only <code>final</code> variables storing important application constants. Implementing such interfaces will make these constants available in the class that implements the interface(s). Not everyone approves of such usage of interfaces because it can create a messy situation when a class that implements interfaces with static constants exposes a new set of public APIs (those <code>final</code> variables) rather than just using these values internally. The code readability suffers, too; it’s not immediately clear where a certain variable was declared, especially if there are several layers of inheritance, where classes implement multiple interfaces. You can read more <a id="idp14354176"></a>about this Constant Interface Antipattern at <code><a href="http://goo.gl/WBQm9d">http://goo.gl/WBQm9d</a></code>.</p>
+<section>
+<h3><a id="marker_interfaces"></a>Marker Interfaces</h3>
+<p><i>Marker interfaces</i> are those that don’t have <a id="idp14361536"></a><a id="idp14362512"></a>any methods declared. One example of such an interface is <code>Serializable</code>, which is covered in <a href="part0016.html#java_serialization">Chapter 15</a>. You don’t <a id="idp14366832"></a>need to write any implementation of these interfaces; the Java compiler takes care of this for you. Objects of a class that implement a marker interface support a certain functionality. For example, if a class implements <code>Serializable</code>, JVM is able to <i>serialize</i> it — turn it into a string of bytes (in the server’s JVM) in such a way that the string can be sent to another JVM (on the client’s machine), <span epub:type="pagebreak" title="67" id="Page_67"></span>which will be able to re-create the instance of the object, or <i>de-serialize</i> it. Marker interfaces are used internally by the Java compiler to generate the byte code that will implement the functionality required by such interfaces.</p>
+<p>Also, Java has an operator <code>instanceof</code> (see the next section) that can check during the run time whether an object is of a certain type. You can use the operator <code>instanceof</code>, as shown in the following code, to check whether the object implements a marker interface, or any other type of interface for that matter:</p>
+<pre>
+if (receivedFromServerObj instanceof Serializable) {
+    // do something
+}</pre>
+<p>This may look strange — is it an instance of an interface? The proper way to read it is if the variable <code>receivedFromServerObj</code> points to the object that prompts <code>Serializable</code> to do something. </p>
+</section>
+<section>
+<h3><a id="idp14369264"></a>Default Methods in Interfaces</h3>
+<p>A new keyword, <code>default</code>, was <a id="idp14376368"></a><a id="idp14378048"></a>introduced in Java SE 8. Now you can provide a default method implementation in interfaces, too. For example, you can create an interface <code>Payable</code> with default implementation of the method <code>increasePay()</code>:</p>
+<pre>
+public interface Payable {
+    default boolean increasePay(int percent){
+        System.out.println(
+          "The default code implementing pay increase goes here");
+        return true;
+    };
+}
+</pre>
+<p>Now, if a class that implements <code>Payable</code> doesn’t have its own implementation of the <code>increasePay()</code> then the default method implementation is used. The compiler will not complain. Default methods are also <a id="idp14382192"></a> known as <i>defender methods</i>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature2">
+<h3><a id="idp14384176"></a>Compiler Compliance Level in Eclipse IDE</h3>
+<p>If the preceding code doesn’t compile in your Eclipse IDE, most likely your project is set to support syntax that’s older than Java 8. To fix it, right-click the project name, select the Project Properties menu, and then select Java Compiler. Make sure that the JDK Compliance is set to support Java 1.8. </p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>You need to handle default methods with care as sometimes you might run into the name conflicts. Consider the following situation:</p>
+<pre>
+package defendermethods;
+class Employee extends Person implements Payable, Promotionable{
+   public static void main(String[] args){
+       Employee emp = new Employee();
+       emp.increasePay(10);
+   }
+}
+</pre>
+<p>What <span epub:type="pagebreak" title="68" id="Page_68"></span>if there is the method <code>increasePay()</code> in the class <code>Person</code> and in the interfaces <code>Payable</code> and <code>Promotionable</code>? How is such a conflict resolved? If a program creates an instance of the class <code>Employee</code> and invokes the method <code>increasePay()</code> on it, which version of this method is invoked?</p>
+<p>If a method with the same signature exists in the ancestor class and the interface, the one in the class is invoked. If the defender methods with the same signature exists only in the interfaces <code>Payable</code> and <code>Promotionable</code>, the compiler complains with the following error:<br/>
+<br/>
+<i>Duplicate default methods named increasePay with the parameters (int) and (int) are inherited from the types Promotionable and Payable Employee.java</i></p>
+</section>
+<section>
+<h3><a id="static_keyword"></a>Static Methods in Interfaces</h3>
+<p>As of Java 8, you are <a id="idp14394928"></a><a id="idp14397952"></a><a id="idp14399104"></a>allowed to include static methods in interfaces. For example:</p>
+<pre>
+public interface Payable {
+    default boolean increasePay(int percent){
+        System.out.println(
+          "The default code implementing pay increase goes here");
+        return true;
+    };
+    
+    static double checkThePayIncreaseLimit(){
+        // do something
+        return 12345.00;
+    }
+}
+</pre>
+<p>If a static method is declared in a class, it’s invoked by using a class name followed by the dot and the method name, as shown in <a href="part0005.html">Lesson 4</a>: <code>WeatherReport.convertToCelsius(98.7)</code>. </p>
+<p>Accordingly, if a static method was declared in the interface, a class can invoke it using the interface name. For example, this is how you could do it from our class <code>Employee</code>:</p>
+<pre>
+double limit = Payable.checkThePayIncreaseLimit();
+</pre>
+</section>
+<section>
+<h2><a id="casting_section"></a>Casting</h2>
+<p>All Java classes form <a id="casting"></a><a id="idp14408224"></a><a id="idp14409296"></a>an inheritance tree with the class <code>Object</code> on top of the hierarchy — all Java classes are direct or indirect descendants of <code>Object</code>. When you eclare a non-primitive variable, you are allowed to use either the exact data type of this variable or one of its ancestor data types. For example, if the class <code>NJTax</code> extends <code>Tax</code>, each of the following lines is correct:</p>
+<pre>
+NJTax myTax1   = new NJTax();
+Tax myTax2     = new NJTax();  // upcasting
+Object myTax3  = new NJTax();  // upcasting</pre>
+<p><span epub:type="pagebreak" title="69" id="Page_69"></span>Java is smart enough to automatically <i>cast</i> an instance of the class to its ancestor. When the variable has a more generic type than an instance of the object, it’s called <i>upcasting</i>. Let’s say the class <code>Object</code> has 10 methods and class variables defined, the class <code>Tax</code> (an implicit subclass of <code>Object</code>) adds five more methods and variables (making 15), and <code>NJTax</code> adds another two (totaling 17). The variable <code>myTax1</code> has access to all 17 methods and variables, <code>myTax2</code> sees only 15, and <code>myTax3</code> just 10. Why not always use exact types in variable declarations?</p>
+<p>Say you need to write a program that will process data about workers of a certain company. Some of them are full-time employees and some are contractors, but you’d like to read their data from some data source and store them in the same array. Arrays can store only objects of the same type, remember? Because Java can automatically upcast the objects, you can create a class called <code>Person</code> with two subclasses, <code>Employee</code> and <code>Contractor</code>, and then read the records from a database. Based on the employment type you can then create an appropriate object instance and put it into an array of type <code>Person</code>:</p>
+<pre>
+Person workers[] = new Person [20];
+workers[0] = new Employee("Yakov", "Fain");
+workers[1] = new Employee("Mary", "Lou");
+workers[2] = new Contractor("Bill", "Shaw");
+...</pre>
+<p>Of course, you could’ve created two separate arrays, one for employees and one for contractors, but I’m laying the foundation here for explaining polymorphism — a powerful concept in object-oriented languages. You see a concrete example of polymorphism in <a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>.</p>
+<p>At some point you need to process the data from the array <code>workers</code>. In a loop you can test the data type of the current element of the array with the operator <code>instanceof</code>, downcast the object (it can’t be done automatically) to <code>Employee</code> or <code>Contractor</code>, and process it accordingly:</p>
+<pre>
+for (int i; i&lt;20; i++){
+     Employee currentEmployee;
+     Contractor currentContractor;
+     if (workers[i] instanceof Employee){
+          currentEmployee = (Employee) workers[i];
+          // do some employee processing here
+     } else if (workers[i] instanceof Contractor){
+          currentContractor = (Contractor) workers[i];
+          // do some contractor processing here
+     }
+}</pre>
+<p>Placing a data type <a id="idp14427648"></a><a id="idp14429088"></a>in parentheses in front of another object means that you want to <i>downcast</i> this object to the specified type. You can downcast an object only to one of its descendant data types. Even though the preceding code has correct syntax, it doesn’t represent the best practice for processing similar objects. In the next lesson you see how to use polymorphism in a more generic way.</p>
+<p>If a class implements an interface, you can cast its instance to this interface. Say that a class called <code>Employee</code> implements <code>Payable</code>, <code>Insurable</code>, and <code>Pensionable</code> interfaces:</p>
+<pre>
+class Employee extends Person implements 
+                                 Payable, Insurable, Pensionable {
+// implementation of all interfaces goes here
+}</pre>
+<p><span epub:type="pagebreak" title="70" id="Page_70"></span>Assume you have an array of workers of type <code>Person</code>. If you are interested only in the <code>Insurable</code> behavior of employees, there is no need to cast each element of this array to the type <code>Employee</code>. Just cast them to the <code>Insurable</code> type, as shown in the following code fragment. However, keep in mind that if you do so, the variable <code>currentEmployee</code> exposes access <a id="idp14438176"></a>only to those methods that were declared in the <code>Insurable</code> interface:</p>
+<pre>
+Insurable currentEmployee;
+if (workers[i] instanceof Insurable){
+  currentEmployee = (Insurable) workers[i];
+  // do some insurance-specific processing here
+}</pre>
+</section>
+<section>
+<h2><a id="try_it-id00019"></a>Try It</h2>
+<p>The goal of this assignment <a id="idp14441984"></a><a id="idp14443472"></a>is to start using packages, protect data using private variables, and define first interfaces. You create a simple program that will increase pay, which is implemented differently for employees and contractors. After completing this assignment you’ll have working but not perfect code. What can be improved is explained in <a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>.</p>
+<section>
+<h3><a id="lesson_requirements-id00020"></a>Lesson Requirements</h3>
+<p>For this lesson you should have Java installed.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>. You can find them in </i> <code>Lesson6.zip</code><i>.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="step-by-step-id00021"></a>Step-by-Step</h3>
+<ol>
+	<li>In the Eclipse IDE, create a new project called Lesson6.</li>
+	<li>
+	<p>Create the <code>Payable</code> interface as per <a href="part0007.html#list-c06-001">Listing 6-1</a> in the package <code>com.practicaljava.lesson6 </code>— you can enter the name of the package in the Eclipse New Java Class window. Declare a <code>final</code> variable there:</p>
+	<pre>
+int INCREASE_CAP = 20;</pre>
+	</li>
+	<li>
+	<p>Create a class called <code>Person</code>:</p>
+	<pre>
+package com.practicaljava.lesson6;
+public class Person {
+       private String name;
+       public Person(String name){
+              this.name=name;
+       }
+       public String getName(){
+              return "Person's name is " + name;
+       }
+}</pre>
+	</li>
+	<li><span epub:type="pagebreak" title="71" id="Page_71"></span>Create the classes <code>Employee</code> and <code>Contractor</code> in the package <code>com.practicaljava.lesson6</code>. Each class should extend <code>Person</code> and implement <code>Payable</code>. While creating a new class, click the Add button in Eclipse to automatically include the <code>Payable</code> interface in declarations of the classes <code>Employee</code> and <code>Contractor</code>.</li>
+	<li>Check your filesystem to ensure that the files were created in your workspace in the directory <code>com/practicaljava/lesson6</code>.</li>
+	<li>Create a class called <code>TestPayIncrease</code> with a method called <code>main()</code>. Don’t specify any package; this class will be created in a different directory.</li>
+	<li>
+	<p>Try to create an instance of the class <code>Employee</code> in the method <code>main()</code> of <code>TestPayIncrease</code>:</p>
+	<pre>
+Employee myEmployee = new Employee();</pre>
+	<p>You’ll get an error: <code>Employee</code> can’t be resolved to a type. No wonder — it’s located in a different package. Move the mouse over <code>Employee</code> and Eclipse will offer you a fix. Add an <code>import</code> statement:</p>
+	<pre>
+import com.practicaljava.lesson6.Employee;</pre>
+	<p>Select this fix and later add the <code>import</code> statement for all required classes.</p>
+	</li>
+	<li>
+	<p>In the <code>main()</code> method of the class <code>TestPayIncrease</code>, create an array of employees and contractors and call the function <code>increasePay()</code> for each element of the array:</p>
+	<pre>
+public static void main(String[] args) {
+        Person workers[] = new Person[3];
+             workers[0] = new Employee("John");
+             workers[1] = new Contractor("Mary");
+             workers[2] = new Employee("Steve");
+                   Employee currentEmployee;
+                   Contractor currentContractor;
+              for (Person p: workers){
+                  if (p instanceof Employee){
+                       currentEmployee = (Employee) p;
+                       currentEmployee.increasePay(30);
+                  }else if (p instanceof Contractor){
+                      currentContractor = (Contractor) p;
+                      currentContractor.increasePay(30);
+                  }
+             }
+}</pre>
+	</li>
+	<li>
+	<p><span epub:type="pagebreak" title="72" id="Page_72"></span>Implement the <code>increasePay()</code> method in <code>Employee </code>— don’t put any restrictions on pay increases. Here’s the body of <code>increasePay()</code>:</p>
+	<pre>
+System.out.println("Increasing salary by " + percent + "%. "+ 
+                                                   getName());
+return true;</pre>
+	</li>
+	<li>Implement the <code>increasePay()</code> method in the class <code>Contractor</code>. If the percentage of the increase is less than <code>INCREASE_CAP</code>, print a message similar to the one in the preceding code. Otherwise, print a message explaining that you can’t increase a contractor’s rate by more than 20 percent.</li>
+	<li>
+	<p>Run the <code>TestPayIncrease</code> program. It should produce output similar to the following:</p>
+	<pre>
+Increasing salary by 30%. Person's name is John
+Sorry, can't increase hourly rate by more than 20%. Person's name is Mary
+Increasing salary by 30%. Person's name is Steve</pre>
+	<p> </p>
+	</li>
+</ol>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0007.html">Lesson 6</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</section>
+</section>
+</body></html>

@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Working with RESTful Web Services</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="working_with_restful_web_services"></a><span class="chapterTitle">Lesson 33<br/>Working with RESTful Web Services</span>
+    </h1>
+
+    <section>
+        <p>In <span epub:type="pagebreak" title="481" id="Page_481"></span>the 1990s the web <a id="idp22599488"></a>became
+            widely used, and newly created web applications were consumed by millions of people around the world. At the
+            same time lots of legacy applications were available for use only within corporate walls. They were written
+            in a variety of programming languages and deployed on many types of hardware. There was a need to expose
+            corporate data to wider audiences, which resulted in the creation of the standard interface for consuming
+            data over the web.</p>
+        <p>The difference between traditional JSP/Servlet/JSF web applications and Web Services is that the latter offer
+            just the data and have no interest in what the client’s user interface (UI) looks like. For example, an
+            insurance company could offer information about its products, or a mutual fund could expose its data as a
+            Web Service returning XML documents. Clients didn’t need to know that this insurance company was running its
+            applications using a server from Oracle or that the mutual fund was running on mainframe computers from
+            IBM.</p>
+        <p>Java EE includes specification <a id="idp22609552"></a><a id="idp22610784"></a><a id="idp22612032"></a><a
+                id="idp22601152"></a>for two different implementations of Web Services—JAX-WS and JAX-RS, which I
+            discuss next. Take another look at the  <a
+                    href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch33.html#figure_25-1">sample
+                architectural diagram</a> in <a href="part0026.html">Lesson 25</a> and notice that I put these APIs in
+            two places—one in the Presentation tier and another in the Data tier. Just think of Web Services as a
+            mechanism to expose useful data that can be retrieved using HTTP requests. </p>
+        <p>Thousands of publicly available Web Services offer various APIs to get the data of some kind. You can find
+            plenty of useful Web Services at the <a
+                    href="http://www.programmableweb.com/apis/directory">ProgrammableWeb</a> directory. Enterprises use
+            private Web Services for their internal needs, too.</p>
+    </section>
+    <section>
+        <h2><a id="soap_web_services"></a>The Soap Web Services</h2>
+        <p>The first standard <a id="idp22602528"></a><a id="idp22613616"></a>for publishing and consuming Web Services
+            was the XML-based Simple Object Access Protocol (SOAP). Web clients would form HTTP requests and receive
+            responses using the SOAP syntax.</p>
+        <p>The <span epub:type="pagebreak" title="482" id="Page_482"></span>clients needed to know the directory of
+            services available from this particular organization, the names of the offered operations (functions), and
+            the address of the <i>endpoint</i> to connect to in order to consume this service.</p>
+        <p>The directory of services could be published with the XML-based Web Services Description <a
+                id="idp22618688"></a><a id="idp22617136"></a>Language (<a
+                href="http://en.wikipedia.org/wiki/Web_Services_Description_Language">WSDL</a>), which is pretty
+            verbose. In the Java EE world, SOAP messages could be processed by means of JAX-WS API without the need for
+            a directory of services.</p>
+        <p>Even though SOAP Web Services are verbose, they are still being used as a means of integration with the
+            software produced by third parties. Some SOAP services are publicly available. For example, the web page <a
+                    href="http://www.webservicex.net">www.webservicex.net</a> offers descriptions and WSDL locations of
+            such information and services as weather forecasts, U.S. address verification, currency converters, and
+            stock quotes. You can integrate these into your application, but providing a user interface for them remains
+            your responsibility.</p>
+    </section>
+    <section>
+        <h2><a id="restful_web_services"></a>The RESTful Web Services</h2>
+        <p>REST stands for <i>representational state of transfer</i>. A Web <a id="idp22621024"></a><a
+                id="idp22622128"></a><a id="idp22627072"></a>Service built on REST principles is called a RESTful Web
+            Service. As opposed to SOAP, REST is not a protocol, but a lighter-than-SOAP architectural style of building
+            Web Services. <a href="http://en.wikipedia.org/wiki/Roy_Fielding">Dr. Roy Fielding</a> identified the REST
+            principles in his PhD dissertation:</p>
+        <ul>
+            <li><span>Every resource on the web has a unique ID.</span></li>
+            <li><span>Use uniform interface: HTTP</span>
+                <span><code>Get</code>, <code>Post</code>, <code>Put</code>, <code>Delete</code>, and so on. </span>
+            </li>
+            <li><span>A resource can have multiple representations (text, JSON, XML, PDF, and so on).</span></li>
+            <li><span>Requests are stateless; no client-specific information is stored between requests</span>.</li>
+            <li><span>You can link one resource to another.</span></li>
+            <li><span>Resources should be cacheable.</span></li>
+            <li><span>A REST application can be layered.</span></li>
+        </ul>
+        <p>To put it simply, a <i>resource</i> is anything that you can access with a hyperlink. Each resource has a
+            uniform resource identifier (URI). For example, <code>www.dice.com/yakovsresume</code> identifies a unique
+            resource with Yakov’s résumé on the server <code>dice.com</code>. The résumé might be stored on the server
+            as a file in a plain text format, or it may be located in the database and has to be retrieved by a JDBC
+            query, but in any case it can be represented (served) in different formats like PDF, XML, or JSON.</p>
+        <p>REST resources have to support standard stateless HTTP requests. If with SOAP creators have to come up with
+            arbitrary names of the supported operations (for example, <code>getCityByZipCode</code>), with REST you use
+            the standard HTTP methods like <code>Get</code>, <code>Post</code>, <code>Put</code>,
+            and <code>Delete</code>.  </p>
+        <p>I’ve seen many web applications that used only the HTTP methods <code>GET</code> for reading the server-side
+            content and <code>POST</code> for updating the content or hiding HTTP parameters inside the HTTP header, but
+            REST is stricter about this. In the RESTful world you should use <code>GET</code> for retrieving the data,
+            <code>POST</code> for creating new resources, <code>PUT</code> for updates, and <code>DELETE</code> for
+            resource removal. </p>
+        <p>Each of the standard HTTP methods has certain characteristics:</p>
+        <ul>
+            <li><span><code>GET</code>: Safe, <a id="idp22650912"></a><a id="idp22652416"></a>idempotent, cacheable                  </span>
+            </li>
+            <li><span><code>PUT</code>: <a id="idp22655024"></a><a id="idp22656544"></a>Idempotent </span></li>
+            <li><span><code>DELETE</code> : <a id="idp22659104"></a><a id="idp22660624"></a>Idempotent</span></li>
+            <li><span><code>POST</code> : None <a id="idp22663184"></a><a id="idp22664704"></a>of the above</span></li>
+        </ul>
+        <p><i>Safe</i> means <span epub:type="pagebreak" title="483" id="Page_483"></span>that this method doesn’t
+            modify the resource. <i>Cacheable</i> means that the client application can cache the result.
+            <i>Idempotent</i> means that no matter how many times you call this method, the result will be the same. For
+            example, if you update a person’s name from Smith to Johnson, no matter how many times you try to update
+            this person’s resource with the name Johnson, the last name will still be Smith.</p>
+        <p> On the same note, no matter how many times you try to delete the resource with the unique ID, it results in
+            removal of this resource only without harming any other data.</p>
+        <p>While the client communicates with the server both can send application data to each other in various
+            formats. Let’s discuss the most popular format used in web applications: JSON. </p>
+    </section>
+    <section>
+        <h2><a id="json_section"></a>Working with JSON-Formatted Data </h2>
+        <p>JSON format is based <a id="json"></a>on the syntax of the JavaScript object literals. All web browsers know
+            how to parse JSON without the need to use any add-ons or plug-ins. Because the majority of today’s web
+            applications use JavaScript on the client side, no wonder that JSON became a de facto standard way of data
+            formatting on the web, replacing XML, which was popular in the 1990s.</p>
+        <p>Here’s an example of how an instance of the <code>Stock</code> entity can be represented in XML:</p>
+        <pre>
+&lt;stock&gt;
+  &lt;country&gt;USA&lt;/country&gt;
+  &lt;currency&gt;USD&lt;/currency&gt;
+  &lt;price&gt;43.12&lt;/price&gt;
+  &lt;symbol&gt;IBM&lt;/symbol&gt;
+&lt;/stock&gt;</pre>
+        <p>In JSON, the same resource would be represented like this:</p>
+        <pre>
+"stock": { 
+  "country": "USA", 
+  "currency": "USD", 
+  "price": 43.12, 
+  "symbol": "IBM" 
+}
+</pre>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp22674688"></a>Comparing XML and JSON</h3>
+                <p>The public <a id="idp22676320"></a><a id="idp22677952"></a>community
+                    domain <code>www.geonames.org</code> enables you to search for geographical and statistical
+                    information about countries, cities, and so on. For the most part, this website uses RESTful Web
+                    Services. To compare how the same data is represented in XML and in JSON, visit this web
+                    page: <code>www.geonames.org/export/ws-overview.html</code>.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Development <span epub:type="pagebreak" title="484" id="Page_484"></span>of so-called <a
+                id="idp22681680"></a>Single-Page Applications (SPA) is a trend in today’s HTML5 world. SPA refers to the
+            applications that don’t refresh the entire web page but rather update the portions of it retrieving the
+            fresh data by making <a href="http://en.wikipedia.org/wiki/Ajax_(programming)">AJAX</a> requests. Google’s
+            GMail client is a good example of SPA; when a new e-mail arrives, just one new line is added to a single web
+            page that shows the content in the inbox.  The server sends only the preformatted data, which the web client
+            positions on the screen using HTML, JavaScript, and CSS. No HTML markup is generated by the server as it’s
+            done by Java Servlets, JSP, or JSF. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp22687712"></a>REST or Websockets</h3>
+                <p>Because RESTful Web Services <a id="idp22685360"></a><a id="idp22686880"></a>send only the data
+                    (without HTML markup) in client-server communications, they are more efficient in terms of the
+                    network throughput compared to servlets, JSP, or JSF. But RESTful Web Services are based on HTTP
+                    protocol, which adds an overhead by attaching HTTP headers to the data sent by both the client and
+                    the server. If you need to substantially increase the data throughput, by removing these heavy
+                    headers consider using websockets, explained in <a href="part0029.html">Lesson 28</a>. For real-time
+                    applications that need to push the server-side data to a web client, switching from REST to
+                    websockets substantially increases the number of messages sent per second. With websockets, the
+                    application responsiveness is also increased because there is no need to re-establish the HTTP
+                    connection for each request, and there is almost no overhead in the data payload. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>SPA needs to use some data format between the client and the server. Because of JSON popularity, <span>Java EE specification standardized its processing in JSR 353. Usually Java application servers implement the JSON processing specification in a separate jar, so you can use it with standalone Java SE applications, too. For example, GlassFish comes with a file, <code>glassfish4/glassfish/modules/javax.json.jar</code>, which you can add to any standalone application. </span>
+        </p>
+        <p><span>The package <code>javax.json</code> includes classes  supporting two ways of producing JSON from Java:</span>
+        </p>
+        <ul>
+            <li><span><b>Object Model API:</b> With this API <a id="idp22695872"></a><a id="idp22697184"></a><a
+                    id="idp22700048"></a>your Java code should first create an object tree representing JSON data in memory, and then send it to an I/O stream.</span>
+            </li>
+            <li><span><b>Streaming API:</b> This is an event-driven <a id="idp22702800"></a><a id="idp22704448"></a> API that dispatches events when the beginning or end of the JSON object is found, or when it finds a key or a value in the data load. The streaming API generates the output into a given stream (for example, a file or a network connection).  </span>
+            </li>
+        </ul>
+        <p>Although you can create a Java client application that parses or generates JSON, typically JSON is produced
+            or consumed by JavaScript in <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON">web
+                browsers</a>. This lesson includes the examples of parsing JSON in server-side Java, assuming that the
+            server receives or builds a JSON-formatted string. For complete coverage of JSON on both the client and the
+            server, see <a href="http://docs.oracle.com/javaee/7/tutorial/jsonp.htm">JSON Processing Tutorial</a> by
+            Oracle.</p>
+        <section>
+            <h3><a id="idp22708016"></a>Reading JSON with the Streaming API</h3>
+            <p>The following code <a id="idp22710096"></a><a id="idp22712192"></a><a id="idp22713440"></a>snippet shows
+                how reading JSON-formatted data with the streaming API can be structured. The parser dispatches the
+                appropriate event as it parses the JSON string, and you should write the code to process events you’re
+                interested in: </p>
+            <pre>
+JsonParser parser = Json.createParser(new StringReader(jsonData));
+while (parser.hasNext()) {
+    JsonParser.Event event = parser.next();
+    switch(event) {
+        case START_ARRAY:
+        case END_ARRAY:
+        case START_OBJECT:
+        case END_OBJECT:
+        case VALUE_FALSE:
+        case VALUE_NULL:
+        case VALUE_TRUE:
+            System.out.println(event.toString());
+            break;
+        case KEY_NAME:
+            System.out.print(event.toString() + " " +
+                    parser.getString() + " - ");
+            break;
+        case VALUE_STRING:
+        case VALUE_NUMBER:
+            System.out.println(event.toString() + " " +
+                    parser.getInt());
+            break;
+    }
+}
+</pre>
+            <p>In this example, the code handles only the <a
+                    href="http://docs.oracle.com/javaee/7/api/javax/json/stream/JsonParser.Event.html">parser events</a>: <code>VALUE_TRUE</code>a (a
+                JSON element has a value of <code>true</code>), <code>KEY_NAME</code> (a name in a key/value pair is
+                found), and <code>VALUE_NUMBER</code> (a numeric value is found.) </p>
+        </section>
+        <section>
+            <h3><a id="idp22717008"></a>Writing JSON with the Streaming API</h3>
+            <p><span epub:type="pagebreak" title="485" id="Page_485"></span>The following <a id="idp22721344"></a><a
+                    id="idp22723360"></a>class—<code>JavaToJSONStreaming</code>—creates <a id="idp22725440"></a><a
+                    id="idp22726496"></a>an instance of a <code>Product</code> class , turns it into a JSON-formatted
+                string, and saves it in a file named <code>product_from_stream.json:</code></p>
+            <pre>
+public class JavaToJSONStreaming {
+ public static void main(String[] args) {
+   Product prd1 = new Product(777, "Gucci Handbag", 1000.00);
+   try (OutputStream fos = 
+                new FileOutputStream("product_from_stream.json");
+        JsonGenerator jsonGenerator = Json.createGenerator(fos);) {
+       jsonGenerator.writeStartObject(); 
+       jsonGenerator.write("id", prd1.id);
+       jsonGenerator.write("description", prd1.description);
+       jsonGenerator.write("price", prd1.price);
+      // To create nested JSON objects enclose each of them
+      // into a pair of writeStartObject() and writeEnd()
+       jsonGenerator.writeEnd();
+   } catch (IOException ioe) {
+       ioe.printStackTrace();
+   }
+ }
+}
+</pre>
+            <p>The <code>Json</code> object <span epub:type="pagebreak" title="486" id="Page_486"></span>creates a
+                generator <code>JsonGenerator</code> that writes JSON data to an output source in a streaming way. In
+                this example, the output source is a file represented by the variable <code>fos</code>. </p>
+            <p>I omitted the declaration of the <code>Product</code> class for brevity, but both classes
+                <code>Product</code> and <code>JavaToJSONStreaming</code> come with the book’s code samples. If you run
+                this program, it creates a file with the following content:</p>
+            <pre>
+{"id":777,"description":"Gucci Handbag","price":1000.0}
+</pre>
+            <p>Keep in mind that to make this program work as a standalone application you need to include the jar that
+                implements the JSON Processing API (also known as JSON-P API) in the <code>CLASSPATH</code> of your
+                application. If this program will run on the server side, each Java EE server already includes such a
+                jar, and no modification of the <code>CLASSPATH</code> is needed.</p>
+        </section>
+        <section>
+            <h3><a id="idp22736544"></a>Writing JSON with the Object Model API</h3>
+            <p>As opposed <a id="idp22735056"></a><a id="idp22739616"></a><a id="idp22741008"></a>to streaming, the
+                Object Model API requires you to build the entire JSON object in memory, and only after to write the
+                whole thing to the destination of your choice. To illustrate this, I re-write the class <code>JavaToJSONStreaming</code> from
+                the previous section:</p>
+            <pre>
+public class JavaToJSONObject {
+   public static void main(String[] args) {
+     Product prd1 = new Product(777, "Chanel Handbag", 1000.00);
+     try (OutputStream fos = 
+                 new FileOutputStream("product_from_object.json");
+         JsonWriter jsonWriter = Json.createWriter(fos);) {
+         JsonObjectBuilder prdBuilder = Json.createObjectBuilder();
+         prdBuilder.add("id", prd1.id)
+                   .add("description", prd1.description)
+                   .add("price", prd1.price);
+         JsonObject prdJsonObject = prdBuilder.build();
+         System.out.println("prdJsonObject: " + prdJsonObject);
+         jsonWriter.writeObject(prdJsonObject);
+         // Read and parse the newly created file back
+         JsonReader jsonReader = 
+         Json.createReader(new FileReader("product_from_object.json"));
+         JsonObject jsonObject = jsonReader.readObject();
+         System.out.println(jsonObject);
+     } catch (IOException e) {
+         e.printStackTrace();
+     }
+   }
+}
+</pre>
+            <p><code>JsonObjectBuilder</code> initializes the model and allows you to add key/value pairs to represent
+                the JSON object. The class <code>Json</code> has methods to create the builder object, which includes a
+                method  <code>build()</code> to create a JSON-formatted string. The <code>JsonWriter</code> writes the
+                JSON object to a file, and <code>JsonReader</code> reads and parses the newly created file. If you don’t
+                need to write a <code>JsonObject</code> to a file you can convert it to a <code>String</code> by
+                calling <code>prdJsonObject.toString()</code> . Then, for example, you can send <a id="idp22749424"></a>this
+                <code>String</code> to a web client.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="restful_stock_server"></a>The RESTful Stock Server</h2>
+        <p><span epub:type="pagebreak" title="487" id="Page_487"></span>The Java EE specification  includes the JAX-RS
+            API for creating the server- and client-side programs for RESTful Web Services. All Java EE-compliant
+            application servers implement JAX-RS. I’ll continue using the GlassFish server, which comes with the JAX-RS
+            implementation known as Jersey, and you won’t need to download any additional libraries to run the sample
+            code from this lesson.  Let’s see how to implement RESTful Web Services by redesigning a familiar stock
+            server example. The representation of the resources (in this case, stocks) can vary and is determined by
+            media type.</p>
+        <p>Development of a RESTful application with JAX-RS is pretty straightforward:</p>
+        <ol>
+            <li>Create a small Java class that extends <code>javax.ws.rs.core.Application</code>, which registers your
+                application with a Java EE server. 
+            </li>
+            <li>Create and properly annotate a <i>REST endpoint</i>, which is a POJO.</li>
+            <li>Define a Java bean that will be converted into XML, JSON, or some other format for communicating with
+                the client’s application. 
+            </li>
+            <li>Create any number of helper classes that implement application logic.</li>
+        </ol>
+        <p>The following sections show you how this can be done.    </p>
+        <section>
+            <h3><a id="theapp"></a>Creating the Application</h3>
+            <p>The same Java EE server <a id="idp22757440"></a>may host multiple RESTful Web Services. To help the
+                server with routing the client’s requests to the proper application, each application should be mapped
+                to a specific URL pattern. In older versions of Java EE it could be done only by adding a configuration
+                to the file called <code>web.xml</code>.  This is not required any longer. Just create a class that
+                extends <code>javax.ws.rs.core.Application</code>, and mark it with an <code>@ApplicationPath</code>
+                annotation containing a URL fragment identifying your application. This is how your application class
+                <code>StockQuoteApplication</code> will look:</p>
+            <pre>
+package lesson33;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+@ApplicationPath("<strong>resources</strong>")
+public class StockQuoteApplication extends Application {
+}
+</pre>
+            <p><span epub:type="pagebreak" title="488" id="Page_488"></span>This is all that the Java EE server needs to
+                redirect to your application all requests containing the pattern <code>resources</code> in the URL. This
+                is how the routing begins, but any application can have multiple endpoints. To identify the right one
+                you need to use the <code>@Path</code> annotation, which you see in the section  "<a
+                        href="part0034.html#endpoints">Creating the Endpoint StockService</a>.”</p>
+        </section>
+        <section>
+            <h3><a id="idp22767392"></a>Creating the Java Bean Stock</h3>
+            <p>The client and the RESTful server needs to agree on the data format for communications—for example, JSON,
+                XML, and so on.  Although JAX-RS is a specification for implementing Java-based RESTful Web Services,
+                JAXB is a specification for converting data to/from XML format. For example, annotating a Java bean
+                with <a id="idp22769760"></a><a id="idp22771216"></a><code>@XmlRootElement</code> can bring into action
+                the JAXB framework for processing XML, which turns a Java bean into an XML or JSON document before
+                sending it to the web client that has no knowledge of the Java object format. <a id="list-anc-c033-001"
+                                                                                                 href="part0034.html#list-c033-001">Listing
+                    33-1</a> shows a Java bean called <code>Stock</code> annotated with <code>@XmlRootElement</code>.
+            </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c033-001"
+                                               href="part0034.html#list-anc-c033-001">Listing 33-1</a>:</span> A Java
+                        bean Stock</h5>
+                    <pre>
+import javax.xml.bind.annotation.XmlRootElement;
+@XmlRootElement
+public class Stock {
+    private String symbol;
+    private Double price;
+    private String currency;
+    private String country;
+    public Stock() {
+    }
+    public Stock(String symbol,Double price, String currency, 
+                                             String country) {
+        this.symbol = symbol;
+        this.price = price;
+        this.currency = currency;
+        this.country = country;
+    }
+    public String getSymbol() {
+        return symbol;
+    }
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+    public Double getPrice() {
+        return price;
+    }
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+    public String getCurrency() {
+        return currency;
+    }
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+    public String getCountry() {
+        return country;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p><span epub:type="pagebreak" title="489" id="Page_489"></span>The server-side Java code can retrieve the
+                data about a particular stock and create an instance of the <code>Stock</code> class, which has to be
+                converted into the requested data format and sent to the web client. In the JSON section of this lesson
+                I give examples of how a Java class can be converted into a JSON string. </p>
+        </section>
+        <section>
+            <h3><a id="endpoints"></a>Creating the Endpoint StockService</h3>
+            <p>The endpoint <a id="end"></a>class is an entry door to a particular Web Service. Its role is to find and
+                invoke the Java method with a signature that matches the client’s request. For example, if the endpoint
+                received an HTTP <code>GET</code> request with one parameter, the endpoint class should have a method
+                that takes one argument and is marked with an <code>@GET</code> <a id="idp22785936"></a><a
+                        id="idp22784816"></a>annotation.</p>
+            <p>You need to mark an endpoint class <a id="idp22788832"></a><a id="idp22790128"></a>with an
+                <code>@Path</code> annotation, so the server  redirects only specific client requests to this class. You
+                also need to annotate the methods of this class to specify which method should be
+                handling <code>GET</code> requests, which - <code>PUT,</code> et al.</p>
+            <p>Here is a list of the most popular annotations that are used with REST endpoints:</p>
+            <ul>
+                <li><span><code>@Path</code>: A root resource class (POJO). This annotation specifies the URL pattern that this class handles. The endpoint class has at least one method annotated with <code>@Path</code>. <span> </span></span>
+                </li>
+                <li><span><code>@GET</code>: The <span epub:type="pagebreak" title="490" id="Page_490"></span>class method that should handle HTTP <code>GET</code> requests. You can have multiple methods annotated with <code>@GET</code>, <span>and each can produce the result in a different <a
+                        href="http://www.iana.org/assignments/media-types/media-types.html">MIME type</a>.</span></span>
+                </li>
+                <li><span><code>@POST</code>: The class <a id="idp22802304"></a><a id="idp22803760"></a>method that handles HTTP <code>Post</code> requests</span>.
+                </li>
+                <li><span><code>@PUT</code>: The class method <a id="idp22807296"></a><a id="idp22808752"></a>that handles HTTP <code>Put</code> requests</span>.
+                </li>
+                <li><span><code>@DELETE</code>: The class <a id="idp22812224"></a><a id="idp22813728"></a>method that handles HTTP <code>Delete</code> requests.</span>
+                </li>
+                <li><span><code>@Produces</code>: Specifies <a id="idp22817024"></a><a id="idp22818496"></a>the MIME type(s) for response; for example,<code>"application/json"</code>. </span>
+                </li>
+                <li><span><code>@Consumes</code>: Specifies <a id="idp22821824"></a><a id="idp22823280"></a>the MIME type(s) that a resource can consume when sent by the client. </span>
+                </li>
+                <li><code>@PathParam</code>: Injects <a id="idp22825488"></a><a id="idp22827232"></a>the URI fragment
+                    into a method parameter (for example, IBM).
+                </li>
+                <li><span><code>@QueryParam</code>: I</span>njects the <a id="idp22830352"></a><a id="idp22831760"></a>parameter
+                    from the URL into a method parameter (or example,
+                    stock=IBM)<span>. It is used with HTTP <code>GET</code> requests.</span></li>
+                <li><span><code>@FormParam</code>: Injects the <a id="idp22835776"></a><a id="idp22837280"></a>value from an input field of an HTML form into the provided Java variable or a method argument.</span>
+                </li>
+            </ul>
+            <p>The following class <code>StockService</code> is an example of a RESTful endpoint that may return the
+                stock that’s identified by the URI like <code><a
+                        href="http://localhost:8080/Lesson33/resources/stock/IBM">http://localhost:8080/Lesson33/resources/stock/IBM</a></code>.
+                The class <code>StockService</code> is sprinkled with annotations. First comes the annotation <code>@Path</code>,
+                which can be used with either a class or a method. JAX-RS maps clients’ requests to class methods. If
+                more than one annotation <code>@Path</code> are used in a class, their values are going to be compared
+                with the URL fragments for finding the matching method.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c033-002"></a>Listing 33-2:</span> REST endpoint StockService
+                    </h5>
+                    <pre>
+<strong>@Path("/stock")</strong>
+public class StockService {
+    
+    @Produces({"application/xml","application/json"})
+<strong>    @Path("{symbol}")</strong>
+    @GET
+    public Stock getStock(@PathParam("symbol") String symbol) {
+        Stock stock = StockServiceHelper.getStock(symbol);
+        if (stock == null) {
+            return new Stock("NOT FOUND", 0.0, "--", "--");
+        }
+        return stock;
+    }
+    @POST
+    @Consumes("application/x-www-form-urlencoded")
+    public Response addStock(
+                     @FormParam("symbol") String symbol,
+                     @FormParam("currency") String currency,
+                     @FormParam("price") String price,
+                     @FormParam("country") String country) {
+        if (StockServiceHelper.getStock(symbol) != null)
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Stock " + symbol + " already exists")
+                    .type("text/plain").build();
+        double priceToUse;
+        try {
+            priceToUse = new Double(price);
+        }
+        catch (NumberFormatException e) {
+            priceToUse = 0.0;
+        }
+        StockServiceHelper.addStock(new Stock(symbol, priceToUse,
+                                              currency, country));
+        return Response.ok().build();
+    }
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p><span epub:type="pagebreak" title="491" id="Page_491"></span>One of the methods
+                in <code>StockService</code> is marked with an <code>@GET</code> annotation and the other one
+                with <code>@POST</code>. One of these methods is automatically invoked to process the corresponding HTTP
+                requests. </p>
+            <p>Let’s see how our Java EE server routes the HTTP <code>GET</code> request to get the resource—the data
+                about the IBM’s stock—represented by the following URI:<br/>
+                <code><a href="http://localhost:8080/Lesson33/resources/stock/IBM">http://localhost:8080/Lesson33/resources/stock/IBM</a></code>.
+                First, the Java EE server parses the URI and tries to find the Java class that matches the value from
+                the <code>@ApplicationPath</code>, which is <code>resources</code> in our case (see the section <a
+                        href="part0034.html#theapp">Creating the Application</a>). Then the RESTFul server looks for the
+                class annotated with <code>@Path("/stock")</code> and routes this request to the class <code>StockService</code>.
+            </p>
+            <p>Because the URI doesn’t end with <code>/stock</code>, the matching process continues. Our URI has a stock
+                symbol after the word <code>stock</code>, (<code>/IBM</code>), and the method-level annotation <code>@Path("{symbol}")</code>
+                helps the server to find (and invoke) the matching method: <code>getStock()</code>.</p>
+            <p>The annotation <code>@PathParam("symbol")</code> indicates that the server should inject the value of the
+                stock symbol included in the URI into the <code>symb</code> argument of the
+                method <code>getStock()</code>. <a id="fig-anc-c033-001" href="part0034.html#fig-c033-001">Figure
+                    33-1</a> shows the annotations that were involved in the parsing process of our URI.</p>
+            <figure>
+                <img class="center" src="../Images/image00616.gif" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c033-001" href="part0034.html#fig-anc-c033-001">Figure 33-1</a>:</b></span>
+                        Parsing the URI with annotations</p>
+                </figcaption>
+            </figure>
+            <p>The MIME type specified in the annotation <code>@Produces</code> means that the
+                method <code>getStock()</code> can produce the data either in XML or in JSON format. Software developers
+                responsible for creating the client part need to make sure that the header of the client’s HTTP request
+                includes the required MIME format in its  <code>Accept</code> header. If no methods that produce the
+                content in the requested MIME type are found, the client gets the HTTP error 406, which you see in
+                action in the “Try It” section. One HTTP client may request the stock data in JSON and another requests
+                it in the XML format, but both of them are served by the same method <code>getStock()</code>.</p>
+            <p>The <code>addStock()</code> method <span epub:type="pagebreak" title="492" id="Page_492"></span>is marked
+                with the <code>@Consumes</code> annotation to consume the HTML form’s data sent by the client.  The
+                method <code>addStock()</code>  is called when the HTTP <code>POST</code> request is received. If the
+                REST endpoint is unable to consume the requested MIME type, the client gets HTTP error 415. </p>
+            <p>The <code>@FormParam</code> annotation injects the values entered in the HTML form into the method <code>addStock()</code>.
+                If the web client wouldn’t be using an HTML form but was sending an HTTP <code>GET</code> request with
+                parameters, you’d have to use the annotation <code>@QueryParam</code> instead of <code>@FormParam</code>.
+            </p>
+            <p>The stock MSFT is considered another resource and can be represented by the URI <code><a
+                    href="http://localhost:8080/Lesson33/resources/stock/MSFT">http://localhost:8080/Lesson33/resources/stock/MSFT</a></code>.
+                So your <code>StockService</code> endpoint can provide the data about different stocks as long as you
+                know their URIs.</p>
+            <p>The class <code>StockService</code> uses the helper class <code>StockServiceHelper</code>, shown
+                in stockservicehelper_class. For simplicity, this class has two hard-coded stocks, but in the real world
+                it would be connected to one of the financial data feeds. This class uses static initializer, which
+                calls <a id="idp22872320"></a>the method <code>generateStocks()</code> on the first reference to <code>StockService</code>.
+            </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c033-003"></a>Listing 33-3:</span> StockServiceHelper class</h5>
+                    <pre>
+public class StockServiceHelper {
+    public static void addStock(Stock stock) {
+        stocks.put(stock.getSymbol(), stock);
+    }
+    public static void removeStock(String symbol) {
+        stocks.remove(symbol);
+    }
+    public static Stock getStock(String symbol) {
+        return stocks.get(symbol);
+    }
+    private static Map&lt;String, Stock&gt; stocks = new HashMap&lt;&gt;();
+    static {
+        generateStocks();
+    }
+    private static void generateStocks() {
+        addStock(new Stock("IBM", 43.12, "USD", "USA"));
+        addStock(new Stock("AAPL", 120.0, "USD", "USA"));
+     }
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="idp22878720"></a>Creating RESTFful Clients</h3>
+            <p>A <span epub:type="pagebreak" title="493" id="Page_493"></span>client application <a
+                    id="idp22880304"></a><a id="idp22881680"></a>that communicates with the server-side endpoint can be
+                written in any programming language that supports HTTP requests. Typically, the REST clients are HTML
+                applications that use JavaScript functions that issue such requests. Because this book is about Java
+                programming, I do not cover how to do this in the JavaScript, but in the “Try It” section, I show you
+                how to use a tool called Postman that can be used to test RESTful services from the Chrome web browser.
+            </p>
+            <p>Because RESTful applications can be layered, the following sample scenario is possible: An HTML client
+                requests a resource implemented in Java, which in turn becomes a client for another resource implemented
+                on another, say, .NET server. This is perfectly legal because both technologies support JSON as a data
+                exchange format.     </p>
+            <p>If you need to write RESTful clients in Java, use the JSON API discussed earlier in the section "<a
+                    href="part0034.html#json_section">Working with JSON-Formatted Data</a>.”</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="cdi_section"></a>Contexts and Dependency Injection</h2>
+        <p>When your Java <a id="cdi1"></a><a id="cdi2"></a>code runs in a Java EE container, it may need to use
+            instances of some objects. <a href="part0030.html">Lesson 29</a> familiarized you with injecting JNDI
+            resources, but you can inject instances of your application objects as well. The Java EE specification
+            includes JSR 346, which defines Contexts and Dependency Injection (CDI). </p>
+        <p>For example, the <code>StockService</code> class might have needed a modeling engine that would apply some
+            technical analysis algorithms to give recommendations on buying or selling a stock. As an example, you can
+            write a class <code>TechAnalysisEngine</code> that implements <a id="idp22896128"></a><a
+                    id="idp22895440"></a>the <code>Recommendations</code> interface, and with CDI you don’t need to
+            create an instance of this class yourself; you could ask the container to inject the instance of this class
+            into your code using the CDI annotation <code>@Inject</code>, which could be placed before the field,
+            constructor, or a method. The following example injects the method argument:</p>
+        <pre>
+@Path("/stock") 
+public class StockService {
+          
+  Recommendations <strong>theEngine</strong>;
+    <strong>@Inject</strong>
+    public void setRecommendationsEngine(Recommendations <strong>theEngine</strong>){
+        this.theEngine = theEngine;
+    }
+  @Produces({"application/xml","application/json"})
+  @Path("{symbol}")
+  @GET public Stock getStock(@PathParam("symbol") String symbol) {
+      Stock stock = StockServiceHelper.getStock(symbol);
+      <strong>String tradeRecommendations = 
+                              theEngine.getRecommendations(stock);</strong>
+  }
+      
+  ...
+}         </pre>
+        <p>CDI <span epub:type="pagebreak" title="494" id="Page_494"></span>bean is a POJO that can be managed by Java
+            EE container. If you are planning to use CDI, you need to add an empty file <code>bean.xml</code>, which
+            signals the Java EE container to discover CDI beans in the application. To continue the example with the
+            technical analysis engine, you could define it as follows:</p>
+        <pre>
+public interface Recommendations {
+   public String getRecommendations (Stock stock); 
+}
+</pre>
+        <p>Accordingly the CDI bean could be declared like this:</p>
+        <pre>
+public class TechAnalysisEngine implements Recommendations{
+   
+    public TechAnalysisEngine(){
+    }
+    public String getRecommendations(Stock stock){
+     String recommendations; 
+     // Implement the technical analysis logic here 
+     return recommendations; 
+    }
+}
+</pre>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp22903328"></a>A Use Case for a Singleton</h3>
+                <p>You don’t want Java EE container to create multiple instances of the class
+                    <code>TechAnalysisEngine</code>. The same instance can serve multiple client requests. Just annotate
+                    the class <code>TechAnalysisEngine</code> as <code>@Singleton</code>, and CDI injects it only once.
+                    To ensure that you use CDI, import the <code>javax.inject.Singleton</code> implementation of the
+                    annotation <code>@Singleton</code>, which is not the same as creating a <a
+                            href="part0032.html#types_of_ejbs">singleton EJB</a> implemented in <code>javax.ejb.Singleton</code>. 
+                </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>But what if more than one class implements the <code>Recommendation</code> interface? How will the container
+            know which implementation to inject? To avoid ambiguity you should use custom qualifier annotations. For
+            example, you can declare an annotation <code>@Fundamental</code> like this:</p>
+        <pre>
+@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface Fundamental {}
+</pre>
+        <p>Now you can annotate with <code>@Fundamental</code> another class that also implements the <code>Recommendations</code>
+            interface:</p>
+        <pre>
+@Fundamental
+public class FundamentalAnalysisEngine implements Recommendations{
+  public FundamentalAnalysisEngine(){
+  }
+  public String getRecommendations(Stock stock){
+    String recommendations;
+    // Implement the fundamental analysis logic here
+    return recommendations;
+  }
+}</pre>
+        <p><span epub:type="pagebreak" title="495" id="Page_495"></span>The line that injects the instance of the <code>FundamentalAnalysisEngine</code>
+            class into <code>StockService</code> looks like this:</p>
+        <pre>
+ @Inject @Fundamental
+ public void setRecommendationsEngine(Recommendations theEngine) {
+    ...
+ }
+</pre>
+        <p>The ambiguity is resolved! </p>
+        <p>Because you are not creating the instances of the objects manually, you need to have a way to specify how
+            long the injected instance will live.  This is done using CDI scope annotations: <code>@RequestScoped</code>, <code>@SessionScoped</code>​,
+             <code>@ApplicationScoped</code>, <code>@Dependent</code>​, and <code>@ConversationScoped</code>​. You can
+            find more details about these annotations <a id="idp22918448"></a><a id="idp22917488"></a>in the <a
+                    href="https://docs.oracle.com/javaee/7/tutorial/partcdi.htm#GJBNR">CDI chapter</a> of the Java EE
+            Tutorial.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp22922864"></a>Java EE Samples</h3>
+                <p>This lesson concludes the coverage of selected Java EE 7 technologies. Refer to the GitHub repository
+                    <a href="https://github.com/javaee-samples/javaee7-samples">https://github.com/javaee-samples/javaee7-samples</a>
+                    that contains lots of Java EE 7 code samples that illustrate the usage of all Java EE 7 JSRs. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="try_it-id00126"></a>Try It</h2>
+        <p>Your assignment is <a id="idp22927232"></a><a id="idp22928624"></a>to make the code related to the stock
+            quote examples work. You need to create an Eclipse project and copy the code samples from the book’s web
+            page at <i><a
+                    href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch33.html#working_with_restful_web_services">working_with_restful_web_services</a> </i>there.
+             Then you need to deploy this project in GlassFish and run it.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00127"></a>Lesson Requirements</h3>
+            <p>You should have Java and GlassFish v4 server installed.</p>
+            <div id="you-can-download-the"><h6>Note</h6>
+                <p><i>You can download the code and resources for this “Try It” from the book’s web page</i> at <code><a
+                        href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>. You
+                    can find them in the</i> <a href="part0034.html#working_with_restful_web_services">working_with_restful_web_services</a><i>
+                    folder in the download.</i></p>
+            </div>
+        </section>
+        <section>
+            <h3><a id="hints-id00128"></a>Hints</h3>
+            <p>Eclipse <span epub:type="pagebreak" title="496" id="Page_496"></span>IDE for Java EE Developers has a
+                template for the creation of REST resources. After the Eclipse project is created, right-click the
+                project name, select New, and then select RESTful Web Service from Pattern (Java EE 7). Eclipse creates
+                for you an annotated class similar to the one from rest_resource_stockresource, which you can edit to
+                meet your application’s requirements.</p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00129"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a dynamic web project called <code>Lesson33</code> in the Java EE perspective of Eclipse.
+                </li>
+                <li>Download the source files for <a href="part0034.html">Lesson 33</a> from the <i><a
+                        href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch33.html#working_with_restful_web_services">working_with_restful_web_services</a> </i>folder<i>.</i>
+                </li>
+                <li>Create packages called <code>lesson33</code> and <code>lesson33.service</code>.</li>
+                <li>Copy the class <code>StockQuoteApplication</code> to the folder <code>lesson33</code>.</li>
+                <li>Copy the classes <code>Stock</code>, <code>StockService</code>, and <code>StockServiceHelper</code>
+                    from the downloaded code samples into thе folder <code>lesson33/service</code>.
+                </li>
+                <li>Deploy the project <code>Lesson33</code> under GlassFish. Right-click the server name, select Add
+                    and Remove, and in the pop-up window move the entry Lesson33 from the left box to the right one by
+                    clicking Add. Then click Finish. The RESTFul service is deployed on the server.
+                </li>
+                <li>For the client, use Google Chrome Web browser with the Postman REST Client add-on. Open Chrome
+                    browser and launch the Postman from <span><a href="http://bit.ly/18JpMha">http://bit.ly/18JpMha</a>. </span>
+                </li>
+                <li>In the URL field on top enter the following URL: <code><a
+                        href="http://localhost:8080/Lesson33/resources/IBM">http://localhost:8080/Lesson33/resources/IBM</a></code>.
+                </li>
+                <li>Click the Send button, and your RESTful service responds with the JSON-formatted data. Your Postman
+                    window should look similar to <a id="fig-anc-c033-002" href="part0034.html#fig-c033-002">Figure
+                        33-2</a>.  
+                    <figure>
+                        <img class="center" src="../Images/image00617.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c033-002" href="part0034.html#fig-anc-c033-002">Figure 33-2</a>:</b></span>
+                                Getting the stock/IBM resource using Postman REST Client</p>
+                        </figcaption>
+                    </figure>
+                    The GlassFish Server found the REST endpoint <code>StockService</code> and invoked the method <code>getResource("IBM")</code>
+                    on it.
+                </li>
+                <li>Remove <span epub:type="pagebreak" title="497" id="Page_497"></span>IBM from the URL, so it looks
+                    like this: <code><a href="http://localhost:8080/Lesson33/resources">http://localhost:8080/Lesson33/resources</a></code>.
+                    Press Send, and you get the error 405 because the endpoint <code>StockService</code> from <a
+                            href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch33.html#rest_resource_stockresource">rest_resource_stockresource</a> has
+                    no <code>@GET</code> annotated methods that don’t require arguments.  
+                </li>
+                <li>To test the Add New Stock functionality, select POST in the method drop-down menu, select the 
+                    <code>x-www-form-urlencoded</code> tab, click the URL Params button, and fill out the parameters
+                    required by the method <code>addStock()</code> of <code>StockService</code> from
+                    rest_resource_stockresource. After you click the Send button, your Postman window should look like
+                    <a id="fig-anc-c033-003" href="part0034.html#fig-c033-003">Figure 33-3</a>.<br/>
+                     
+                    <figure>
+                        <img class="center" src="../Images/image00618.jpeg" alt="image"/>
+                        <figcaption>
+                            <p><span class="figureLabel"><b><a id="fig-c033-003" href="part0034.html#fig-anc-c033-003">Figure 33-3</a>:</b></span>
+                                Added new stock using the POST request</p>
+                        </figcaption>
+                    </figure>
+                    <br/>
+                    The RESTful endpoint properly matched the <code>@POST</code> annotated method
+                    <code>addStock()</code> with four arguments. To ensure that the information about MSFT has been
+                    added on the server side, issue a <code>GET</code> request: <code><a
+                            href="http://localhost:8080/Lesson33/resources/MSFT">http://localhost:8080/Lesson33/resources/MSFT</a></code>.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0034.html">Lesson 33</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

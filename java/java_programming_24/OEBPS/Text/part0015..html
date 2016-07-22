@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Working with I/O Streams</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="working_with_streams"></a><span class="chapterTitle">Lesson 14<br/>Working with I/O Streams</span></h1>
+
+    <section>
+        <p>Most <span epub:type="pagebreak" title="171" id="Page_171"></span>programs work with <a id="idp16541648"></a>some
+            kind of data, which could be stored in a local database, on a remote computer, or in a file located on your
+            disk. Java has a concept of working with <i>streams of data</i>. You <a id="idp16543776"></a><a
+                    id="idp16544816"></a>can say that a Java program reads sequences of bytes from an input stream (or
+            writes into an output stream) byte after byte, character after character, primitive after primitive.
+            Accordingly, Java defines various types of classes supporting <a id="idp16546448"></a><a
+                    id="idp16547792"></a><a id="idp16549152"></a><a id="idp16550624"></a>streams; for example, <code>InputStream</code>
+            or <code>OutputStream</code>. There are classes specifically meant for reading character streams <a
+                    id="idp16553760"></a><a id="idp16552848"></a><a id="idp16555152"></a><a id="idp16556432"></a>such as
+            <code>Reader</code> and <code>Writer</code>.  <code>DataInputStream</code> and <code>DataOutputStream</code>
+            can <a id="idp16559744"></a><a id="idp16560960"></a><a id="idp16562080"></a><a id="idp16563472"></a>read and
+            write Java primitives, and to work with files you may consider such <a id="idp16566272"></a><a
+                    id="idp16565248"></a><a id="idp16567344"></a><a id="idp16568704"></a>classes as <code>FileInputStream</code>
+            and <code>FileReader</code>.</p>
+        <p>Classes that work <a id="idp16542448"></a><a id="idp16572304"></a><a id="idp16573440"></a><a
+                id="idp16574816"></a>with streams are located in two packages: <code>java.io</code> and
+            <code>java.nio</code>. Classes from the former implement blocking input/output (I/O): When bytes are being
+            read/written by a process, they become unavailable for other threads of execution. The latter package offers
+            non-blocking I/O with improved performance. Most of this chapter covers the fundamentals of I/O, but at the
+            end I’ll show you how to work with files using classes from the package <code>java.nio</code>.</p>
+        <p>Before deciding which Java class to use for I/O in each particular case, you need to understand what kind of
+            data is coming from (or going to) the stream in question. No matter what you select, your code needs to
+            perform three operations:</p>
+        <ol>
+            <li>Open a stream that points at a specific data source: a file, a socket, a URL, and so on.</li>
+            <li>Read or write data from/to this stream.</li>
+            <li>Close the stream.</li>
+        </ol>
+        <p>If a Java program uses third-party programs, such as database management systems (DBMS), you won’t need to
+            program streams directly—the database drivers or object-relational mapping framework is all you need. But in
+            this lesson you see examples of performing I/O operations with different streams.</p>
+    </section>
+    <section>
+        <h2><a id="byte_streams"></a>Byte Streams</h2>
+        <p>A program <span epub:type="pagebreak" title="172" id="Page_172"></span>can <a id="idp16583312"></a><a
+                id="idp16580272"></a><a id="idp16581792"></a><a id="idp16587664"></a>read or write any file one byte at
+            a time with the help of one of the subclasses of <code>InputStream</code> or <code>OutputStream</code>,
+            respectively. The following example in <a id="list-anc-c014-001" href="part0015.html#list-c014-001">Listing
+                14-1</a> shows how to use the class <code>FileInputStream</code> to read a file named
+            <code>abc.dat</code>. This code snippet reads and prints each byte’s value:</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c014-001"
+                                           href="part0015.html#list-anc-c014-001">Listing 14-1</a>:</span> Using
+                    FileInputStream</h5>
+                <pre>
+    try (FileInputStream myFile = new FileInputStream("abc.dat")){
+            
+        boolean eof = false;
+        while (!eof) {
+            int byteValue = myFile.read();
+            System.out.print(byteValue + " ");
+            if (byteValue  == -1)
+                eof = true;
+        }
+      } catch (IOException ioe) {
+               System.out.println("Could not read file: " + 
+                                               ioe.toString());
+      } 
+    }
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Because the code in <a href="part0015.html#list-c014-001">Listing 14-1</a> doesn’t specify the directory
+            where <code>abc.dat</code> is located, the program tries to find this file in the current directory, which
+            is the root directory of the Eclipse project (if you use Eclipse). At any given time you can easily find out
+            the current directory programmatically by calling the method <code>System.getProperty("user.dir")</code>.
+        </p>
+        <p>The output of this program will be a sequence of numbers, which represents the codes of the characters
+            located in the file. For example, if <code>abc.dat</code> contains the text <i>“This is a test file,”</i>
+            the output on the system console will look like this:</p>
+        <pre>
+84 104 105 115 32 105 115 32 97 32 116 101 115 116 32 102 105 108 101 -1
+</pre>
+        <p>When you are reading with <code>FileInputStream</code>, the end of the file is represented by a negative one,
+            and this is how you know when to stop. The code in <a href="part0015.html#list-c014-001">Listing 14-1</a>
+            checks for <code>-1</code> and sets the <code>boolean</code> variable <code>eof</code> to <code>false</code>
+            to finish the loop. </p>
+        <p>Note that the above example automatically closes streams by using <a href="part0011.html#trywithresources">try-with-resources</a>,
+            as explained in <a href="part0011.html#error_handling">Lesson 10</a>. This code will work starting from Java
+            7.</p>
+        <p>The code fragment in <a id="list-anc-c014-002" href="part0015.html#list-c014-002">Listing 14-2</a> writes
+            into a file called <code>xyz.dat</code> using the class <code>FileOutputStream</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c014-002"
+                                           href="part0015.html#list-anc-c014-002">Listing 14-2</a>:</span> Using
+                    FileOutputStream</h5>
+                <pre>
+// byte values are represented by integers from 0 to 255
+  int somedata[]= {56,230,123,43,11,37};
+  try (FileOutputStream myFile= new FileOutputStream("xyz.dat");){
+     for (int i = 0; i &lt;somedata.length; i++){
+        file.write(somedata[i]);
+     }
+  } catch (IOException ioe) {
+     System.out.println("Could not write to a file: " + 
+                                                  ioe.toString());
+  } 
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="buffered_streams"></a>Buffered Streams</h2>
+        <p><span epub:type="pagebreak" title="173" id="Page_173"></span>The code in the <a id="idp16613040"></a><a
+                id="idp16614560"></a><a id="idp16615600"></a>previous section was reading and writing one byte at a
+            time. In general, disk access is much slower than the processing performed in memory; that’s why it’s not a
+            good idea to access the disk a thousand times to read a file of 1,000 bytes. To minimize the number of times
+            the disk is accessed, Java provides <i>buffers</i>, which serve as reservoirs of data.</p>
+        <p>The class <code>BufferedInputStream</code> works as <a id="idp16617504"></a><a id="idp16618848"></a><a
+                id="idp16619920"></a>a middleman between <code>FileInputStream</code> and the file itself. It reads a
+            big chunk of bytes from a file into memory in one shot, and the <code>FileInputStream</code> object then
+            reads single bytes from there, which is memory-to-memory operations. <code>BufferedOutputStream</code> works
+            similarly with the class <code>FileOutputStream</code>. The main idea here is to minimize disk access.</p>
+        <p>Buffered streams are not changing the type of the original streams—they just make reading more efficient.
+            Think of it this way: A program performs stream chaining (or stream piping) to connect streams, just as
+            pipes are connected in plumbing. <a id="list-anc-c014-003" href="part0015.html#list-c014-003">Listing
+                14-3</a> shows an example in which a file is read so the data from <code>FileInputStream</code> fills
+            <code>BufferedInputStream</code> before processing.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c014-003"
+                                           href="part0015.html#list-anc-c014-003">Listing 14-3</a>:</span> Chaining
+                    FileInputStream with BufferedInputStream</h5>
+                <pre>
+try (FileInputStream myFile = new  FileInputStream("abc.dat");
+     BufferedInputStream buff = new BufferedInputStream(myFile);){
+     
+            boolean eof = false;
+            while (!eof) {
+                int byteValue = buff.read();
+                System.out.print(byteValue + " ");
+                if (byteValue  == -1)
+                    eof = true;
+           }
+        } catch (IOException ioe) { 
+            ioe.printStackTrace();
+        }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="174" id="Page_174"></span>While reading a stream with the help of <code>BufferedInputStream</code>,
+            watch for the end-of-file character to know that all the bytes have been read from the buffer. The
+            class <code>BufferedOutputStream</code> is for writing, and you’d need to call its method
+            <code>write()</code>.</p>
+        <p>The default buffer size is 8Kb, but you can control it using a two-argument constructor of the <code>BufferedInputStream</code>
+            or <code>BufferedOutputStream</code>. For example, to set the buffer size to 5,000 bytes, instantiate the
+            buffered stream as follows:</p>
+        <pre>
+BufferedInputStream buff = new BufferedInputStream(myFile, 5000);</pre>
+    </section>
+    <section>
+        <h2><a id="character_streams"></a>Character Streams</h2>
+        <p>The text in Java <a id="idp16636432"></a><a id="idp16638096"></a><a id="idp16639200"></a>is represented as a
+            set of <code>char</code> values (two-byte characters), which are based on the Unicode Standard. The Java
+            classes <code>FileReader</code> and <code>FileWriter</code> were <a id="idp16641232"></a><a
+                    id="idp16642976"></a><a id="idp16644080"></a><a id="idp16645456"></a>specifically created to work
+            with text files, but they work only with default character encoding and don’t handle localization properly.
+        </p>
+        <p>The recommended way is to pipe the class <code>InputStreamReader</code> with specified encoding and the
+            <code>FileInputStream</code>. The class <code>InputStreamReader</code> reads bytes and decodes them into
+            characters using a specified <code>CharSet</code>. Each JVM has a default <i>charset</i>, which can be
+            specified during the JVM start-up and depends on the locale. Some of the standard charsets are US-ASCII,
+            UTF-8, and UTF-16.</p>
+        <p><a id="list-anc-c014-004" href="part0015.html#list-c014-004">Listing 14-4</a> reads bytes from a text file
+            and converts them from UTF-8 encoding into Unicode to return results as a <code>String</code>. For
+            efficiency, the reading is piped <a id="idp16653104"></a><a id="idp16652320"></a>with the
+            <code>BufferReader</code>, which reads text from the stream buffering characters. Note that this code uses
+            mutable <code>StringBuffer</code> that usually works faster than <code>String</code> when it comes to
+            performing text manipulations. Using a mutable <code>StringBuffer</code> was a recommended way to
+            concatenate strings. That’s why I decided to illustrate its use.</p>
+        <p>If you’ll be concatenating regular <code>String</code> values, Java compiler will optimize this code anyway
+            and will replace <code>String</code> concatenation with yet another helper class <code>StringBuilder</code>.
+            You can also manually use <code>StringBuilder</code> instead of <code>StringBuffer</code>, as shown in <a
+                    href="part0017.html#network_programming">Lesson 16</a>. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c014-004"
+                                           href="part0015.html#list-anc-c014-004">Listing 14-4</a>:</span> Reading text
+                    files</h5>
+                <pre>
+StringBuffer buffer = new StringBuffer();
+    try (
+       FileInputStream myFile = new FileInputStream("abc.txt");
+       InputStreamReader inputStreamReader =
+                  new InputStreamReader(myFile, "UTF8"
+);
+      Reader reader = new BufferedReader(inputStreamReader);){
+      int ch; // the code of one character
+      while ((ch = reader.read()) &gt; -1) {
+             buffer.append((char)ch);
+      }
+      buffer.toString();
+    } catch (IOException e) {
+          e.printStackTrace();
+    }</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="175" id="Page_175"></span>For writing characters to a file, pipe <code>FileOutputStream</code>
+            and <code>OutputStreamWriter</code>. For efficiency, use <code>BufferedWriter</code>; for example:</p>
+        <pre>
+try (FileOutputStream myFile = new FileOutputStream("abc.txt"); 
+     Writer out = new BufferedWriter(
+                         new OutputStreamWriter(myFile, "UTF8"));) {
+  
+  String myAddress = "123 Broadway, New York, NY 10011";
+  out.write(myAddress);
+} catch(IOException e){
+       e.printStackTrace();
+}</pre>
+    </section>
+    <section>
+        <h3><a id="idp16665952"></a>Bringing Together GUI and I/O Streams</h3>
+        <p><a id="list-anc-c014-005" href="part0015.html#list-c014-005">Listing 14-5</a> shows yet another version of
+            the tax calculation <a id="GUI1"></a><a id="GUI2"></a>program. This time I’ve added a text file, <code>states.txt</code>,
+            that includes states that will be used to populate a drop-down box, <code>chStates</code>. My file is
+            located in the root directory of the Eclipse project Lesson14, and it looks like this:</p>
+        <pre>
+New York
+New Jersey
+Florida
+California</pre>
+        <p>The program in <a href="part0015.html#list-c014-005">Listing 14-5</a> requires a class, <code>Tax</code>,
+            that you can borrow from <a href="part0005.html">Lesson 4</a> <a
+                    href="part0005.html#class_methods_and_constructors">class_methods_and_constructors</a>. Make sure
+            that it has the method <code>calcTax()</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c014-005"
+                                           href="part0015.html#list-anc-c014-005">Listing 14-5</a>:</span> Bringing
+                    together Swing and streams</h5>
+                <pre>
+public class TaxGuiFile extends JFrame {
+    JLabel lblGrIncome;
+    JTextField txtGrossIncome = new JTextField(15);
+    JLabel lblDependents=new JLabel("Number of Dependents:");
+    JTextField txtDependents = new JTextField(2);
+    JLabel lblState = new JLabel("State: ");
+    
+    //Define a data model for the ComboBox chState
+    Vector&lt;String&gt; states = new Vector&lt;&gt;(50); 
+    
+    //Create a combobox to get data from the model 
+    JComboBox chState = new JComboBox(states);
+    <span epub:type="pagebreak" title="176" id="Page_176"></span>JLabel lblTax = new JLabel("State Tax: ");
+    JTextField txtStateTax = new JTextField(10);
+    JButton bGo = new JButton("Go");
+    JButton bReset = new JButton("Reset");
+    
+    TaxGuiFile() {
+        lblGrIncome = new JLabel("Gross Income: ");
+        GridLayout gr = new GridLayout(5,2,1,1);
+        setLayout(gr);
+        add(lblGrIncome);
+        add(txtGrossIncome);
+        add(lblDependents);
+        add(txtDependents);
+        add(lblState);
+        add(chState);
+        add(lblTax);
+        add(txtStateTax);
+        add(bGo);
+        add(bReset);
+        // Populate states from a file
+        populateStates();
+        
+        chState.setSelectedIndex(0);
+        txtStateTax.setEditable(false);
+        
+       // The Button Go processing using lambda expression   
+       bGo.addActionListener(evt -&gt; {
+        try{
+         int grossInc=Integer.parseInt(txtGrossIncome.getText());
+         int dependents=Integer.parseInt(txtDependents.getText());
+         String state = (String)chState.getSelectedItem();
+         Tax tax=new Tax(grossInc, state,dependents);
+         String sTax =Double.toString(tax.calcTax());
+         txtStateTax.setText(sTax);
+        }catch(NumberFormatException e){
+           txtStateTax.setText("Non-Numeric Data");
+        }catch (Exception e){
+           txtStateTax.setText(e.getMessage());
+        }
+       });
+        
+       // The Button Reset processing using lambda expression
+       bReset.addActionListener(evt -&gt;{            
+            txtGrossIncome.setText("");
+            txtDependents.setText("");
+            chState.setSelectedIndex(0);
+            txtStateTax.setText("");
+       }); 
+    // Define, instantiate and register a WindowAdapter
+<span epub:type="pagebreak" title="177" id="Page_177"></span>    // to process windowClosing Event of this frame
+    this.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+            System.exit(0);
+        }});
+    }
+   // The code below will read the file states.txt and  
+   // populate the drop-down chStates
+</pre>
+                <pre>
+    private void populateStates(){
+      
+        states.add("Select State");
+     
+        try (FileInputStream myFile = 
+                           new FileInputStream("states.txt");
+                InputStreamReader inputStreamReader=
+                           new InputStreamReader(myFile, "UTF8");
+                BufferedReader reader =  
+                       new BufferedReader(inputStreamReader);){
+           
+            String stateName;
+            while ( (stateName = reader.readLine()) != null ){
+                states.add(stateName);
+            }
+             
+           }catch (IOException ioe){
+               txtStateTax.setText("Can't read states.txt: " + 
+                                              ioe.getMessage());
+           }
+    }
+    public static void main(String args[]){
+       TaxGuiFile taxFrame = new TaxGuiFile();
+       taxFrame.setSize(400,150);
+       taxFrame.setVisible(true);
+    }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The code in <a href="part0015.html#list-c014-005">Listing 14-5</a> reads the content of the file <code>states.txt</code>
+            and populates a collection—a <code>Vector</code> with states. The <code>Vector</code> collection (it’s like
+            <code>ArrayList</code> but synchronized) plays the role of a data model for the combo box states. I used a
+            constructor of <code>JComboBox</code> that takes a data model as an argument. This Swing component knows how
+            to display the content of its data model.</p>
+        <p>This is an example of the implementation <a id="idp16688704"></a>of the <i>MVC (model-view-controller)</i>
+            design pattern, which promotes the separation of data and user interface (UI). <code>JComboBox</code> plays
+            the role of a view, the <code>Vector</code> is a model, and the user works as a controller when she selects
+            a particular state and the view has to be updated.</p>
+        <p>Note that the <code>TaxGuiFile</code> class doesn’t implement the  <code>ActionListener</code> interface. The
+            click event handling for the Go <a id="idp16694048"></a><a id="idp16692736"></a>and Reset buttons is
+            implemented using lambda expressions. </p>
+        <p>The output of the program from <a href="part0015.html#list-c014-005">Listing 14-5</a> is shown in <a
+                id="fig-anc-c014-001" href="part0015.html#fig-c014-001">Figure 14-1</a>. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp16699296"></a>Splitting GUI and Processing</h3>
+                <p>In <span epub:type="pagebreak" title="178" id="Page_178"></span>a larger application it would make
+                    sense to separate the class <code>TaxGuiFile</code> into two: one would be only creating GUI
+                    components, and the other would read the data from files or other data sources. I illustrated this
+                    in<a href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch14.html#ActionListener"> Lesson
+                        9</a> for the calculator program that had two classes: <code>Calculator</code> and <code>CalculatorEngine</code>. 
+                </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <figure>
+            <img class="center" src="../Images/image00535.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c014-001"
+                                                   href="part0015.html#fig-anc-c014-001">Figure 14-1</a>:</b></span>
+                    Running the TaxGuiFile program</p>
+            </figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2><a id="data_streams"></a>Data Streams</h2>
+        <p>If you are expecting to <a id="idp16707184"></a><a id="idp16708848"></a>work with a stream of known data
+            primitives (for example, two integers, three floats, and a double) use <a id="idp16709696"></a><a
+                    id="idp16710784"></a><a id="idp16711936"></a><a id="idp16713968"></a>either
+            <code>DataInputStream</code> for reading or <code>DataOutputStream</code> for writing. A method, <code>readInt()</code>,
+            of <code>DataInputStream</code> reads the whole integer number (four bytes) at once, and
+            <code>readLong()</code> gets you a long number (eight bytes).</p>
+        <p>The class  <code>DataInputStream</code> is yet another “pipe” that can be connected to another stream. <a
+                id="list-anc-c014-006" href="part0015.html#list-c014-006">Listing 14-6</a> has an example of how you can
+            “build a pipe” from the following pieces:</p>
+        <pre>
+FileInputStream → BufferedInputStream → DataInputStream</pre>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c014-006"
+                                           href="part0015.html#list-anc-c014-006">Listing 14-6</a>:</span> Using
+                    DataInputStream</h5>
+                <pre>
+try (FileInputStream myFile = new FileInputStream("myData.dat"); 
+     BufferedInputStream buff = new BufferedInputStream(myFile); 
+     DataInputStream data = new DataInputStream(buff);) {
+     int num1 = data.readInt();
+     int num2 = data.readInt();
+     float num2 = data.readFloat();
+     float num3 = data.readFloat();
+     float num4 = data.readFloat();
+     double num5 = data.readDouble();
+} catch (IOException ioe) {
+    ioe.printStackTrace();
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>In <span epub:type="pagebreak" title="179" id="Page_179"></span>this example, <code>FileInputStream</code>
+            opens the file  <code>myData.dat</code> for reading, <code>BufferedInputStream</code> makes the read more
+            efficient, and <code>DataInputStream</code> extracts from the buffer two integers, three floats, and a
+            double. The assumption here is that the file <code>myData.dat</code> contains exactly these data types, and
+            they’re in the specified order. Such a file could have been created with the help of
+            <code>DataOutputStream</code>, which allows you to write primitive Java data types to a stream in a portable
+            way. It has a variety of methods to choose from: <code>writeInt()</code>, <code>writeByte()</code>, <code>writeFloat()</code>,
+            and so on.</p>
+    </section>
+    <section>
+        <h2><a id="class_file"></a>Utility Classes for Working with Files</h2>
+        <p>Often you need to do  some operations with files that do not always include reading or writing into files.
+            For example, you may need to check for the existence of a file or rename it programmatically. Java includes
+            utility classes <code>File</code>, <code>Files</code>, and <code>Path</code> that can become handy. </p>
+        <section>
+            <h3><a id="idp16730416"></a>The Class File</h3>
+            <p>The class <code>java.io.File</code> enables <a id="idp16733632"></a><a id="idp16735152"></a>you to rename
+                or delete a file, perform an existence check, create a directory, check the file size, and more. If you
+                need this functionality, start by creating an instance of this class:</p>
+            <pre>
+File myFile = new File("abc.txt");</pre>
+            <p>This line does not create a file; it just creates in memory an instance of the class <code>File</code>
+                that’s ready to perform its action on the file named <code>abc.txt</code>. If you want to create a
+                physical file, use the <a id="idp16740016"></a><a id="idp16738336"></a>method
+                <code>createNewFile()</code> defined in the class <code>File</code>. Here’s the list of some methods of
+                the class <code>File</code>:</p>
+            <ul>
+                <li><code>createNewFile()</code>: Creates a new, empty file named according to the file name used during
+                    the file instantiation. Creates a new file only if a file with this name does not exist.
+                </li>
+                <li><code>delete()</code>: Deletes a file or directory.</li>
+                <li><code>renameTo()</code>: Renames a file.</li>
+                <li><code>length()</code>: Returns the length of the file in bytes.</li>
+                <li><code>exists()</code>: Tests whether the file with the specified name exists.</li>
+                <li><code>list()</code>: Returns an array of strings containing a file and directory.</li>
+                <li><code>lastModified()</code>: Returns the time that the file was last modified.</li>
+                <li><code>mkDir()</code>: Creates a directory.</li>
+            </ul>
+            <p>The next code fragment checks for the existence of the file <code>customers.txt.bak</code>, deletes it if
+                it is found, and then renames the file <code>customers.txt</code> to <code>customers.txt.bak</code>:</p>
+            <pre>
+File file = new File("customers.txt");
+File backup = new File("customers.txt.bak");
+if (backup.exists()){
+       backup.delete();
+}
+file.renameTo(backup);</pre>
+        </section>
+        <section>
+            <h3><a id="idp16752432"></a>NIO.2: Using Files, Path, and Paths</h3>
+            <p>Java 7 <span epub:type="pagebreak" title="180" id="Page_180"></span>introduced a <a id="idp16753984"></a>number
+                of new classes and interfaces for more efficient work with files and directories often referred as <a
+                        href="http://docs.oracle.com/javase/tutorial/essential/io/fileio.html">NIO.2</a>.   </p>
+            <p>The interface <code>Path</code> is a <a id="idp16756816"></a><a id="idp16758256"></a>programmatic
+                representation of the full path to the file, a directory, or a <a
+                        href="http://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a>. While the full path to
+                the file is represented differently in Windows and Unix OS, each of the file systems is a hierarchical
+                tree of directories, subdirectories, and files that start from some root node (e.g., <code>c:\</code> in
+                Windows or <code>/</code> in Unix). </p>
+            <p>The path can be absolute that starts from the root directory on the drive like <code>/Users/yfain11/practicalJava/workspace/Lesson14/states.bak</code> and
+                relative that starts with the directory where the application was launched from; e.g., <code>Lesson14/states.bak</code>.
+                A file can also be represented by a so-called <i>symbolic link</i>, that looks <a
+                        id="idp16762176"></a><a id="idp16764832"></a>like a file but is actually a reference to a
+                different file in a different branch of the files hierarchy. If you want to write a program that can be
+                launched from any directory and work with a certain file, consider using absolute path. If your
+                application is deployed in a way that a file will always be located in the same place relative to the
+                location of the main application, use relative path.</p>
+            <p>The interface <code>Path</code> allows you to programmatically represent a full path according to the
+                underlying OS being used. First your program should create a <code>Path</code> object, and then work
+                with files or directories located there.</p>
+            <p>The class <code>java.nio.file.Files</code> is similar to <code>java.io.File</code> in that it contains
+                static methods that operate on files and directories. Most of these methods delegate the processing to
+                the underlying operating system (OS) file system. In addition to functionality of the
+                class <code>File</code>, the class <code>Files</code> can walk directory trees, check a file’s
+                attributes (e.g., read/write access), understand if a file is a symbolic link, and work with streams.
+                Using the class <code>Files</code> you can copy, move, and delete files, too.</p>
+            <p>You can get a file path by using the method <code>Paths.get()</code>. The following class <code>TestFilesPaths</code>
+                checks if the file <code>states.txt</code> exists, then checks its size, outputs its absolute path, and
+                creates a backup copy of this file named <code>states.bak</code>.</p>
+            <pre>
+public class TestFilesPaths {
+  public static void main(String[] args) {
+    // Get the path to the file states.txt located in dir
+    // this program was launched from    
+    Path sourceFilePath = Paths.get("states.txt");
+    
+    // Will copy the source file to this destination 
+    Path destFilePath = Paths.get("states.bak");
+    
+    if (Files.exists(sourceFilePath)){
+      System.out.println("The file  " + sourceFilePath + " exists");
+      System.out.println("The absolute path is " + 
+                                   sourceFilePath.toAbsolutePath());
+        try{
+           // Check the file size (in bytes)
+           System.out.println("It's size is " + 
+                                      Files.size(sourceFilePath));
+        
+           // Copy the file from states.txt to states.bak
+           Files.copy(sourceFilePath, destFilePath, 
+                              StandardCopyOption.REPLACE_EXISTING);
+           System.out.println(
+                  "Copy completed. The backup file is at " + 
+                                   destFilePath.toAbsolutePath()); 
+        
+        } catch(IOException ioe){
+            ioe.printStackTrace();
+        }    
+    }
+  }
+}
+</pre>
+            <p>The output of the program <code>TestFilesPaths</code> looks as follows:</p>
+            <pre>
+The file states.txt exists
+The absolute path is 
+/Users/yfain11/practicalJava/workspace/Lesson14/states.txt
+It's size is 41
+Copy completed. The backup file is at
+/Users/yfain11/practicalJava/workspace/Lesson14/states.bak
+</pre>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp16777344"></a>Copy Options</h3>
+                    <p>In the class <code>TestFilesPaths</code> I was using the option <code>StandardCopyOption.REPLACE_EXISTING</code> to
+                        replace the destination file if it <a id="idp16780816"></a><a id="idp16779968"></a><a
+                                id="idp16782448"></a>exists. Now let’s make a little experiment. The
+                        class <code>Files</code> has an overloaded version of the method copy that takes only two
+                        parameters: the source and the destination. If you’ll remove the parameter <code>StandardCopyOption.REPLACE_EXISTING</code>,
+                        the program will work fine as long as the output file doesn’t exist in the specified
+                        destination. So if you’ll run <code>TestFilesPaths</code> more than once, the method <code>copy()</code> will
+                        generate an exception, which on my computer looks as follows:</p>
+                    <pre>
+java.nio.file.FileAlreadyExistsException: states.bak
+    at sun.nio.fs.UnixCopyFile.copy(UnixCopyFile.java:551)
+    at sun.nio.fs.UnixFileSystemProvider.copy(UnixFileSystemProvider.java:253)
+    at java.nio.file.Files.copy(Files.java:1274)
+    at TestFilesPaths.main(TestFilesPaths.java:29)
+</pre>
+                    <p><span epub:type="pagebreak" title="181" id="Page_181"></span>I’m using a computer with MAC OS,
+                        which is Unix based. Read the exception message: The Java runtime properly figured out the type
+                        of my OS  and, under the hood, engaged Unix-specific classes that implement file copying. If
+                        you’ll do the same experiment in Window, the exception stack trace will look different.</p>
+                    <p>As a matter of fact, you can specify more than one copy option while invoking <code>copy()</code>
+                        or <code>move()</code>.  The option <code>COPY_ATTRIBUTES</code> will set the same security
+                        attributes on the destination files. The option <code>ATOMIC_MOVE</code> will ensure that the
+                        copy or move operation will roll back in case of failure.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The <span epub:type="pagebreak" title="182" id="Page_182"></span>class <code>Files</code> can also open
+                input and output streams and read/write into them. You can find the complete list of all methods of the
+                class <code>Files</code> in the Java documentation at <a href="http://goo.gl/LBhZYF">http://goo.gl/LBhZYF</a>.
+            </p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp16726400"></a>What NIO Is About</h2>
+        <p>In this lesson <a id="NIO1"></a><a id="NIO2"></a>you’ve learned how to work with I/O streams using small
+            files. The real-world applications, sometimes, need to process files that are hundreds of megabytes in size.
+            While the file is being read, the main program may need to perform other application-specific
+            functions. I’ll give you an example from the GUI-related programming. Imagine that the
+            <code>TaxGuiFile</code> program has to read not a small but a large file, which takes 20 seconds. The GUI
+            will become non-responsive for 20 seconds if you’ll be using blocking I/O in a wrong way. In <a
+                    href="part0018.html#introduction_to_multi-threading">Lesson 17</a> you’ll be learning about
+            concurrent processing and multi-threading. You should run a long-running code in a separate <i>thread of
+                execution</i>, so the main thread that’s responsible for the communication with GUI will remain
+            operational. In particular, I’ll explain what <a href="part0018.html#swingworker_thread">SwingWorker</a>
+            thread is for in <a href="part0018.html#introduction_to_multi-threading">Lesson 17</a> and how to avoid
+            “frozen screens” in JavaFX applications in <a href="part0020.html#developing_a_tic-tac-toe_applet">Lesson
+                19</a>.</p>
+        <p>Blocking I/O may become a bottleneck in your application, if you need to come up with a scalable solution
+            that reads/writes large amounts of data. Yes, you can use blocking I/O in a separate thread of execution.
+            But a better alternative is to use non-blocking I/O that was first introduced in Java 1.4, and improved in
+            Java 7. The non-blocking mode of Java NIO allows to create channels so a thread can read (or write) only the
+            data that’s currently available. The thread doesn’t wait till all the data is available and can continue
+            processing some other tasks. Working with NIO channels is not covered in this book. Please refer to <a
+                    href="http://docs.oracle.com/javase/tutorial/essential/io/file.html">Oracle documentation</a>. </p>
+        <p>I’ll show you just a couple of examples of using the class <code>java.nio.Files</code> for working with text
+            files. This helper class consists of multiple static methods that can help you with various file operations.
+            For the complete list of available operations refer to the <a
+                    href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html">javadoc</a> on Files.</p>
+        <p>Reading a file with the class <code>Files</code> is even easier than with the classes from the
+            <code>java.io</code> package . For example, to read the file <code>states.txt</code> that I used in the
+            <code>TestGuiFile</code> class can be done as follows:</p>
+        <pre>
+public class TestBufferedReaderNio {
+    public static void main(String[] args){
+        Path statesFile = Paths.get("states.txt");
+        try (BufferedReader reader = 
+                Files.newBufferedReader(statesFile, 
+                                          StandardCharsets.UTF_8)){
+            String stateName;
+            while ( (stateName = reader.readLine()) != null ){
+                System.out.println("Got the state " + stateName);
+            }
+            
+        } catch (IOException ioe){
+            System.out.println("Error while reading states.txt: " +
+                                                ioe.getMessage());
+        }
+    }
+}
+</pre>
+        <p>The <span epub:type="pagebreak" title="183" id="Page_183"></span>class <code>TestBufferedReaderNio</code>
+            uses the method  <code>newBufferedReader()</code> that spares you from manually creating an input stream. 
+        </p>
+        <p>If you want to read all lines from a file into a Java collection it can be easily done with the method <code>readAllLines()</code>
+            from the class <code>Files</code>. </p>
+        <pre>
+public class TestReadAllNio {
+    public static void main(String[] args){
+        Path statesFile = Paths.get("states.txt");
+        try {
+            // Populate the collection
+            List&lt;String&gt; states = Files.readAllLines(statesFile, 
+                                            StandardCharsets.UTF_8);
+           
+            // Print state names
+            states.forEach(System.out::println); 
+            
+        } catch (IOException ioe){
+            System.out.println("Error while reading states.txt: " 
+                                               + ioe.getMessage());
+        }
+    }
+}
+</pre>
+        <p>Writing into a text file is simple, too:</p>
+        <pre>
+Path myOutputFile = Paths.get("someOutputFile.txt"); 
+try (BufferedWriter writer = Files.newBufferedWrite(myOutputFile, 
+             StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
+    writer.write("Whatever you want to write");
+}</pre>
+        <p>The enumeration <code>StandardOpenOption</code> allows you to specify how you want to open the file; e.g.,
+            append to an existing file, create a new file if none exists, et al. See the <a
+                    href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/StandardOpenOption.html">javadoc</a>
+            for details.  </p>
+        <p>Another interesting feature of NIO is the ability to perform input/output operations asynchronously, which
+            may substantially increase the scalability of your application.  If you’ll need to work with large amounts
+            of data, research asynchronous classes and interfaces located in the package<a
+                    href="https://docs.oracle.com/javase/8/docs/api/java/nio/channels/package-summary.html">
+                java.nio.channels</a>. For more detailed coverage of NIO get the book titled “The Well-Grounded Java
+            Developer” published by <a id="idp16824656"></a><a id="idp16820960"></a>Manning in 2012. </p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00055"></a>Try It</h2>
+        <p>Write a program that will read a <code>.zip</code> archive <a id="idp16825216"></a><a id="idp16826672"></a>file
+            and print on the system console the list of files included in the zip archive. Do a little research about
+            the class <code>java.util.zip.ZipInputStream</code> and use it together with <code>FileInputStream</code>.
+            Read about the class <code>ZipEntry</code>, too.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00056"></a>Lesson Requirements</h3>
+            <p>You <span epub:type="pagebreak" title="184" id="Page_184"></span>should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the</i> <code>Lesson14.zip</code><i> folder in the download.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00057"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new Eclipse project called Lesson14.</li>
+                <li>Copy any <code>.zip</code> file into its root directory.</li>
+                <li>Open <code>FileInputStream</code> and connect it with <code>ZipInputStream</code>.</li>
+                <li>Write a loop that uses the method <code>getNextEntry()</code> from <code>ZipInputStream</code>. This
+                    method reads the <code>ZipEntry</code>, if any, and positions the stream at the beginning of the
+                    entry data.
+                </li>
+                <li>Call the function <code>getName()</code> on each <code>ZipEntry</code> instance found.</li>
+                <li>Print the entry name on the system console.</li>
+                <li>Close the entry inside the loop.</li>
+                <li>Run the program and observe that it properly prints the filenames from the selected
+                    <code>.zip</code> file.
+                </li>
+                <li>If you want to learn how to create <code>.zip</code> files from Java, read about the class  <code>ZipOutputStream</code>.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0015.html">Lesson 14</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

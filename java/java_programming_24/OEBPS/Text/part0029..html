@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Developing Web Applications with WebSockets</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="websockets"></a><span
+            class="chapterTitle">Lesson 28<br/>Developing Web Applications with WebSockets</span></h1>
+
+    <section>
+        <p>HTTP-based <span epub:type="pagebreak" title="395" id="Page_395"></span>technologies like Java Servlets, JSP,
+            or JSF use the request-response model. A web browser establishes a connection with the web server and sends
+            a request, and then <a id="idp20967840"></a>the server responds using the same connection; this is called a
+            <i>half-duplex</i> communication. Think of a narrow bridge where cars can go only in one direction at a
+            time. </p>
+        <p>As <a id="idp20970944"></a><a id="idp20969824"></a>opposed to HTTP, <a
+                href="https://en.wikipedia.org/wiki/WebSocket">WebSocket protocol</a> is a two-way street (a <i>full-duplex</i>
+            communication). The data travels in both directions over the same connection. The client doesn’t have to
+            initiate the request; the server can push the data to the client when the new data is available.</p>
+        <p>Another important advantage that WebSocket protocol has over HTTP protocol is that the former adds almost no
+            overhead to the data payload. The following list includes some of the web applications that can benefit from
+            using the server-side data push with WebSocket protocol:</p>
+        <ul>
+            <li>Live trading/auctions/sports notifications</li>
+            <li>Controlling medical equipment over the web</li>
+            <li>Chat applications</li>
+            <li>Multiplayer online games</li>
+        </ul>
+        <p>Although you can create a Java client that uses raw socket connections and the Java can push the data to the
+            client as needed, the server may be located behind the firewall or a proxy server and the company policy
+            wouldn’t allow the opening of arbitrary ports for connections.  Similarly to HTTP/HTTPS, the WebSocket
+            protocol uses standard port 80 for requests and port 443 for secure connections. These ports are usually
+            open. Besides, all HTML5-compliant web browsers support WebSocket protocol out of the box.</p>
+        <p>WebSocket <a id="idp20976992"></a>protocol was <a
+                href="https://tools.ietf.org/html/rfc6455">standardized </a>by the open standards organization Internet
+            Engineering Task Force (IETF), and is supported by HTML5 and Java EE 7 (JSR 356). Besides the Java EE
+            applications servers, websockets are supported by such popular servlet containers as Apache Tomcat 8 and
+            Jetty 9. </p>
+        <p>This <span epub:type="pagebreak" title="396" id="Page_396"></span>lesson shows you how to use websockets for
+            the data exchange between web browsers and Java EE servers. But first, let’s go over the limitations of HTTP
+            protocol.</p>
+    </section>
+    <section>
+        <h2><a id="idp20980592"></a>HTTP Drawbacks</h2>
+        <p>When you see constantly <a id="draw"></a>refreshing data on a web page (for example a new mail notification
+            or a stock price change), the browser actually makes multiple requests in certain time intervals asking the
+            server, “Do you have something for me?” If the new data is available, the browser refreshes a specified
+            location on a web page. Just visit an <a href="https://www.google.com/finance?q=AAPL">actively traded
+                stock</a> on the Google Finance page during the stock exchange business hours, and it’ll give you an
+            impression that the server <i>pushes</i> the latest prices, but this is not the case. The Google Finance web
+            application makes multiple AJAX requests asking for data, and the server responds.</p>
+        <p>To see it, open the Developer Tools panel in Chrome web browser (using View → Developer → Developer Tools).
+            Then select the Network tab and click the XHR tab, where you can see the <a
+                    href="https://developer.mozilla.org/en-US/docs/AJAX">AJAX</a> requests issued by the browser. In <a
+                    id="fig-anc-c028-001" href="part0029.html#fig-c028-001">Figure 28-1</a> you can see a snapshot of my
+            screen while I was monitoring the price of Apple stock. </p>
+        <figure>
+            <img class="center" src="../Images/image00587.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c028-001"
+                                                   href="part0029.html#fig-anc-c028-001">Figure 28-1</a>:</b></span>
+                    Monitoring AJAX requests in the Chrome browser</p>
+            </figcaption>
+        </figure>
+        <p>Note the size of these HTTP GET and POST requests on the right.  Web browsers add hundreds of bytes to the
+            actual data in the form of HTTP requests,  and the server adds HTTP headers to the response, too. Besides,
+            some of the polling requests might not even be needed because the stock price has not changed!</p>
+        <section>
+            <h3><a id="idp20986832"></a>HTTP Hacks for Server-Side Data Push</h3>
+            <p>Because HTTP doesn’t <a id="idp20991952"></a><a id="idp20993232"></a>support a real server-side data
+                push, software developers came up with several hacks to emulate the push. Before the WebSocket protocol
+                was created, the following hacks were used to update the data on the web page without requiring a user
+                to click or touch the graphical user interface (GUI) controls such as buttons, links, and so on:</p>
+            <ul>
+                <li><span epub:type="pagebreak" title="397" id="Page_397"></span>Polling</li>
+                <li>Long polling</li>
+                <li>Streaming</li>
+                <li>Server-Side Events</li>
+            </ul>
+            <p>With polling, <a id="idp20998464"></a>the web browser in the specified time intervals establishes the
+                connection with the server and polls the server asking for new data. Many such requests may return no
+                new data, so each client sends and receives hundreds of bytes that contain only HTTP request and
+                response objects without any useful data payload. With polling, the web browser
+                connects-disconnects-reconnects with the server for each request.</p>
+            <p>With long polling, the web browser establishes one HTTP connection with the server and keeps it alive
+                until the new data arrives from the server and then reconnects.</p>
+            <p>Typically a connection is established using the browser’s <code>XmlHttpRequest</code> object (for more
+                information you need to get familiar with <a href="http://en.wikipedia.org/wiki/Ajax_%28programming%29">AJAX
+                    techniques</a>, which is not covered in this book).</p>
+            <p>With streaming, the web browser establishes one HTTP connection with  the server. As soon as the server
+                gets the data ready, it starts streaming content (adding more and more data to the HTTP response object)
+                without closing the connection. The server pushes the data to the client, pretending that the HTTP
+                response never ends.</p>
+            <p>With <a href="http://dev.w3.org/html5/eventsource/">Server-Side Events</a> (SSE), web <a
+                    id="idp21009280"></a>browsers can subscribe to events sent by a server. All modern browsers support
+                <a id="idp21004544"></a><a id="idp21004032"></a><a id="idp21005904"></a>the <code>EventSource</code>
+                object, which can handle the Document Object Model (DOM) events. SSE allows the switch from a
+                request-response model to a one-directional data push from server to browser.</p>
+            <p>All of the methods described here emulate a server-side data push while using request-response-based
+                HTTP.  With the WebSocket protocol you become HTTP-free, and web browsers <a id="idp21013856"></a>use a
+                bidirectional TCP-based communication with the server. </p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp20980848"></a>Client-Server Communication with Websockets</h2>
+        <p>When a client <a id="client"></a>communicates with the server via WebSocket protocol, we say that they use
+            <i>websockets</i>. This section discusses the entire client-server data flow starting from the client’s
+            requesting upgrade from HTTP to WebSocket protocol and ending with the client receiving the data from the
+            server. </p>
+        <p>Besides being bidirectional, websockets have <a id="idp21017152"></a>literally no overhead as only a couple
+            of extra bytes are being added for framing the payload (the exact number of bytes varies depending on the
+            size of the payload). Compare that with the hundreds of bytes in HTTP-based communications. The smaller
+            overhead reduces the latency between the client and the server. </p>
+        <section>
+            <h3><a id="idp21016480"></a>Web Browser as a WebSocket Client </h3>
+            <p>A WebSocket client is <a id="websocketbrowser"></a><a id="browser"></a>typically programmed in JavaScript
+                running inside a web browser. All web browsers released in 2012 or later support the
+                <code>WebSocket</code> object, and the website <a href="http://caniuse.com/websockets">
+                    http://caniuse.com/websockets</a> can tell you if a specific older version of a web browser supports
+                it, too. In JavaScript, you start with creating an instance of this object establishing a connection to
+                the server, and then the client’s part of communications comes <span epub:type="pagebreak" title="398"
+                                                                                     id="Page_398"></span>down to
+                processing events dispatched by the browser when the connection is opened, the message arrives from the
+                server, and so on. Accordingly, your client-side code can perform the following actions:</p>
+            <ol>
+                <li>Initiate the connection to the server’s endpoint—create an instance of the <code>WebSocket</code>
+                    object providing the server’s URL 
+                </li>
+                <li>Write an <code>onOpen()</code> callback function</li>
+                <li>Write an <code>onMessage()</code> callback function</li>
+                <li>Write an <code>onClose()</code> callback function </li>
+                <li>Write an <code>onError()</code> callback function</li>
+            </ol>
+            <p>Because this book doesn’t cover JavaScript programming, here I just show you an easy-to-read code
+                fragment that performs all of the preceding steps in JavaScript running in a web browser. If you’re
+                interested in reading more about HTML5 programming, you could read <a
+                        href="http://www.amazon.com/Enterprise-Web-Development-Building-Applications/dp/1449356818"><i>Enterprise
+                    Web Development</i></a> (O’Reilly Media, 2014), which I coauthored.  The following sample JavaScript
+                code connects to the WebSocket echo server and defines all possible callback functions:</p>
+            <pre>
+if (window.WebSocket) {   
+    ws = new WebSocket("ws://www.websocket.org/echo"); 
+    
+    ws.onopen = function() {
+        console.log("onopen");
+    };  
+    
+    ws.onmessage = function(e) {
+       console.log("echo from server : " + e.data); 
+    };
+    ws.onclose = function() { 
+       console.log("onclose");
+    };
+    ws.onerror = function() {
+       console.log("onerror");  
+    };
+} else {
+   console.log("WebSocket object is not supported");
+}
+</pre>
+            <p>When the new instance of the <code>WebSocket</code> is created, it makes a handshake request to the
+                server specified as a URL. The URLs start with <code>ws</code> and <code>wss</code> as opposed to <code>http</code> and <code>https</code>.
+                The handshake’s HTTP header includes the following attributes:</p>
+            <pre>
+Upgrade: websocket
+Connection: Upgrade
+</pre>
+            <p>The request header also <a id="idp21032384"></a>contains a unique value in the
+                <code>Sec-Websocket-Key</code> attribute. If the server supports the WebSocket protocol, it returns HTTP
+                status code 101 (switching protocols). The server applies a special hash code to  <code>Sec-Websocket-Key</code>,
+                generates another key, and places it in the <code>Sec-Websocket-Accept</code> attribute of the HTTP
+                response header. This proves that the server supports the WebSocket protocol. After that, the client
+                <span epub:type="pagebreak" title="399" id="Page_399"></span>opens a WebSocket connection with the
+                server. Now both the client and the server know each other and can start sending messages to each other
+                without any further ceremony. If the server doesn’t support websockets, it returns the status code
+                400—<i>bad request</i>. </p>
+            <p>When the server’s message is received, the callback method annotated with <code>@OnMessage</code> is
+                invoked on the client.</p>
+            <p>If the client sends a message, the callback <a id="idp21040656"></a>method annotated with <code>@OnMessage</code>
+                is invoked on the server. If the server returns an error, <a id="idp21045136"></a><a
+                        id="idp21044016"></a>the <code>@OnError</code> callback is invoked on the client. The <code>@OnClose</code> annotated
+                method is invoked when the connection is closed.</p>
+            <p>Similar to raw socket <a id="idp21039312"></a>connections, websockets do not define the data format of
+                the message exchange. It’s the responsibility of the application to decide which <i>subprotocol</i> to
+                <a id="idp21052000"></a>use, and when the client instantiates a <code>WebSocket</code> object, it can
+                pass to the constructor an optional parameter for the subprotocol, in which case the handshake will
+                include the additional attribute <code>Sec-WebSocket-Protocol</code>. </p>
+            <p>To send a message from JavaScript, you can use one of the overloaded methods <code>send()</code>, which
+                can take string or binary data (<code>Blob</code> or <code>ArrayBuffer</code>). When the client receives
+                a message, you can do the<a id="idp21057680"></a><a id="idp21057312"></a> type check in JavaScript as
+                follows:</p>
+            <pre>
+webSocket.onmessage = function(messageEvent) { 
+   if (typeof messageEvent.data === "string"){ 
+      console.log("Received text data: " + messageEvent.data);
+   } elseif (messageEvent.data instanceof Blob){ 
+      console.log("Received blob data")
+   } elseif (messageEvent.data instanceof ArrayBuffer){
+      console.log("Received ArrayBuffer data")
+  }
+};
+</pre>
+        </section>
+        <section>
+            <h3><a id="idp21024288"></a>Communication with the Server Using WebSockets</h3>
+            <p>There are <a id="servers1"></a><a id="servers2"></a>two ways of implementing a WebSocket endpoint in Java
+                on the server. To create a <i>programmatic endpoint</i> <a id="idp21065936"></a><a id="idp21067616"></a>you
+                need to extend your class from <code>javax.websocket.Endpoint</code> and override the <a
+                        id="idp21069248"></a><a id="idp21070528"></a><a id="idp21071824"></a><a id="idp21073008"></a><a
+                        id="idp21074400"></a><a id="idp21075824"></a><a id="idp21076976"></a><a id="idp21078400"></a>methods
+                <code>onOpen()</code>, <code>onMessage()</code>, <code>onError()</code>, and <code>onClose()</code>.</p>
+            <p>To create an <i>annotated endpoint</i> you <a id="idp21082224"></a><a id="idp21083632"></a>need to
+                annotate a POJO with <code>@ServerEndPoint</code>, and each of the callback methods with
+                <code>@OnOpen</code>, <code>@OnMessage</code>, <code>@OnError</code>, and <code>@OnClose</code>. This
+                lesson uses only the annotated endpoints, which are easier to write and read.</p>
+            <p>Server-side WebSocket endpoints are deployed in <code>.war</code> files of your web modules. No other
+                configuration is needed. In <a href="part0037.html#gradle">Lesson 36</a>, you’ll see how to automate
+                deployment with Gradle.</p>
+            <p>With websockets, the client and server are peers and can initiate the message exchange independently from
+                each other. Hence they need to know about each other. When a server-side callback method is invoked, it
+                gets a <code>Session</code> object, which you can use to get a reference to the peer—the client—and
+                start sending messages to it without the need of receiving any special requests.  The next section
+                demonstrates how to do such a server data push.</p>
+            <section>
+                <h4><a id="hellosocket"></a>Hello WebSocket Example</h4>
+                <p>Let’s <span epub:type="pagebreak" title="400" id="Page_400"></span>create <a id="hello1"></a><a
+                        id="hello2"></a>a Hello World-style WebSocket application. I’m not going to create an example,
+                    where the client makes a request and the server responds to it. I want the server to send the
+                    message to the client first.  On the Java side I’m using just one callback method, <code>greetTheClient()</code>
+                    annotated with <code>@OnOpen</code>, that will be invoked on the server as soon as the client
+                    connects. The <a id="idp21101088"></a><a id="idp21100576"></a>endpoint class will be annotated with
+                    <code>@ServerEndPoint</code>. </p>
+                <p>In Eclipse, create a Dynamic Web Project called <code>Lesson28</code> with the target runtime
+                    GlassFish. Then create a Java class <code>HelloWebSocket</code> that looks like this:<span
+                            style="font-size: 1.12rem; letter-spacing: 0.01em; line-height: 1.3em;"> </span></p>
+                <div>
+<pre>
+import java.io.IOException;
+import javax.websocket.OnOpen;
+import javax.websocket.server.ServerEndpoint;
+import javax.websocket.Session;
+<strong>@ServerEndpoint("/hello")</strong>
+public class HelloWebSocket {   
+  <strong>@OnOpen</strong>   
+  public void greetTheClient(Session session){   
+     try { 
+        session.getBasicRemote().sendText("Hello stranger");
+ 
+     } catch (IOException ioe) { 
+        System.out.println(ioe.getMessage()); 
+     }   
+  }
+}
+</pre>
+                    <p>When the client connects to this WebSocket endpoint, the callback method
+                        <code>greetTheClient()</code> is invoked and the <code>Session</code> object that represents a
+                        conversation between peers is passed as an argument. The method <code>getBasicRemote()</code>
+                        returns the reference to the client’s endpoint, and <code>sendText()</code> sends a text message
+                        to this client. There is no special data request from the client; the server sends the message
+                        “Hello stranger” as soon as the connection is opened.</p>
+                    <p>Now let’s create a simple HTML client that receives and displays the server’s message. In
+                        Eclipse, right-click the document root folder <code>WebContent</code>, and create there an HTML
+                        file <code>index.html</code> by using the menu File → New → Other → HTML File. When you see a
+                        Select HTML Template pop-up window, just select the template New HTML File (5). Eclipse creates
+                        a new file with the following HTML content:</p>
+                </div>
+                <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                <p>Now <span epub:type="pagebreak" title="401" id="Page_401"></span>add one empty HTML tag <code>&lt;span&gt;</code>
+                    where the server’s message will be displayed. You also need a simple JavaScript code that opens the
+                    connection and declares the function to handle the <code>onmessage</code> callback. This is how your
+                    client should look (the manually added content is shown in bold): </p>
+                <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  <strong>&lt;span id="messageGoesHere"&gt;&lt;/span&gt;
+  
+  &lt;script type="text/javascript"&gt;
+    var ws = new WebSocket("ws://localhost:8080/Lesson28/hello"); 
+       
+    ws.onmessage = function(event) {
+      var mySpan = document.getElementById("messageGoesHere");
+      mySpan.innerHTML=event.data; 
+    };
+</strong>    
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                <p>When the web browser loads this file, it runs the script, instantiates the WebSocket object, and
+                    registers the <code>onmessage()</code> callback function. There you get a reference to the <code>
+                        &lt;span&gt;</code> tag by calling <code>getElementById()</code> and set its content to the
+                    payload <code>event.data</code>, which contains “Hello stranger." </p>
+                <p>Deploy the project <code>Lesson28</code> under GlassFish (right-click the server and select the “Add
+                    and Remove” menu), right-click the file <code>index.html</code>, and run it on the server. You see a
+                    web page with the text <code>Hello stranger</code>. </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature2">
+                        <h3><a id="idp21118240"></a>Passing Parameters with @PathParam</h3>
+                        <p>If you want to <a id="idp21119184"></a><a id="idp21120432"></a><a id="idp21121904"></a><a
+                                id="idp21123152"></a>make your Hello WebSocket application more personal, you could ask
+                            the user for her name, save it in a JavaScript variable, and attach the name to the URI so
+                            the web client would connect to the following URI:</p>
+                        <pre>
+ws://localhost:8080/Lesson28/hello/Mary
+</pre>
+                        <p>Accordingly, on the server side you need to use a different URI value in <code>@ServerEndpoint</code>
+                            and the <code>@PathParam</code> annotation: </p>
+                        <pre>
+@ServerEndpoint("/hello/<strong>{userName}</strong>")
+public class HelloWebSocket {   
+  @OnOpen   
+  public void greetTheClient(Session session, 
+                       <strong>@PathParam String userName</strong>){
+   ...
+  }
+</pre>
+                        <p>The value “Mary” is <a href="part0034.html#cdi_section">injected</a> in the method argument
+                            <code>userName</code>, and you can process it as any other method argument. </p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p>That’s <span epub:type="pagebreak" title="402" id="Page_402"></span>all there is to it. This was an
+                    example of a server data push to the client. Now imagine that the server would be retrieving stock
+                    quotes or auction bids from a third-party server. The same technique can be used for refreshing the
+                    data in the browser’s window without <a id="idp21130816"></a><a id="idp21132896"></a>any polling
+                    requests from the client.  </p>
+            </section>
+            <section>
+                <h4><a id="idp21090640"></a>Monitoring WebSocket Network Traffic</h4>
+                <p>Google Chrome browser <a id="idp21136368"></a>allows monitoring of the WebSockets traffic. I’m using
+                    the <code>HelloWebSocket</code> example from the previous section to show you what went over the
+                    wire. First, open the URL <code><a href="http://localhost:8080/Lesson28/index.html">http://localhost:8080/Lesson28/index.html</a></code>
+                    in Chrome, and then open Developer Tools and refresh the web page. The Network tab includes the
+                    WebSockets section. The data is sent in chunks called <i>frames</i>, and you can see “Hello
+                    stranger” in the Data column under the tab Frames, as shown in <a id="fig-anc-c028-002"
+                                                                                      href="part0029.html#fig-c028-002">Figure
+                        28-2</a>.</p>
+                <p>In <a href="part0029.html#fig-c028-002">Figure 28-2</a>, note that the length of the frame is only 14
+                    bytes, where the length of the data is 13 bytes. No HTTP headers are present during the message
+                    exchange. The headers were only present during the initial handshake and the protocol upgrade. You
+                    can see them under the Headers tab, as shown in <a id="fig-anc-c028-003"
+                                                                       href="part0029.html#fig-c028-003">Figure 28-3</a>.
+                </p>
+                <p>You can see that the request header asked for a connection upgrade, and the GlassFish server has
+                    accepted it in the response header. </p>
+                <p>Chrome Developer Tools offer an easy way to monitor traffic between WebSocket peers. But if you’d
+                    like to peek inside the frames of WebSocket messages, use the network packet analyzer <a
+                            id="idp21142000"></a><a id="idp21137920"></a>called <a href="http://www.wireshark.org">WireShark</a>.
+                </p>
+                <figure>
+                    <img class="center" src="../Images/image00588.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c028-002" href="part0029.html#fig-anc-c028-002">Figure 28-2</a>:</b></span>
+                            Monitoring <span epub:type="pagebreak" title="403" id="Page_403"></span>WebSocket frames</p>
+                    </figcaption>
+                </figure>
+                <figure>
+                    <img class="center" src="../Images/image00589.jpeg" alt="image"/>
+                    <figcaption>
+                        <p><span class="figureLabel"><b><a id="fig-c028-003" href="part0029.html#fig-anc-c028-003">Figure 28-3</a>:</b></span>
+                            The handshake HTTP headers</p>
+                    </figcaption>
+                </figure>
+            </section>
+        </section>
+        <section>
+            <h3><a id="idp21149296"></a>Sending Messages</h3>
+            <p>If you want to send the <a id="idp21150480"></a><a id="idp21152432"></a>message from a JavaScript client,
+                just use the method <code>WebSocket.send()</code>, which can take text or binary objects as
+                arguments. On the Java side you use different methods of sending data depending <span
+                        epub:type="pagebreak" title="404" id="Page_404"></span>on the object data type. For example, use
+                the method <code>sendText()</code> from the object <code>javax.websocket.RemoteEndpoint.Basic</code> as
+                you did in the <code>HelloWebSocket</code> example:</p>
+            <pre>
+session.getBasicRemote().sendText("Hello stranger");
+</pre>
+            <p>The method <code>getBasicRemote()</code> returned an instance of the <code>RemoteEndpoint.Basic</code>object,
+                which performs a blocking call to the peer. For sending asynchronous non-blocking messages, use the
+                object <code>RemoteBasic.Async</code> instead, which you can obtain by calling
+                <code>getAsyncRemote()</code> on the <code>Session</code> object. </p>
+            <p>If you’re not planning <a id="idp21158848"></a><a id="idp21161376"></a><a id="idp21162640"></a><a
+                    id="idp21163760"></a><a id="idp21165184"></a><a id="idp21166640"></a>to send text, use such methods
+                as <code>sendObject()</code>, <code>sendBinary()</code>, or <code>sendStream()</code>. The sender and
+                receiver should ensure that the data types of the messages being sent are the same. </p>
+            <p>The server can also send a special control message known as<i> ping</i> to check whether the connection
+                is alive. The ping may contain a small amount (up to 125 bytes) of application data, but usually it’s
+                just some control word to identify the ping:  </p>
+            <pre>
+session.getBasicRemote().sendPing(ByteBuffer applicationData);</pre>
+            <p>If the connection is alive, the web browser returns a <i>pong</i> of type <code>PongMessage</code>, which
+                can be handled by the server endpoint in the <code>@OnMessage</code> annotated method.</p>
+            <p>The client can’t initiate a ping, though. You need to manually program some ping counter, and if pings
+                are not coming from the server for more than a specified time interval, the client should
+                reconnect.   </p>
+        </section>
+        <section>
+            <h3><a id="idp21173648"></a>Receiving Messages Using @OnMessage</h3>
+            <p>The method <a id="idp21177776"></a><a id="idp21175712"></a><a id="idp21179200"></a><a
+                    id="idp21180560"></a>in your Java class that’s responsible for handling messages should be annotated
+                with <code>@OnMessage</code> annotation. The method must have at least one argument defining the type of
+                the expected message.  </p>
+            <p>If such a method returns a value, it’s sent to the peer as a message and should be handled there as any
+                other WebSocket message. For example, the following message handler expects a <code>String</code>
+                message and returns a <code>String</code> that is sent as a message to the peer:</p>
+            <pre>
+@OnMessage
+public String getStockPrice(String symbol){
+    String stockPrice;
+    // The code to get the stock price goes here
+    return stockPrice;
+}
+</pre>
+            <p>The <a href="https://javaee-spec.java.net/nonav/javadocs/javax/websocket/OnMessage.html">online
+                documentation</a> for the <code>@OnMessage</code> annotation offers a choice of parameters:  </p>
+            <ul>
+                <li>Exactly one parameter (text, binary, or a <code>PongMessage</code>)</li>
+                <li>Zero to n <code>String</code> or Java primitive parameters annotated with the <a
+                        href="https://javaee-spec.java.net/nonav/javadocs/javax/websocket/server/PathParam.html"
+                        title="annotation in javax.websocket.server"><code
+                        style="font-size: 1.2em;">PathParam</code></a> annotation for server endpoints
+                </li>
+                <li>An optional <code>Session</code> parameter</li>
+            </ul>
+            <p>The <code>String</code> type <span epub:type="pagebreak" title="405" id="Page_405"></span>parameters are
+                used for sending textual data,  <code>ByteBuffer</code> is for any binary data-like images, videos, or
+                any BLOB. The server-side ping and the client side pong (the <code>PongMessage</code> ) are used in
+                WebSockets for heartbeats—to keep the client-server connection alive. </p>
+            <p>Your endpoint class can declare up to three message handlers annotated with <code>@OnMessage</code>: one
+                for each message type (text, binary, and pong). </p>
+            <p><br/>
+                An optional parameter <code>Session</code> (you used it in the <code>HelloWebSocket</code> example with <code>@OnOpen</code>) is
+                needed if the server has to perform actions like sending a message to a specific client, getting
+                parameters associated with the client’s request (for example, user preferences), or close the current
+                conversation.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp21196464"></a>Endpoint Instances</h3>
+                    <p>By default, a WebSocket container <a id="idp21197568"></a>creates a separate endpoint instance
+                        for each client’s connection, and the <code>Session</code> object can be used for storing the
+                        client’s state on the server. If you prefer to have one endpoint instance shared by multiple
+                        clients, you need to use the <code>@OnOpen</code> annotation with an additional optional
+                        parameter <code>ServerEndpointConfig.Configurator</code> (see the <a
+                                href="http://docs.oracle.com/javaee/7/api/javax/websocket/server/ServerEndpointConfig.Configurator.html">javadoc</a> for
+                        details) and override the method <code>getEndpointInstance()</code> on the configurator. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>A message handler method can return <code>void</code>, primitives and their wrapper classes, a byte array
+                <code>byte[]</code>, <code>ByteBuffer</code>, or your custom objects for which the encoder exists
+                (covered in the next section). </p>
+        </section>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp21176752"></a>Java-Based WebSocket Clients </h3>
+                <p>JSR 356 describes how to write WebSocket <a id="idp21206944"></a>clients in Java using an annotation
+                    <code>@ClientEndpoint</code>. Programming WebSocket Java clients is very similar to what you did on
+                    the server; you still need to annotate methods with <code>@OnOpen</code>, <code>@OnMessage</code>,
+                    and so on.   </p>
+                <p>A web browser offers an instance of the <code>WebSocket</code> object so it can connect to the server
+                    endpoint without any special preparations. But if you write a WebSocket client in Java, you need to
+                    obtain the reference to the <code>WebSocketContainer</code> object first, and then you can connect
+                    to the server with the method <code>connectToServer()</code> providing the URI of the server’s
+                    endpoint. To compile a Java client, you have to include in the <code>CLASSPATH</code> some
+                    implementation (jars) of JSR-356 for the client—for example, <a
+                            href="https://tyrus.java.net/dependencies.html">Project Tyrus</a>. Refer to Oracle’s <a
+                            href="https://docs.oracle.com/javaee/7/tutorial/websocket.htm#GKJIQ5">WebSocket tutorial</a>
+                    for details of developing WebSocket clients in <a id="idp21214112"></a>Java.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="decoders"></a>Encoders and Decoders</h2>
+        <p>WebSocket protocol <a id="encode"></a><a id="decoder1"></a><a id="encoder"></a><a id="decoder2"></a>doesn’t
+            define an application-specific protocol for data exchange, but it has a place to specify one of the
+            supported <a href="https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name">subprotocol
+                names</a> that can be used in your application. For example, one of the popular <span
+                    epub:type="pagebreak" title="406" id="Page_406"></span>messaging protocols is called <a
+                    href="http://stomp.github.io/">STOMP</a>, and you can find some relevant examples by searching for
+            “Stomp Over WebSocket” online.</p>
+        <p>Besides, the Java implementation of the WebSocket protocol allows you to transform the message payload from
+            one format to another during the client-server data exchange. Custom classes that perform this
+            transformation are called <i>decoders</i> and <i>encoders</i>.</p>
+        <p>For example, a web browser sends a JSON-formatted string (see <a href="part0034.html#json_section">Lesson
+            33</a> if you’re new to JSON) to your Java WebSocket endpoint. You can create a class <code>JsonToPojoDecoder</code> that
+            parses the incoming string and turns it into a POJO of specified type. Similarly, you can create a
+            class <code>PojoToJsonEncoder</code> that serializes each POJO to a JSON string on the way from the Java EE
+            server to the user’s web browser. The diagram in <a id="fig-anc-c028-004" href="part0029.html#fig-c028-004">Figure
+                28-4</a> depicts the decoder and encoder classes in a message exchange.</p>
+        <figure>
+            <img class="center" src="../Images/image00590.gif" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c028-004"
+                                                   href="part0029.html#fig-anc-c028-004">Figure 28-4</a>:</b></span>
+                    Encoders and decoders in the message exchange</p>
+            </figcaption>
+        </figure>
+        <p>Now I’ll show a sample application to get a stock price quote that uses a decoder and encoder. </p>
+        <p>Earlier, in the <code>HelloWebSocket</code> <a href="part0029.html#hellosocket">example</a>, you used only
+            the <code>value</code> parameter <code>"/hello"</code>in the annotation <code>@ServerEndpoint</code>. But
+            this annotation has four more optional parameters: <code>decoders</code>,<code> encoders</code>, <code>subprotocols</code>,
+            and<code>configurator</code>. You use the decoders and encoders parameters in the class <code>StockServerEndpoint</code>
+            shown next (import statements are omitted for brevity)<span
+                    style="font-size: 1.12rem; letter-spacing: 0.01em; line-height: 1.3em;">:</span></p>
+        <pre>
+@ServerEndpoint(value = "/stockprice",
+                encoders = {StockEncoder.class},
+                decoders = {StockDecoder.class})
+public class StockWebsocketEndpoint {
+ 
+    @OnMessage
+    public Stock getPriceQuote(Stock stock){
+        stock.price =Math.random()*100;    
+        return stock;
+    }
+}
+</pre>
+        <p>This endpoint invokes the method <code>getPriceQuote()</code> when the message arrives from the peer.  This
+            method generates a random stock price. Note that both the argument and the return value of the method <code>getPriceQuote()</code>
+            are of Java type <code>Stock</code> shown next:</p>
+        <pre>
+public class Stock {
+    public String symbol;
+    public double price;
+}
+</pre>
+        <p>If <span epub:type="pagebreak" title="407" id="Page_407"></span>a WebSocket client is also written in Java
+            there is no problem here. But a typical client is written in JavaScript, which runs in a browser and sends
+            the data to the server as text. Accordingly, the client running in the web browser may expect the data as a
+            formatted text and not a Java object.</p>
+        <p>To do these data conversions, write a decoder that converts the text into the <code>Stock</code> object and
+            an encoder that converts a <code>Stock</code> object into text. The decoder class has to implement either
+            <code>Decoder.Text</code> or <code>Decoder.Binary</code> interface. Our class <code>StockDecoder</code>
+            implements  <code>Decoder.Text:</code></p>
+        <pre>
+public class StockDecoder implements Decoder.Text&lt;Stock&gt;{
+    @Override
+    public void init(EndpointConfig config) {}
+    public Stock decode(String symbol) throws DecodeException {
+        System.out.println("In Decoder: converting " + symbol + 
+                           " into Stock object");
+        Stock stock = new Stock();
+        stock.symbol=symbol;      
+        return stock;
+    }
+    public boolean willDecode(String symbol) {
+        System.out.println("Allowing decoding");
+        return (symbol != null);
+    }
+    public void destroy() {}
+}
+</pre>
+        <p>You can find details of the <code>Decoder.Text</code> in the <a
+                href="http://docs.oracle.com/javaee/7/api/javax/websocket/Decoder.Text.html">online documentation</a>.
+            In short, the <a id="idp21249376"></a><a id="idp21250512"></a>method <code>decode()</code> intercepts the
+            incoming message from the client, and your code transforms the message into a required Java object. The
+            returned value from <code>decode()</code> is passed to the <code>getPriceQuote()</code> method of the <code>StockWebsocketEndpoint</code>
+            class. The method <code>decode()</code> just creates an instance of the <code>Stock</code> object and
+            assigns the received name of the stock to its field <code>symbol</code>.</p>
+        <p>The method <code>willDecode()</code> checks <a id="idp21254960"></a><a id="idp21257216"></a>whether the given
+            <code>String</code> can be encoded into the requested object—the <code>Stock</code>. You just checked it for
+            <code>null</code>, but if some prerequisites would have to be met to allow the transformation, you could
+            implement that logic here. In the example you don’t need to perform any actions on initialization or
+            destruction of the decoder instance; hence why the mandatory methods <code>init()</code> and
+            <code>destroy()</code> have no code.</p>
+        <p>The encoder class is engaged when the method <code>getPriceQuote()</code> is returning the instance of the
+            <code>Stock</code> object with populated <code>symbol</code> and <code>price</code>. You need to serialize
+            the Java object into text to be sent to the browser. This is how your class <code>StockEncoder</code> will
+            look:</p>
+        <pre>
+public class StockEncoder implements Encoder.Text&lt;Stock&gt;{
+    public void init(EndpointConfig config) {}
+    public String encode(Stock stock) throws EncodeException {
+        System.out.println(
+              "In Encoder: Serializing Stock object into String");
+        
+        return stock.symbol + ": " + stock.price;
+    }
+    public void destroy() {}
+}
+</pre>
+        <p><span epub:type="pagebreak" title="408" id="Page_408"></span>The method encode takes a <code>Stock</code>
+            object as an argument and turns it into a <code>String</code> by concatenating <code>symbol</code> and
+            <code>price</code>. I purposely use such simple conversion because my goal is to explain how the encoder
+            works and not the conversion options. But you can implement any transformation you like here.  Most likely,
+            you’ll be doing Java to JSON conversion if the client runs in a web browser.</p>
+        <p>You’re done coding the server side. The code is for the HTML page <code>decodersdemo.html</code> that will be
+            sending the price quote requests:</p>
+        <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;form&gt;
+    &lt;input id="stockSymbol" type="text"&gt;
+    &lt;input onClick= "<strong>getPriceQuote()</strong>" type="button" 
+                                      value="Get Price"&gt;
+  &lt;/form&gt;
+  
+  &lt;span id="priceQuote"&gt;&lt;/span&gt;
+  
+  &lt;script type="text/javascript"&gt;
+    var ws = new WebSocket(
+                        "ws://localhost:8080/Lesson28/stockprice"); 
+   
+    ws.onmessage = function(event) {
+       var mySpan = document.getElementById("priceQuote");
+       mySpan.innerHTML=event.data; 
+    };
+    
+  <strong>  function getPriceQuote()</strong>{
+        var symbol = document.getElementById("stockSymbol");
+        ws.send(symbol.value);
+    }
+     
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+        <p>This <span epub:type="pagebreak" title="409" id="Page_409"></span>web page has an input field and a Get Price
+            button.  When the browser loads this page, it executes the JavaScript code that connects to the server
+            endpoint <code>ws://localhost:8080/Lesson28/stockprice</code>. The user enters the stock symbol and clicks
+            the button, which invokes the JavaScript function <code>getPriceQuote()</code> that sends the entered symbol
+            to the WebSocket server for processing.</p>
+        <p>On the server, the decoder converts the symbol into a <code>Stock</code> object, and the Java method <code>getPriceQuote()</code>
+            populates its price field. The encoder turns the <code>Stock</code> object into text and sends it back to
+            the web browser.</p>
+        <p><a id="fig-anc-c028-005" href="part0029.html#fig-c028-005">Figure 28-5</a> shows how my web page looked when
+            I directed my web browser to <code><a href="http://localhost:8080/Lesson28/decodersdemo.html">http://localhost:8080/Lesson28/decodersdemo.html</a></code>,
+            entered IBM in the input field, and clicked <a id="idp21276064"></a><a id="idp21269584"></a><a
+                    id="idp21278960"></a><a id="idp21280320"></a>the Get Price button.</p>
+        <figure>
+            <img class="center" src="../Images/image00591.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c028-005"
+                                                   href="part0029.html#fig-anc-c028-005">Figure 28-5</a>:</b></span>
+                    Testing decodersdemo.html</p>
+            </figcaption>
+        </figure>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp21283984"></a>Debugging JavaScript</h3>
+                <p>Google <a id="idp21285168"></a><a id="idp21287008"></a>Chrome (as well as all other web browsers)
+                    offers an easy way to debug JavaScript. For example, I made a typo in the JavaScript function <code>getPriceQuote()</code>,
+                    but there is no compiler that could have pointed out my error. The symbol was arriving to my Java
+                    endpoint as <code>undefined</code>. Using Chrome Developer Tools I put a breakpoint inside the
+                    function <code>getPriceQuote()</code> and quickly found the typo. You can read about debugging
+                    JavaScript in Chrome in the <a
+                            href="https://developer.chrome.com/devtools/docs/javascript-debugging">product
+                        documentation</a>. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="broadcasting"></a>Publishing to All Clients</h2>
+        <p>Pretty often you <a id="pub1"></a><a id="pub2"></a>need to write a program that publishes the same message to
+            all connected clients. For example, multiple clients of the online auctions have to be notified when a new
+            bid is placed on the product. Another example is when a new stock price quote needs to be pushed from the
+            server to all connected clients. With WebSockets it’s a pretty easy task.</p>
+        <p>I’ll show you a basic example when a WebSocket endpoint pushes the server’s time to all connected clients. If
+            you can publish the server’s time to all connected clients, you can publish any application-specific
+            data.</p>
+        <p>The following endpoint <code>WebSocketClock</code> schedules the task that gets and formats the server’s time
+            every second and publishes the time to all connected clients. I schedule this timer once when the first
+            client connects to the endpoint. The method <code>sendTimeToAll()</code> finds all connected clients by
+            invoking <code>getOpenSessions()</code> on the <code>Session</code> object. Then on each session it calls
+            <code>getBasicRemote().sendText()</code>.</p>
+        <pre>
+@ServerEndpoint("/clock")
+public class WebSocketClock { 
+  static ScheduledExecutorService timer = 
+       Executors.newSingleThreadScheduledExecutor(); 
+  private static Set&lt;Session&gt; allSessions; 
+  DateTimeFormatter timeFormatter =  
+          DateTimeFormatter.ofPattern("HH:mm:ss");
+  @OnOpen   
+  public void showTime(Session session){
+      allSessions = session.getOpenSessions();
+      // start the scheduler on the very first connection
+      // to call sendTimeToAll every second   
+      if (allSessions.size()==1){   
+        timer.scheduleAtFixedRate(
+             () -&gt; sendTimeToAll(session),1,1,TimeUnit.SECONDS);    
+      }
+     }      
+   private void sendTimeToAll(Session session){       
+     allSessions = session.getOpenSessions();
+     for (Session sess: allSessions){          
+        try{   
+          sess.getBasicRemote().sendText("Local time: " + 
+                    LocalTime.now().format(timeFormatter));
+          } catch (IOException ioe) {        
+              System.out.println(ioe.getMessage());         
+          }   
+     }   
+  }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="410" id="Page_410"></span>The web client looks similar to the <a
+                href="part0029.html#hellosocket">Hello WebSocket</a> example:</p>
+        <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;span id="messageGoesHere"&gt;&lt;/span&gt;
+  
+  &lt;script type="text/javascript"&gt;
+    var ws = new WebSocket("ws://localhost:8080/Lesson28/clock"); 
+       
+    ws.onmessage = function(event) {
+      var mySpan = document.getElementById("messageGoesHere");
+      mySpan.innerHTML=event.data; 
+    };
+    
+    ws.onerror = function(event){
+        console.log("Error ", event)
+    }  
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+        <p><a id="fig-anc-c028-006" href="part0029.html#fig-c028-006">Figure 28-6</a> shows <span epub:type="pagebreak"
+                                                                                                  title="411"
+                                                                                                  id="Page_411"></span>a
+            screenshot where the Eclipse internal browser, Chrome, and Firefox show the current time published by the
+            WebSocket endpoint.</p>
+        <figure>
+            <img class="center" src="../Images/image00592.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c028-006"
+                                                   href="part0029.html#fig-anc-c028-006">Figure 28-6</a>:</b></span>
+                    Three web clients get current time published by a WebSocket endpoint</p>
+            </figcaption>
+        </figure>
+        <p>You’ll find this example useful while working on the “Try It” assignment, where you’ll need to push the stock
+            price <a id="idp21301440"></a><a id="idp21310496"></a>quote to multiple clients.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp21310816"></a>Optimizing Performance in Message Publishing</h3>
+                <p>Iterating through all open sessions works fine if the number of connected clients is small. But if
+                    you have hundreds of clients, consider grouping the <code>Session</code> objects into separate
+                    collections in an <code>@OnOpen</code> message handler and sending messages to each group in
+                    parallel from multiple threads. Important: By default, a Java EE server creates a new instance of
+                    the server endpoint class for each client’s connection, so if you’ll be creating your own session
+                    collections they must be <code>static</code>:</p>
+                <pre>
+private static Set&lt;Session&gt; sessionsChunk1 = 
+            Collections.synchronizedSet(new HashSet&lt;&gt;());
+private static Set&lt;Session&gt; sessionsChunk2 =
+​            Collections.synchronizedSet(new HashSet&lt;&gt;());
+...
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h2><a id="try_it-id00106"></a>Try It</h2>
+        <p>Rewrite <span epub:type="pagebreak" title="412" id="Page_412"></span>the sample Stock Server <a
+                id="idp21316272"></a><a id="idp21318080"></a>application that you created in the “Try It” of <a
+                href="part0028.html#javaserver_pages">Lesson 27</a>, but this time do it using WebSockets. Create an
+            HTML-based WebSocket client.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00107"></a>Lesson Requirements</h3>
+            <p>You should have Java, GlassFish, and Eclipse installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson28 folder in the download.0</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00109"></a>Step-by-Step</h3>
+            <ol>
+                <li>
+                    <p>Reuse the dynamic web project <code>Lesson28</code> that you created earlier in this lesson. If
+                        you don’t have it, download and import it from the book’s website. </p>
+                </li>
+                <li>
+                    <p>Create an HTML client <code>GetPriceQuote.html</code> similar to the one from the section <a
+                            href="part0029.html#decoders">Decoders and Encoders</a>. It should have one text input field
+                        to enter the stock symbol and the Get Price button. The user has to enter the stock symbol she
+                        wants to get a price quote for and press the button. The server should generate random quotes
+                        for the selected stock. </p>
+                </li>
+                <li>
+                    <p>Create a server endpoint similar to the class <code>StockWebSocketEndpoint</code>from the section
+                        <a href="part0029.html#decoders">Decoders and Encoders</a>, but this time reuse the classes
+                        <code>Stock</code> and <code>StockPriceGenerator</code> from the <a
+                                href="part0028.html#try_it-id00102">Try It section</a> from <a href="part0028.html">Lesson
+                            27</a>.</p>
+                </li>
+                <li>
+                    <p>Implement a timer that generates a new random price quote every five seconds. For the reference
+                        use the <code>ScheduledExecutorService</code> from the class <code>WebSocketClock</code> from
+                        the section "<a href="part0029.html#broadcasting">Pushing to All Clients</a>.”</p>
+                </li>
+                <li>
+                    <p>Deploy the project <code>Lesson28</code> in GlassFish and start the server.</p>
+                </li>
+                <li>
+                    <p>Run the web page <code>GetStockPrice.html</code> inside Eclipse or in your web browser and test
+                        the application. Enter one of the stock symbols; the web page should should refresh the stock
+                        price every five seconds. The user should be able to enter a new stock symbol at any time and
+                        the price for the newly selected stock should be displayed and refreshed.</p>
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0029.html">Lesson 28</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Introducing the GUI with Swing</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="introducing_the_graphic_user_interface"></a><span class="chapterTitle">Lesson 8<br/>Introducing the GUI with Swing</span></h1>
+
+<section>
+<p>These <span epub:type="pagebreak" title="83" id="Page_83"></span>days people are accustomed to working with applications that have rich user interfaces. JavaFX is Oracle’s <a id="idp14676512"></a>newest platform for development of such applications. Lessons 11 and 12 introduce you to JavaFX. JavaFX is a layer on top of Java Swing — a library of components, which for many years was used for building graphic user interfaces (GUIs) for desktop applications, as well as a <a id="idp14677376"></a><a id="idp14678256"></a>web program called <i>applets (</i>GUI programs running inside the web browser’s Java run-time plug-in<i>)</i>.</p>
+<p>Today Java applets are rarely used, which is the reason why I decided not to include chapters about applets in this edition of the book. Instead, I’ve added coverage of the more modern JavaFX framework. In this and the following lesson you learn the principles of building GUIs while developing a simple desktop calculator using the Java Swing library.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Eclipse Foundation offers another library of UI components called the Standard Widget Toolkit (SWT), available at <code><a href="https://wiki.eclipse.org/SWT">https://wiki.eclipse.org/SWT</a></code>, which is outside</i> <i>of the scope of this book.</i></p>
+</section>
+<section>
+<h2><a id="swing_tutorial"></a>Swing Basics</h2>
+<p>Originally Java offered a pretty <a id="idp14683072"></a>basic library of UI-related classes called the Abstract Windowing Toolkit (AWT). A couple of years later a new widget toolkit called Swing <a id="idp14683968"></a>was introduced. Swing offers a lighter set of UI components while keeping the main idea intact — to keep UI development independent of the end user’s operating system. Run the same program on Windows and on Mac OS, and GUI components look native to the corresponding operating system (OS) (see <a id="fig-anc-c08-001" href="part0009.html#fig-c08-001">Figure 8-1</a>). You can also create a Swing GUI application with a cross-platform look and feel (see Nimbus at <code><a href="http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/nimbus.html">http://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/nimbus.html</a></code>). </p>
+<p>Today developers <a id="idp14689312"></a>are trying to create UIs that appear to be native to the OS, whether that is Windows, Mac OS, iOS, or Android. Eventually the market share of Swing-based UIs may diminish, but at the time of this writing it’s still widely used by enterprises, and skilled Swing developers remain in demand.</p>
+<p>Swing <span epub:type="pagebreak" title="84" id="Page_84"></span>offers you everything you need to build UIs in Java: There are controls to represent buttons, drop-down menus, grids, scrollbars, trees, tab folders, and so on. Typically you create UIs by combining controls into containers (for example, <code>JPanel</code>  or <code>JFrame</code>) that support various layouts that enable controls to be arranged as you or a graphic designer envision. In this lesson you use some of the Swing components while creating a UI for a simple desktop calculator.</p>
+<p>A complete <a id="idp14693120"></a><a id="idp14695536"></a>discussion of the Swing library is out of the scope of this book, but there are plenty of books and technical articles covering this subject. The official online Swing tutorial is located at <code><a href="http://bit.ly/1o7JeuE">http://bit.ly/1o7JeuE</a></code>.</p>
+<p>Swing classes <a id="idp14701360"></a><a id="idp14699568"></a>are located in the <code>javax.swing</code> package, and the process of creating a UI comes down to extending some of these classes to display the UI and respond to various user- and system-generated events. You create a top-level window with a title and border by instantiating the class <code>JFrame</code>, as in <a id="list-anc-c08-001" href="part0009.html#list-c08-001">Listing 8-1</a>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c08-001" href="part0009.html#list-anc-c08-001">Listing 8-1</a>:</span> An empty descendant of JFrame</h5>
+<pre>
+import javax.swing.JFrame;
+import javax.swing.JButton;
+public class HelloWorld extends JFrame {
+  public static void main(String[] args) {    
+    JFrame myWindow = new HelloWorld();
+    
+    // Creating and adding a button to the container 
+    JButton myButton = new JButton ("Click me");    
+    myWindow.add(myButton); 
+    myWindow.setSize(200,300);    
+    myWindow.setTitle("Hello World");    
+    myWindow.setVisible(true);
+   }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>The class <code>HelloWorld </code>creates and adds a button to the container, sets the size and title of the window, and makes it visible. <code>JFrame</code> is an example of a container that can hold UI controls, which must be instantiated first and then added to the container. Run this program, and it shows a small window that looks like <a href="part0009.html#fig-c08-001">Figure 8-1</a> (the left image shows the Windows OS version, and the right one was taken from Mac OS).</p>
+<p>The code in <a href="part0009.html#fig-c08-001">Figure 8-1</a> doesn’t specify the size of the button, where to put it, or whether there should be space between the components and the borders. Without layout instructions, the entire empty space in <a href="part0009.html#fig-c08-001">Figure 8-1</a> will be occupied by one huge button.</p>
+<figure>
+<img class="center" src="../Images/image00516.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-001" href="part0009.html#fig-anc-c08-001">Figure 8-1</a>:</b></span> HelloWorld <span epub:type="pagebreak" title="85" id="Page_85"></span>on Windows (left) and Mac OS (right)</p>
+</figcaption>
+</figure>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature2">
+<h3><a id="idp14716016"></a>Default Close Operation</h3>
+<p>Run the earlier <code>HelloWorld</code>program and try to click the window’s Close button. It doesn’t work. The JRE sent an event to close the window, but the program didn’t have event-handling code for this.You find out how to add it in the next lesson, but meanwhile you can make the window close by adding the following line to <code>HelloWorld.java</code>: </p>
+<pre>
+myWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Usually <code>JFrame</code> includes some <a id="idp14719040"></a><a id="idp14720048"></a>nested containers where you place controls such as <code>JButton</code>, <code>JTable</code>, and <code>JList</code>. Java Swing comes <a id="idp14724560"></a>with <i>layout managers</i> that help you arrange all these controls appropriately. For example, a sample coding process for creating a <code>JFrame</code> containing <code>JPanel</code> can go like this:</p>
+<ol>
+	<li>Create a <code>JPanel</code>.</li>
+	<li>Assign a layout manager to it.</li>
+	<li>Instantiate some Swing controls and add them to the panel.</li>
+	<li>Add the panel to the top-level container—<code>JFrame</code>—by calling the <code>setContentPane()</code> method.</li>
+	<li>Set the frame’s size and make it visible.</li>
+</ol>
+<p>You <span epub:type="pagebreak" title="86" id="Page_86"></span>can assign different layout managers to your containers to create very sophisticated windows. But displaying a window with properly laid-out components is only half of the job because these controls should know how to respond to various <i>events</i>, such as a click on a button. This lesson covers the basics of displaying UI components; <a href="part0010.html#event_handling_in_ui">Lesson 9</a> is about writing code for responding to events.</p>
+</section>
+<section>
+<h2><a id="layout_managers"></a>Layout Managers</h2>
+<p>The simplest <a id="layoutmanager"></a><a id="flowlayout"></a><a id="flowmanager"></a>layout manager is <code>FlowLayout</code>, which allocates all components being added to the container horizontally. When there’s no room for the next component, <code>FlowLayout</code> uses the next row, and the process repeats.</p>
+<section>
+<h3><a id="simple_calculator_with_flowlayout"></a>A Simple Calculator with FlowLayout</h3>
+<p>The best way to learn layout management is by trying to use it in practice. You’re going to create a UI for a simple calculator that can accept two numbers and display the result. Create a new Eclipse project called Lesson8 and a new class called <code>SimpleCalculator</code> with the following code:</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c08-002" href="part0009.html#list-anc-c08-002">Listing 8-2</a>:</span> Calculator with FlowLayout</h5>
+<pre>
+public class SimpleCalculator {
+ public static void main(String[] args) {
+  // Create a panel
+       JPanel windowContent= new JPanel();
+  // Set a layout manager for this panel
+       FlowLayout fl = new FlowLayout();
+       windowContent.setLayout(fl);
+  // Create controls in memory
+       JLabel label1 = new JLabel("Number 1:");
+       JTextField field1 = new JTextField(10);
+       JLabel label2 = new JLabel("Number 2:");
+       JTextField field2 = new JTextField(10);
+       JLabel label3 = new JLabel("Sum:");
+       JTextField result = new JTextField(10);
+       JButton go = new JButton("Add");
+  // Add controls to the panel
+       windowContent.add(label1);
+       windowContent.add(field1);
+       windowContent.add(label2);
+       windowContent.add(field2);
+       windowContent.add(label3);
+       windowContent.add(result);
+       windowContent.add(go);
+  // Create the frame and add the panel to it
+  JFrame frame = new JFrame("My First Calculator");
+  // Add the panel to the top-level container
+  frame.setContentPane(windowContent);
+  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+  // set the size and make the window visible
+  frame.setSize(400,100);
+  frame.setVisible(true);
+ }
+}
+</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Compile <span epub:type="pagebreak" title="87" id="Page_87"></span>and run this program, and it displays the window shown in <a id="fig-anc-c08-002" href="part0009.html#fig-c08-002">Figure 8-2</a>.</p>
+<p>This may not be the best-looking calculator, but it demonstrates the use of <code>FlowLayout</code>. In the next section you make it look better with the help of more suitable layout managers.</p>
+<figure>
+<img class="center" src="../Images/image00517.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-002" href="part0009.html#fig-anc-c08-002">Figure 8-2</a>:</b></span> Running the SimpleCalculator class</p>
+</figcaption>
+</figure>
+<p>Grab the corner of the window and make it wider. You see how <code>FlowLayout</code> starts reallocating controls, trying to fill the new area. If you make the window wide enough, all the components fit in one row, as in <a id="fig-anc-c08-003" href="part0009.html#fig-c08-003">Figure 8-3</a>.</p>
+<figure>
+<img class="center" src="../Images/image00518.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-003" href="part0009.html#fig-anc-c08-003">Figure 8-3</a>:</b></span> Resizing the window of SimpleCalculator</p>
+</figcaption>
+</figure>
+<p>Even though you can enforce exact coordinates and sizes for each window component, Swing has layout managers that can maintain relative positions for all controls without assigning strict positions to them. Layout managers ensure that the content of a container looks nice regardless of the current window size. The <code>FlowLayout</code> is not about looking nice, though. It’s about showing all visual components based on the <a id="idp14760032"></a><a id="idp14759280"></a><a id="idp14762272"></a>current container’s width.</p>
+</section>
+<section>
+<h3><a id="brief_introduction_to_layout_managers"></a>A Brief Introduction to Layout Managers</h3>
+<p>Swing offers the following layout managers:</p>
+<ul>
+	<li><code>FlowLayout</code></li>
+	<li><code>GridLayout</code></li>
+	<li><code>BoxLayout</code></li>
+	<li><code>BorderLayout</code></li>
+	<li><code>CardLayout</code></li>
+	<li><code>GridBagLayout</code></li>
+</ul>
+<p>To <span epub:type="pagebreak" title="88" id="Page_88"></span>use any layout manager, instantiate it first and then assign this instance to a container via <code>setLayout()</code>, as you did with the class <code>SimpleCalculator</code> in <a id="list-anc-c08-002" href="part0009.html#list-c08-002">Listing 8-2</a>.</p>
+</section>
+<section>
+<h3><a id="flowlayout_section"></a>FlowLayout</h3>
+<p>This layout <a id="idp14773920"></a><a id="idp14775648"></a><a id="idp14777040"></a>arranges components in a container row by row. For example, labels, text fields, and buttons are added to the first imaginary row until there is no room left in this row.</p>
+<p>When the current row is filled, the rest of the components go to the next row, and so on. Components can be added to the container from left to right or from right to left according to the container’s <code>componentOrientation</code> property. If a user changes the size of the window, this layout manager reflows the components, which changes the GUI as illustrated in <a href="part0009.html#fig-c08-002">Figure 8-2</a>. Indeed, <code>FlowLayout</code> is not the best choice for the calculator. Let’s try something different.</p>
+</section>
+<section>
+<h3><a id="gridlayout"></a>GridLayout</h3>
+<p>The class <code>java.awt.GridLayout</code> enables <a id="idp14783840"></a><a id="idp14785456"></a><a id="idp14786912"></a>you to arrange components as rows and columns in a grid. You’ll be adding components to imaginary cells of this grid. If the container gets resized, grid cells may become larger or smaller, but the relative positions of the components inside the container remain the same.</p>
+<p>So far your calculator has seven components: three labels, three text fields, and a button. You may arrange them as a grid of four rows and two columns (one cell stays empty) by creating an instance of <code>GridLayout</code> like this:</p>
+<pre>
+GridLayout gr = new GridLayout(4,2);</pre>
+<p>You can also assign some horizontal and vertical spaces of, for example, five pixels, between the cells:</p>
+<pre>
+GridLayout gr = new GridLayout(4,2,5,5);</pre>
+<p>Replace <code>FlowLayout</code> with <code>GridLayout</code> in <a href="part0009.html#list-c08-002">Listing 8-2</a> and the calculator looks a little prettier. Create and compile a new class called <code>SimpleCalculatorGrid</code> (see <a id="list-anc-c08-003" href="part0009.html#list-c08-003">Listing 8-3</a>).</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c08-003" href="part0009.html#list-anc-c08-003">Listing 8-3</a>:</span> Calculator with GridLayout</h5>
+<pre>
+import javax.swing.*;
+import java.awt.GridLayout;
+public class SimpleCalculatorGrid {
+public static void main(String[] args) {
+      JPanel windowContent= new JPanel();
+      // Set the layout manager for the panel
+      GridLayout gl = new GridLayout(4,2);
+      windowContent.setLayout(gl);
+      JLabel label1 = new JLabel("Number 1:");
+      JTextField field1 = new JTextField(10);
+      JLabel label2 = new JLabel("Number 2:");
+      JTextField field2 = new JTextField(10);
+      JLabel label3 = new JLabel("Sum:");
+      JTextField result = new JTextField(10);
+      JButton go = new JButton("Add");
+// Add controls to the panel
+      windowContent.add(label1);
+      windowContent.add(field1);
+      windowContent.add(label2);
+      windowContent.add(field2);
+      windowContent.add(label3);
+      windowContent.add(result);
+      windowContent.add(go);
+ // Create the frame and add the panel to it
+      JFrame frame = new JFrame("My First Grid Calculator");
+      frame.setContentPane(windowContent);
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+// set the size and display the window
+      frame.setSize(400,100);
+      frame.setVisible(true);
+ }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p><span epub:type="pagebreak" title="89" id="Page_89"></span>Run the program <code>SimpleCalculatorGrid</code> to see a calculator that looks a little better than before (see <a id="fig-anc-c08-004" href="part0009.html#fig-c08-004">Figure 8-4</a>).</p>
+<figure>
+<img class="center" src="../Images/image00519.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-004" href="part0009.html#fig-anc-c08-004">Figure 8-4</a>:</b></span> Running the SimpleCalculatorGrid</p>
+</figcaption>
+</figure>
+<p>Try to resize this window; controls grow with the window, as shown in <a id="fig-anc-c08-005" href="part0009.html#fig-c08-005">Figure 8-5</a>, but their relative positions won’t change. Note that with <code>GridLayout</code> all cells of the grid have the same width and height.</p>
+<figure>
+<img class="center" src="../Images/image00520.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-005" href="part0009.html#fig-anc-c08-005">Figure 8-5</a>:</b></span> Resizing SimpleCalculatorGrid</p>
+</figcaption>
+</figure>
+</section>
+<section>
+<h3><a id="borderlayout"></a>BorderLayout</h3>
+<p>The <a id="idp14809056"></a><a id="idp14811408"></a><a id="idp14812736"></a>layout <span epub:type="pagebreak" title="90" id="Page_90"></span>manager <code>java.awt.BorderLayout</code> divides a container into <code>South</code>, <code>West</code>, <code>North</code>, <code>East</code>, and <code>Center</code> areas. The <code>North</code> area stays on top of the window, <code>South</code> at the bottom, <code>West</code> on the left, and <code>East</code> on the right. For example, in the calculator shown in <a id="fig-anc-c08-006" href="part0009.html#fig-c08-006">Figure 8-6</a>, a text field that displays numbers is located in the <code>North</code> area, and the panel <code>p2</code> is in the <code>West</code>.</p>
+<figure>
+<img class="center" src="../Images/image00521.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-006" href="part0009.html#fig-anc-c08-006">Figure 8-6</a>:</b></span> The Windows 7 Calculator</p>
+</figcaption>
+</figure>
+<p>You can use the following code to create a <code>BorderLayout</code> and place a text field there:</p>
+<pre>
+BorderLayout bl = new BorderLayout();
+this.setLayoutManager(bl);
+JTextField  txtDisplay = new JTextField(20);
+this.add(BorderLayout.NORTH, txtDisplay);</pre>
+<p>You are not required to have window controls in all five areas. If you need only <code>North</code>, <code>Center</code>, and <code>South</code> areas, the <code>Center</code> area becomes wider because you are not going to use the <code>East</code> and <code>West</code> areas. I use a <code>BorderLayout</code> later in this lesson in the next version of the calculator: <code>Calculator.java</code>.</p>
+<p><code>BorderLayout</code> is a default layout manager for content panes.</p>
+</section>
+<section>
+<h3><a id="combining_layout_managers"></a>Combining Layout Managers</h3>
+<p>Do you think that <code>GridLayout</code> will <a id="idp14831920"></a><a id="idp14833712"></a>enable you to design a calculator that looks like the one that comes with Microsoft Windows, shown in <a href="part0009.html#fig-c08-006">Figure 8-6</a>? Unfortunately, it won’t, because cells have different sizes there — the text field is wider than the buttons. You can, however, combine layout managers by using panels that have their own layout managers.</p>
+<p>You <span epub:type="pagebreak" title="91" id="Page_91"></span>can create such a calculator by using <code>GridBagLayout</code>, which is explained later. In the meantime, you can create a simpler version of it by combining layout managers you know. The end result looks like <a id="fig-anc-c08-007" href="part0009.html#fig-c08-007">Figure 8-7</a>.</p>
+<figure>
+<img class="center" src="../Images/image00522.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-007" href="part0009.html#fig-anc-c08-007">Figure 8-7</a>:</b></span> Calculator with combined layouts</p>
+</figcaption>
+</figure>
+<p>Create a new class, <code>Calculator</code>, as per <a id="list-anc-c08-004" href="part0009.html#list-c08-004">Listing 8-4</a>, and run the program. Read the program comments; you should be able to understand how the code works by reading the comments, shouldn’t you? Running this program shows the calculator, as shown in <a href="part0009.html#fig-c08-007">Figure 8-7</a>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c08-004" href="part0009.html#list-anc-c08-004">Listing 8-4</a>:</span> Calculator with combined layouts</h5>
+<pre>
+import javax.swing.*;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
+public class Calculator {
+    // Declare all calculator's components.
+       JPanel windowContent;
+       JTextField displayField;
+       JButton button0;
+       JButton button1;
+       JButton button2;
+       JButton button3;
+       JButton button4;
+       JButton button5;
+       JButton button6;
+       JButton button7;
+       JButton button8;
+       JButton button9;
+       JButton buttonPoint;
+       JButton buttonEqual;
+       JPanel p1;
+       // Constructor creates the components
+       // and adds them to the frame using combination of
+       // Borderlayout and Gridlayout
+   Calculator(){
+          windowContent= new JPanel();
+         // Set the layout manager for this panel
+           BorderLayout bl = new BorderLayout();
+           windowContent.setLayout(bl);
+         // Create the display field and place it in the
+         // North area of the window
+           displayField = new JTextField(30);
+           windowContent.add("North",displayField);
+       // Create <span epub:type="pagebreak" title="92" id="Page_92"></span>buttons using constructor of the
+       // class JButton that takes the label of the
+       // button as a parameter
+           button0=new JButton("0");
+           button1=new JButton("1");
+           button2=new JButton("2");
+           button3=new JButton("3");
+           button4=new JButton("4");
+           button5=new JButton("5");
+           button6=new JButton("6");
+           button7=new JButton("7");
+           button8=new JButton("8");
+           button9=new JButton("9");
+           buttonPoint = new JButton(".");
+           buttonEqual=new JButton("=");
+          // Create the panel with the GridLayout with 12 buttons -
+          //10 numeric ones, period, and the equal sign
+                  p1 = new JPanel();
+                  GridLayout gl =new GridLayout(4,3);
+                  p1.setLayout(gl);
+          //  Add window controls to the panel p1
+                  p1.add(button1);
+                  p1.add(button2);
+                  p1.add(button3);
+                  p1.add(button4);
+                  p1.add(button5);
+                  p1.add(button6);
+                  p1.add(button7);
+                  p1.add(button8);
+                  p1.add(button9);
+                  p1.add(button0);
+                  p1.add(buttonPoint);
+                  p1.add(buttonEqual);
+         // Add the panel p1 to the center of the window
+                 windowContent.add("Center",p1);
+         //Create the frame and set its content pane
+                JFrame frame = new JFrame("Calculator");
+                frame.setContentPane(windowContent);
+         // Set the size of the window big enough 
+         // to accommodate all controls
+                  frame.pack();
+             // Display the window
+             frame.setVisible(true);
+             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      }
+      public static void main(String[] args) {
+          Calculator calc = new Calculator();
+      }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="boxlayout"></a>BoxLayout</h3>
+<p><span epub:type="pagebreak" title="93" id="Page_93"></span>The class <code>javax.swing.BoxLayout</code> allows <a id="idp14851792"></a><a id="idp14853520"></a><a id="idp14854912"></a>multiple window components to be laid out either horizontally (along the x axis) or vertically (along the y axis). Unlike with the <code>FlowLayout</code> manager, when the window with the <code>BoxLayout</code> is resized, its controls do not wrap. And unlike with <code>GridLayout</code>, with <code>BoxLayout</code>, window controls can have different sizes.</p>
+<p>The next two lines of code assign <code>BoxLayout</code> with vertical alignment to <code>JPanel</code>. To make this code shorter, I have not declared a variable to store a reference to the object <code>BoxLayout</code>, but rather create an instance of this object and immediately pass it to the method <code>setLayout()</code> as an argument.</p>
+<pre>
+JPanel p1= new JPanel();
+setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));</pre>
+<p>If you just add several buttons to the panel <code>p1</code>, they all display one under another.</p>
+<p>You can use combinations of various containers implementing horizontal or vertical <code>BoxLayout</code> to build a fairly sophisticated UI. Think of a front page of a game that has to have several items next to each other on the top of the window, some controls located vertically on the left sidebar, and the rest of the window’s real estate allocated for the main battlefield. You can use <code>BorderLayout</code> having a panel with a horizontal <code>BoxLayout</code> on the <code>North</code>, and a panel with vertical <code>BoxLayout</code> on the <code>West</code>.</p>
+<p>The next section shows you a sophisticated yet more verbose <code>GridBagLayout</code>, but you should always try to see if the <code>BoxLayout</code> can do the job and use it, if possible.</p>
+</section>
+<section>
+<h3><a id="gridbaglayout"></a>GridBagLayout</h3>
+<p>In <span epub:type="pagebreak" title="94" id="Page_94"></span>this <a id="idp14868880"></a><a id="idp14870688"></a><a id="idp14872160"></a>section you are familiarized with yet another way of designing the calculator by using the <code>java.awt.GridBagLayout</code> layout manager instead of combining panels with different layouts. <code>GridBagLayout</code> is an advanced grid that allows the creation of cells of different sizes. <code>GridBagLayout</code> works in combination with another class called <code>GridBagConstraints</code>.</p>
+<p>Constraints are just attributes of a cell, and you have to set them for each cell separately. All constraints for a cell have to be set before you place a component in the cell. For example, one of the constraint’s attributes is called <code>gridwidth</code> (see <a id="fig-anc-c08-008" href="part0009.html#fig-c08-008">Figure 8-8</a>). It enables you to make a cell as wide as several other cells. The display field in the example is as wide as five other cells. The top-left cell has the coordinates 0,0. </p>
+<figure>
+<img class="center" src="../Images/image00523.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-008" href="part0009.html#fig-anc-c08-008">Figure 8-8</a>:</b></span> GridBagConstraints in Calculator</p>
+</figcaption>
+</figure>
+<p>When working with the grid layout you should create an instance of the constraint object first, and set the values to its properties. Then you can add a UI component to the cell with specified coordinates in your container. After that you repeat the procedure: populate the same instance of <code>GridBagConstraints</code> with properties of another cell and add it to the container and so on.</p>
+<p>The code sample in <a id="list-anc-c08-005" href="part0009.html#list-c08-005">Listing 8-5</a> is heavily sprinkled with comments to help you understand how to use <code>GridBagLayout</code>. While working on this lesson’s assignment you’ll be using this code.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c08-005" href="part0009.html#list-anc-c08-005">Listing 8-5</a>:</span> Creating constraints for GridBagLayout</h5>
+<pre>
+// Set the GridBagLayout for the window's content pane
+ GridBagLayout gb = new GridBagLayout();
+ this.setLayout(gb);
+// Create an instance of the GridBagConstraints
+// You'll have to repeat these lines for each component
+// that you'd like to add to the grid cell
+ GridBagConstraints constr = new GridBagConstraints();
+//setting constraints for the Calculator's displayField:
+// x coordinate in the grid
+ constr.gridx=0;
+// y coordinate in the grid
+ constr.gridy=0;
+// this cell has the same height as other cells
+ constr.gridheight =1;
+// this cell is as wide as 5 other ones
+ constr.gridwidth= 5;
+// fill all space in the cell
+ constr.fill= constr.BOTH;
+// proportion of horizontal space taken by this
+// component
+ constr.weightx = 1.0;
+// proportion of vertical space taken by this component
+ constr.weighty = 1.0;
+// position of the component within the cell
+ constr.anchor=constr.CENTER;
+ displayField = new JTextField();
+// set constraints for this field
+ gb.setConstraints(displayField,constr);
+// add the text field to the window
+ windowContent.add(displayField);</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="cardlayout"></a>CardLayout</h3>
+<p><span epub:type="pagebreak" title="95" id="Page_95"></span>Think of a deck <a id="idp14888272"></a><a id="idp14890080"></a><a id="idp14891504"></a>of cards lying on top of each other — only the top card is visible. You can use the <code>java.awt.CardLayout</code> manager to create a component that shows one panel at a time, such as the tabbed folder in <a id="fig-anc-c08-009" href="part0009.html#fig-c08-009">Figure 8-9</a>.</p>
+<figure>
+<img class="center" src="../Images/image00524.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c08-009" href="part0009.html#fig-anc-c08-009">Figure 8-9</a>:</b></span> Tab folder as a card layout example</p>
+</figcaption>
+</figure>
+<p>When the user clicks a tab, the content of the window changes. In fact, all the panels needed for this screen are already preloaded and lie on top of each other. When the user clicks a tab, the program just brings this “card" to the top and makes the other “cards" invisible. The tabbed folder here was used for illustration; the Swing library includes a ready-to-go component for windows with tabs, called <code>JTabbedPane</code>.</p>
+</section>
+<section>
+<h3><a id="containers_with_absolute_layout"></a>Containers <span epub:type="pagebreak" title="96" id="Page_96"></span>with Absolute Layout</h3>
+<p>If you want a <a id="idp14901904"></a><a id="idp14897408"></a>container’s content to look the same regardless of the user’s window size, set the x and y coordinates, width, and height (the bounds) of each component while adding them to the window. Your class has to explicitly state that it won’t use any layout manager by passing <code>null</code> to <code>setLayout()</code>:</p>
+<pre>
+windowContent.setLayout(null);</pre>
+<p>The next code snippet shows how you can set a button’s width to 40 pixels and its height to 20, and place the button so its top-left corner is 100 pixels to the right of and 200 pixels down from the top-left corner of the window:</p>
+<pre>
+JButton myButton = new Button("New Game");
+myButton.setBounds(100,200,40,20);</pre>
+</section>
+<section>
+<h3><a id="more_about_swing_widgets"></a>More About Swing Widgets</h3>
+<p>It’s not possible <a id="idp14907872"></a>to describe all the Swing components in a short lesson. Use the Swing online tutorial mentioned <a href="part0009.html#swing_tutorial">in the beginning </a> of this lesson to get more information. Here’s a list of all the Swing widgets:</p>
+<table>
+	<tbody>
+		<tr>
+			<td><code>JButton</code></td>
+			<td><code>JScrollBar</code></td>
+		</tr>
+		<tr>
+			<td><code>JLabel</code></td>
+			<td><code>JSlider</code></td>
+		</tr>
+		<tr>
+			<td><code>JCheckBox</code></td>
+			<td><code>JProgressBar</code></td>
+		</tr>
+		<tr>
+			<td><code>JRadioButton</code></td>
+			<td><code>JComboBox</code></td>
+		</tr>
+		<tr>
+			<td><code>JToggleButton</code></td>
+			<td><code>JList</code></td>
+		</tr>
+		<tr>
+			<td><code>JScrollPane</code></td>
+			<td><code>JTabbedPane</code></td>
+		</tr>
+		<tr>
+			<td><code>JSpinner</code></td>
+			<td><code>JTable</code></td>
+		</tr>
+		<tr>
+			<td><code>JTextField</code></td>
+			<td><code>JToolTip</code></td>
+		</tr>
+		<tr>
+			<td><code>JTextArea</code></td>
+			<td><code>JTree</code></td>
+		</tr>
+		<tr>
+			<td><code>JPasswordField</code></td>
+			<td><code>JViewPort</code></td>
+		</tr>
+		<tr>
+			<td><code>JFormattedTextField</code></td>
+			<td><code>ImageIcon</code></td>
+		</tr>
+		<tr>
+			<td><code>JEditorPane</code></td>
+			<td> </td>
+		</tr>
+	</tbody>
+</table>
+<p>You <span epub:type="pagebreak" title="97" id="Page_97"></span>can also create menus (<code>JMenu</code> and <code>JPopupMenu</code>), pop-up windows, and frames inside other frames (<code>JInternalFrame</code>), and you can use the standard-looking windows (<code>JFileChooser</code>, <code>JColorChooser</code>, and <code>JOptionPane</code>).</p>
+<p>Java used to come with an excellent demo application, SwingSet3, that showed all the available Swing components in action. Now it’s available online at <code><a href="https://swingset3.java.net">https://swingset3.java.net</a></code>. Check it out.</p>
+</section>
+</section>
+<section>
+<h2><a id="swing_gui_builders"></a>Swing GUI Builders</h2>
+<p>Java developers <a id="idp14937040"></a>use various tools to speed the process of designing UIs. See what’s available for the IDE that you use. For example, there is design tool for Eclipse called WindowBuilder that simplifies creation of GUI without writing too much code. You can find it at the following URL: <a href="http://www.eclipse.org/windowbuilder">http://www.eclipse.org/windowbuilder</a>.</p>
+<p>Matisse was originally developed for the NetBeans IDE, and you can find it here: <code><a href="http://netbeans.org/kb/trails/matisse.html">http://netbeans.org/kb/trails/matisse.html</a></code>.</p>
+<p>Finally, consider yet another Eclipse plug-in, called Jigloo GUI Builder (<code><a href="http://marketplace.eclipse.org/content/jigloo-swtswing-gui-builder">http://marketplace.eclipse.org/content/jigloo-swtswing-gui-builder</a></code>). You can definitely find a tool that will substantially speed up your design of UIs with the Java Swing library.</p>
+</section>
+<section>
+<h2><a id="try_it-id00027"></a>Try It</h2>
+<p>Your task for today is to create another version of the calculator in <a href="part0009.html#fig-c08-008">Figure 8-8</a>, using only one layout: <code>GridBagLayout</code>.</p>
+<section>
+<h3><a id="lesson_requirements-id00028"></a>Lesson Requirements</h3>
+<p>For this lesson you should have Java installed.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>. You can find them in the</i> <code>Lesson8.zip</code><i>.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="step-by-step-id00029"></a>Step-by-Step</h3>
+<p>This assignment comes down to creating appropriate constraints for each UI component shown in <a href="part0009.html#list-c08-005">Listing 8-5</a> for each UI component needed for the calculator.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0009.html">Lesson 8</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</aside>
+</section>
+</section>
+</body></html>

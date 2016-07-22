@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Annotations and Reflection</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="annotations_and_reflection"></a><span
+            class="chapterTitle">Lesson 23<br/>Annotations and Reflection</span></h1>
+
+    <section>
+        <p>In <span epub:type="pagebreak" title="321" id="Page_321"></span>general, <i>metadata</i> is data <a
+                id="idp19500048"></a><a id="idp19501024"></a>about your data. In the context of DBMSes, metadata can be
+            information describing the way you store data, such as the table and field names or primary keys. Program
+            code metadata is data about your code. Any Java class has its metadata embedded, and you can write a program
+            that “asks” another class, “What methods do you have?” or similar questions about class fields,
+            constructors, and ancestors.</p>
+        <p>You can use annotations <a id="idp19502592"></a><a id="idp19504384"></a>to include metadata about your code.
+            There are a number of predefined annotations (for example, <code>@Override</code> and
+            <code>@SuppressWarning</code>). The Java annotation model enables you to add custom metadata anywhere in
+            your code. You can apply custom annotations to a class, a method, or a variable—just specify allowed <i>targets</i> <a
+                    id="idp19506432"></a>when the annotation is being defined. Java annotations start with
+            the <code>@</code> sign and may optionally have one or more parameters. Some of the annotations are built
+            into Java SE and are used by the javac compiler, but most of them are consumed by some kind of processing
+            program or tool.</p>
+        <p>The subject of <a id="idp19508624"></a>Java reflection doesn’t require the use of annotations; reflection is
+            used widely in various areas of Java development. But because this subject has to be covered before you can
+            proceed with annotation processing, I decided to cover both topics in the same lesson.</p>
+    </section>
+    <section>
+        <h2><a id="idp19514096"></a>Javadoc Annotations</h2>
+        <p>If you’ve ever looked <a id="idp19511536"></a><a id="idp19512960"></a>at the source code of any Java class,
+            you can easily identify Javadoc-style comments for classes, interfaces, variables, and methods. These
+            comments may include specially formatted words called tags. These tags are special annotations. They also
+            start with the <code>@</code> sign and help the <a
+                    href="http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html">Javadoc
+                tool</a> to generate the online documentation with the standardized look and feel. </p>
+        <p>In Eclipse you can select any Java class and press F3 to open the source code of this class. Because the <a
+                id="idp19517616"></a>previous lesson was about working with <code>JTable</code>, open the source code of
+            this class. In the top part of the code you find a description similar to the one that follows (I removed a
+            large portion of the text for brevity):</p>
+        <pre>
+/**
+ * The &lt;code&gt;JTable&lt;/code&gt; is used to display and edit regular 
+ * two-dimensional tables of cells.
+ * To enable sorting and filtering of rows, use a
+ * {@code RowSorter}.
+ *  * As for all &lt;code&gt;JComponent&lt;/code&gt; classes, you can use
+ * {@link InputMap} and {@link ActionMap} to associate an
+ * {@link Action} object with a {@link KeyStroke} and execute the
+ * action under specified conditions.
+ * &lt;p&gt;
+ * &lt;strong&gt;Warning:&lt;/strong&gt; Swing is not thread safe. For more
+ * information see &lt;a
+ * href="package-summary.html#threading"&gt;Swing's Threading
+ * Policy&lt;/a&gt;.
+ * &lt;p&gt;
+ *
+ * @version 1.292 05/30/08
+ * @author Philip Milne
+ * @author Shannon Hickey (printing support)
+ * @see javax.swing.table.DefaultTableModel
+ * @see javax.swing.table.TableRowSorter
+ */</pre>
+        <p><span epub:type="pagebreak" title="322" id="Page_322"></span>The special words marked with an <code>@</code>
+            sign are Javadoc metadata describing links, version, author, and related classes to see in Java
+            documentation. If you run the source code of this class through the Javadoc utility, the utility generates
+            HTML output that can be opened by any web browser. It’s a good practice to include Javadoc comments in your
+            classes.</p>
+        <p>Javadoc acts as a processing tool that extracts from the source code all comment blocks that start with
+            <code>/**</code> and end with <code>*/</code>. It then formats this text using HTML tags and embedded
+            annotations to generate program documentation. The preceding text is an example of the use of specific tags
+            that are predefined and understood by Javadoc. This was an example of metadata that are understood by just
+            one utility: Javadoc.</p>
+        <p>But Java allows you to declare your own custom annotations and define your own processing rules that route
+            the execution of your program and produce configuration files, additional code, deployment descriptors, and
+            more. No matter what your goals, when <a id="idp19527584"></a>you create annotations you also need to create
+            or use an <i>annotation processor</i> to get the expected output.</p>
+        <p>Starting from <a href="part0027.html">Lesson 26</a> you learn about annotations defined by the creators of
+            Java EE technologies. In this lesson you become familiar with Java SE annotations, which you will eventually
+            use in your projects.</p>
+    </section>
+    <section>
+        <h2><a id="java_annotations_basics"></a>Java Annotations Basics</h2>
+        <p>There are about a dozen predefined annotations already included with Java SE. You can find them, along with
+            their supporting classes, in the packages <code>java.lang</code>, <code>java.lang.annotation</code>, and
+            <code>javax.annotation</code>. You can get familiar with the content of these packages in the latest online
+            documentation on the Java SE API, which at the time of this writing is located at <code><a
+                    href="http://goo.gl/sVZ8bI">http://goo.gl/sVZ8bI</a></code>.</p>
+        <p>Some of these annotations are used by the compiler (<code>@Override</code>, <code>@SuppressWarning</code>,
+            <code>@Deprecated</code>, <code>@Target</code>, <code>@Retention</code>, <code>@Documented</code>, and
+            <code>@Inherited</code>); some are used by the Java SE run time or third-party run times and indicate
+            methods that have to be invoked in a certain order (<code>@PostConstruct</code>, <code>@PreDestroy</code>),
+            or mark code that was generated by third-party tools (<code>@Generated</code>). I’m not going to repeat a
+            <span epub:type="pagebreak" title="323" id="Page_323"></span>detailed description of how to use each of
+            these annotations, but I am going to give you selected examples to help you get started with annotations.
+        </p>
+        <section>
+            <h3><a id="commercial_atoverride"></a>@Override</h3>
+            <p>In the “Try It” <a id="over"></a><a id="ride"></a><a id="override"></a>section of <a
+                    href="part0004.html#object-oriented_programming">Chapter 3</a> you overrode the method <code>public
+                double calcTax()</code> in the class <code>NJTax</code>. The method signature of <code>calcTax()</code>
+                was the same in both <code>NJTax</code> and its superclass <code>Tax</code>. Now deliberately add an
+                argument to <code>calcTax()</code> in <code>NJTax</code>, as if you had done so by accident. The code
+                compiles with no errors. But you could have done this by mistake, and instead of overriding the method
+                as planned, you’ve overloaded it. This doesn’t happen if you use the annotation <code>@Override</code>
+                whenever you are planning to override a method:</p>
+            <pre>
+@Override public double calcTax(String something)</pre>
+            <p>Now the compiler complains with the following error:</p>
+            <pre>
+The method calcTax(String) of type NJTax must override or implement a supertype method</pre>
+            <p>The annotation <code>@Override</code> signals the compiler that overriding is expected, and that it has
+                to fail if an override does not occur. This annotation indicates your intentions and helps other people
+                who may be reading your code in the future. </p>
+            <section>
+                <h4><a id="commercial_atsuppresswarning"></a>@SuppressWarning</h4>
+                <p>The compiler can generate <a id="idp19552144"></a><a id="idp19556464"></a><a id="idp19558160"></a>warning
+                    messages that don’t stop your program from running but that do indicate potential problems. In some
+                    cases, though, you want to suppress some or all warnings so the output of the project build looks
+                    clean. For example,<code>–Xlint:none</code> disables all warnings, whereas 
+                    <code>-Xlint:fallthrough</code> instructs the compiler to warn you if you forget to add the <code>break</code>
+                    statement to the <code>switch</code> statement (see <a href="part0006.html#back_to_java_basics">Chapter 5</a>).
+                    In Eclipse IDE, to set the compiler’s options you right-click the project and select Properties →
+                    Java Compiler → Errors/Warnings → Potential Programming Problems.</p>
+                <p>But what if you want to omit the <code>break</code> keyword in the <code>switch</code> statement on
+                    purpose? You still want to be warned in all other cases about a missing <code>break</code>, but not
+                    in this particular method. This is where the <code>@SupressWarnings</code> annotation becomes quite
+                    handy, and <a id="list-anc-c023-001" href="part0024.html#list-c023-001">Listing 23-1</a> illustrates
+                    it. To see this example at work, turn on the compiler’s option that warns you about the
+                    <code>switch</code> <code>case</code> fall-throughs.</p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c023-001" href="part0024.html#list-anc-c023-001">Listing 23-1</a>:</span>
+                            Custom rendering of the Price value</h5>
+                        <pre>
+package com.practicaljava.lesson24;
+public class SuppressWarningDemo {
+      @SuppressWarnings("fallthrough")
+      public static void main(String[] args) {
+        int salaryBand=3;
+        int bonus;
+       // Retrieve the salary band of the person from some 
+       // data source here
+            switch(salaryBand){
+             case 1:
+                  bonus=1000;
+                  System.out.println("Giving bonus " + bonus);
+                  break;
+             case 2:
+                  bonus=2000;
+                  System.out.println("Giving bonus " + bonus);
+                  break;
+             case 3:
+                  bonus=6000;
+                  System.out.println("Giving bonus " + bonus);
+             case 4:
+                  bonus=10000;
+                  System.out.println("Giving bonus " + bonus);
+                  break;
+             default:
+                  // wrong salary band
+                  System.out.println("Invalid salary band");
+            }
+      }
+}</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p><span epub:type="pagebreak" title="324" id="Page_324"></span>Note that the <code>break</code> keyword
+                    is missing in the <code>case 3</code> section. In this code it’s done on purpose: All employees in
+                    <code>salaryBand</code> 3 are entitled to two bonuses—$6,000 in addition to $10,000. The compiler’s
+                    annotation <code>@SuppressWarnings(“fallthrough”)</code> suppresses compiler warnings only for this
+                    method. In all other <a id="idp19572416"></a><a id="idp19571888"></a><a id="idp19576544"></a>classes
+                    or methods that may have <code>switch</code> statements, the warning is generated.</p>
+            </section>
+        </section>
+        <section>
+            <h3><a id="commercial_atdeprecated"></a>@Deprecated</h3>
+            <p>If you are developing <a id="idp19580656"></a><a id="idp19582208"></a><a id="idp19583568"></a>classes
+                that are going to be used by someone else, mark as <code>@Deprecated</code> any classes or methods that
+                may be removed in future versions of your code. Other developers will still be able to use this code,
+                but they’ll be warned that switching to newer versions is highly recommended.</p>
+        </section>
+        <section>
+            <h3><a id="commercial_atinherited"></a>@Inherited</h3>
+            <p>This annotation <a id="idp19587776"></a><a id="idp19589232"></a><a id="idp19590928"></a>simply means that
+                the annotation has to be inherited by descendants of the class in which it is used. The next section
+                includes an example of its use.</p>
+        </section>
+        <section>
+            <h3><a id="idp19592784"></a>@FunctionalInterface</h3>
+            <p>An informative <a id="idp19594144"></a><a id="idp19595920"></a><a id="idp19597232"></a>annotation type
+                used to indicate that an interface type declaration is intended to be a <i>functional interface.</i> If
+                you’ll ever be defining interfaces with a single abstract method, you may optionally mark such an
+                interface with <code>@FunctionalInterface</code> just to hint that this interface can be implemented as
+                a lambda expression. </p>
+        </section>
+        <section>
+            <h3><a id="commercial_atdocumented"></a>@Documented</h3>
+            <p>If <span epub:type="pagebreak" title="325" id="Page_325"></span>you want an <a id="idp19602416"></a><a
+                    id="idp19603984"></a><a id="idp19605360"></a>annotation to be included in the Javadoc utility, mark
+                it as <code>@Documented</code>. The next section includes an example of this annotation. </p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="custom_annotations"></a>Custom Annotations</h2>
+        <p>Creating your own <a id="custom"></a>annotations is more interesting than using core Java or third-party
+            annotations. First of all, you have to decide what you need an annotation for and what properties it should
+            have. Then you need to specify the allowed <i>targets</i> for this annotation (for example, class, method,
+            or variable). Finally, you have to define your <i>retention policy</i>: how <a id="idp19614304"></a>long and
+            where this annotation will live. Let’s go through an example to illustrate all these steps.</p>
+        <p>Suppose you need to create an annotation that allows the user to mark class methods with a SQL statement to
+            be executed during the run time. These classes are loaded dynamically. The goal is to declare your own
+            annotation to be used by other Java classes and to write the annotation processor that reads these Java
+            classes, identifies and parses annotations and the values of their parameters, if any, and does whatever is
+            required accordingly. Usually creators of object-relational mapping (ORM) frameworks <a
+                    id="idp19612176"></a><a id="idp19613216"></a>of code generators need to implement such tasks. </p>
+        <p>Declaring annotations <a id="idp19617824"></a>is very similar to declaring interfaces, but don’t forget to
+            add the <code>@</code> sign at the beginning. I’m naming my annotation <code>MyJDBCExecutor</code>:</p>
+        <pre>
+public @interface MyJDBCExecutor{
+}</pre>
+        <p>If metadata is data about <a id="idp19621584"></a><a id="idp19623392"></a>data, then <i>meta-annotations</i>
+            are annotations about annotations. This is not as confusing as it sounds. To specify where you can use this
+            newborn annotation, define the meta-annotation <code>@Target</code>. The enumeration
+            <code>ElementType</code> defines possible target values: <code>METHOD</code>, <code>TYPE</code>, <code>CONSTRUCTOR</code>,
+            <code>FIELD</code>, <code>PARAMETER</code>, <code>PACKAGE</code>, <code>LOCAL_VARIABLE</code>, <code>TYPE_PARAMETER</code>,
+            <code>TYPE_USE</code>, and <code>ANNOTATION_TYPE</code>. If you don’t use <code>@Target</code>, the
+            annotation can be used anywhere. For example, this is how you can allow use of the annotation only with
+            methods and constructors:</p>
+        <pre>
+import java.lang.annotation.*;
+@Inherited
+@Documented
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+@Retention(RetentionPolicy.SOURCE)
+public @interface MyJDBCExecutor {
+}
+</pre>
+        <p>Starting from Java 8 you can create custom annotations that can be used anywhere where you can declare a
+            type, for example:</p>
+        <pre>
+@MyAnnotation String employeePhone;
+</pre>
+        <p>The <span epub:type="pagebreak" title="326" id="Page_326"></span>retention policy in <a id="idp19632480"></a><a
+                id="idp19635728"></a>the preceding code snippet is set to <code>SOURCE</code>, which means that this
+            annotation will be used for processing only during the compilation of your program. The other two allowed
+            values for retention policy are <code>RUNTIME</code> and <code>CLASS</code>.</p>
+        <p>Annotations <a id="idp19638608"></a><a id="idp19640656"></a>with the <code>CLASS</code> retention policy stay
+            in the compiled class, but are not loaded during run time. The <code>CLASS</code> retention policy is used
+            by default if a retention policy is not explicitly specified.</p>
+        <p>Annotations <a id="idp19642640"></a><a id="idp19645136"></a>with the <code>RUNTIME</code> retention policy
+            have to be processed by a custom processing tool (someone has to write it) when the compiled code is
+            running.</p>
+        <p>Annotations <a id="idp19647168"></a>may have parameters. Say you want to add a single parameter that will
+            allow you to specify an SQL statement to be processed. Your annotation  <code>MyJDBCExecutor</code> has to
+            be declared as follows:</p>
+        <pre>
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
+@Retention(RetentionPolicy.SOURCE)
+public @interface MyJDBCExecutor {
+   String value();
+}</pre>
+        <p>A sample Java class, <code>HRBrowser</code>, may use this annotation like this:</p>
+        <pre>
+class HRBrowser{
+  @MyJDBCExecutor (value="Select * from Employee")
+  public List getEmployees(){
+     // add calls to some JDBC executing engine here
+  }
+}</pre>
+        <p>If the annotation has only one parameter named <code>value</code>, the “<code>value=”</code> part in the
+            preceding code snippet is not required. But I’d like this annotation to have three parameters: SQL to
+            execute, transactional support, and a notification flag to inform other users of the application about any
+            database modifications. Add more parameters to your annotation:</p>
+        <pre>
+@Target({ ElementType.METHOD})
+@Retention(RetentionPolicy.SOURCE)
+public @interface MyJDBCExecutor {
+         String sqlStatement();
+         boolean transactionRequired() default false;
+         boolean notifyOnUpdates() default false;
+}</pre>
+        <p>You’ve replaced the parameter <code>value</code> with a more meaningful <code>sqlStatement</code>, and added
+            two more: <code>transactionRequired</code> and <code>notifyOnUpdates</code>. The latter has two default
+            values. If a Java class doesn’t need to support transactions and notify other applications about updates,
+            why force software developers to provide values for these parameters?</p>
+        <p>If you don’t specify default values then the Java compiler generates compilation errors if the values for
+            <code>transactionRequired</code> and <code>notifyOnUpdates</code> are missing in classes that use <code>@MyJDBCExecutor</code>.
+            The following code is an example of a class, <code>HRBrowser</code>, with the method
+            <code>getEmployees()</code> that’s annotated with <code>@MyJDBCExecutor</code> having only a <code>sqlStatement</code> parameter;
+            no other actions are needed here:</p>
+        <pre>
+class HRBrowser{
+  @MyJDBCExecutor (sqlStatement="Select * from Employee")
+  public List&lt;Employee&gt; getEmployees(){
+      // The code to get the the data from DBMS goes here,
+      // result set goes in ArrayList myEmployeeList,
+      // which is returned to the caller of getEmployees()
+      // ...
+      return myEmployeeList;
+  }
+}</pre>
+        <p><span epub:type="pagebreak" title="327" id="Page_327"></span>The code sample in <a id="list-anc-c023-002"
+                                                                                              href="part0024.html#list-c023-002">Listing
+            23-2</a> adds the method <code>updateData()</code> and uses all three annotation parameters.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c023-002"
+                                           href="part0024.html#list-anc-c023-002">Listing 23-2</a>:</span> Using the
+                    annotation MyJDBCExecutor</h5>
+                <pre>
+class HRBrowser{
+ @MyJDBCExecutor (sqlStatement="Select * from Employee")
+ public List&lt;Employee&gt; getEmployees(){
+        // Generate the code to get the the data from DBMS,
+        // place them in ArrayList and return them to the
+        // caller of my getEmployees
+           ...
+               return myEmployeeList;
+ }
+ @MyJDBCExecutor (sqlStatement="Update Employee set bonus=1000",
+                  transactionRequired=true,
+                  notifyOnUpdates=true)
+ public void updateData(){
+   // JDBC code to perform transactional updates and
+   // notifications goes here
+ }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp19667008"></a>Annotations and Code Generation</h3>
+                <p>I was involved <a id="idp19668400"></a><a id="idp19669776"></a>in the development of an open-source
+                    code generator called <a id="idp19672608"></a>Clear Data Builder (CDB) . The CDB allows the user to
+                    write a simple Java class that has an abstract method annotated with an SQL statement and several
+                    other parameters, and within seconds to generate complete code for the functional application that
+                    has JavaScript on the client side talking to Java at the server, which is accessing data stored in
+                    any relational DBMS via JDBC. In this project we used only the annotations with the
+                    <code>SOURCE</code> retention policy, and, before compiling, classes would generate additional code
+                    according to specified annotations.</p>
+                <p>If <span epub:type="pagebreak" title="328" id="Page_328"></span>CDB would be processing the
+                    annotation <code>@MyJDBCExecutor</code>, it would engage additional tools and generate and compile
+                    all JDBC code for the methods <code>getEmployees()</code> and <code>updateData()</code>
+                    automatically.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>For the annotations with the <code>RUNTIME</code> retention policy you should know how to write an annotation
+            processor, however, as it has to “extract” the values from the annotations during run time, and, based on
+            those values, engage the appropriate code. But there is one Java feature, <i>reflection</i>, that you must
+            understand before you can write your own <a id="idp19679408"></a>annotation-processing class.</p>
+    </section>
+    <section>
+        <h2><a id="reflection"></a>Reflection</h2>
+        <p>Reflection enables you to <a id="idp19678352"></a>find out about the internals of a Java class (its methods,
+            constructors, and fields) during the run time, and to invoke the discovered methods or access public member
+            variables. A special class called <code>Class</code> can load the class in memory, and then you can explore
+            the content of the class by using classes from the package <code>java.lang.reflect</code>. Consider the
+            classes <code>Person</code> and <code>Employee</code> in the following code.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c023-003"></a>Listing 23-3:</span> Class Employee extends Person
+                </h5>
+                <pre>
+abstract public class Person {
+  abstract public void raiseSalary();
+}
+public class Employee extends Person{
+ public void raiseSalary() {
+   System.out.println("Raising salary for Employee...");
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The <code>ReflectionSample</code> <a id="idp19688048"></a><a id="idp19689104"></a>class in <a
+                id="list-anc-c023-004" href="part0024.html#list-c023-004">Listing 23-4</a> loads the class <code>Employee</code>,
+            prints its method signatures, and finds its superclass and methods. The process of querying an object <a
+                    id="idp19691920"></a><a id="idp19692736"></a>about its content during run time is called <i>introspection</i>.
+        </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c023-004"
+                                           href="part0024.html#list-anc-c023-004">Listing 23-4</a>:</span> Introspecting
+                    Employee</h5>
+                <pre>
+import java.lang.reflect.*;
+public class ReflectionSample {
+  public static void main(String args[]) {
+     try {
+       Class c = Class.forName("Employee");
+       Method methods[] = c.getDeclaredMethods();
+       System.out.println("The Employee methods:");
+       for (int i = 0; i &lt; methods.length; i++){
+            System.out.println("*** Method Signature:" +
+                                    methods[i].toString());
+       }
+       Class superClass = c.getSuperclass();
+       System.out.println("The name of the superclass is "
+                                   + superClass.getName());
+       Method superMethods[] = superClass.getDeclaredMethods();
+       System.out.println("The superclass has:");
+       for (int i = 0; i &lt; superMethods.length; i++){
+            System.out.println("*** Method Signature:" +
+                               superMethods[i].toString());
+            System.out.println("      Return type: " +
+                superMethods[i].getReturnType().getName());
+       }
+     } catch (Exception e) {
+           e.printStackTrace();
+     }
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Here’s the output of the program <code>ReflectionSample</code>:</p>
+        <pre>
+The Employee methods:
+*** Method Signature:public void Employee.raiseSalary()
+The name of the superclass is Person
+The superclass has:
+*** Method Signature:public abstract void Person.raiseSalary()
+      Return type: void</pre>
+        <p>Some other useful <a id="idp19700816"></a><a id="idp19702416"></a><a id="idp19703952"></a><a
+                id="idp19705168"></a><a id="idp19706320"></a><a id="idp19707712"></a><a id="idp19708864"></a><a
+                id="idp19710016"></a><a id="idp19711408"></a>methods of the class <code>Class</code> are <code>getInterfaces()</code>,
+            <code>getConstructors()</code>, <code>getFields()</code>, and <code>isAnnotationPresent()</code>. The
+            following code snippet shows how to get the names, types, and values of the public member variables of the
+            loaded class:</p>
+        <pre>
+Class c = Class.forName("Employee");
+Field[] fields = c.getFields();
+for (int i = 0; i &lt; fields.length; i++) {
+   String name = fields[i].getName();
+   String type = fields[i].getType().getName();
+   System.out.println("Creating an instance of Employee");
+   Object obj = c.newInstance();
+   Object value = fields[i].get(obj);
+   System.out.println("Field Name: " + name + ", Type: "
+                 + type + " Value: " + value.toString());
+}</pre>
+        <p><span epub:type="pagebreak" title="329" id="Page_329"></span>The process of <a id="idp19716352"></a><a
+                id="idp19718160"></a>reflection uses introspection to find out during run time what the methods (or
+            properties) are, but it also can call these methods (or modify these properties). The <a
+                    id="idp19719248"></a><a id="idp19720704"></a>method <code>invoke()</code> lets you call methods that
+            were discovered during run time:</p>
+        <pre>
+Class c= Class.forName("Employee");
+Method raiseSalary = c.getMethod( "raiseSalary", null);
+raiseSalary.invoke(c.newInstance(),null);</pre>
+        <p><span epub:type="pagebreak" title="330" id="Page_330"></span>Note that the method <code>forName()</code>
+            loads the class and the <code>newInstance()</code> creates an instance of <code>Employee</code>. The first
+            argument of the method <code>invoke()</code> represents an instance of the object <code>Employee</code>, and
+            <code>null</code> means that this method doesn’t have arguments. With reflection, the arguments are supplied
+            as an array of objects. You can find out what the method arguments are by calling the method <code>Method.getParameterTypes()</code>,
+            or create and populate them on your own. Add the following method to the class <code>Employee</code>:</p>
+        <pre>
+public void changeAddress(String newAddress) {
+    System.out.println("The new address is "+ newAddress);
+}</pre>
+        <p>Note the <code>public</code> qualifier: It’s needed for proper introspection. Otherwise the <code>NoSuchMethodException</code>
+            is thrown by the following code snippet. The <code>ReflectionSample</code> class can invoke <code>changeAddress()</code>
+            as follows:</p>
+        <pre>
+Class c= Class.forName("Employee");
+Class parameterTypes[]= new Class[] {String.class};
+Method myMethod = c.getMethod( "changeAddress", parameterTypes);
+Object arguments[] = new Object[1];
+arguments[0] = "250 Broadway";
+myMethod.invoke(c.newInstance(),arguments);</pre>
+        <p>Reflection helps in building dynamic component-based applications that can load different classes based on
+            certain business logic and invoke this logic during run time. Many third-party Java frameworks read
+            configuration files and then instantiate and use required objects.</p>
+    </section>
+    <section>
+        <h2><a id="run-time_annotation_processing"></a>Run-Time Annotation Processing</h2>
+        <p>The author of a <a id="annorun"></a><a id="runtimeproc"></a>custom run-time annotation usually gives it to
+            other developers along with the processing tool. Developers add the annotation to their classes and compile
+            them, and the processing tool consumes these classes during run time. To illustrate the concept I reuse the
+            code example from <a href="part0024.html#list-c023-002">Listing 23-2</a>, but this time imagine that <code>@MyJDBCExecutor</code>
+            becomes the annotation with the <code>RUNTIME</code> retention policy and that there is no need to generate
+            additional source code for the compilation time. Suppose this annotation is being used in
+            <code>HRBrowser</code>, and another class has to analyze the annotation parameters and route the execution
+            accordingly.</p>
+        <p>Now I’ll write the annotation processor class called <code>MyJDBCAnnotationProcessor</code>, and the class
+            <code>HRBrowser</code> in <a href="part0024.html#list-c023-002">Listing 23-2</a> can serve as a command-line
+            argument to that processor:</p>
+        <pre>
+c:/&gt;java MyJDBCAnnotationProcessor HRBrowser</pre>
+        <p>The class <code>MyJDBCAnnotationProcessor</code> has to load the class <code>HRBrowser</code>, introspect its
+            content, find the annotations and their values, and process them accordingly. I’ll show you how to write
+            such a processor, or rather its annotation-discovery part.</p>
+        <p><a id="list-anc-c023-005" href="part0024.html#list-c023-005">Listing 23-5</a> shows <code>MyJDBCAnnotationProcessor</code>,
+            which <span epub:type="pagebreak" title="331" id="Page_331"></span>starts by loading another class, whose
+            name was supplied in the command line. After that it introspects the loaded class and places all references
+            to its method definitions into an array called <code>methods</code>. Finally, it loops through this array,
+            and for each method that has annotations it finds and prints the values of the parameters
+            <code>sqlStatement</code>, <code>notifyOnUpdates</code>, and <code>transactionRequired</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c023-005"
+                                           href="part0024.html#list-anc-c023-005">Listing 23-5</a>:</span>
+                    MyJDBCAnnotationProcessor</h5>
+                <pre>
+import java.lang.reflect.*;
+import com.practicaljava.lesson24.MyJDBCExecutor;
+public class MyJDBCAnnotationProcessor {
+ public static void main(String[] args) {
+  // TODO add a check for the number of command line arguments
+   // has to be the name of the class to load.
+   String classWithAnnotation = args[0];
+     try {
+        //Load provided on the command line class
+       Class loadedClass = Class.forName(classWithAnnotation);
+       // Get references to class methods
+       Method[] methods = loadedClass.getMethods();
+       //Check every method of the class.If the annotation is present,
+       //print the values of its parameters
+        for (Method m: methods){
+         if (m.isAnnotationPresent(MyJDBCExecutor.class)){
+                   MyJDBCExecutor jdbcAnnotation =
+                              m.getAnnotation(MyJDBCExecutor.class);
+           System.out.println("Method: " + m.getName() +
+             ". Parameters of MyJDBCExecutor are: " +
+             "sqlStatement="+ jdbcAnnotation.sqlStatement() +
+             ", notifyOnUpdates="+ jdbcAnnotation.notifyOnUpdates() +
+             ", transactionRequired="+ 
+             jdbcAnnotation.transactionRequired());
+        }
+      }
+   }catch (ClassNotFoundException e) {
+                  e.printStackTrace();
+   }
+ }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>After running this processor with the class <code>HRBrowser</code>, the former correctly identifies the
+            annotated methods and prints the values of their parameters:</p>
+        <pre>
+Method: getEmployees. Parameters of MyJDBCExecutor are: sqlStatement=Select * from
+Employee, notifyOnUpdates=false, transactionRequired=false
+Method: updateData. Parameters of MyJDBCExecutor are: sqlStatement=Update Employee set
+bonus=1000, notifyOnUpdates=true, transactionRequired=true</pre>
+        <p><span epub:type="pagebreak" title="332" id="Page_332"></span>If a class may have several annotations, the
+            annotation processor would need to start by getting all annotations of the loaded class using <code>loadedClass.getAnnotations()</code>.
+            It would then process <a id="idp19756000"></a><a id="idp19757520"></a>these annotations in a loop.</p>
+    </section>
+    <section>
+        <h2><a id="summary-id00085"></a>Summary</h2>
+        <p>In real-world applications you wouldn’t simply be printing the values of the annotation parameters, but
+            rather would be executing different branches of your code based on these values. This is the point of
+            run-time annotation processing. You may ask, “OK, now I know the annotations and their values, so what do I
+            do with them?” The big idea is that you’ve written a generic processor that can work with any classes that
+            include your annotations. It’s a pretty powerful mechanism for all software developers who are creating
+            tools for other people to use.</p>
+        <p>You’ll probably be using annotations and run-time processors written by other people rather than ones you
+            write yourself. You’ll see lots of examples of using annotations starting from <a
+                    href="part0027.html#programming_with_servlets">Chapter 26</a>, while learning about Java EE
+            development. But now that you know what’s going on under the hood in annotation processors, learning about
+            Java EE annotation will be a lot easier.</p>
+        <p>The reflection mechanism allows you to find out the members of any class during the run time. This nice
+            feature should be used sparingly because such discovery would require additional processing time.   </p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00086"></a>Try It</h2>
+        <p>Create a class-level run-time <a id="idp19761920"></a>annotation called <code>@DBParams</code> that enables
+            you to specify the name of the database, the user ID, and the password. Write a processor for this
+            annotation.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00087"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson23.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00088"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new Eclipse project.</li>
+                <li>Declare there the annotation <code>DBParams</code> with the retention policy <code>RUNTIME</code>
+                    targeted to <code>TYPE</code>.
+                </li>
+                <li>Define three parameters in this annotation: <code>dbName</code>, <code>uid</code>, and <code>password</code>.
+                </li>
+                <li>Create <span epub:type="pagebreak" title="333" id="Page_333"></span>the class
+                    <code>MyDBWorker</code> and annotate it with <code>@DBParms</code> populated with some initial
+                    values.
+                </li>
+                <li>Write an annotation processor class called <code>DBParamProcessor</code> to find and print the
+                    annotation values in the class <code>MyDBWorker</code>.
+                </li>
+                <li>Run and test <code>DBParamProcessor</code>.</li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0024.html">Lesson 23</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

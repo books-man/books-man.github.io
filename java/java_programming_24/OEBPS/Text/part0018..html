@@ -1,0 +1,1345 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Concurrency and Multithreading</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_multi-threading"></a><span class="chapterTitle">Lesson 17<br/>Concurrency and Multithreading</span>
+    </h1>
+
+    <section>
+        <p>Developing <span epub:type="pagebreak" title="209" id="Page_209"></span>Java applications that implement
+            concurrent processing gives you an amazing power and flexibility when it comes to building highly available,
+            scalable, and responsive applications capable <a id="idp17376448"></a>of processing thousands of concurrent
+            requests of various types.</p>
+        <p>Up until now you’ve been creating <a id="idp17377920"></a>Java programs that were executing code
+            sequentially. But the main power of Java lies in its ability to do things in parallel, or, as they say, to
+            run <i>multiple threads of execution</i>. As always, going through a practical use case is the best way to
+            understand this feature.</p>
+        <p>Let’s discuss a program that should display market news and information about the user’s stock portfolio in
+            the same window. While the market news feed is coming from a remote computer, stock portfolio data are
+            retrieved from the database and may be located on the local server of your organization.</p>
+        <p>Suppose it takes three seconds to get the market news and only one second to get the portfolio data. If you
+            run these two tasks sequentially (one after another), you need four seconds to complete the job.</p>
+        <p>But market news doesn’t depend on your portfolio data, and these two tasks can run in parallel. They run on
+            different computers and use different processors. If you can implement parallel processing, the total time
+            should be less than four seconds (close to three seconds in the use case—the time it takes for the longer
+            task to complete).</p>
+        <p>A Java program can start multiple threads of execution that will run in parallel. Even if you have only one
+            processor in your computer, it still could be a good idea to run some tasks in parallel. Think of a web
+            browser that allows you to download a file and perform page browsing at the same time. Web browsers maintain
+            several connections to any website, and can download multiple resources (text, images, videos, music) at the
+            same time. Any web browser works in a multithreaded mode.</p>
+        <p>If these jobs ran sequentially, the browser’s window would be frozen until the download was complete. On a
+            multiprocessor computer, parallel threads can run on different CPUs. On a single-processor computer, threads
+            take turns getting “slices” of the processor’s time. Because switching CPU cycles between threads happens
+            fast, a user won’t notice the tiny delays in each thread’s execution, and browsing feels smooth.</p>
+        <p>In <span epub:type="pagebreak" title="210" id="Page_210"></span>many cases, especially on the disappearing
+            single-CPU computers, the benefit of many threads comes about because there’s a lot of idle time in most
+            operations. In particular, if an operation is I/O bound instead of CPU bound then using <i>multiple
+                threads</i> helps take advantage of those otherwise unused blocks of time.</p>
+        <p>People also can work in a multithreaded mode. For example, they can drink coffee while talking on a cell
+            phone and driving a car. </p>
+    </section>
+    <section>
+        <h2><a id="class_thread"></a>The Class Thread</h2>
+        <p>If class <code>A</code> needs <a id="threadclass"></a><a id="classthread"></a>to initiate some parallel
+            executions in classes <code>B</code> and <code>C</code>, the latter two must declare multithreading support
+            from the get-go. Each of the classes <code>B</code> and <code>C</code> must either be inherited from the
+            Java class <code>Thread</code> or implement one of the following <a id="idp17383904"></a><a
+                    id="idp17395360"></a><a id="idp17396576"></a><a id="idp17397616"></a>interfaces:
+            <code>Runnable</code> or <code>Callable</code> (the latter is covered in <a
+                    href="part0018.html#executor_framework">Callable</a>). If a class is inherited from the class <code>Thread</code>
+            then it has to override the <a id="idp17400864"></a><a id="idp17402688"></a>method <code>run()</code>.</p>
+        <p>The first version of the market-portfolio example has three classes (see <a id="list-anc-c017-001"
+                                                                                       href="part0018.html#list-c017-001">Listing
+            17-1</a>, <a id="list-anc-c017-002" href="part0018.html#list-c017-002">Listing 17-2</a>, and <a
+                id="list-anc-c017-003" href="part0018.html#list-c017-003">Listing 17-3</a>). Two of them are subclasses
+            of the class <code>Thread</code> (<code>MarketNews</code> and <code>Portfolio</code>), and the third (<code>TestThreads</code>)
+            is just a testing program that instantiates them and starts the execution of some code in each of them. You
+            must initiate the code that has to work as a thread in the method <code>run()</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-001"
+                                           href="part0018.html#list-anc-c017-001">Listing 17-1</a>:</span> Class
+                    MarketNews</h5>
+                <pre>
+public class MarketNews extends Thread {
+ public MarketNews (String threadName) {
+        super(threadName); // name your thread
+    }
+ public void run() {
+     System.out.println("The stock market is improving!");
+    }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-002"
+                                           href="part0018.html#list-anc-c017-002">Listing 17-2</a>:</span> Class
+                    Portfolio</h5>
+                <pre>
+public class Portfolio extends Thread {
+    public Portfolio (String threadName) {
+        super(threadName);
+    }
+    public void run() {
+       System.out.println("You have 500 shares of IBM");
+     }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-003"
+                                           href="part0018.html#list-anc-c017-003">Listing 17-3</a>:</span> Class <span
+                        epub:type="pagebreak" title="211" id="Page_211"></span>TestThreads starts MarketNews and
+                    Portfolio</h5>
+                <pre>
+public class TestThreads {
+   public static void main(String args[]){
+      MarketNews mn = new MarketNews("Market News");
+      mn.start();
+      Portfolio p = new Portfolio("Portfolio data");
+      p.start();
+      System.out.println("TestThreads is finished");
+   }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The method <code>main()</code> in <a href="part0018.html#list-c017-003">Listing 17-3</a> instantiates each
+            thread, passing the name for the thread as a constructor argument and then calls its <code>start()</code>
+            method declared in its ancestor. Each thread itself invokes internally the code written by you in the method
+            <code>run()</code>. After calling <code>mn.start()</code>, the program <code>TestThread</code> does not wait
+            for its completion but immediately executes the lines that follow, creating and starting the thread <code>Portfolio</code>.
+            Even if the code in the <code>MarketNews.run()</code> is lengthy and takes several seconds to execute, the
+            <code>Portfolio</code> thread starts immediately.</p>
+        <p>If you run the <code>TestThread</code> program it prints the output from threads <code>MarketNews</code> and
+            <code>Portfolio</code> almost simultaneously—there is no lengthy and time-consuming code in their <code>run()</code>
+            methods. A bit later, in the section <a href="part0018.html#sleeping_threads">“Sleeping Threads”</a>, you
+            see how to emulate a lengthy execution. The output of the <code>TestThread</code> program can vary—it all
+            depends on which <a id="idp17428768"></a><a id="idp17426416"></a>thread finishes first.</p>
+    </section>
+    <section>
+        <h2><a id="interface_runnable"></a>The Interface Runnable</h2>
+        <p>The second <a id="run_1ch17"></a><a id="run_2ch17"></a>way to create threads is to implement a
+            <code>Runnable</code> interface, which is a functional interface with a <a id="idp17437680"></a><a
+                    id="idp17435904"></a>single method <code>run()</code>. In this case, your class also has to have
+            business logic in the method <code>run()</code>.  First, you see an old-fashioned version of creating a
+            thread with Runnable, and then more concise version with lambda expressions.</p>
+        <p>The second version of our market-portfolio example (Listing 17-4, <a id="list-anc-c017-005"
+                                                                                href="part0018.html#list-c017-005">Listing
+            17-5</a>, and <a id="list-anc-c017-006" href="part0018.html#list-c017-006">Listing 17-6</a>) also has three
+            classes (you eliminate two of them shortly), but <code>MarketNews2</code> and <code>Portfolio2</code> are
+            not inherited from the class <code>Thread</code>—they implement the <code>Runnable</code> interface.</p>
+        <p>In environments before Java 8, creation of a thread iis a two-step process: create an instance of a class
+            that implements <code>Runnable</code>  and then give it as an argument to the constructor of the class
+            <code>Thread</code> during instantiation.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-004"></a>Listing 17-4:</span> Class MarketNews2</h5>
+                <pre>
+public class MarketNews2 implements Runnable {
+     public void run() {
+        System.out.println("The stock market is improving!");
+     }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-005"
+                                           href="part0018.html#list-anc-c017-005">Listing 17-5</a>:</span> Class
+                    Portfolio2</h5>
+                <pre>
+public class Portfolio2 implements Runnable {
+    public void run() {
+       System.out.println("You have 500 shares of IBM ");
+     }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-006"
+                                           href="part0018.html#list-anc-c017-006">Listing 17-6</a>:</span> Class
+                    TestThreads2</h5>
+                <pre>
+public class TestThreads2 {
+    public static void main(String args[]){
+     MarketNews2 mn2 = new MarketNews2();
+     // passing Runnable object to a constructor
+     Thread mn = new Thread(mn2,"Market News");
+     mn.start();
+     Runnable port2 = new Portfolio2();
+     // passing Runnable object to a constructor
+     Thread p = new Thread(port2, "Portfolio Data");
+     p.start();
+     System.out.println("TestThreads2 is finished");
+    }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Run this program, and you see an output similar to this one:</p>
+        <pre>
+The stock market is improving!
+TestThreads2 is finished
+You have 500 shares of IBM
+</pre>
+        <p><span epub:type="pagebreak" title="212" id="Page_212"></span>The main thread finished earlier than the
+            portfolio one!</p>
+        <p>Note that I’ve declared the variable <code>port2</code> in <a href="part0018.html#list-c017-006">Listing
+            17-6</a> to not be of type <code>Portfolio2</code>; instead it is type <code>Runnable</code>. I did it for
+            illustration purposes and to reiterate the fact that an interface is also a data type that can be used in
+            variable declarations.  It takes three lines of code in <a href="part0018.html#list-c017-006">Listing
+                17-6</a> to instantiate and start a thread. The <code>Runnable</code> interface provides a more flexible
+            way to use threads because it allows a class to be inherited from any other class, while having all the
+            features of a thread. </p>
+        <section>
+            <h3><a id="idp17461904"></a>Eliminating Inheritance</h3>
+            <p>In <span epub:type="pagebreak" title="213" id="Page_213"></span>Lesson 13 in the <a
+                    href="part0014.html#eliminating_inheritance">Eliminating Inheritance</a> section I <a
+                    id="idp17464544"></a>demonstrated how an inheritance hierarchy can be simplified by introducing
+                lambda expressions. Let’s do it again. The classes <code>Portfolio2</code> and <code>MarketNews2</code>
+                differ only in the implementation of the method <code>run()</code>of the functional interface. You can
+                easily get rid of both of these classes by providing implementation of the functional interface <code>Runnable</code>
+                (the method <code>run()</code> )with lambda expressions directly to the constructors of the
+                <code>Thread</code> objects.</p>
+            <pre>
+public class TestThreads2Lambda {
+    public static void main(String args[]){
+     
+     Thread mn = new Thread(<strong>()-&gt; System.out.println( 
+                   "The stock market is improving!"</strong>),"Market News");
+     mn.start();
+         
+     Thread p = new Thread(<strong>() -&gt; System.out.println( 
+                   "You have 500 shares of IBM"</strong>),"Portfolio Data");
+     p.start();
+     System.out.println("TestThreads2Lambda is finished");
+    }
+}
+</pre>
+            <p>The classes <code>MarketNews2</code> and <code>Portfolio2</code> are not needed any longer! This example
+                is very simplistic because both implementations of <code>run()</code> just print a simple message. You
+                can also pass a multiline lambda expression; just don’t forget to declare the expression in curly
+                braces. The next <a id="idp17475296"></a><a id="idp17472960"></a>section includes an example.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="sleeping_threads"></a>Sleeping Threads</h2>
+        <p>One of the ways <a id="idp17477872"></a><a id="idp17479712"></a><a id="idp17481104"></a><a
+                id="idp17482256"></a>to make the processor available to other threads is by using <code>Thread</code>’s
+            method <code>sleep()</code>, which enables you to specify in milliseconds (and nanoseconds) how long the
+            thread has to sleep. The next program demonstrates sleeping threads. The class
+            <code>TestThreads3Lambdas</code> declares two lambda expressions to process market data and portfolio
+            threads. The function for market news puts itself to sleep for a thousand milliseconds (one second) after
+            each output of the message about market improvements.</p>
+        <p>When the market news thread goes to sleep, the portfolio gets the CPU and prints its message and then goes to
+            sleep for 700 milliseconds on each loop iteration. Every second the market news thread wakes up and does its
+            job. The portfolio thread has shorter sleep periods.</p>
+        <p>The program <code>TestThreads3Lambda</code> generates mixed console output about the market and portfolio
+            from both threads—the threads are taking turns even on the single-processor machine.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-007"
+                                           href="part0018.html#list-anc-c017-007">Listing 17-7</a>:</span> Class
+                    TestThreads3Lambda</h5>
+                <pre>
+public class TestThreads3Lambda {
+  public static void main(String args[]){
+        
+    // Lambda expression for Market News
+      Runnable mn = () -&gt; {
+         try{
+          for (int i=0; i&lt;10;i++){
+           Thread.sleep (1000);  // sleep for 1 second
+           System.out.println("The market is improving " + i);
+          } 
+        }catch(InterruptedException e ){
+           System.out.println(Thread.currentThread().getName() 
+                                            + e.toString());
+        }  
+     }; 
+   
+     Thread marketNews = new Thread(mn, "Market News");
+     marketNews.start();
+     
+     // Lambda expression for Portfolio
+     Runnable port = () -&gt;{
+         try{
+              for (int i=0; i&lt;10;i++){
+               Thread.sleep (700);   // Sleep for 700 milliseconds
+               System.out.println("You have " + (500 + i) +  
+                                              " shares of IBM");
+              }
+            }catch(InterruptedException e ){
+              System.out.println(Thread.currentThread().getName() 
+                                                + e.toString());
+            }   
+     };
+     
+    Thread portfolio = new Thread(port,"Portfolio data");
+    portfolio.start();
+     
+    System.out.println(
+          "The main method of TestThreads3Lambda is finished");
+  }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="214" id="Page_214"></span>If you need to “wake up” a sleeping thread
+            before its sleeping time is up, use the method <code>interrupt()</code>. Just add
+            <code>mn.interrupt()</code> to the class <code>TestThreads3Lambda</code> right after starting the market
+            news thread. This triggers <code>InterruptedException</code>, and the market news thread will wake up and
+            continue its execution from the operator located below the <code>sleep()</code> method call. The class
+            <code>Thread</code> has a method <code>interrupted()</code> that returns <code>true</code> if the current
+            thread has been interrupted. The output of the program <code>TestThreads3Lambda</code> can look as follows:
+        </p>
+        <pre>
+The main method of TestThreads3Lambda is finished
+You have 500 shares of IBM
+The market is improving 0
+You have 501 shares of IBM
+The market is improving 1
+You have 502 shares of IBM
+You have 503 shares of IBM
+The market is improving 2
+You have 504 shares of IBM
+The market is improving 3
+You have 505 shares of IBM
+You have 506 shares of IBM
+The market is improving 4
+You have 507 shares of IBM
+The market is improving 5
+You have 508 shares of IBM
+The market is improving 6
+You have 509 shares of IBM
+The market is improving 7
+The market is improving 8
+The market is improving 9
+</pre>
+        <p>These days it’s hard to find a single-CPU server machine. Most of the readers of this book have personal
+            computers with dual-core CPUs, which have two processors in the same chip. Modern JVMs use multiple cores
+            for multithreaded applications, but you shouldn’t assume that your program will run twice as fast on such
+            hardware. JVM optimization is a complex subject and is out of the scope of this tutorial. You may boost the
+            performance of your system by increasing the number of threads running in parallel, but you should define
+            the right ratio between the number of threads and the number of processors (see Amdahl’s Law at <code><a
+                    href="http://en.wikipedia.org/wiki/Amdahl's_law">http://en.wikipedia.org/wiki/Amdahl's_law</a></code>)
+            during the performance-tuning phase of application development.</p>
+    </section>
+    <section>
+        <h2><a id="how_to_kill_a_thread"></a>How to Kill a Thread</h2>
+        <p><span epub:type="pagebreak" title="215" id="Page_215"></span>The class <code>Thread</code> has <a
+                id="idp17499520"></a><a id="idp17500768"></a><a id="idp17502192"></a><a id="idp17503200"></a>a method,
+            <code>stop()</code>, that was supposed to know how to kill the current thread. But it was deprecated many
+            years ago because it could bring some of the objects in your program into an <a
+                    href="https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#stop--">inconsistent state</a>
+            caused by improper unlocking of the object instances.</p>
+        <p>There are different approaches to killing threads. One of them involves creating your own method on the
+            thread, say <code>stopMe()</code>, in which you set your own <code>boolean</code> <a id="idp17510944"></a><a
+                    id="idp17506592"></a>variable, say <code>stopMe</code>, to <code>false</code> and test its value
+            periodically inside the thread’s method <code>run()</code>. If application code changes the value of <code>stopMe</code>
+            to <code>true</code>, just exit the code execution in the method <code>run()</code>. In <a
+                    id="list-anc-c017-008" href="part0018.html#list-c017-008">Listing 17-8</a>, the loop in the method
+            <code>run</code>  initializes the value of the variable <code>stopMe</code> with the reference to the
+            current thread and then runs the infinite loop testing if the value of <code>stopMe</code> is still the
+            same.  As soon as it is changed (set to <code>null</code> in this case), the processing in the <code>PortfolioVolatile</code>
+            stops.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-008"
+                                           href="part0018.html#list-anc-c017-008">Listing 17-8</a>:</span> Killing a
+                    thread</h5>
+                <pre>
+class KillTheThread{
+  public static void main(String args[]){
+         
+     PortfolioVolatile p =new PortfolioVolatile("Portfolio data");
+     p.start();
+     // Some code implementation business logic goes here
+     int i=0;
+     do {
+        System.out.println(" i= " + i++); 
+     }while (i&lt;100);  
+     
+     // and now it's time to kill the thread
+     p.stopMe();
+  }
+}
+class PortfolioVolatile extends Thread{
+private volatile Thread stopMe;
+    public PortfolioVolatile (String threadName) {
+          super(threadName);  
+    }
+    
+    public void stopMe() {
+        stopMe = null;
+    }
+    public void run() {
+        stopMe = Thread.currentThread();
+        
+        while (stopMe == Thread.currentThread()) {
+         //Do some portfolio processing here 
+         System.out.println("The Portfolio thread is running"); 
+        }
+       System.out.println("The Portfolio thread was killed");
+  }
+}  
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Running the program <code>KillTheThread</code> produces the console output that can end as follows:</p>
+        <pre>
+The Portfolio thread is running
+ i= 97
+ i= 98
+ i= 99
+The Portfolio thread is running
+The Portfolio thread was killed</pre>
+        <p>The variable <code>stopMe</code> has been declared with a <code>volatile</code> keyword, which warns the Java
+            compiler that another thread can modify it, and that this variable shouldn’t be cached in the CPU’s
+            registers, so all threads must always see its fresh value. The class <code>PortfolioVolatile</code> could be
+            written differently—the variable <code>stopMe</code> could be declared as <code>boolean</code>.</p>
+        <p><span epub:type="pagebreak" title="216" id="Page_216"></span>Not every thread can be killed using the code
+            shown in <a href="part0018.html#list-c017-008">Listing 17-8</a>. What if a thread is not doing any
+            processing at the moment, but is waiting for the user’s input? Call the method <code>interrupt()</code> on
+            such a thread. Killing a thread by interrupting it may be the only technique you need to use in such cases.
+        </p>
+        <p>If <span epub:type="pagebreak" title="217" id="Page_217"></span>you need to kill a thread that’s busy doing
+            some blocking I/O operations and the preceding methods of killing such a thread don’t work, try closing I/O
+            streams. This causes <code>IOException</code> during the current read/write operation and the thread will be
+            over.</p>
+        <p>If you’d like to read more comprehensive coverage of this subject, see Dr. Heinz Kabutz the Java Specialist’s
+            newsletter Issue #56, available at <code><a href="http://www.javaspecialists.co.za/archive/Issue056.html">www.javaspecialists.co.za/archive/Issue056.html</a></code>.
+        </p>
+    </section>
+    <section>
+        <h2><a id="thread_priorities"></a>Thread Priorities</h2>
+        <p>Single-processor <a id="idp17532816"></a>computers use a special scheduling algorithm that allocates
+            processor time slices to the running threads based on their priorities. If <code>Thread1</code> is using the
+            processor and the higher-priority <code>Thread2</code> wakes up, <code>Thread1</code> is pushed aside and
+            <code>Thread2</code> gets the CPU. It is said that <code>Thread2</code> <i>preempts</i> <code>Thread1</code>.
+        </p>
+        <p>The class <code>Thread</code> has a <a id="idp17539328"></a><a id="idp17540432"></a>method, <code>setPriority()</code>,
+            that allows you to control its priority. There are 10 different priorities, which are <code>final
+                integer</code> variables defined in the class <code>Thread.</code> Some of them are named constants
+            <code>MIN_PRIORITY</code>, <code>NORM_PRIORITY</code>, and <code>MAX_PRIORITY</code>. Here’s an example of
+            their usage:</p>
+        <pre>
+Thread myThread = new Thread("Portfolio");
+myThread.setPriority(Thread.NORM_PRIORITY + 1);</pre>
+        <p>If two threads with the same priority need the processor, it’ll be given to one of them using an algorithm
+            specific to the computer’s operating system.</p>
+    </section>
+    <section>
+        <h2><a id="thread_synchronization_and_race_conditio"></a>Thread Synchronization and Race Conditions</h2>
+        <p>During the <a id="race_1ch17"></a><a id="race_2ch17"></a>design stage of a multithreaded application’s
+            development, you should consider the possibility of a so-called <i>race condition</i>, which happens when
+            multiple threads need to modify the same program resource at the same time (<i>concurrently</i>). The
+            classic example is when a husband and wife are trying to withdraw cash from different ATMs <i>at the same
+                time</i>.</p>
+        <p>Suppose the balance on their joint account is $120. If a <code>Thread</code> class is responsible for the
+            validation as well as update of the balance of their bank account, there is a slight chance that if the
+            validation starts at the same time it’ll approve withdrawal of $100 for the husband and $50 for the wife
+            because the each of the validated amounts is less than the total. A moment later the husband’s thread
+            withdraws $100, and a split second later the wife’s thread attempts to withdraw $50—it was validated, right?
+            Unless these two processes were synchronized the couple would be able to withdraw a total of $150, leaving a
+            negative balance in their account. This is an example of a <i>race condition</i>.</p>
+        <p>A special keyword, <code>synchronized</code>, prevents <a id="idp17565744"></a><a id="idp17563024"></a>race
+            conditions from happening. This keyword <a id="idp17555456"></a><a id="idp17554992"></a><a
+                    id="idp17556944"></a>places a <i>lock</i> on an object instance (<i>the monitor</i>) to make sure
+            that only one thread at a time has access to the synchronized code. The code in <a id="list-anc-c017-009"
+                                                                                               href="part0018.html#list-c017-009">Listing
+                17-9</a> locks the entire method <code>withdrawCash()</code> so no other thread gets access to the
+            specified portion of code until the current (locking) thread has finished its execution of <code>withdrawCash()</code>.
+            In this example, both validation and balance update can be performed by only one thread at a time.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-009"
+                                           href="part0018.html#list-anc-c017-009">Listing 17-9</a>:</span> Declaring
+                    <span epub:type="pagebreak" title="218" id="Page_218"></span>a synchronized method</h5>
+                <pre>
+class ATMProcessor extends Thread{
+   
+ synchronized withdrawCash(int accountID, int amount){
+    // Some thread-safe code goes here, i.e., reading from
+    // a file or a database
+    //   ...
+   boolean allowTransaction = validateWithdrawal(accountID,
+                                                   amount);
+   if (allowTransaction){
+     updateBalance(accountID, amount, "Withdraw");
+   }
+   else {
+    System.out.println("Not enough money on the account");
+   }
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The locks should be placed for the shortest possible time to avoid slowing down the program: That’s why
+            synchronizing short blocks of code is preferable to synchronizing whole methods. <a id="list-anc-c017-0010"
+                                                                                                href="part0018.html#list-c017-0010">Listing
+                17-10</a> shows how to synchronize only the portion of the code that may actually cause the race
+            condition, rather then locking the entire method <code>withdrawCash()</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-0010" href="part0018.html#list-anc-c017-0010">Listing 17-10</a>:</span>
+                    Declaring a synchronized block</h5>
+                <pre>
+class ATMProcessor extends Thread{
+  ...
+ withdrawCash(int accountID, int amount){
+    // Some thread-safe code goes here, i.e., reading from
+    // a file or a database
+  ...
+ synchronized(this) {
+   boolean allowTransaction=validateWithdrawal(accountID, amount);
+   if (allowTransaction){
+      updateBalance(accountID, amount, "Withdraw");
+   }
+   else {
+      System.out.println("Not enough money on the account");
+   }
+  }
+ }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>When a <code>synchronized</code> block is executed, the section of the code in parentheses is locked and
+            can’t be used by any other thread until the lock is released. <a href="part0018.html#list-c017-0010">Listing
+                17-10</a> locks the current instance of the class <code>ATMProcessor</code> (represented by the <code>this</code>
+            key-word) only for the duration of the <code>validateWithdrawal()</code> and <code>updateBalance()</code>
+            methods, <span epub:type="pagebreak" title="219" id="Page_219"></span>which is a shorter period of time than
+            locking <code>withdrawCash()</code> would take.</p>
+        <p>Although <code>synchronized</code> is a Java keyword, there <a id="idp17578768"></a><a id="idp17580608"></a>is
+            a more efficient API for locking the code. It’s called <code>reentrantLock()</code>, and you see it later in
+            this lesson.</p>
+    </section>
+    <section>
+        <h2><a id="thread_states"></a>Thread States</h2>
+        <p>A thread goes through various <a id="idp17584416"></a>states during its life span. The class
+            <code>Thread</code> has a method, <code>getState()</code>, that <a id="idp17587200"></a><a
+                    id="idp17588448"></a>returns one of the values defined in the enumeration <code>Thread.State</code>.
+        </p>
+        <ul>
+            <li><code>BLOCKED</code>: Thread state for a thread that is blocked and waiting to enter or reenter a
+                synchronized method or block of code
+            </li>
+            <li><code>NEW</code>: Thread state for a thread that has been instantiated but not started yet</li>
+            <li><code>RUNNABLE</code>: Thread state for a runnable thread</li>
+            <li><code>TERMINATED</code>: Thread state for a terminated thread</li>
+            <li><code>TIMED_WAITING</code>: Thread state for a waiting thread with a specified waiting time</li>
+            <li><code>WAITING</code>: Thread state for a waiting thread</li>
+        </ul>
+        <p>The class <code>Thread</code> has a <a id="idp17596608"></a><a id="idp17597584"></a>method,
+            <code>isAlive()</code>, that can help you to find out the status of the thread. If it returns
+            <code>true</code>, the thread has been started and hasn’t died yet. If it returns <code>false</code>, the
+            thread is either new or already dead.</p>
+    </section>
+    <section>
+        <h2><a id="wait_and_notify"></a>Wait and Notify</h2>
+        <p>The class <code>Object</code> also has <a id="wait_1ch17"></a><a id="notify_1ch17"></a><a
+                id="notifyall_1ch17"></a><a id="wait_2ch17"></a><a id="notify_2ch17"></a><a id="notifyall_2ch17"></a>some
+            methods relevant to threads: <code>wait()</code>, <code>notify()</code>, and <code>notifyAll()</code>. The
+            method <code>notify()</code> allows one waiting thread to notify another about some important event.
+            Accordingly, <code>notifyAll()</code> sends notification to all waiting threads. Because every Java class is
+            inherited from the class <code>Object</code>, these methods can be called on any object. There is one more
+            important rule: Both the wait and notification must be done in a <code>synchronized</code> block holding the
+            lock <i>on the same object</i>. </p>
+        <p>Let’s revisit our class <code>TestThreads3Lambda</code>, which spawns the threads for market news and
+            portfolio. It has the following line at the end of the <code>main()</code> method:</p>
+        <pre>
+System.out.println("The main method TestThreads3 is finished");</pre>
+        <p>Run the program <code>TestThreads3Lambda</code>, and it prints something like this:</p>
+        <pre>
+The main method of TestThreads3Lambda is finished
+You have 500 shares of IBM
+The market is improving 0
+You have 501 shares of IBM
+The market is improving 1
+...
+</pre>
+        <p>Note <span epub:type="pagebreak" title="220" id="Page_220"></span>that the method <code>main()</code> did not
+            wait for the portfolio and market news threads’ completion!  The next code sample shows you how one thread
+            can wait for a notification from another using <code>wait()</code>.  To simplify the understanding of the
+            example I’m using just two threads: the main thread and the market news one. The new class is called <code>TestLambdaWaitNotify</code>.
+            I want to kill two birds with one stone and explain an interesting use case for lambdas, too.  To make the
+            <code>main()</code> method wait for notifications, it can include the following code fragment:</p>
+        <pre>
+TestLambdaWaitNotify thisInstance = new TestLambdaWaitNotify();     
+synchronized (thisInstance) {
+  try{
+               thisInstance.wait(20000);  // wait for up to 20 sec
+  } catch (InterruptedException e){ 
+               e.printStackTrace();
+  }
+}
+     
+System.out.println( 
+             "The main method of TestLambdaWaitNotify is finished");
+</pre>
+        <p>The method call <code>wait(20000)</code> means “wait for up to 20 seconds.” The last <code>println</code>
+            statement is executed either after 20 seconds or when the main thread receives notification of some
+            important event, whichever comes first. Calling <code>wait()</code> without the argument would make the
+            program wait for the notification until it arrives. Examples of important events are a price drop on the
+            auction for items you’re interested in, the reopening of the airport after freezing rain, and the execution
+            of your order to purchase 100 shares of IBM stock. </p>
+        <p>The difference <a id="idp17626080"></a><a id="idp17628384"></a>between <code>sleep()</code> and
+            <code>wait()</code> is that calling <code>sleep(20000)</code> puts a thread into a not-runnable state for
+            exactly 20 seconds, although <code>wait(20000)</code> might mean that it will come back to a runnable state
+            earlier. </p>
+        <p>Note that in the preceding example the main thread placed a lock on the instance of its own object— <code>thisInstance</code>. The
+            other thread has to receive a reference to the same object to send the notification. If you were writing
+            code in traditional object-oriented style, you could create a separate class implementing
+            <code>Runnable</code> with a constructor that gets a reference to the parent thread for further
+            notifications as shown here:</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-0011"></a>Listing 17-11:</span> Notification example</h5>
+                <pre>
+class MarketNews implements Runnable {
+ Object parent; 
+  
+  MarketNews(Object whoToNotify){
+      parent=whoToNotify; 
+  }
+  public void run(){ 
+    // Do some lengthy processing here 
+  
+    synchronized(parent){
+     parent.notify(); // send notification to the waiting thread
+    } 
+  } 
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>But <span epub:type="pagebreak" title="221" id="Page_221"></span>I’d like to implement <code>Runnable</code>
+            using a lambda expression and illustrate an interesting concept called <i>closures</i>.</p>
+        <section>
+            <h3><a id="closures"></a>Closures in Java </h3>
+            <p>In functional languages <a id="idp17640320"></a><a id="idp17641360"></a><a id="idp17642784"></a>like
+                JavaScript, a <i>closure</i> is a nested function that knows the context where it was declared. In other
+                words, during the invocation the nested function has access to variables from the outer one even though
+                they were never declared inside the nested function. It’s easier to explain this concept by example, and
+                I will implement the market news thread not as a separate class, but as a lambda expression:</p>
+            <pre>
+ Runnable mNews =() -&gt; {
+     // Do something 
+     // But who to notify???? 
+};</pre>
+            <p>This lambda gets the object of the inferred type <code>Runnable</code>, but how to pass it to yet another
+                object, which is the reference to the parent thread to send notification to? You create an “outer
+                function”—a method that takes a reference to the parent thread as an argument:</p>
+            <pre>
+private Runnable getMktNewsRunnable(
+   Object whoToNotify){ 
+     return () -&gt; { 
+        // Do something 
+        whoToNotify.notify();
+     }; 
+}</pre>
+            <p>This is an example of a method returning a lambda expression so the following statement is valid:</p>
+            <pre>
+Runnable mktNewsRunnable = getMktNewsRunnable(this);</pre>
+            <p>The value of the variable is just the code returned by the method <code>getMktNewsRunnable()</code>.  It’s
+                important to notice that this code just uses the variable <code>whoToNotify</code> from the outer method
+                even though it was not declared inside the lambda expression! So the inner function “remembers” that
+                when it was created, there was someone in the neighborhood named <code>whoToNotify</code>. This is the
+                essence of the concept of closures, which remember the context they were declared in. </p>
+            <p>The variables from outer scope are inferred to be <code>final</code> and are immutable; you can’t modify
+                them. Even though I never declared the variable <code>whoToNotify</code> as <code>final</code>, it is
+                <code>final</code>.</p>
+        </section>
+        <p>Following is the complete version of the class <code>TestLambdaWaitNotify</code> that creates a thread using
+            lambda and gets notification when that thread is done with the processing.</p>
+        <pre>
+public class TestLambdaWaitNotify {
+  private static Runnable getMktNewsRunnable(Object whoToNotify){
+    // returning a closure  
+    return  () -&gt; {
+         try{
+           for (int i=0; i&lt;10;i++){
+            Thread.sleep (1000);  // sleep for 1 second
+            System.out.println("The market is improving " + i);
+           } 
+          
+           synchronized(whoToNotify){
+              whoToNotify.notify(); // send notification to parent
+           }
+        }catch(InterruptedException e ){
+           System.out.println(Thread.currentThread().getName() 
+                                            + e.toString());
+        }  
+    };    
+  }
+    
+  public static void main(String args[]){
+        
+     TestLambdaWaitNotify thisInstance = new TestLambdaWaitNotify();
+     
+     Runnable mktNewsRunnable = getMktNewsRunnable(thisInstance);
+     Thread marketNews = new Thread(mktNewsRunnable,"");
+     marketNews.start();
+   
+     
+     synchronized (thisInstance) {
+           try{
+               thisInstance.wait(20000);  // wait for up to 20 sec
+           } catch (InterruptedException e){ 
+               e.printStackTrace();
+           }
+         }
+     
+        System.out.println( 
+            "The main method of TestLambdaWaitNotify is finished");
+  }
+}
+</pre>
+        <p><span epub:type="pagebreak" title="222" id="Page_222"></span>Now the message that the main method is finished
+            is printed after the loop inside the market news ends. Hopefully it takes less than 20 seconds. You can
+            remove this time interval and just call <code>wait()</code> to ensure that even on the slow computers the
+            main thread waits for <a id="idp17658752"></a><a id="idp17656208"></a><a id="idp17660672"></a><a
+                    id="idp17662240"></a><a id="idp17663696"></a><a id="idp17665216"></a>as long as needed.</p>
+    </section>
+    <section>
+        <h2><a id="joining_threads"></a>Joining Threads</h2>
+        <p>Now let’s consider a <a id="idp17668464"></a><a id="idp17670256"></a>scenario in which you need to start
+            multiple threads and continue program execution only when all threads are complete. You may have several
+            threads that need to wait for each other’s completion. The <code>Thread</code> class has a method, <code>join()</code>,
+            <a id="idp17674272"></a><a id="idp17671648"></a>that you can use in this case.</p>
+        <p>Revisit the <code>TestThreads3Lambda</code> program shown in <a id="list-anc-c017-007"
+                                                                           href="part0018.html#list-c017-007">Listing
+            17-7</a>. If you want to make sure that the <code>main</code> method (the main thread) is waiting until the
+            other two threads are finished, you can use the method <code>join()</code>. <span epub:type="pagebreak"
+                                                                                              title="223"
+                                                                                              id="Page_223"></span>The
+            following code snippet shows the class <code>TestThreads3LambdaJoin</code> that links together three
+            threads: main, portfolio, and market news.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-0012"></a>Listing 17-12:</span> Joining threads</h5>
+                <pre>
+public class TestThreads3LambdaJoin {
+  public static void main(String args[]){
+        
+    // Lambda expression for Market News
+      Runnable mn = () -&gt; {
+         try{
+          for (int i=0; i&lt;10;i++){
+           Thread.sleep (1000);  // sleep for 1 second
+           System.out.println("The market is improving " + i);
+          } 
+        }catch(InterruptedException e ){
+           System.out.println(Thread.currentThread().getName() 
+                                            + e.toString());
+        }  
+     }; 
+   
+     
+     // Lambda expression for Portfolio
+     Runnable port = () -&gt;{
+         try{
+              for (int i=0; i&lt;10;i++){
+               Thread.sleep (700);   // Sleep for 700 milliseconds 
+               System.out.println("You have " +  (500 + i) +  
+                                              " shares of IBM");
+              }
+            }catch(InterruptedException e ){
+              System.out.println(Thread.currentThread().getName() 
+                                                + e.toString());
+            }   
+     };
+     
+     Thread marketNews = new Thread(mn, "Market News");
+     Thread portfolio = new Thread(port,"Portfolio data");
+     marketNews.start();
+     portfolio.start();
+     
+     try{
+        marketNews.join();
+        portfolio.join();
+     }catch (InterruptedException e){
+        e.printStackTrace();
+     }
+       
+     System.out.println( 
+         "The main method of TestThreads3LambdaJoin is finished");
+  }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Running the class <code>TestThreads3LambdaJoin</code> prints the outputs of market news and portfolio first,
+            and only after the message that the main method is finished. The main thread waits for the other two by
+            joining them.</p>
+    </section>
+    <section>
+        <h2><a id="goodies_from_javadotutildotconcurrent"></a>Goodies From java.util.concurrent</h2>
+        <p><span epub:type="pagebreak" title="224" id="Page_224"></span>The package <code>java.util.concurrent</code> has
+            <a id="concurrent_1ch17"></a><a id="concurrent_2ch17"></a>lots of goodies that make thread programming a lot
+            more robust and flexible, and most importantly that increase the performance of multithreaded applications.
+            This section highlights some of the must-know techniques, classes, and interfaces from this package. For
+            detailed coverage of this subject get the book <i>Java Concurrency in Practice</i> by Brian Goetz et al.
+            (Addison-Wesley, 2006).</p>
+        <section>
+            <h3><a id="reentrantlock_versus_synchronized"></a>ReentrantLock Versus Synchronized</h3>
+            <p>The package <code>java.util.concurrent.locks</code> includes the class <code>ReentrantLock</code>, which
+                <a id="idp17692768"></a><a id="idp17693904"></a><a id="idp17695600"></a><a id="idp17696736"></a>can be
+                used as a replacement for the <code>synchronized</code> keyword. Using it gives you more flexibility,
+                and it can be used across methods.  The idea is to place a lock (invoke <code>lock()</code>) before <a
+                        id="idp17698912"></a><a id="idp17700096"></a>the section of your program that may cause a race
+                condition, and to remove the lock afterward. The next code snippet is a revision of the code shown
+                earlier in <a href="part0018.html#list-c017-0010">Listing 17-10</a>:</p>
+            <pre>
+private Lock accountLock = new ReentrantLock();
+witdrawCash(int accountID, int amount){
+    // Some thread-safe code goes here, e.g. reading from
+    // a file or a database
+   accountLock.lock(); // place a lock here
+   try{
+    if (allowTransaction){
+      updateBalance(accountID, amount, “Withdraw”);
+    } else {
+      System.out.println(“Not enough money on the account”);
+    }
+   }finally {
+     accountLock.unlock(); //allow other threads to update balance
+  }
+}</pre>
+            <p>Note that the lock has to be removed in the <code>finally</code> section to ensure that unlocking always
+                gets executed, even if there is an exception thrown from the <code>try</code> block. When the code is
+                unlocked it can be given to one of the waiting threads. The class <code>ReentrantLock</code> has an
+                overloaded constructor with a <code>boolean</code> argument—if you specify <code>true</code> while
+                creating the lock, the control is given to the longest-waiting thread.</p>
+            <p>There <span epub:type="pagebreak" title="225" id="Page_225"></span>is another <a id="idp17708128"></a><a
+                    id="idp17708608"></a>useful class, <code>Condition</code>, that can be associated with the lock.
+                This object enables a locked block of code to suspend its execution until other threads notify the
+                current one that some condition has become <code>true</code>—for example, the bank account has enough
+                funds now for you to make a withdrawal.</p>
+            <p>If you don’t need the flexibility offered by the <code>ReentrantLock/Condition</code> combo, just use the
+                <code>synchronized</code> keyword with <code>notify()/notifyAll()</code> methods to control thread
+                locking. Or, even better, see if using one of the concurrent collections (reviewed in the section <a
+                        href="part0018.html#brief_introduction_to_concurrent_collect">“A Brief Review of Concurrent
+                    Collections”</a>) can take care of all your locking needs so you don’t need to create explicit locks
+                in your code.</p>
+        </section>
+        <section>
+            <h3><a id="executor_framework"></a>Executor Framework</h3>
+            <p>Creating threads by subclassing <a id="exec_1ch17"></a><a id="exec_2ch17"></a><code>Thread</code> or
+                implementing <code>Runnable</code> works, but there are certain shortcomings to these approaches. First,
+                the method <code>run()</code> cannot return a value. Second, an application may spawn so many threads
+                that it can take up all the system resources, and if this happens the application will stop functioning.
+                In other words, you need to be able to control the number of threads allowed for each application.</p>
+            <p>You can overcome the first shortcoming by using the <code>Callable</code> interface, and the second one
+                by using classes from the <i>Executor framework</i>. The <code>Executors</code> class <a
+                        id="exec_3ch17"></a><a id="exec_4ch17"></a>spawns the threads from <code>Runnable</code>
+                objects, <code>ExecutorService</code> knows how to create <code>Callable</code> threads, and <code>ScheduledExecutorService</code>
+                allows you to schedule threads for future execution.</p>
+            <p>The utility class <code>Executors</code> has static methods that enable you to create an appropriate
+                executor. In particular, its <a id="idp17728784"></a><a id="idp17729600"></a>method <code>newFixedThreadPool()</code>
+                creates a pool of threads of a specified size. For example, <code>Executors.newFixedThreadPool(5)</code>
+                gives you an instance of <code>ExecutorService</code> that automatically supports a pool of not more
+                than five threads. If all five threads are busy when a request to create a new thread comes in, that
+                request waits until one of the running threads completes. Using thread pools ensures that you can
+                control system resources better.</p>
+            <p>If you need a thread to return some data on completion, create a class that implements the
+                <code>Callable</code> interface and defines a method <code>call()</code> that plays the same role as
+                <code>run()</code> in <code>Runnable</code>. In this case you need to create threads differently; the
+                class <code>Thread</code> doesn’t take a <code>Callable</code> object as an argument. The class <code>Executors</code>
+                comes to the rescue: it offers a number of static methods that  create a thread from your
+                <code>Callable</code> class and return the result of its execution packaged inside the special object
+                implementing the interface <code>Future</code>.</p>
+            <p>The method <code>call()</code> is <a id="idp17738560"></a><a id="idp17740304"></a>defined with a
+                parameterized value (remember generics?):</p>
+            <pre>
+public interface Callable &lt;V&gt;{
+   V call() throws Exception;
+}</pre>
+            <p>Accordingly, if some method needs to create a thread using <code>Callable</code>, the code should
+                instantiate the <code>Callable</code> thread with a specific data type in place of <code>
+                    &lt;V&gt;</code>. For example, the thread <code>Portfolio</code> may return an <code>Integer</code>
+                as a result of some processing in its <code>call()</code> method:</p>
+            <pre>
+public class Portfolio implements Callable&lt;Integer&gt;{
+   public Integer call() {
+      // Perform some actions
+      return someInteger;
+   }
+}
+public class MarketData implements Callable&lt;Integer&gt;{
+   public Integer call() {
+      // Perform some actions
+      return someInteger;
+   }
+}</pre>
+            <p>One way to create a <code>Future</code> object is by submitting an instance of the <code>Callable</code>
+                thread to the <code>Executor</code>. Call the function <code>get()</code> on the <code>Future</code>
+                instance, and it blocks on the thread until its <code>call()</code> method returns the result:</p>
+            <pre>
+//Threads’ results can be stored in the collection of Futures
+List&lt;Future&lt;Integer&gt;&gt; threadResults= 
+                                new ArrayList&lt;Future&lt;Integer&gt;&gt;();
+// Submit Callables for execution
+threadResults.add(myExecutorService.submit(new Portfolio()));
+threadResults.add(myExecutorService.submit(new MarketData()));
+for (Future&lt;Integer&gt; future : threadResults) {
+       future.get();
+}</pre>
+            <p>Calling <a id="idp17751424"></a><a id="idp17752640"></a>methods <code>get()</code> on several instances
+                of the <code>Future</code> objects is equivalent to joining threads.</p>
+            <p><span epub:type="pagebreak" title="226" id="Page_226"></span>The process of spawning threads using <code>Executors</code>,
+                <code>Callable</code>, and <code>Future</code> may go like this:</p>
+            <ol>
+                <li>Declare and instantiate a class that implements the <code>Callable</code> interface, and program the
+                    business logic in its method <code>call()</code>. Alternatively, you can use a lambda expression
+                    because <code>Callable</code> is a functional interface.
+                </li>
+                <li>Create an instance of the <code>Future</code> object.</li>
+                <li>Create an instance of an <code>ExecutorService</code> using
+                    <code>Executors.newFixedThreadPool()</code>.
+                </li>
+                <li>Call the function <code>submit()</code> on the <code>ExecutorService</code>, providing an instance
+                    of the <code>Callable</code> object (or lambda expression) as an argument.
+                </li>
+                <li>Call the function <code>get()</code> on the <code>Future</code> object from Step 2. This function 
+                    waits until the thread returns the result (or throws an exception).
+                </li>
+                <li>Accept the result of the thread execution into a variable of the data type used in Step 1.</li>
+                <li>Call the function <code>shutdown()</code> on the <code>ExecutorService</code> from Step 3.</li>
+            </ol>
+            <p>The following class <code>TestCallableThreads</code> creates <a id="idp17767984"></a><a
+                    id="idp17768960"></a>a collection of <code>Future</code> objects—one per thread.
+                <code>Executors</code> creates a pool of two threads, and each thread is submitted for execution. The
+                method <code>get()</code> waits for the completion of each thread, and the result of each
+                <code>call()</code> method is stored in the collection results. Lambda expressions implement <code>Callable</code>.
+            </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c017-0013"></a>Listing 17-13:</span> Spawning <span
+                            epub:type="pagebreak" title="227" id="Page_227"></span>threads with the Executor framework
+                    </h5>
+                    <pre>
+ public class TestCallableThreads {  
+   
+  public static void main(String[] args)   
+                 throws InterruptedException, ExecutionException {
+       
+    // Lambda expression for Market News
+   Callable&lt;Integer&gt; mn = () -&gt; {
+      for (int i=0; i&lt;10;i++){
+       Thread.sleep (1000);  // sleep for 1 second
+       System.out.println("The market is improving " + i);
+      } 
+       // Just return some number to illustrate return
+       return 12345;         
+   }; 
+     
+     // Lambda expression for Portfolio
+   Callable&lt;Integer&gt; port = () -&gt;{
+          for (int i=0; i&lt;10;i++){
+           Thread.sleep (700);    // Sleep for 700 milliseconds 
+           System.out.println("You have " +  (500 + i) +  
+                                          " shares of IBM");
+          } 
+     
+       // Just return some number
+       return 10;
+   };
+            
+   //A placeholder for Future objects
+    List&lt;Future&lt;Integer&gt;&gt; futures =   
+     new ArrayList&lt;Future&lt;Integer&gt;&gt;();  
+   
+    // A placeholder for results returned by threads
+    List&lt;Integer&gt; results = new ArrayList&lt;Integer&gt;();
+   
+   final ExecutorService service =   
+     Executors.newFixedThreadPool(2);  
+     
+   try {  
+     futures.add(service.submit(port));  
+     futures.add(service.submit(mn)); 
+ 
+     for (Future&lt;Integer&gt; future : futures) {  
+      results.add(future.get());  
+     }  
+   } finally {  
+      service.shutdown();  
+   } 
+   
+   for (Integer res: results){
+      System.out.println("\nGot the result: " + res);
+   }
+  }  
+ }  
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The <span epub:type="pagebreak" title="228" id="Page_228"></span>output of this program is shown next.
+                But if you change the number of threads in the pool from two to one, the program  first prints all
+                messages from the portfolio thread and only after that prints all messages from <a id="idp17777328"></a><a
+                        id="idp17778704"></a><a id="idp17780832"></a><a id="idp17782528"></a>the market news.</p>
+            <pre>
+You have 500 shares of IBM
+The market is improving 0
+You have 501 shares of IBM
+The market is improving 1
+You have 502 shares of IBM
+You have 503 shares of IBM
+The market is improving 2
+You have 504 shares of IBM
+The market is improving 3
+The market is improving 4
+Got the result: 10
+Got the result: 12345</pre>
+        </section>
+        <section>
+            <h3><a id="brief_introduction_to_concurrent_collect"></a>A Brief Review of Concurrent Collections</h3>
+            <p>The package <code>java.util.concurrent</code> offers a <a id="idp17787456"></a><a id="idp17788784"></a>number
+                of data structures that simplify programming with threads. This section briefly names some of them.</p>
+            <section>
+                <h4><a id="queues"></a>Queues</h4>
+                <p>The concept of <a id="idp17792384"></a>a <i>queue</i> (First In First Out or FIFO) fits well in any
+                    process that involves asynchronous intra-object communications. Instead of object <code>A</code>
+                    trying to place a direct lock on object <code>B</code>, the former (also known as the
+                    <i>producer</i>) can place some data objects in a queue, and the latter (also known as the <i>consumer</i>) 
+                    retrieves (<i>dequeues</i>) them from the queue asynchronously. Most importantly, the queues from
+                    the <code>java.util.concurrent</code> package <a id="idp17795072"></a>are <i>thread-safe</i>, which
+                    means that you can add an object to a queue without worrying about race conditions.</p>
+                <p>If the queue is blocking, the thread also blocks while trying to add an object to a full queue or
+                    remove an object from an empty one. The following classes implement the <code>BlockingQueue</code>
+                    interface: <code>LinkedBlockingQueue</code>, <code>ArrayBlockingQueue</code>,
+                    <code>SynchronousQueue</code>, <code>PriorityBlockingQueue</code>, and <code>DelayQueue</code>. To
+                    add an object to a queue you can use such methods as <code>add()</code>, <code>put()</code>, and
+                    <code>offer()</code>. To retrieve an object from a queue use <code>poll()</code>,
+                    <code>remove()</code>, <code>take()</code>, or <code>peek()</code>.</p>
+                <p><i>Unbound</i> queues don’t place <a id="idp17806400"></a>limitations on the number of elements.
+                    <code>ConcurrentLinkedQueue</code> is an example of such a queue.</p>
+                <p>Java has introduced <a id="idp17808208"></a><a id="idp17809792"></a>a <code>Deque</code> interface
+                    for inserting and removing elements from both ends of the queue. The <a id="idp17813072"></a><a
+                            id="idp17812032"></a>class <code>LinkedBlockingDeque</code> is a concurrent implementation
+                    of this interface.</p>
+            </section>
+            <section>
+                <h4><a id="collections"></a>Collections</h4>
+                <p>Using <span epub:type="pagebreak" title="229" id="Page_229"></span>concurrent collections is a
+                    recommended way of creating thread-safe data structures. Such collections include <code>ConcurrentHashMap</code>,
+                    <code>ConcurrentSkipListMap</code>, <code>ConcurrentSkipListSet</code>,
+                    <code>CopyOnWriteArrayList</code>, and <code>CopyOnWriteArraySet</code>. Java documentation
+                    describes when to use each of these collections. For example, a <code>CopyOnWriteArrayList</code> is
+                    preferable to a <code>synchronized</code> <code>ArrayList</code> when the expected number of reads
+                    and traversals is much greater than the number of updates to a list. These collections were written
+                    to minimize the time during which data is locked.</p>
+                <p>The utility class <code>java.util.Collections</code> has a number of static methods that create
+                    thread-safe collections. Their method names start with the word <i>synchronized</i>. For example,
+                    <code>synchronizedList()</code> takes a regular <code>List</code> (such as <code>ArrayList</code>)
+                    as an argument and makes it thread-safe. You can read more about Java Collections Framework in
+                    Oracle documentation at <code><a href="http://goo.gl/yknUje">http://goo.gl/yknUje</a></code>.</p>
+                <p>Finding a ready-to-use synchronized collection is better than writing <code>synchronized</code>
+                    blocks on your own. The chances are slim that you’ll write more efficient synchronization code than
+                    already <a id="idp17824720"></a><a id="idp17826608"></a>exists in Java.</p>
+            </section>
+        </section>
+    </section>
+    <section>
+        <h2><a id="swingworker_thread"></a>Swingworker Thread</h2>
+        <p>Any Java Swing <a id="swing_1ch17"></a><a id="swing_2ch17"></a>application spawns a number of threads. At the
+            very minimum it runs the main application thread, the second thread captures system events, and the third
+            one communicates with the graphical user interface (GUI). The application itself may spawn additional
+            threads. But if more than one thread needs to update the user interface (UI) components, the changes may not
+            be rendered properly, because Swing components were not made thread-safe to minimize the number of locks
+            that hurt performance.</p>
+        <p>To avoid this problem, UI updates <a id="idp17834624"></a><a id="idp17835872"></a>shouldn’t be made directly,
+            but rather submitted to an <i>event dispatch thread</i>. Swing uses a single-threaded model, which means
+            that all UI updates are rendered via a single thread.</p>
+        <p>Suppose your GUI application is written with Java Swing, and a click on <code>JButton</code> initiates some
+            server-side data request that takes about 10 seconds to complete. You should never execute long requests in
+            the event dispatch thread. If you do, then the UI will become frozen, as no updates can be made until the
+            long running process releases the lock on the thread. Therefore, you need to start a separate thread for
+            such a long process, and when it finishes, the program has to modify the GUI via the event dispatch thread.
+        </p>
+        <p>For example, if the result of a button click has to update a <code>JTextField</code>, you may create a new
+            thread <a id="idp17837472"></a><a id="idp17840944"></a><a id="idp17841952"></a>in the button’s <code>actionPerformed()</code>
+            method and, from within the <code>run()</code> method of this thread, update the text field. This will work
+            most of the time, if there are no conflicts with other threads running in your application.</p>
+        <p>All UI-related Swing events (such as button clicks and window repaints) are placed in a special queue, and
+            the object <code>java.awt.EventQueue</code> retrieves them from this queue. You should direct modification
+            of the UI (the <code>JTextField</code> in our example) to this queue.</p>
+        <p>In the older version of Java, to ensure that all application-specific data would modify the GUI via this
+            queue, developers used the method <code>invokeLater()</code> to ensure that UI changes were placed in the
+            <code>EventQueue</code>:</p>
+        <pre>
+SwingUtilities.invokeLater(
+   new Runnable(){
+    public void run(){
+      // Do some processing here
+      //... and then update the UI
+      myTextField.setText(someData);
+    }
+   }
+);</pre>
+        <p>You <span epub:type="pagebreak" title="230" id="Page_230"></span>may use lambda to make the preceding code
+            shorter. The class <code>javax.swing.SwingWorker</code> gives you a <a id="idp17850608"></a><a
+                    id="idp17851904"></a>cleaner (though not necessarily simpler) means of dealing with the event
+            dispatch thread. This thread class implements <code>Runnable</code> and <code>Future</code>, and so can be
+            submitted to the <code>Executor</code> for execution and return a result.</p>
+        <p>Let’s say a Swing application needs to make a request to the server to get the market news information, which
+            may take a couple of seconds. So that the UI isn’t frozen for these seconds, this request has to be
+            performed in a background thread, and when the result is ready the UI has to be updated. To arrange this,
+            create a subclass of <code>SwingWorker</code> and override <a id="idp17860400"></a><a id="idp17855504"></a>its
+            <code>doInBackground()</code> method, then instantiate it and call its <code>execute()</code> method, as in
+            <a id="list-anc-c017-0014" href="part0018.html#list-c017-0014">Listing 17-14</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-0014" href="part0018.html#list-anc-c017-0014">Listing 17-14</a>:</span>
+                    Basic use of SwingWorker</h5>
+                <pre>
+class MarketNewsWorker extends SwingWorker &lt;List&lt;String&gt;, String&gt;{
+   @Override public List&lt;String&gt; doInBackground(){
+       // Make a request to the server and return a result,
+       // i.e., a list of Strings
+      return myListOfTextData;
+  }
+     // method method overrides go here
+</pre>
+                <pre>
+ }
+class TestMarketNews{
+     ...
+     public static void main(String[] args){
+          new MarketNewsWorker().execute();
+     }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>This code gives you a high-level picture, but there is more to executing the thread with
+            <code>SwingWorker</code>. First, you probably noticed the unknown syntax element <code>@Override</code>,
+            which is Java <i>annotation</i> stating that the method <code>doInBackground()</code> is being overridden.
+            Adding the <code>@Override</code> annotation is not required here; it’s just an example of an annotation.
+            You learn about annotations in <a href="part0024.html#annotations_and_reflection">Chapter 23</a>.</p>
+        <p>Second, the class <code>MarketNewsWorker</code> uses generics and has two parameters, <code>&lt;List&lt;String&gt;</code>
+            and <code>String&gt;</code>. The reason for this is that the overridden method <code>doInBackground()</code>
+            <i>might</i> call the <code>SwingWorker</code>’s <code>process()</code> method, and <i>will</i> call its
+            <code>done()</code> method on completion; this is where the UI is being updated. Two parameters indicate
+            what types of data will be returned by <code>doInBackground()</code> and given to <code>process()</code>
+            respectively.</p>
+        <p>Why <span epub:type="pagebreak" title="231" id="Page_231"></span>might you consider <a
+                id="idp17873840"></a><a id="idp17875328"></a>calling the method <code>process()</code> during your
+            thread execution? You might do it to support some kind of progress meter or other means of reporting the
+            progress of long-running processes. If, for example, a long-running thread is reading a large file or
+            performing some lengthy calculations, you might want to calculate the percentage of completion and report it
+            to the calling Swing application.</p>
+        <p>You are not allowed to call the <code>process()</code> method directly, but have to call a method called
+            <code>publish()</code>, which <a id="idp17878048"></a><a id="idp17879856"></a>internally calls  <code>process()</code>.
+            Override <code>process()</code> to add some messages to the log file or update the progress meter. The code
+            to display the result of the calculations on the UI should be written in the method <code>done()</code>.</p>
+        <p><a id="list-anc-c017-0015" href="part0018.html#list-c017-0015">Listing 17-15</a> shows you a typical way to
+            program with <code>SwingWorker</code>. I left out the details on purpose so you’d have something to do for
+            this lesson’s homework.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c017-0015" href="part0018.html#list-anc-c017-0015">Listing 17-15</a>:</span>
+                    A typical way to use SwingWorker</h5>
+                <pre>
+class MarketNewsWorker extends SwingWorker &lt;List&lt;String&gt;, String&gt;{
+   @Override public List&lt;String&gt; doInBackground(){
+      // Make a request to the server and return a result,
+      // i.e., a list of Strings
+      for (String news: someNewsCollection){
+            //process each news and report the progress
+            // ...
+         publish("Processed the news " + news); //this calls process()
+      }
+      return myListOfTextData;
+  }
+   @Override protected void process(String progressMessage){
+       // display the progress information here
+   }
+   @Override protected void done(){
+       // modify UI components here by calling get()
+       // Future’s get() gives you the result of
+       // the thread execution
+   }
+}
+class TestMarketNews{
+     
+     public static void main(String[] args){
+          new MarketNewsWorker().execute();
+     }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>You just completed a rather long and advanced lesson of this book. The subject definitely requires more
+            research and practice. Some good content to read next is the lesson on concurrency in Oracle’s Java
+            tutorial, which is at <code><a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/">http://docs.oracle.com/javase/tutorial/essential/concurrency</a></code>. As
+            always, trying it hands-on will deepen your <a id="idp17890480"></a><a id="idp17889520"></a>understanding.
+        </p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00073"></a>Try It</h2>
+        <p>Create <span epub:type="pagebreak" title="232" id="Page_232"></span>a Swing application <a
+                id="idp17895024"></a><a id="idp17896576"></a>with the GUI that consists of two <code>JTextArea</code>
+            controls and one <code>JButton</code> with the label “Get the News.” Prepare two text files with some text
+            information (the news), and write the code that reads them to the left and right text areas respectively.
+            File reading has to be implemented concurrently using two <code>SwingWorker</code> threads.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00074"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson17.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00075"></a>Step-by-Step</h3>
+            <ol>
+                <li>Create a new Eclipse project.</li>
+                <li>Create a class called <code>NewsReader</code> as a subclass of <code>SwingWorker</code>. This class
+                    should have a constructor that takes one argument of type <code>File</code>, and another of type
+                    <code>JTextArea</code> (the content of the file should be displayed there).
+                </li>
+                <li>Prepare two text files with some news in each.</li>
+                <li>Create a Swing application with two text areas and a button.</li>
+                <li>On the click of the button instantiate two <code>NewsReader</code> threads. Each thread should get
+                    an instance of the <code>File</code> object pointing to the corresponding news file and the
+                    corresponding text area.
+                </li>
+                <li>Override the <code>NewsReader</code>’s methods <code>doInBackground()</code> and <code>done()</code>
+                    to read the files and populate the Swing view.
+                </li>
+                <li>Test this program.</li>
+                <li>This step is optional. Override the method <code>process()</code> and make sure that it updates the
+                    view with progress information about the reading process. The progress should be displayed as a
+                    percentage: The percentage formula is <code>progressToDisplay=readBytes/FileSize*100</code>. Use the
+                    Swing class <code>JProgressBar</code> for displaying the progress bar.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0018.html">Lesson 17</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

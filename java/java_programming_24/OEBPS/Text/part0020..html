@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Developing JavaFX Calculator and Tic-Tac-Toe </title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="developing_a_tic-tac-toe_applet"></a><span class="chapterTitle">Lesson 19<br/>Developing JavaFX Calculator and Tic-Tac-Toe </span>
+    </h1>
+
+    <section>
+        <p>Now <span epub:type="pagebreak" title="251" id="Page_251"></span>that you’re familiar with the basics of
+            JavaFX, it’s time to write some practical applications. In this lesson you program the calculator and the
+            game of Tic-Tac-Toe. In <a href="part0019.html">Lesson 18</a> you wrote the application in Java, but this
+            time you create the graphical user interface (GUI) part with a declarative language—FXML. The application
+            logic and event handling remain in Java.</p>
+        <p>In this lesson you get familiar with Scene Builder—a design tool that enables you to create a GUI by dragging
+            and dropping components (buttons, text fields, labels, and so on) right onto the content panel (the center
+            area of Scene Builder as shown in <a id="fig-anc-c019-004" href="part0020.html#fig-c019-004">Figure 19-4</a> ).
+            While you design the view with Scene Builder it generates a file with the name extension <code>.fxml</code>,
+            which contains XML-like tags with attributes that reflect your design. </p>
+        <p>You also see how to dynamically change the styling of components using cascading style sheets (CSS).</p>
+    </section>
+    <section>
+        <h2><a id="idp18307392"></a>Designing a Calculator with Scene Builder</h2>
+        <p>I assume that you <a id="javascene"></a><a id="scenecalc"></a><a id="calcscene"></a>already have the
+            Efxclipse plug-in installed as described in <a href="part0019.html#efxclipse">Lesson 18</a>. Now you need to
+            download and install Scene Builder from Oracle at <code><a href="http://bit.ly/1rnw1S5">http://bit.ly/1rnw1S5</a></code>.
+             </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp18314928"></a>An Alternative Site for Scene Builder Downloads</h3>
+                <p>Starting from Java 8 update 40 Oracle stopped offering installer for Scene Builder. You can download
+                    a build of Scene Builder 8, based off of the latest sources from OpenJFX from <a
+                            href="http://gluonhq.com/products/downloads/">Gluon</a>.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>If you’ve completed the assignment from the <a href="part0019.html#try_it-id00034_ch18">Try It</a> section of
+            <a href="part0019.html#introduction_to_java_applets">Lesson 18</a> you should have a program that shows the
+            GUI of a calculator that might look similar to the one shown in <a id="fig-anc-c019-001"
+                                                                               href="part0020.html#fig-c019-001">Figure
+                19-1</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00545.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-001"
+                                                   href="part0020.html#fig-anc-c019-001">Figure 19-1</a>:</b></span> The
+                    calculator</p>
+            </figcaption>
+        </figure>
+        <p>Now <span epub:type="pagebreak" title="252" id="Page_252"></span>you find out how this calculator can be
+            created using Scene Builder. You still start with creating a JavaFX project in Eclipse by selecting menus
+            File → New → Other → JavaFX.</p>
+        <p>I’m naming this project Lesson19. During  creation of this project I specify the package name <code>mycalculator</code>,
+            the language FXML, and the file name <code>Calculator</code>, and the controller  name <code>CalculatorController </code>as
+            shown in <a id="fig-anc-c019-002" href="part0020.html#fig-c019-002">Figure 19-2</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00546.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-002"
+                                                   href="part0020.html#fig-anc-c019-002">Figure 19-2</a>:</b></span>
+                    Configuring <span epub:type="pagebreak" title="253" id="Page_253"></span>a new JavaFX project in
+                    Eclipse </p>
+            </figcaption>
+        </figure>
+        <p>Clicking the Finish button creates a new Eclipse project that includes two Java classes—<code>Main</code> and
+            <code>CalculatorController</code>—the FXML file <code>Calculator.fxml</code> shown on <a
+                    id="fig-anc-c019-003" href="part0020.html#fig-c019-003">Figure 19-3</a>, and the CSS file called
+            <code>application.css</code>. </p>
+        <figure>
+            <img class="center" src="../Images/image00547.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-003"
+                                                   href="part0020.html#fig-anc-c019-003">Figure 19-3</a>:</b></span> The
+                    generated project Lesson19</p>
+            </figcaption>
+        </figure>
+        <p>Note that the <code>&lt;BorderPane&gt;</code> contains the attribute <code>fx:controller</code> with the name
+            of the class that plays the role of the controller in your MVC-based application. </p>
+        <p>The <span epub:type="pagebreak" title="254" id="Page_254"></span>file <code>Calculator.fxml</code> (shown in
+            <a href="part0020.html#fig-c019-003">Figure 19-3</a>) contains the calculator’s GUI represented by XML-like
+            tags.   In particular, the tag <code>&lt;BorderPane&gt;</code>  corresponds to the
+            JavaFX <code>BorderLayout</code> container. </p>
+        <p>The <code>Main</code> class launches the application. In <a href="part0019.html">Lesson 18</a> you had to
+            write the Java application manually, but now it is generated by the E(fx)clipse plug-in as shown here:  </p>
+        <pre>
+package mycalculator;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.fxml.FXMLLoader;
+public class Main extends Application { 
+  @Override public void start(Stage primaryStage) { 
+     try { 
+       BorderPane root = (BorderPane)<strong>FXMLLoader.load</strong>(getClass()
+                              .getResource("Calculator.fxml")); 
+       Scene scene = new Scene(root,400,400); 
+       scene.getStylesheets().add(getClass()
+                 .getResource("application.css").toExternalForm()); 
+       primaryStage.setScene(scene); 
+       primaryStage.show(); 
+    } catch(Exception e) { 
+          e.printStackTrace(); 
+    } 
+  } 
+  
+  public static void main(String[] args) { 
+      launch(args); }
+}
+</pre>
+        <p>There is a new for you element in this code—the annotation <code>@Override</code>, which indicates that the
+            method <code>start()</code> overrides its superclass’s version. I explain annotations in <a
+                    href="part0024.html">Lesson 23</a>. In the next section you see how to design the GUI in Scene
+            Builder, which saves it in the <code>.fxml</code> file. Your <code>Main</code> class loads it using the
+            class <code>FXMLLoader</code> and creates a Java object in memory according to FXML content. </p>
+        <p>The generated project includes an empty file <code>application.css</code> , which is  the right place for
+            customizing the look of the GUI with CSS. </p>
+        <p>According to the MVC design pattern, the class <code>CalculatorController</code> is the place where you
+            program event handler methods in Java. It’s empty at this point. You separate the creation of the GUI in a
+            declarative language (FXML) from the application logic written in Java.  </p>
+        <section>
+            <h3><a id="idp18346704"></a>Designing the Calculator GUI with Scene Builder</h3>
+            <p>The content  of the file <code>Calculator.fxml</code> is generated by Scene Builder. Right-click its name
+                and use the menu Open → Other → Scene Builder. It looks like <a href="part0020.html#fig-c019-004">Figure
+                    19-4</a>.</p>
+            <p>The <span epub:type="pagebreak" title="255" id="Page_255"></span>middle section is called Content Panel.
+                From the left panel, you drag and drop the GUI controls and containers onto the Content Panel. At the
+                bottom left you see the hierarchy of GUI components, which, at this point, includes nothing but
+                the <code>BorderPane</code>. Now place a <code>TextField</code> in the <code>TOP</code> area of
+                the <code>BorderPane</code> and the <code>GridPane</code> with <code>Button</code> controls in
+                the <code>CENTER</code>.</p>
+            <p>Open the Controls panel on the left, select a <code>TextField</code>, and drop it on the <i>insert
+                TOP</i> line in the Hierarchy panel. Scene Builder looks like <a id="fig-anc-c019-005"
+                                                                                 href="part0020.html#fig-c019-005">Figure
+                19-5</a>.</p>
+            <p>After Saving (Ctrl+S) the current design, open the <code>Calculator.fxml</code> file in Eclipse. You see
+                that Scene Builder has generated the <code>&lt;top&gt;</code> tag inside <code>&lt;BorderPane&gt;</code>:
+            </p>
+            <pre>
+&lt;BorderPane xmlns:fx="http://javafx.com/fxml/1" 
+             xmlns="http://javafx.com/javafx/8" 
+             fx:controller="mycalculator.CalculatorController"&gt;
+   <strong>&lt;top&gt;</strong>
+      &lt;TextField BorderPane.alignment="CENTER" /&gt;
+   <strong>&lt;/top&gt;</strong>
+&lt;/BorderPane&gt;
+</pre>
+            <p>Now select <code>GridPane</code> in the Containers panel on the left and drag and drop it on the <i>insert
+                CENTER</i> line in the Hierarchy panel. The Scene Builder looks like <a id="fig-anc-c019-006"
+                                                                                        href="part0020.html#fig-c019-006">Figure
+                19-6</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00548.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-004" href="part0020.html#fig-anc-c019-004">Figure 19-4</a>:</b></span>
+                        Calculator.fxml in Scene Builder</p>
+                </figcaption>
+            </figure>
+            <figure>
+                <img class="center" src="../Images/image00549.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-005" href="part0020.html#fig-anc-c019-005">Figure 19-5</a>:</b></span>
+                        The <span epub:type="pagebreak" title="256" id="Page_256"></span>TextField control is placed in
+                        the TOP area</p>
+                </figcaption>
+            </figure>
+            <figure>
+                <img class="center" src="../Images/image00550.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-006" href="part0020.html#fig-anc-c019-006">Figure 19-6</a>:</b></span>
+                        Adding the GridPane to the CENTER.</p>
+                </figcaption>
+            </figure>
+            <p>After saving the design, the <code>Calculator.fxml</code> file includes new content:</p>
+            <pre>
+&lt;BorderPane xmlns:fx="http://javafx.com/fxml/1" 
+       xmlns="http://javafx.com/javafx/8" 
+       fx:controller="mycalculator.CalculatorController"&gt;
+   &lt;top&gt;
+      &lt;TextField BorderPane.alignment="CENTER" /&gt;
+   &lt;/top&gt;
+  <strong> &lt;center&gt;</strong>
+      &lt;GridPane BorderPane.alignment="CENTER"&gt;
+        &lt;columnConstraints&gt;
+          &lt;ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" 
+                                                prefWidth="100.0" /&gt;
+          &lt;ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" 
+                                                prefWidth="100.0" /&gt;
+        &lt;/columnConstraints&gt;
+        &lt;rowConstraints&gt;
+          &lt;RowConstraints minHeight="10.0" prefHeight="30.0" 
+                                                vgrow="SOMETIMES" /&gt;
+          &lt;RowConstraints minHeight="10.0" prefHeight="30.0" 
+                                                vgrow="SOMETIMES" /&gt;
+          &lt;RowConstraints minHeight="10.0" prefHeight="30.0" 
+                                                vgrow="SOMETIMES" /&gt;
+        &lt;/rowConstraints&gt;
+      &lt;/GridPane&gt;
+   <strong>&lt;/center&gt;</strong>
+&lt;/BorderPane&gt;
+</pre>
+            <p>In the <code>GridPaneSample</code> class in <a href="part0019.html">Lesson 18</a> you specify all the
+                attributes of the <code>GridPane</code> by invoking methods in the Java classes, but now they are
+                represented by the FXML tag attributes. By default, a <code>GridPane</code> container is initially
+                created with two columns and three rows, hence you see two tags <code>&lt;ColumnConstraints&gt;</code> and
+                three tags <code>&lt;RowConstraints&gt;</code>.</p>
+            <p><span epub:type="pagebreak" title="257" id="Page_257"></span>The little tabs labeled with numbers in <a
+                    href="part0020.html#fig-c019-006">Figure 19-6</a> correspond to the row and column numbers of the
+                grid. But the calculator shown in <a href="part0020.html#fig-c019-001">Figure 19-1</a> has four columns
+                and six columns filled with buttons. To add more rows and columns you need to right-click the grid and
+                keep selecting the GridPane | Add Rows Below or Add Column After until you see a 4x6 grid as shown in <a
+                        id="fig-anc-c019-007" href="part0020.html#fig-c019-007">Figure 19-7</a>.  </p>
+            <p>After saving the design, the <code>Calculator.fxml</code> file includes the FXML tags for a 4x6 grid.
+                Next, in Scene Builder you add the padding of 10 pixels to have some space between the grid and the
+                border of the window and the horizontal and vertical gap to have space between the cells of the grid.
+                This is done by filling the values of Padding, Hgap, and Vgap in the GridPane Properties panel on the
+                right as shown on <a id="fig-anc-c019-008" href="part0020.html#fig-c019-008">Figure 19-8</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00551.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-007" href="part0020.html#fig-anc-c019-007">Figure 19-7</a>:</b></span>
+                        The <span epub:type="pagebreak" title="258" id="Page_258"></span>4x6 GridPane under the
+                        TextField</p>
+                </figcaption>
+            </figure>
+            <figure>
+                <img class="center" src="../Images/image00552.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-008" href="part0020.html#fig-anc-c019-008">Figure 19-8</a>:</b></span>
+                        Setting Hgap, Vgap, and Padding properties of the GridPane</p>
+                </figcaption>
+            </figure>
+            <p>The next step is to add buttons into the grid cells. Drag and drop a <code>Button</code> from the
+                Controls panels on the left into the top left cell of the grid as shown in <a id="fig-anc-c019-009"
+                                                                                              href="part0020.html#fig-c019-009">Figure
+                    19-9</a>.  Drag the button’s right border to make it larger. Set the <code>Margin</code> property to
+                5 for each side of the button; this is the distance between the button and cell borders. Finally, change
+                the text on the button to read MC to match the top left button from <a
+                        href="part0020.html#fig-c019-001">Figure 19-1</a>. <a href="part0020.html#fig-c019-009">Figure
+                    19-9</a> shows how the Scene Builder’s window should look now.</p>
+            <figure>
+                <img class="center" src="../Images/image00553.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-009" href="part0020.html#fig-anc-c019-009">Figure 19-9</a>:</b></span>
+                        The <span epub:type="pagebreak" title="259" id="Page_259"></span>button MC added to the top left
+                        grid cell</p>
+                </figcaption>
+            </figure>
+            <p>After saving this design in <code>Calculator.fxml</code>,  a new section <code>&lt;children&gt;</code> is
+                inside the <code>&lt;GridPane&gt;</code>. It has just one button for now:</p>
+            <pre>
+ &lt;children&gt;
+   <strong>&lt;Button</strong> mnemonicParsing="false" prefHeight="26.0" 
+                                        prefWidth="99.0" text="MC"&gt;
+      &lt;GridPane.margin&gt;
+         &lt;Insets bottom="5.0" left="5.0" right="5.0" top="5.0" /&gt;
+      &lt;/GridPane.margin&gt;
+  <strong>&lt;/Button&gt;</strong>
+&lt;/children&gt;
+</pre>
+            <p>There is no indication of the cell (0,0) because zeros are the default values for <code>GridPane.columnIndex</code> and<code>GridPane.rowIndex</code> properties.
+                Now you need to replicate this button in other cells. You can use multiple Ctrl+C/Ctrl+V keystrokes and
+                then drag/drop the buttons into other cells. Set the proper text for each button. While doing this,
+                watch how the content of the <code>Calculator.fxml</code> changes as you add more buttons. I find it
+                faster to copy and paste the code directly in the FXML file than use Scene Builder for mass
+                duplication. </p>
+            <p>Note that in <a href="part0020.html#fig-c019-001">Figure 19-1</a> the button located in the cell (0,5)
+                spans two columns, and the button with coordinates (3,4) spans two rows. For these buttons you need to
+                enter 2 as the row (or column) span, and select <code>MAX_VALUE</code> as maximum width (or height)
+                using the Properties panel on the right. After all this done, the Scene Builder’s window should look
+                like <a id="fig-anc-c019-0010" href="part0020.html#fig-c019-0010">Figure 19-10</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00554.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-0010" href="part0020.html#fig-anc-c019-0010">Figure 19-10</a>:</b></span>
+                        All <span epub:type="pagebreak" title="260" id="Page_260"></span>buttons in the grid</p>
+                </figcaption>
+            </figure>
+            <p>Run the <code>Main</code> class and you see the calculator that looks like <a
+                    href="part0020.html#fig-c019-001">Figure 19-1</a>. </p>
+        </section>
+        <p>This concludes a <a id="idp18348272"></a><a id="idp18398912"></a><a id="idp18400608"></a>very brief
+            introduction to Scene Builder. If you invest more time into mastering this tool, your productivity in
+            developing GUI applications will increase. Refer to <a
+                    href="https://docs.oracle.com/javase/8/scene-builder-2/user-guide/">Scene Builder User Guide</a> for
+            more details.</p>
+    </section>
+    <section>
+        <h2><a id="idp18402928"></a>Handling Events in the Controller Class</h2>
+        <p>As per MVC design <a id="event1"></a><a id="event2"></a><a id="event3"></a>pattern, you’ve created the view
+            <code>Calculator.fxml</code>. Now you can write a controller and hook it up to the view.  When the file
+            <code>Calculator.fxml</code> was initially generated, it included the name of the controller that will be
+            handling events of all components located in the root container:</p>
+        <pre>
+&lt;BorderPane xmlns="http://javafx.com/javafx/8" 
+       xmlns:fx="http://javafx.com/fxml/1" 
+       <strong>fx:controller="mycalculator.CalculatorController"</strong>&gt;
+</pre>
+        <p>You add the event handler method to the class <code>CalculatorController</code> and  link the GUI components
+            to the corresponding event handlers. Initially the generated class <code>CalculatorController</code> is
+            empty. Add a <a id="idp18415664"></a><a id="idp18414016"></a><a id="idp18417168"></a>simple event handler
+            method <code>buttonClickHandler()</code>:</p>
+        <pre>
+package mycalculator;
+import javafx.event.ActionEvent;
+public class CalculatorController {
+    
+  public void buttonClickHandler(ActionEvent evt){
+    System.out.println("Hello from controller!");
+  }   
+}
+</pre>
+        <p>If you remember, the class <code>GridPaneSampleEvents</code> from <a href="part0019.html">Lesson 18</a> invoked
+            the method <code>setOnAction()</code> on the <code>Button</code> objects to assign the event handlers to
+            button clicks. But if you develop the GUI in FXML, there are no Java objects there. Instead, you use the
+            <code>&lt;Button&gt;</code> property <code>onAction</code> to assign the controller’s <code>buttonClickHandler()</code> as
+            the event handler for the calculator’s buttons. The following snippet is for the button with the label
+            <code>1</code>.</p>
+        <pre>
+&lt;Button prefHeight="37.0" prefWidth="132.0"
+      text="<strong>1</strong>" <strong>onAction="#buttonClickHandler"</strong> GridPane.rowIndex="4"&gt;
+    &lt;GridPane.margin&gt;
+       &lt;Insets bottom="5.0" left="5.0" right="5.0" top="5.0" /&gt;
+    &lt;/GridPane.margin&gt;
+&lt;/Button&gt;
+</pre>
+        <p><span epub:type="pagebreak" title="261" id="Page_261"></span>The root container knows its controller, and the
+            children of the container know the name of controller’s method that handles events. In the calculator’s
+            example I have just one event handler for all buttons, and I copy and paste <code>onAction="#buttonClickHandler"</code> to
+            each of button. Alternatively, I could assign one event handler for the digit buttons and another for the
+            buttons that perform operations.</p>
+        <p>Now running the <code>Main</code> class and clicking on any button prints the message “Hello from controller”
+            on the console, which is not exactly what the calculator should do. But at least this proves that controller
+            receives events from the view. The next step is to enable the controller to send data back to the view.</p>
+        <p>Basically, there are two use cases for clicking the calculator’s buttons:</p>
+        <p>1. The user clicked the digit button, and the event handler should get the current value from the <code>TextField</code>
+            control, concatenate the label of the clicked button, and set the <code>TextField</code> to the new value.
+        </p>
+        <p>2. The user clicked the operation button, and the event handler has to recognize the selected operation and
+            apply the appropriate business logic.</p>
+        <p>You fully implement all calculator’s logic as an assignment in the Try It section of this lesson, but I
+            explain you how to recognize which button has been clicked and how to send the data from controller to
+            view.</p>
+        <section>
+            <h3><a id="idp18428976"></a>Recognizing the Source of the Event</h3>
+            <p>Each JavaFX event is <a id="idp18435648"></a><a id="idp18431904"></a>inherited from <a
+                    href="https://docs.oracle.com/javase/8/javafx/api/javafx/event/Event.html">javafx.event.Event</a>,
+                which has such fields as <code>source</code> and <code>target</code>. The <code>source</code> stores a
+                reference to the object where the event initially occurred. The <code>target</code> defines the object
+                where the event is handled. If the user clicks the component and the program is inside the event handler
+                for this component, both source and target point at the same object. </p>
+            <p>But each event travels through <a id="idp18439696"></a><a id="idp18441808"></a><a id="idp18442848"></a>the
+                container(s), where the component is located. This is a <i>capturing phase</i>. Then the event reaches
+                the target, the event handler processes it, and then event <i>bubbles up</i> back to the root container.
+                But the container(s) may also have event handlers, so while the event travels to the target, it may be
+                processed by the container’s handler, in which case the <code>target</code> doesn’t have the same value
+                as the <code>source</code>.</p>
+            <p>For <span epub:type="pagebreak" title="262" id="Page_262"></span>example, JavaFX has
+                <code>KeyEvent</code>, which the <a id="idp18447728"></a><a id="idp18449472"></a><a
+                        id="idp18450624"></a>run time provides to the keyboard event handlers. If your calculator has a
+                keyboard event handler on the <code>BorderPane</code> and on the nested <code>TextField</code>, and the
+                user clicked the key while the focus was in the <code>TextField</code>, the container’s event handler
+                receives the <code>KeyEvent</code> object where the <code>target</code> points at the
+                <code>TextField</code>, while the <code>source</code> points at the <code>BorderPane</code>. By the time
+                the event object reaches the event handler of the <code>TextField</code>, the <code>KeyEvent</code> has
+                both <code>source</code> and <code>target</code> pointing at the <code>TextField</code>.</p>
+            <p>In your calculator you don’t process container’s events, hence both the <code>source</code> and the
+                <code>target</code> point at the clicked button.  So checking the value of the
+                <code>ActionEvent.source</code> gives you the reference to the specific button, and by calling the
+                <code>getText()</code> method on the button you can find out its label and act accordingly. The
+                following version of the calculator recognizes and prints the label of the clicked button on the
+                console.</p>
+            <pre>
+package mycalculator;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
+public class CalculatorController {
+    
+  public void buttonClickHandler(ActionEvent evt){
+     
+    Button clickedButton = (Button) evt.getTarget();
+    System.out.println("You clicked on " + clickedButton.getText());
+  }    
+}
+</pre>
+            <p> Now let’s separate the processing of the operation and digit buttons using the <code>switch</code>
+                statement. All digits and the period button should simply change the content of the calculator’s <code>TextField</code>.
+                 The private <a id="idp18462176"></a><a id="idp18464128"></a><a id="idp18465680"></a><a
+                        id="idp18466992"></a>method <code>processDigit()</code> should do it. All operation buttons
+                should apply the application logic based on the selected operation. The private method <code>processOperation()</code>
+                should take care of that.</p>
+            <pre>
+public class CalculatorController {
+    
+  public void buttonClickHandler(ActionEvent evt){
+     
+    Button clickedButton = (Button) evt.getTarget();
+    String buttonLabel = clickedButton.getText();
+    
+    // Tell apart digits from operations
+    switch(buttonLabel){
+      case "0": case "1": case "2": case "3": case "4": case "5":
+      case "6": case "7": case "8": case "9": case "10": case ".":
+         processDigit(buttonLabel);
+         break;
+     default:
+         processOperation(buttonLabel);
+    }
+  }    
+  
+  private void processDigit(String buttonLabel){ 
+      System.out.println("You clicked on " + buttonLabel);        
+  }
+  
+  private void processOperation(String buttonLabel){
+      System.out.println("You selected operation " + buttonLabel);
+  }
+}
+</pre>
+            <p>Run the <code>Main</code> class now, and you see that system console properly recognizes the clicked
+                button and invokes either the method <code>processDigit()</code> or <code>processOperation()</code>.</p>
+        </section>
+        <section>
+            <h3><a id="idp18471968"></a>Passing Data from View to Controller and Back</h3>
+            <p><span epub:type="pagebreak" title="263" id="Page_263"></span>How can the <a id="idp18474448"></a><a
+                    id="idp18476240"></a>controller class access GUI components that were declared in FXML? If you
+                create both GUI and controller as Java classes, you write the code passing a  GUI object to the
+                controller as you did with <code>Calculator</code> and <code>CalclulatorEngine</code> in <a
+                        href="part0010.html">Lesson 9</a> in the section "<a
+                        href="part0010.html#how_to_pass_data_between_objects">How to Pass Data Between Objects</a>." 
+                But when the GUI is declared in FXML, you don’t instantiate the GUI—<code>FXMLLoader</code> does. </p>
+            <p>For such cases, JavaFX offers a simple solution: assign an ID to a component in the FXML file and the
+                variable with <a id="idp18481776"></a><a id="idp18482928"></a>the same name <i>annotated</i> with <code>@FXML</code>
+                in the controller class. This ensures that the Java variable is linked with the GUI component.  You read
+                about Java annotations in <a href="part0024.html#annotations_and_reflection">Lesson 23</a>. For
+                now, just trust me that the <code>@FXML</code> annotation magically <i>injects</i> the GUI component’s
+                reference into the controller’s variable. As a matter of fact, why just trust me if you can easily see
+                it in action?</p>
+            <p>First, add the <code>fx:id</code> attribute to the <code>&lt;TextField&gt;</code> tag of your calculator
+                in <code>Calculator.fxml</code>.  I decided to name this ID <code>displayField</code>.</p>
+            <pre>
+&lt;top&gt;
+   &lt;TextField <strong>fx:id="displayField"</strong> BorderPane.alignment="CENTER" /&gt;
+&lt;/top&gt;
+</pre>
+            <p>Accordingly, declare a variable <code>displayField</code> in the <code>CalculatorController</code> class
+                as follows: </p>
+            <pre>
+@FXML 
+private TextField displayField;
+</pre>
+            <p>Now you can use the variable <code>displayField</code> knowing that it always has the same value as the
+                GUI component having the same ID. The next version of  <code>CalculatorController</code> uses this
+                variable in the method <code>processDigit()</code>. First it gets the current value of the <code>displayField</code>
+                via <code>getText()</code>, then attaches the selected digit to it, and puts it back into the
+                variable <code>displayField</code> using the <code>setText()</code> method. </p>
+            <pre>
+package mycalculator;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+public class CalculatorController {
+    
+  <strong>@FXML                       
+  private TextField displayField;</strong>  
+    
+  public void buttonClickHandler(ActionEvent evt){
+     
+    Button clickedButton = (Button) evt.getTarget();
+    String buttonLabel = clickedButton.getText();
+    
+    // Tell apart digits from operations
+    switch(buttonLabel){
+      case "0": case "1": case "2": case "3": case "4": case "5":
+      case "6": case "7": case "8": case "9": case "10": case ".":  
+         processDigit(buttonLabel);
+         break;
+     default:
+         processOperation(buttonLabel);
+    }
+  }    
+  
+  private void processDigit(String buttonLabel){ 
+      
+      <strong>displayField.setText(displayField.getText() + buttonLabel);
+</strong>  }
+  
+  private void processOperation(String buttonLabel){
+      System.out.println("You selected operation " + buttonLabel);
+  }
+}
+</pre>
+            <p>In <a href="part0004.html#switch_statement">Lesson 3</a> I mention that if you forget to write the <code>break</code>
+                statement in a <code>case</code> clause, the code falls through. In the method
+                <code>processDigit()</code> I do this on purpose to avoid writing <code>processDigit()</code> and <code>break</code>
+                for each clause. <a id="fig-anc-c019-0011" href="part0020.html#fig-c019-0011">Figure 19-11</a> shows a
+                screenshot of the running calculator after I clicked the buttons 1,5,9,.,2, and 3.</p>
+            <p><span epub:type="pagebreak" title="264" id="Page_264"></span>The <code>processDigit()</code> method
+                illustrated the process of passing data from GUI to controller and back. In the Try It section you need
+                to implement the  <code>processOperation()</code> method to complete the calculator.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp18503328"></a>The @FXML Annotation</h3>
+                    <p>You can <a id="idp18503808"></a><a id="idp18506960"></a>annotate fields and methods that return
+                        void with the <code>@FXML</code> annotation. If you add to the controller class the
+                        method <code>initialize()</code> annotated with <code>@FXML</code>, <code>FXMLLoader</code> .
+                        Java runtime invokes this method <i>after</i> all GUI components are constructed. In particular,
+                        this can be useful if you want to use binding and want to make sure that all GUI components are
+                        <a id="idp18510416"></a><a id="idp18512064"></a><a id="idp18514080"></a>already constructed.</p>
+                    <pre>
+@FXML public void initialize() {
+  myComponent1.textProperty().bind(myComponent2); 
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <figure>
+                <img class="center" src="../Images/image00555.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c019-0011" href="part0020.html#fig-anc-c019-0011">Figure 19-11</a>:</b></span>
+                        The <span epub:type="pagebreak" title="265" id="Page_265"></span>Calculator view after entering
+                        the number 159.23</p>
+                </figcaption>
+            </figure>
+        </section>
+    </section>
+</section>
+<section>
+    <h2><a id="strategy"></a>Programming Tic-Tac-Toe</h2>
+    <p>Now that you are familiar <a id="game1"></a><a id="game2"></a>with the basics of creating a GUI with FXML and
+        Scene Builder, this section shows you how easy it is to program a tic-tac-toe game. </p>
+    <section>
+        <h3><a id="idp18522320"></a>The Game Strategy</h3>
+        <p>Every game implements some algorithm—a set of rules or a strategy that has to be applied depending on the
+            player’s actions. You need to come up with a simple algorithm for the tic-tac-toe game.</p>
+        <p>If you aren’t familiar with tic-tac-toe, or if it has a different name in your part of the world, read the <a
+                href="http://en.wikipedia.org/wiki/Tic-tac-toe">Wikipedia article</a> about this game. For the version
+            of the popular game that you’re building, implement the following strategy:</p>
+        <ul>
+            <li>The game is played by two players on a two-dimensional 3x3 board.</li>
+            <li>Two players can play this game. One plays with the symbol X, and the other uses the symbol O.</li>
+            <li>The winner must have a full row, column, or diagonal of Xs or Os.</li>
+            <li>After each move, the program has to check whether there is a winner.</li>
+            <li>The winning combination has to be highlighted.</li>
+            <li>After the winner is found or there is no empty square left the players may select Actions → Play to play
+                again.
+            </li>
+            <li>In a new game the first player plays with Xs.</li>
+        </ul>
+    </section>
+    <section>
+        <h3><a id="idp18524512"></a>Designing <span epub:type="pagebreak" title="266" id="Page_266"></span>Tic-Tac-Toe
+            GUI with FXML and CSS</h3>
+        <p>Create <a id="design1"></a><a id="design2"></a>new JavaFX project titled TicTacToe. Select the language FXML,
+            specify the package name <code>tictactoe</code>, the  class name <code>TicTacToe</code> and the controller’s
+            name as  <code>TicTacToeController</code>. In the generated <code>Main</code> class make two changes: set
+            the scene size to 300 by 320 pixels and disable stage resizing.</p>
+        <pre>
+public class Main extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            BorderPane root = (BorderPane)FXMLLoader.load(getClass()
+                              .getResource("TicTacToe.fxml"));
+            Scene scene = new Scene(root,<strong>300,320</strong>);
+            scene.getStylesheets().add(getClass()
+                .getResource("application.css").toExternalForm());
+            primaryStage.setScene(scene);
+            <strong>primaryStage.setResizable(false);</strong>
+            primaryStage.show();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+</pre>
+        <p>Your tic-tac-toe game is going to have a menu bar in the <code>Top</code> area of the <code>BorderPane</code>,
+            and in the  <code>Center</code> you add a <code>GridPane</code> having three rows and three columns.</p>
+        <p>JavaFX menus are created as a hierarchy. A <code>Menu</code> component can contain one or more
+            <code>MenuItem</code>’s and other <code>Menu</code> components. You can also create a <code>MenuBar</code> or
+            a <code>ContextMenu</code> that includes one or more <code>Menu</code> components. I’m just explaining how
+            to create a menu for the tic-tac-toe application, but you can read more about JavaFX menus by visiting the
+            <a href="https://docs.oracle.com/javafx/2/ui_controls/menu_controls.htm">Oracle tutorial</a> on this
+            subject. </p>
+        <p>In Scene Builder, drop the <code>MenuBar</code> component from the Controls panel onto the line that reads
+            “Insert TOP”  in the <code>BorderPane</code> at the bottom left panel.</p>
+        <p>Expand the <code>MenuBar</code> in the Hierarchy panel. It has the default menus named File, Edit, and Help.
+            There is nothing to edit in tic-tac-toe, so right-click Edit and select Delete. Rename the File menu as
+            Actions using the Properties panel of Scene Builder. The <code>Menu</code> File was created with the <code>MenuItem</code>
+            Close, which you should rename as Quit.</p>
+        <p>Drop a <code>MenuItem</code> onto the menu Actions. Scene Builder automatically creates the menu item
+            Unspecified Action. Rename it as Play. </p>
+        <p>The <code>Menu</code> Help was originally created with the <code>MenuItem</code> About. Drop another <code>MenuItem</code>
+            component onto the menu Help. Scene Builder by default creates the menu item Unspecified Action. Rename it
+            as How to Play.</p>
+        <p>Now drop a <code>GridPane</code> from the Containers panel onto the center of the <code>BorderPane</code> and
+            add a column to change the grid dimensions to be 3x3. </p>
+        <p>Change <span epub:type="pagebreak" title="267" id="Page_267"></span>the preferred height of each row to 100
+            by selecting each row and entering 100 in the Pref Height field on the right panel named Layout:
+            RowConstraints. Your Scene Builder’s window should look like <a id="fig-anc-c019-0012"
+                                                                            href="part0020.html#fig-c019-0012">Figure
+                19-12</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00556.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0012" href="part0020.html#fig-anc-c019-0012">Figure 19-12</a>:</b></span>
+                    The BorderPane layout with the menu bar and the 3x3 grid</p>
+            </figcaption>
+        </figure>
+        <p>If you run the <code>Main</code> class, it opens the window with the menu bar on top as shown in <a
+                id="fig-anc-c019-0013" href="part0020.html#fig-c019-0013">Figure 19-13</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00557.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0013" href="part0020.html#fig-anc-c019-0013">Figure 19-13</a>:</b></span>
+                    TicTacToe <span epub:type="pagebreak" title="268" id="Page_268"></span>with the menu bar and the
+                    empty grid</p>
+            </figcaption>
+        </figure>
+        <p>Now you need to add nine buttons to the grid as youdid for the calculator earlier in this lesson. Each button
+            should occupy the entire cell. Buttons should have no labels; you set them programmatically to <b>X</b> or
+            <b>O</b> during the game play.</p>
+        <p>Open the generated file <code>TicTacToe.fxml</code> in Eclipse and simplify it. Remove rows and columns
+            constraints and add nine buttons with preferred width and height of 100 to the <code>GridPane</code> so it
+            looks like the following snippet:</p>
+        <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?import java.lang.*?&gt;
+&lt;?import javafx.scene.control.*?&gt;
+&lt;?import javafx.scene.layout.*?&gt;
+&lt;?import javafx.scene.layout.BorderPane?&gt;
+&lt;BorderPane xmlns="http://javafx.com/javafx/8" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="tictactoe.TicTacToeController"&gt;
+   &lt;top&gt;
+      &lt;MenuBar BorderPane.alignment="CENTER"&gt;
+        &lt;menus&gt;
+          &lt;Menu text="Actions"&gt;
+            &lt;items&gt;
+              &lt;MenuItem text="Play" /&gt;
+              &lt;MenuItem text="Quit" /&gt;
+            &lt;/items&gt;
+          &lt;/Menu&gt;
+          &lt;Menu text="Help"&gt;
+            &lt;items&gt;
+              &lt;MenuItem text="About" /&gt;
+              &lt;MenuItem text="How to play" /&gt;
+            &lt;/items&gt;
+          &lt;/Menu&gt;
+        &lt;/menus&gt;
+      &lt;/MenuBar&gt;
+   &lt;/top&gt;
+   &lt;center&gt;
+      &lt;GridPane fx:id ="gameBoard" BorderPane.alignment="CENTER"&gt;
+         &lt;children&gt;
+          &lt;Button fx:id="b1" prefHeight="100.0" prefWidth="100.0" /&gt;
+          &lt;Button fx:id="b2" prefHeight="100.0" prefWidth="100.0" 
+                              GridPane.columnIndex="1" /&gt;
+          &lt;Button fx:id="b3" prefHeight="100.0" prefWidth="100.0" 
+                              GridPane.columnIndex="2" /&gt;
+          &lt;Button fx:id="b4" prefHeight="100.0" prefWidth="100.0"
+                              GridPane.rowIndex="1" /&gt;
+          &lt;Button fx:id="b5" prefHeight="100.0" prefWidth="100.0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1" /&gt;
+          &lt;Button fx:id="b6" prefHeight="100.0" prefWidth="100.0"
+                   GridPane.columnIndex="2" GridPane.rowIndex="1" /&gt;
+          &lt;Button fx:id="b7" prefHeight="100.0" prefWidth="100.0"
+                              GridPane.rowIndex="2" /&gt;
+          &lt;Button fx:id="b8" prefHeight="100.0" prefWidth="100.0"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2" /&gt;
+          &lt;Button fx:id="b9" prefHeight="100.0" prefWidth="100.0" 
+                   GridPane.columnIndex="2" GridPane.rowIndex="2" /&gt;
+         &lt;/children&gt;
+      &lt;/GridPane&gt;
+   &lt;/center&gt;
+&lt;/BorderPane&gt;
+</pre>
+        <p><span epub:type="pagebreak" title="269" id="Page_269"></span>Run the <code>Main</code> class, and you see the
+            tic-tac-toe board with the menu on top as shown in <a id="fig-anc-c019-0014"
+                                                                  href="part0020.html#fig-c019-0014">Figure 19-14</a>.
+            Note that the first button has a focus rendered as a blue border.</p>
+        <figure>
+            <img class="center" src="../Images/image00558.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0014" href="part0020.html#fig-anc-c019-0014">Figure 19-14</a>:</b></span>
+                    TicTacToe <span epub:type="pagebreak" title="270" id="Page_270"></span>with the focus border on the
+                    first button</p>
+            </figcaption>
+        </figure>
+        <p>To remove the focus border you need to change the attributes of the buttons in the generated empty <code>application.css</code>
+            file. Theoretically, the style attribute <code>-fx-focus-color: transparent;</code> should do the trick, but
+            in programming not everything works by the book.  Here’s the style that removes the focus border:</p>
+        <pre>
+.button{
+    -fx-focus-color: transparent;
+    -fx-background-insets: -1, 0, 1, 1;
+}
+</pre>
+        <p>The class <code>Main</code> loads the file <code>application.css</code> and applies its styles to the
+            matching components on stage. (See <a id="fig-anc-c019-0015" href="part0020.html#fig-c019-0015">Figure
+                19-15</a>.)</p>
+        <figure>
+            <img class="center" src="../Images/image00559.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0015" href="part0020.html#fig-anc-c019-0015">Figure 19-15</a>:</b></span>
+                    TicTacToe <span epub:type="pagebreak" title="271" id="Page_271"></span>without the focus border on
+                    the first button</p>
+            </figcaption>
+        </figure>
+        <p>The GUI is ready. Now program the application logic in the controller class. There are two players in this
+            game. The first one places Xs on the blank buttons and the other one uses Os.  Hence, you need to keep track
+            of the player’s number. When the player clicks the button, the event handler should place the appropriate
+            label on the button. The code of the <code>TicTacToeController</code> takes care of this functionality:</p>
+        <pre>
+public class TicTacToeController {
+   private boolean isFirstPlayer = true;
+   
+   public void buttonClickHandler(ActionEvent evt){
+         
+        Button clickedButton = (Button) evt.getTarget();
+        String buttonLabel = clickedButton.getText();
+        
+        if ("".equals(buttonLabel) &amp;&amp; isFirstPlayer){
+            clickedButton.setText("X");
+            isFirstPlayer = false;
+        } else if("".equals(buttonLabel) &amp;&amp; !isFirstPlayer){
+            clickedButton.setText("O");
+            isFirstPlayer = true;
+        }
+   }        
+}
+</pre>
+        <p>Add <code>onAction="#buttonClickHandler"</code> to each <code>Button</code> tag in the
+            <code>TicTacToe.fxml</code> and run the <code>Main</code> program. Start clicking empty squares, and the
+            program takes turns in placing the Xs and Os on them as shown in <a id="fig-anc-c019-0016"
+                                                                                href="part0020.html#fig-c019-0016">Figure
+                19-16</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00560.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0016" href="part0020.html#fig-anc-c019-0016">Figure 19-16</a>:</b></span>
+                    The <span epub:type="pagebreak" title="272" id="Page_272"></span>game after the three clicks on the
+                    buttons</p>
+            </figcaption>
+        </figure>
+        <p>Increase the size of the letters X and O by adding font style attributes to the <code>application.css</code>
+            file to make it looks like this:</p>
+        <pre>
+.button{
+    -fx-focus-color: transparent;
+    -fx-background-insets: -1, 0, 1, 1;
+<strong>    -fx-font-weight: bold;
+    -fx-font-size: 36;
+    -fx-text-fill: blue;</strong> 
+}
+</pre>
+        <p>Now the tic-tac-toe window shows large and bold Xs and Os in blue, as shown in <a id="fig-anc-c019-0017"
+                                                                                             href="part0020.html#fig-c019-0017">Figure
+            19-17</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00561.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0017" href="part0020.html#fig-anc-c019-0017">Figure 19-17</a>:</b></span>
+                    TicTacToe <span epub:type="pagebreak" title="273" id="Page_273"></span>with the styled button labels
+                </p>
+            </figcaption>
+        </figure>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp18585904"></a>Styling with Scene Builder</h3>
+                <p>All JavaFX components are pre-styled, and the combination of the styles is called
+                    <i>a</i> <i>theme</i>.</p>
+                <p>The default theme of all JavaFX components is called caspian. By defining your own CSS rules you can
+                    override the defaults. Scene Builder includes the View → Show CSS Analyzer menu to enable you to see
+                    the default styles of your GUI components. If you’re interested in learning more about styling with
+                    Scene Builder, watch the video titled "<a href="https://www.youtube.com/watch?v=7Nu3_5doZK4">In-Depth
+                        Layout and Styling with the JavaFX Scene Builder</a>“.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Both the FXML and CSS files of the tic-tac-toe game are ready and the class <code>TicTacToeController</code> knows
+            how to properly set the buttons’ labels for the first and second players.</p>
+        <p>Now’s the time to write some Java <a id="idp18594832"></a><a id="idp18589520"></a>code in <a
+                id="idp18591104"></a><a id="idp18596464"></a>the controller to implement the game rules.</p>
+    </section>
+    <section>
+        <h3><a id="idp18531872"></a>Implementing Game Strategy in Tic-Tac-Toe Controller</h3>
+        <p>It’s time to <a id="strategy1"></a><a id="strategy2"></a><a id="strategy3"></a><a id="strategy4"></a>implement
+            the game rules in the <code>TicTacToeController</code> class. On each button click you need to check whether
+            there is a winner. If there is, the program should highlight the winning combination.</p>
+        <p>You’re going to write a method <code>find3InARow()</code>, which checks each row, column, and diagonal on the
+            board to see if they have the same labels. The method <code>find3InARow()</code> is invoked from the method
+            <code>buttonClickHandler()</code>. If the winning combination is found, the program invokes the method
+            <code>highlightWinningCombo()</code> to show the winning combination in a different style. </p>
+        <p>To <span epub:type="pagebreak" title="274" id="Page_274"></span>compare the labels of the buttons you need to
+            have references to their <code>Button</code> objects, which you get using the injection mechanism offered by
+            the <code>@FXML</code> annotation. You also need to have a reference to the <code>GridPane</code>, which is
+            a container for all buttons. You see its use in the section "<a href="part0020.html#menuplay">Handling the
+                Tic-Tac-Toe Menu Play</a>.”</p>
+        <pre>
+   @FXML Button b1; 
+   @FXML Button b2;
+   @FXML Button b3;
+   @FXML Button b4;
+   @FXML Button b5;
+   @FXML Button b6;
+   @FXML Button b7;
+   @FXML Button b8;
+   @FXML Button b9;   
+   @FXML GridPane gameBoard;
+</pre>
+        <p>The code of the method <code>find3InARow()</code> is shown next and is self-explanatory:</p>
+        <pre>
+private boolean find3InARow(){
+       //Row 1
+       if (""!=b1.getText() &amp;&amp; b1.getText() == b2.getText() 
+           &amp;&amp; b2.getText() == b3.getText()){
+           highlightWinningCombo(b1,b2,b3);
+           return true;
+       }
+       //Row 2
+       if (""!=b4.getText() &amp;&amp; b4.getText() == b5.getText() 
+           &amp;&amp; b5.getText() == b6.getText()){
+           highlightWinningCombo(b4,b5,b6);
+           return true;
+       }
+       //Row 3
+       if (""!=b7.getText() &amp;&amp; b7.getText() == b8.getText() 
+           &amp;&amp; b8.getText() == b9.getText()){
+           highlightWinningCombo(b7,b8,b9);
+           return true;
+       }
+       //Column 1
+       if (""!=b1.getText() &amp;&amp; b1.getText() == b4.getText() 
+           &amp;&amp; b4.getText() == b7.getText()){
+           highlightWinningCombo(b1,b4,b7);
+           return true;
+       }
+       //Column 2
+       if (""!=b2.getText() &amp;&amp; b2.getText() == b5.getText() 
+           &amp;&amp; b5.getText() == b8.getText()){
+           highlightWinningCombo(b2,b5,b8);
+           return true;
+       }
+       //Column 3
+       if (""!=b3.getText() &amp;&amp; b3.getText() == b6.getText() 
+           &amp;&amp; b6.getText() == b9.getText()){
+           highlightWinningCombo(b3,b6,b9);
+           return true;
+       }
+       //Diagonal 1
+       if (""!=b1.getText() &amp;&amp; b1.getText() == b5.getText() 
+           &amp;&amp; b5.getText() == b9.getText()){
+           highlightWinningCombo(b1,b5,b9);
+           return true;
+       }
+       //Diagonal 2
+       if (""!=b3.getText() &amp;&amp; b3.getText() == b5.getText() 
+           &amp;&amp; b5.getText() == b7.getText()){
+           highlightWinningCombo(b3,b5,b7);
+           return true;
+       }       
+       return false;
+   }
+</pre>
+        <p><span epub:type="pagebreak" title="275" id="Page_275"></span>To highlight the winning combination you need to
+            dynamically change the styles of the winning buttons by invoking the method <code>setStyle()</code> on them.
+            I want to change the background to a gradient color and the color of the button labels to red. You can read
+            about gradients in the <a
+                    href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/doc-files/cssref.html">JavaFX CSS
+                Reference</a> and find the <a
+                    href="https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html#typecolor">popular CSS
+                color names</a> there, too. The first version of the method <code>highlightWinningCombo()</code> may
+            look as follows:</p>
+        <pre>
+private void highlightWinningCombo(Button first, Button second, 
+                                                    Button third){
+  first.setStyle("-fx-background-color:
+       radial-gradient(radius 100%, white, lightyellow, lawngreen);
+                  -fx-text-fill: red;");
+  second.setStyle("-fx-background-color:
+       radial-gradient( radius 100%, white, lightyellow, lawngreen);
+                  -fx-text-fill: red;");
+  third.setStyle("-fx-background-color:
+       radial-gradient( radius 100%, white, lightyellow, lawngreen);
+                  -fx-text-fill: red;");
+}
+</pre>
+        <p><a id="fig-anc-c019-0018" href="part0020.html#fig-c019-0018">Figure 19-18</a> shows how the winning
+            combination may look.</p>
+        <figure>
+            <img class="center" src="../Images/image00562.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c019-0018" href="part0020.html#fig-anc-c019-0018">Figure 19-18</a>:</b></span>
+                    Highlighting the winning combination with gradient colors</p>
+            </figcaption>
+        </figure>
+        <p>Changing <span epub:type="pagebreak" title="276" id="Page_276"></span>the styles of the buttons works, but I
+            don’t like the fact that the CSS styles are hardcoded in the Java code. The better way is to define a class
+            selector in the CSS file and apply it when needed. Add the following CSS class selector to the file <code>application.css</code>:
+        </p>
+        <pre>
+.winning-button {
+  -fx-background-color: 
+       radial-gradient( radius 100%, white, lightyellow, lawngreen);
+  -fx-text-fill: red;
+}
+</pre>
+        <p>Now the method <code>highlightWinningCombo()</code> can apply this style to the button by adding the style
+            <code>winning-button</code> as needed. The better version of <code>highlightWinningCombo()</code> looks like
+            this:</p>
+        <pre>
+private void highlightWinningCombo(Button first, Button second, 
+                                                     Button third){
+  first.getStyleClass().add("winning-button");
+  second.getStyleClass().add("winning-button");
+  third.getStyleClass().add("winning-button");
+}
+</pre>
+        <p>Now if you (or the graphic designer) decide to change the style of the winning button, there is no <a
+                id="idp18630944"></a><a id="idp18629280"></a><a id="idp18632352"></a><a id="idp18633744"></a> need to
+            modify Java code and recompile the program. Modifying the content of the file <code>application.css</code>
+            in any plain text editor is all that’s needed.</p>
+    </section>
+    <section>
+        <h3><a id="menuplay"></a>Handling the Tic-Tac-Toe Menu Play</h3>
+        <p>The <span epub:type="pagebreak" title="277" id="Page_277"></span>good <a id="idp18637824"></a><a
+                id="idp18639680"></a>news is that clicks on menu items are processed the same way as clicks on buttons.
+            You just implement the menu Play so the users can start a new game when either a winning combination is
+            found or there is no winner at all.</p>
+        <p>In the file <code>TicTacToe.fxml</code>, assign an event handler for the menu Play, like so:</p>
+        <pre>
+&lt;MenuItem text="Play" onAction="#menuClickHandler"/&gt;
+</pre>
+        <p>When the user clicks the Play menu item,  the controller needs to reset the labels of all the buttons and
+            remove styling from the winning buttons. The most concise  way to do it is to get a hold of all children of
+            <code>GridPane</code> and call  <code>forEach()</code> passing a short lambda expression to it. This is what
+            the method <code>menuClickHandler()</code> looks like:</p>
+        <pre>
+   public void menuClickHandler(ActionEvent evt){
+        MenuItem clickedMenu = (MenuItem) evt.getTarget();
+        String menuLabel = clickedMenu.getText();
+        
+        if ("Play".equals(menuLabel)){
+            ObservableList&lt;Node&gt; buttons = 
+                     gameBoard.getChildren();
+            
+            buttons.forEach(btn -&gt; {
+                ((Button) btn).setText("");  
+                btn.getStyleClass().remove("winning-button");
+            });
+            isFirstPlayer = true;  // new game starts with X
+        }
+   }
+</pre>
+        <p>The package <code>javafx.collections</code> contains classes and interfaces or <a
+                href="https://docs.oracle.com/javase/8/javafx/collections-tutorial/collections.htm">JavaFX Collection
+            API</a>, which is an extension of Java Collections Framework, and you can find the description of all of
+            them in <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/collections/package-summary.html">Oracle
+                documentation</a>.  Your method <code>menuClickHandler()</code> uses one of these interfaces: <code>ObservableList</code> . 
+            This collection was created to listen to the events that may happen to its elements, but I use it to store
+            references to children of the <code>GridPane</code>.</p>
+        <p>The method <code>getChildren()</code> returns a collection of <code>Node</code> instances
+            (each <code>Button</code> is a descendant of <code>Node</code>). Then you"erase" the label of each button
+            and remove that fancy style of winning buttons. Finally youreset the value of <code>isFirstPlayer</code> so
+            the first move places X on the clicked button. That’s all there is to it.  Play the game!</p>
+    </section>
+    <section>
+        <h3><a id="idp18654480"></a>Tic-Tac-Toe: What to Try Next</h3>
+        <p>Your tic-tac-toe game is ready. Of course, there are things that can be improved to make this game more of a
+            commercial grade. For example, you can remove all event handlers by
+            calling <code>removeEventHandler()</code> on all buttons when the winner is found. You may consider offering
+            the user to set the dimensions of the playing board <span epub:type="pagebreak" title="278"
+                                                                      id="Page_278"></span>rather than using a 3x3
+            board. In this case, I recommend you create the GUI in Java and dynamically create arrays of buttons based
+            on the user’s selection. You may add the Save History feature, too. </p>
+        <p>You can add an option to play against the computer instead of having a second player. In that case, you may
+            need to get  familiar with the Minimax, a decision rule algorithm from Game Theory. <a
+                    href="https://www.youtube.com/watch?v=3sbGRBjsf0o">This YouTube video</a> will help you to see how
+            it can be applied to the tic-tac-toe game. </p>
+    </section>
+</section>
+<section>
+    <h2><a id="idp18655744"></a>JavaFX on the Web and Mobile Devices</h2>
+    <p>JavaFX applications <a id="idp18657408"></a><a id="idp18659120"></a><a id="idp18660448"></a>can run inside web
+        browsers provided the user’s computer has JavaFX run time installed. There is a <a
+                href="http://docs.oracle.com/javafx/2/deployment/deployment_toolkit.htm">Deployment Kit</a> to
+        auto-detect whether the user has such a run time and install it if necessary. Unfortunately the detection and
+        installation process is not a simple one, so using JavaFX application inside web browsers is not a good idea for
+        consumer-oriented applications. It’s possible in controlled environments, such as inside an organization where
+        the required Java run time can be installed on the user’s desktops.</p>
+    <p>If you’re wondering whether it’s possible to use JavaFX for writing applications for smartphones, Oracle doesn’t
+        offer the JavaFX libraries for mobile platforms, but it’s possible.</p>
+    <p>To develop JavaFX applications for iOS, you need to install and learn some additional software, namely <a
+            href="http://www.robovm.com/">RoboVM</a>, which is a software development kit (SDK) for converting Java
+        bytecode into the native device code as if it was written in the C programming language. </p>
+    <p>There is also a community site called <a href="http://javafxports.org/page/home">JavaFXPorts</a>, where people
+        offer solutions for deployment of JavaFX applications on iOS and Android devices. </p>
+</section>
+<section>
+    <h2><a id="try_it-id00037"></a>Try It</h2>
+    <p>The goal of the <a id="idp18663744"></a><a id="idp18666544"></a>next assignment is to implement the application
+        logic for the operation buttons in the Calculator project created earlier in this lesson. By the time the user
+        clicks one of the operation buttons, the <code>displayField</code> variable in <code>CalculatorController</code> already
+        has some value.  I’ve written the step-by-step instructions for implementing only the plus operation, and you
+        need to implement other operations similarly.  </p>
+    <section>
+        <h3><a id="lesson_requirements-id00038"></a>Lesson Requirements</h3>
+        <p>You should have Eclipse with the E(fx)clipse plug-in installed. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this Try
+                    It from the book’s web pa</i><i>ge at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                    Yo</i><i>u can find them in the Lesson19.zip.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h3><a id="step-by-step-id00039"></a>Step-by-Step</h3>
+        <p>As <span epub:type="pagebreak" title="279" id="Page_279"></span>you see, I use the wrapper class
+            <code>Double</code> to convert <code>String</code> into a numeric value before using it in the addition.  
+        </p>
+        <ol>
+            <li>Import the Eclipse project Lesson19.</li>
+            <li>Run the <code>Main</code> class from the <code>mycalculator</code> package to see that clicks on digit
+                buttons are properly shown in the display field.
+            </li>
+            <li>To perform an operation on two numbers you need to know their values and the selected operation. The
+                calculator’s display field shows only one number at a time, so you need to store the first entered value
+                in a program variable. <span>You</span> may <span>also</span> <span>store</span> the <span>result</span>
+                <span>of</span> <span>the</span> performed <span>operation</span> <span>in</span> <span>a</span> <span>separate variable. Keep in mind that the value in the display field is represented by a string of characters.  Declare the following fields in the <code>CalculatorContoller</code> class:</span>
+                <pre>
+  private String previousValue="";
+  private String currentValue="";
+  private double result;</pre>
+            </li>
+            <li><span>Write a method to add two numbers. Initially, if the user enters the first number and clicks on the plus button, you just need to store the entered value in <code>previousValue</code> and clean the display field so the user can enter the second one. If the user clicks the plus  button and the <code>previousValue</code> is not empty, sum the current and previous values and display the result. The first version of the method may look as follows:</span>
+                <pre>
+  private void addNumbers(){
+      if ("".equals(previousValue)){
+          previousValue = displayField.getText();
+          displayField.setText("");         
+      } else{
+          currentValue = displayField.getText(); 
+          result = Double.parseDouble(previousValue) + 
+                   Double.parseDouble(currentValue); 
+          displayField.setText("" + result);  
+      }
+  }</pre>
+            </li>
+            <li><span> </span>The controller should call the method <code>addNumbers()</code> if the user clicked one of
+                the buttons: plus or equal.  You may also need to remember the last operation being performed. Hence,
+                add the following variable declaration:
+                <pre>
+  private String lastOperation;
+</pre>
+                Modify the  method <code>processOperation()</code> in <code>CalculatorController</code> to look like
+                this:
+                <pre>
+  private void processOperation(String buttonLabel){
+      switch (buttonLabel) {
+        case "+":
+              lastOperation = "+";
+              addNumbers();
+              break;      
+        case "=":
+              processOperation(lastOperation);  // recursion
+      }             
+  }
+</pre>
+                The <span epub:type="pagebreak" title="280" id="Page_280"></span>term <i><a
+                        href="http://en.wikipedia.org/wiki/Recursion_(computer_science)">recursion</a> </i> describes a
+                situation when a function or a method calls itself.  Recursion helps avoiding code duplication. Because
+                you want to repeat the same actions if the user clicks the plus or equal button, using recursion makes
+                sense.
+            </li>
+            <li>Run the <code>Main</code> class, and you should be able to enter and add two numbers. But to support a
+                scenario when the user wants to perform several consecutive additions, you need to add a little more
+                code to catch the moment if the user continues clicking a digit right after the operation has been
+                performed. In this case you need to store the <code>result</code> value in the variable <code>previousValue</code>,
+                and clean the display field so the user can enter the next number to add. <br/>
+                  
+            </li>
+            <li>Implement other operations similarly to addition. Add input validation: Don’t allow the user to enter
+                more than one period in the number. Don’t allow division by zero.
+            </li>
+            <li>Compare the FXML implementation of the calculator’s GUI with the Java version from <a
+                    href="part0019.html#try_it-id00034_ch18">Try It section</a> from <a href="part0019.html">Lesson
+                18</a> .
+            </li>
+        </ol>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0020.html">Lesson
+                    19</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                    will also be able to download the code and resources for this lesson from the website.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+</section>
+</body>
+</html>

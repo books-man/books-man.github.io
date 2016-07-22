@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Object-Oriented Programming with Java</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="object-oriented_programming"></a><span class="chapterTitle">Lesson 3<br/>Object-Oriented Programming with Java</span></h1>
+
+<section>
+<p>Starting <span epub:type="pagebreak" title="21" id="Page_21"></span>with this lesson, you study various elements of the Java language with brief descriptions to get you started with programming in the shortest possible time. But you are certainly encouraged to refer to the extensive Java SE documentation that’s available online at <code><a href="http://docs.oracle.com/javase/8/">http://docs.oracle.com/javase/8/</a></code>.</p>
+</section>
+<section>
+<h2><a id="referencingobjects"></a>Classes and Objects</h2>
+<p>Java is an <a id="OOPclass"></a><a id="OOPobject"></a>object-oriented language, which means that it has constructs to represent objects from the real world. Each Java program has at least one class that knows how to do certain things or how to represent some type of object. For example, the simplest class, <code>HelloWorld</code>, knows how to greet the world.</p>
+<p>Classes <a id="idp13306016"></a><a id="idp13307408"></a><a id="idp13308384"></a><a id="idp13310192"></a><a id="idp13311552"></a>in Java may have methods and fields (also known as attributes). Methods represent actions or functions that a class can perform. Up until Java 8, every function had to be represented as a method of some class. Lambda expressions (see <a href="part0015.html#working_with_streams">working_with_streams</a>) give more freedom to functions, but for now the focus is on the Java foundation — classes, methods, and fields.</p>
+<p>Let’s create and discuss a class named <code>Car</code>. This class will have <i>methods</i>, describing what this type of vehicle can do, such as start the engine, shut it down, accelerate, brake, lock the doors, and so on.</p>
+<p>This class will also have some <i>fields</i>: body color, number of doors, sticker price, and so on.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c03-001" href="part0004.html#list-anc-c03-001">Listing 3-1</a>:</span> Class Car</h5>
+<pre>
+class Car{
+    String color;
+    int numberOfDoors;
+    void startEngine() {
+       // Some code goes here
+    }
+    void stopEngine() {
+         int tempCounter=0;
+      // Some code goes here
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p><span epub:type="pagebreak" title="22" id="Page_22"></span>In some code samples you’ll see the comments, “Some code goes here.” I do this to avoid distracting you from something that is not relevant to the subject of discussion. At this point, you couldn’t care less about the algorithm of starting the engine. You’re getting familiar with the structure of a Java class.</p>
+<p><code>Car</code> represents common features for many different cars: All cars have such attributes as color and number of doors, and all of them perform similar actions. You can be more specific and create another Java class called <code>JamesBondCar</code>. It’s still a car, but with some attributes specific to the model created for James Bond (see <a id="list-anc-c03-002" href="part0004.html#list-c03-002">Listing 3-2</a>). You can say that the class <code>JamesBondCar</code> is a <i>subclass</i> of <code>Car</code>, or, using Java syntax, <code>JamesBondCar extends Car</code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c03-002" href="part0004.html#list-anc-c03-002">Listing 3-2</a>:</span> Class JamesBondCar</h5>
+<pre>
+class JamesBondCar extends Car{
+    int currentSubmergeDepth;
+    boolean isGunOnBoard=true;
+    final String MANUFACTURER;
+    void submerge() {
+        currentSubmergeDepth = 50;
+       // Some code goes here
+    }
+    void surface() {
+      // Some code goes here
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>As you can guess from the method names, the James Bond’s car not only drives, but it can go under water and then resurface. But even after defining all the attributes and methods for the class <code>JamesBondCar</code>, you can’t “drive it," even on the computer screen. A Java class is like a blueprint in construction or engineering; until you build real objects based on this blueprint, you can’t use them.</p>
+<p>Creating <a id="idp13327504"></a><a id="idp13329872"></a><a id="idp13331328"></a>objects, also known as <i>instances</i>, based on classes is the equivalent of building real cars based on blueprints. To create an instance of a class means to create the object in the computer’s memory based on the class definition.</p>
+<p>To instantiate a class (to put a car on the road), you <a id="idp13334736"></a><a id="idp13333808"></a><a id="idp13336528"></a>declare a <i>variable</i> of this class’s type, and use the <code>new</code> operator for each new instance of the car:</p>
+<pre>
+JamesBondCar car1 = new JamesBondCar();
+JamesBondCar car2 = new JamesBondCar();</pre>
+<p>Now <span epub:type="pagebreak" title="23" id="Page_23"></span>the variables <code>car1</code> and <code>car2</code> can be used to refer to the first and second instance of the <code>JamesBondCar</code>, respectively. To be precise, declaring the variables pointing at the instances is needed if you are planning to refer to these instances in the program. The variables <code>car1</code> and <code>car2</code> become your access points to the corresponding instance of a <code>Car</code>, as <a id="fig-anc-c03-001" href="part0004.html#fig-c03-001">Figure 3-1</a> depicts.</p>
+<figure>
+<img class="center" src="../Images/image00511.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c03-001" href="part0004.html#fig-anc-c03-001">Figure 3-1</a>:</b></span>  Instantiating two Car objects </p>
+</figcaption>
+</figure>
+<p>The statement <code>new JamesBondCar()</code> creates the instance <a id="idp13348400"></a><a id="idp13349824"></a><a id="idp13351072"></a><a id="idp13352224"></a>of this class in <i>heap memory</i>. In the real world, you can create many cars based on the same specification. Even though they all represent the same class, they may have different values in their attributes — some of them are red and some yellow, some of them have two doors whereas others have <a id="idp13354160"></a><a id="idp13355744"></a>four, and so on.</p>
+</section>
+<section>
+<h2><a id="variables_and_data_types"></a>Variables and Data Types</h2>
+<p>Some values representing an object can change over the program’s lifetime (variables) and some remain the same (constants). This section sheds more light on the use of both types.</p>
+<section>
+<h3><a id="declaring_variables"></a>Declaring Variables</h3>
+<p>Java is <a id="idp13359728"></a><a id="idp13363104"></a>a statically typed language: A program <i>variable</i> must be declared (given a name and a data type) first, and then you can assign them values either at the time of declaration or later on in one of the class methods. For example, the variable <code>isGunOnBoard</code> has been initialized during its declaration in <a href="part0004.html#list-c03-002">Listing 3-2</a>, and <code>currentSubmergeDepth</code> got its value in the method <code>submerge()</code>.</p>
+<p>The class <code>Car</code> from <a id="list-anc-c03-001" href="part0004.html#list-c03-001">Listing 3-1</a> defines a <i>variable</i> <code>color</code> of type <code>String</code>, which is used to represent text values; for example, “Red,” “Blue,” and so on.</p>
+</section>
+<section>
+<h3><a id="final_variables_ch03"></a>Final Variables</h3>
+<p>To store <a id="idp13372272"></a><a id="idp13374448"></a>the value that never changes, you need to declare a <i>final variable (</i>or <i>constant);</i> just add <a id="idp13376288"></a><a id="idp13378000"></a>the keyword <code>final</code> to the declaration line, as in <a href="part0004.html#list-c03-002">Listing 3-2</a>:</p>
+<pre>
+final String MANUFACTURER = "J.B. Limited";</pre>
+<p>Java <span epub:type="pagebreak" title="24" id="Page_24"></span>developers usually name final variables in upper case. If you are wondering how Java developers agree on naming conventions, check out one of the coding standards guides. For example, Google publishes coding standards at <code><a href="https://code.google.com/p/google-styleguide/">https://code.google.com/p/google-styleguide/</a></code> for various languages.</p>
+<p>The value of a constant can be assigned only once, and because you are creating an instance of a specific car, its manufacturer is known and can’t change during the life span of this object. Declare a <code>final</code> variable and initialize it right away, as shown earlier.</p>
+</section>
+<section>
+<h3><a id="primitive_data_types"></a>Primitive Data Types</h3>
+<p>When you’re <a id="idp13384288"></a><a id="idp13387520"></a>declaring a class, you create a new data type and can declare variables of this type as you saw above with the class <code>Car</code>. But these are not a simple data type as they can include fields and methods describing the object of this type. On the other hand, Java has predefined data types for storing simple values, such as an integer number or a character.</p>
+<p>There are eight <i>primitive</i> data types in Java: four are for integer values; two are for values with a decimal point; one is for storing single characters; and one is for boolean data that allows only either <code>true</code> or <code>false</code> as a value. Following are some examples of variable declarations and initializations:</p>
+<pre>
+int chairs = 12;
+char grade = 'A’;
+boolean cancelJob = false;
+double nationalIncome = 23863494965745.78;
+float hourlyRate = 12.50f;   // add an f at the end of
+                             //float literals
+long totalCars = 4637283648392l; // add an l at the end
+                                   // of long literals</pre>
+<p>The last two literals in the preceding list end with the letters <code>f</code> and <code>l</code> to indicate that you want to store these data as <code>float</code> and <code>long</code> data types correspondingly. The <code>double</code> data type fits most of the needs in non-integer calculations.</p>
+<p>Each <a id="idp13395744"></a><a id="idp13397360"></a><a id="idp13399056"></a>primitive data type occupies a certain amount of memory and has a range of values that it can store. The following table summarizes some characteristics of the Java data types.</p>
+<table>
+	<tbody>
+		<tr>
+			<td><b>Primitive Type</b></td>
+			<td><b>Size</b></td>
+			<td><b>Min Value</b></td>
+			<td><b>Max Value</b></td>
+			<td><b>Wrapper Class</b></td>
+		</tr>
+		<tr>
+			<td><code>byte</code></td>
+			<td>8 bits</td>
+			<td><code>-128</code></td>
+			<td><code>127</code></td>
+			<td><code>Byte</code></td>
+		</tr>
+		<tr>
+			<td><code>short</code></td>
+			<td>16 bits</td>
+			<td><code>-32,768</code></td>
+			<td><code>32,767</code></td>
+			<td><code>Short</code></td>
+		</tr>
+		<tr>
+			<td><code>int</code></td>
+			<td>32 bits</td>
+			<td><code>-2,147,483,648</code></td>
+			<td><code>2,147,483,647</code></td>
+			<td><code>Integer</code></td>
+		</tr>
+		<tr>
+			<td><code>long</code></td>
+			<td>64 bits</td>
+			<td><code>-9,223,372,036,854,775,808</code></td>
+			<td><code>9,223,372,036,854,775,807</code></td>
+			<td><code>Long</code></td>
+		</tr>
+		<tr>
+			<td><code>float</code></td>
+			<td>32 <span epub:type="pagebreak" title="25" id="Page_25"></span>bits</td>
+			<td>Single-precision floating point; see Java language specification at <code><a href="http://bit.ly/9nlwjh">http://bit.ly/9nlwjh</a></code></td>
+			<td>Single-precision floating point; see Java language specification at <code><a href="http://bit.ly/9nlwjh">http://bit.ly/9nlwjh</a></code></td>
+			<td><code>Float</code></td>
+		</tr>
+		<tr>
+			<td><code>double</code></td>
+			<td>64 bits</td>
+			<td>Double-precision floating point; see Java language specification at <code><a href="http://bit.ly/9nlwjh">http://bit.ly/9nlwjh</a></code></td>
+			<td>Double-precision floating point; see Java language specification at <code><a href="http://bit.ly/9nlwjh">http://bit.ly/9nlwjh</a></code></td>
+			<td><code>Double</code></td>
+		</tr>
+		<tr>
+			<td><code>char</code></td>
+			<td>16 bits</td>
+			<td>Unicode 0</td>
+			<td>Unicode 2 in a power of 16 value</td>
+			<td><code>Character</code></td>
+		</tr>
+		<tr>
+			<td><code>boolean</code></td>
+			<td>-</td>
+			<td><code>false</code> (not a min)</td>
+			<td><code>true</code> (not a max)</td>
+			<td><code>Boolean</code></td>
+		</tr>
+	</tbody>
+</table>
+<p>Have you noticed that the <code>char</code> data type uses two bytes of memory to store the data? This enables you to store character sets that have a lot more symbols than traditional alphabets because a single byte can only represent up to 256 different characters, whereas two bytes can represent 65,536 characters.</p>
+<p>If you need to store very large numbers, Java has a class <code>BigDecimal</code>, but it’s not a primitive data type.</p>
+</section>
+</section>
+<section>
+<h2><a id="variable_scope"></a>Variable Scope</h2>
+<p>If you declare a <a id="idp13434880"></a><a id="idp13436512"></a>variable inside any method or a code block surrounded with curly braces, the <a id="idp13439248"></a>variable has a local scope (for example, <code>tempCounter</code> in <a href="part0004.html#list-c03-001">Listing 3-1</a> is local). This means that it’s only visible for the code within the method <code>stopEngine()</code>. A local variable is accessible within the method only after the variable is declared, and only within the block in which it is declared. For instance, a variable declared inside a <code>for</code> loop is not accessible outside the <code>for</code> loop even within the same method.</p>
+<p>When the method completes its execution, all local primitive variables are automatically removed from stack memory. If a variable was pointing to an instance of an object (for example, <code>car1</code> on <a href="part0004.html#fig-c03-001">Figure 3-1</a>), the corresponding object instance is removed from heap memory by <a id="idp13445120"></a>Java’s <i>Garbage Collector (GC)</i>, but it won’t happen immediately. Periodically GC walks around the heap memory and removes all objects that have no reference variables.</p>
+<p>If a variable <a id="idp13446400"></a>has to be accessible from more than one class method, declare it on a class level. <a href="part0004.html#list-c03-001">Listing 3-1</a> shows the class <code>Car</code>, where <code>color</code> and <code>numberOfDoors</code> are <i>class</i> or<i> member variables</i>. These variables remain “alive” while the instance of the <code>Car</code> object exists in memory. They can be shared and reused by all methods within the class, and they can even be visible from external classes (read about access levels in <a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>). There are some differences in passing primitive variables and those that point at object instances. Read the section <a href="part0005.html#passing_by_value_or_by_reference">Passing by Value or by Reference</a> in the next chapter. </p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;If a <span epub:type="pagebreak" title="26" id="Page_26"></span>variable is declared with a <code>static</code> qualifier (see <a href="part0005.html#class_methods_and_constructors">Chapter 4</a>) it will be shared by all instances of the class. Instance variables (without <code>static</code>) store different values in each object instance.</p>
+</section>
+<div class="bottom hr"><hr/></div>
+</aside>
+</section>
+<section>
+<h2><a id="wrapperscomma_autoboxingcomma_and_unboxi"></a>Wrappers, Autoboxing, and Unboxing</h2>
+<p>All primitive <a id="idp13459744"></a><a id="idp13461120"></a><a id="idp13462864"></a><a id="idp13464256"></a>data types have corresponding <i>wrapper classes</i> that contain useful methods dealing with respective data types. The wrapper classes serve two purposes:</p>
+<ol>
+	<li>
+	<p>They contain a number of useful functions for manipulation with their primitive counterparts. For example, the class <code>Integer</code> offers such useful methods as conversion of a <code>String</code> into an <code>int</code>, or turning an <code>int</code> into a <code>float</code>, and more. The <code>Integer</code> class also enables you to set the minimum and maximum values for the number in question.</p>
+	</li>
+	<li>
+	<p>Some Java collections can’t store primitives (such as <code>ArrayList</code>), so primitives have to be wrapped into objects. For example:</p>
+	<pre>
+ArrayList myLotteryNumbers = new ArrayList();
+myLotteryNumbers.add(new Integer(6));
+myLotteryNumbers.add(new Integer(15));</pre>
+	</li>
+</ol>
+<p>Java has <a id="idp13473408"></a>a feature called autoboxing, which spares you from explicitly creating a new instance for every primitive as in the preceding code snippet. You can simply write <code>myLotteryNumbers.add(6);</code> and the primitive value <code>6</code> is automatically  wrapped into an instance of the <code>Integer</code> class.</p>
+<p>On the same note, the next line is also valid:</p>
+<pre>
+int luckyNumber= myLotteryNumber.get(23);</pre>
+<p>Even though <code>get(23)</code> returns the value of the 24<sup>th</sup> element (the numbering in the Java collections starts with zero) as an <code>Integer</code> object, that object is automatically converted into a <a id="idp13480624"></a>primitive. This is called <i>unboxing</i>.</p>
+</section>
+<section>
+<h2><a id="program_comments"></a>Program Comments</h2>
+<p>While writing code<a id="idp13483120"></a> in Java, you should add comments, which is the text that explains what the program does. Programs are being read a lot more often than they are being written. At some point, other software developers will read and try to understand your code. Be nice and make their jobs easier. A typical software developer doesn’t like writing comments (regardless of what programming language he or she uses).</p>
+<p>I suggest you use a simple technique: Write comments first and then write the code. By the time your program is written it already has a comment. You can write comments pretty much everywhere — before or inside the class, or inside the methods.</p>
+<p>In Java you can use three types of comments:</p>
+<ul>
+	<li>
+	<p>Block <span epub:type="pagebreak" title="27" id="Page_27"></span>comments <a id="idp13490224"></a><a id="idp13485456"></a>contain more than one line of text located between the symbols <code>/*</code> and <code>*/</code>. For example:</p>
+	<pre>
+/* This method will calculate the cost of shipping, handling,
+     and all applicable taxes
+*/</pre>
+	<p>The compiler ignores the text in comments and you can write whatever you want.</p>
+	</li>
+	<li>
+	<p>If you want <a id="idp13493024"></a>to write a short comment that fits on a single line, start this line with two forward slashes (<code>//</code>). You can also place comments with two forward slashes at the end of the line.</p>
+	<p>For example:</p>
+	<pre>
+// Calculate the cost of shipping
+   int cost = calcShippingCost();  // results depends on country
+</pre>
+	</li>
+	<li>
+	<p>Some comments start with <code>/**</code> and end with <code>*/</code>. These are used by a special utility, javadoc, that can automatically extract the text from these comments and create program documentation. Javadoc also allows the use of special annotations (for example, <code>@param</code>, <code>@return</code>, <code>@see</code>) that allow producing professional-looking program documentation. To get a feeling for what javadoc can generate, read Oracle’s whitepaper on writing javadoc comments at <code><a href="http://goo.gl/imDMU">http://goo.gl/imDMU</a></code>.</p>
+	</li>
+</ul>
+<section>
+<h3><a id="first_useful_program"></a>First Useful Program</h3>
+<p>It’s time to write a program that does something more useful than print “Hello World.” This program emulates the calculation of state tax. The goal is to show you how Java classes communicate, how methods are called, and how variables can be used.</p>
+<p>First you need to decide what Java class(es) you need to write for the task at hand. Then think about the attributes (class variables) and methods (behavior) these classes should have.</p>
+<section>
+<h4><a id="declaring_a_tax_class_with_properties"></a>Declaring a Tax Class </h4>
+<p>Because you <a id="idp13505824"></a><a id="idp13507072"></a>are planning to calculate tax, it doesn’t take a rocket scientist to figure out that you need to define a class called <code>Tax</code>. Start with the class name and curly braces — this is the simplest class you can create:</p>
+<pre>
+class Tax{
+}</pre>
+<p>What data does this class need to perform tax calculations? You definitely need to know the gross income of a person for the tax year. Gross income is a good candidate for an attribute of this class. Attributes in Java are represented by <i>variables</i>. Pick one of the numeric data types. Gross income is not always an integer number, so use the <code>double</code> data type, as it’s a number with a decimal point. You could use <code>float</code> instead, but using <code>double</code> enables you to be ready to process larger incomes, too:</p>
+<pre>
+class Tax{
+      double grossIncome;
+}</pre>
+<p>You <span epub:type="pagebreak" title="28" id="Page_28"></span>also need to know what state the person lives in; taxation rules vary by state. These are a few of the abbreviations for the states in the USA: NY, NJ, CT. Use the data type <code>String</code> for storing text data:</p>
+<pre>
+class Tax{
+       double grossIncome;
+       String state;
+ }</pre>
+<p>Add one more attribute for dependents of the taxable person. <code>Integer</code> works just fine here — a person can’t have two-and-a-half dependents:</p>
+<pre>
+class Tax{
+       double grossIncome;
+       String state;
+       int  dependents;
+ }</pre>
+</section>
+<section>
+<h4><a id="adding_a_method_to_the_tax_class"></a>Adding a Method to the Tax Class</h4>
+<p>Variables store data, and <a id="idp13519024"></a><a id="idp13520400"></a>methods perform actions. It’s time for actions. The first method, <code>calcTax()</code>, calculates the state tax based on the values of gross income, number of dependents, and state:</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c03-003" href="part0004.html#list-anc-c03-003">Listing 3-3</a>:</span> Class Tax</h5>
+<pre>
+class Tax{
+          double grossIncome;
+          String state;
+          int dependents;
+          public double calcTax() {
+             return 234.55;
+          }
+}</pre>
+</section>
+</aside>
+<p>The <code>calcTax()</code> method signature tells the following:</p>
+<ul>
+	<li>
+	<p>Any external class can access this method (<code>public</code>).</p>
+	</li>
+	<li>
+	<p>This method returns a value of type <code>double</code>.</p>
+	</li>
+	<li>
+	<p>The name of the method is <code>calcTax</code>.</p>
+	</li>
+</ul>
+<p>The empty parentheses after the method name mean that it does not have any arguments, or, in other words, it does not need any values from outside <code>Tax</code> to perform calculations. As a matter of fact, this version of <code>calcTax()</code> doesn’t even use the values from class variables for tax calculation. It just always returns a hard-coded tax value of 234.55.</p>
+<p>How <span epub:type="pagebreak" title="29" id="Page_29"></span>do you decide if a method should return a value? If your method performs some calculations and has to give a value back to a calling program, it has to return a value. If a method directly modifies the class variables or simply outputs data somewhere (monitor, disk, server) it may not need to return any values. You still need to declare a “no return” in a method signature by using a special keyword, <code>void</code>:</p>
+<pre>
+public void printAnnualTaxReturn() {
+    //Code goes here
+}</pre>
+<p>With the Java <code>return</code> statement, a method can return data contained in a variable to a calling program, for example:</p>
+<pre>
+return calculatedTax;</pre>
+<p>Keep in mind that if you declare a return type in the method signature but forget to include the <code>return</code> statement in the body of the method, the Java compiler will give you an error.</p>
+</section>
+<section>
+<h4><a id="declaring_another_class_testtax"></a>Declaring Another Class: TestTax</h4>
+<p><code>Tax</code> will know <a id="idp13536816"></a><a id="idp13541088"></a>how to calculate tax, but in a real-world application you’ll have many classes that represent the various workflows of this process. For example, you may need to create a class called <code>Customer</code>. Depending on the type of employment or income, accountants use many different forms to file taxes, and each form can be represented by a separate class: <code>Form1040</code>, <code>Form1099</code>, and so on.</p>
+<p>Each of these classes represents some entity, but none of them is an executable program; that is, none of them will have the method <code>main()</code>. You need to create one more class to start the application and instantiate other classes as needed. I’m calling this class <code>TestTax</code>. The class <code>TestTax</code> should be able to perform the following actions:</p>
+<ul>
+	<li>
+	<p>Create an instance of the class <code>Tax</code>.</p>
+	</li>
+	<li>
+	<p>Assign the customer’s data (gross income, state, dependents) to the class variables of the class <code>Tax</code>.</p>
+	</li>
+	<li>
+	<p>Call the method <code>calcTax()</code>.</p>
+	</li>
+	<li>
+	<p>Print the result on the screen.</p>
+	</li>
+</ul>
+<p>The class <code>TestTax</code> is stored in a separate file named <code>TestTax.java</code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c03-004" href="part0004.html#list-anc-c03-004">Listing 3-4</a>:</span> Class TestTax</h5>
+<pre>
+class TestTax{
+     public static void main(String[] args){
+            Tax   t = new Tax(); // creating an instance
+            // assigning the values to class members
+            t.grossIncome= 50000;
+            t.dependents= 2;
+            t.state= "NJ”;
+            double yourTax = t.calcTax(); //calculating tax
+           // Printing the result
+           System.out.println("Your tax is ” + yourTax);
+     }
+ }</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p><span epub:type="pagebreak" title="30" id="Page_30"></span>In the preceding code you’ve declared a variable, <code>t</code>, of type <code>Tax</code>. The method <code>main()</code> is an entry point to the tax-calculation program. This method creates an instance of the class <code>Tax</code>, and the variable <code>t</code> points to a place in your computer’s memory where the <code>Tax</code> object was created. From now on, if you want to refer to this object use the variable <code>t</code>. Take another look at <a href="part0004.html#fig-c03-001">Figure 3-1</a>, which shows a similar situation to what you have here.</p>
+<p>The following three lines assign values to the fields of the object <code>Tax</code>:</p>
+<pre>
+t.grossIncome= 50000;
+t.dependents= 2;
+t.state= "NJ”;</pre>
+<p>After that you can calculate tax on your object represented by <code>t</code> by calling the method <code>calcTax()</code>, and the result returned by this method will be assigned to the variable <code>yourTax</code>. The method <code>calcTax()</code> still returns the hard-coded value, but you fix this in the “Try It” section of this lesson. The last line just displays the result on the system console.</p>
+<p>At this point you already have two classes communicating with each other (<code>TestTax</code> and <code>Tax</code>). The class <code>TextTax</code> creates an instance of <code>Tax</code>, initializes its variables, and calls its method <code>calcTax()</code>, which returns the value back to the class <code>TextTax</code>.</p>
+</section>
+</section>
+<section>
+<h3><a id="conditional_statement_if"></a>Conditional Statement if</h3>
+<p>In the real <a id="idp13569744"></a><a id="idp13571472"></a><a id="idp13572544"></a><a id="idp13573968"></a>life we make decisions all the time: “If she says this I’ll answer with that, otherwise I’ll do something else.” Java has an <code>if</code> statement that determines whether some condition is <code>true</code> or <code>false</code>. Based on the answer to this question the execution of your program will be routed.</p>
+<p>In the following code snippet, if the condition expression (<code>totalOrderPrice &gt; 100</code>) evaluates to <code>true</code> then the code between the first curly braces is executed; otherwise the code after the <code>else</code> statement takes place:</p>
+<pre>
+if (totalOrderPrice &gt; 100){
+         System.out.println("You’ll get a 20% discount”);
+}
+else{
+         System.out.println("Order books for more than a” +
+                            " $100 to get a 20% discount”);
+}</pre>
+<p>Because this code sample has only one statement to execute in the <code>if</code> and <code>else</code> clauses, using curly braces is not a must, but they make the code more readable and prevent you from introducing hard-to-find bugs if, later on, you need to add more code in an <code>if</code> statement.</p>
+</section>
+<section>
+<h3><a id="switch_statement"></a>switch Statement</h3>
+<p>The <code>switch</code> statement <span epub:type="pagebreak" title="31" id="Page_31"></span>is <a id="idp13584192"></a><a id="idp13586064"></a><a id="idp13587440"></a><a id="idp13588544"></a>an alternative to <code>if</code>. The case label in the switch condition (<code>taxCode</code>) is evaluated and the program goes to one of the following <code>case</code> clauses:</p>
+<pre>
+int taxCode=someObject.getTaxCode(grossIncome);
+switch (taxCode){
+   case 0:
+     System.out.println("Tax Exempt”);
+     break;
+   case 1:
+     System.out.println("Low Tax Bracket”);
+     break;
+   case 2:
+     System.out.println("High Tax Bracket”);
+     break;
+   default:
+     System.out.println("Wrong Tax Bracket”);
+}
+// Some other code goes here</pre>
+<p>The preceding code invokes only one of the <code>println()</code> methods and continues with the execution with the other code below the closing curly brace, if any. Do not forget to put the <code>break</code> at the end of each <code>case</code> statement so the program jumps out of the <code>switch</code> statement after processing a case; otherwise the code “falls-through” and prints more than one line even though a <code>taxCode</code> can have only one value. For example, the following code prints both “Tax Exempt” and “Low Tax Bracket” even if the value of the <code>taxCode</code> is zero:</p>
+<pre>
+switch (taxCode){
+   case 0:
+     System.out.println("Tax Exempt”);
+   case 1:
+     System.out.println("Low Tax Bracket”);
+     break;
+   case 2:
+     System.out.println("High Tax Bracket”);
+     break;
+   default:
+     System.out.println("Wrong Tax Bracket”);
+}</pre>
+<p>Starting from Java 7 you can use <code>String</code> values in the <code>case</code> expression:</p>
+<pre>
+switch (yourState){
+   case "NY”:
+     System.out.println("Taxing by NY law”);
+     break;
+   case "CA”:
+     System.out.println("Taxing by CA law”);
+     break;
+   case "FL”:
+     System.out.println("Taxing by FL law”);
+     break;
+   default:
+     System.out.println("Wrong state”);
+}</pre>
+</section>
+<section>
+<h3><a id="inheritance"></a>Inheritance</h3>
+<p>In <span epub:type="pagebreak" title="32" id="Page_32"></span>object-oriented <a id="idp13601424"></a><a id="idp13602528"></a>languages, the term <i>inheritance</i> means an ability to define a new class based on an existing one (not from scratch).</p>
+<p>Imagine that the class <code>Tax</code> calculates tax properly in all states except New Jersey, which has introduced new educational tax deductions. If you have a kid in college, this makes you eligible for an additional $500 deduction from your taxes. In this case you have to either change the method <code>calcTax()</code> in the class <code>Tax</code> to introduce a special case for New Jersey, or create another class based on <code>Tax</code>, and add this new functionality there.</p>
+<p>Every person inherits some features from his or her parents. A similar mechanism exists in Java. The special keyword <code>extends</code> is used to indicate that one class has been inherited from another:</p>
+<pre>
+class NJTax extends Tax{
+}</pre>
+<p>The class <code>NJTax</code> has all the features of the class <code>Tax</code>, plus you can add new attributes and methods to it. In such a setup, the class <code>Tax</code> is called a <i>superclass</i>, and <code>NJTax</code> is called <a id="idp13611424"></a><a id="idp13613152"></a>a <i>subclass</i>. You can also use the terms <i>ancestor and descendent</i>, respectively. This new class has access to all variables and methods of its superclass, unless those have a private or package access level, which is discussed in <a href="part0006.html#back_to_java_basics">Chapter 5</a>.</p>
+<p> Let’s extend the behavior of the class <code>Tax</code> in <code>NJTax</code>. The latter has a method called <code>adjustForStudents()</code>:</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c03-005" href="part0004.html#list-anc-c03-005">Listing 3-5</a>:</span> Class NJTax</h5>
+<pre>
+class NJTax extends Tax{
+    double adjustForStudents (double stateTax){
+       double adjustedTax = stateTax - 500;
+       return adjustedTax;
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>To use this new method, the <code>TestTax</code> class should instantiate <code>NJTax</code> rather than <code>Tax</code> as it did in <a id="list-anc-c03-004" href="part0004.html#list-c03-004">Listing 3-4</a>:</p>
+<pre>
+NJTax t= new NJTax();</pre>
+<p>Now you can call methods defined in the class <code>Tax</code> as well as those from <code>NJTax</code> using the reference variable <code>t</code>; for example:</p>
+<pre>
+NJTax t= new NJTax();
+double yourTax = t.calcTax();
+double totalTax = t.adjustForStudents(yourTax);</pre>
+<p>I’ve <span epub:type="pagebreak" title="33" id="Page_33"></span>added a new functionality to the tax-calculation program without changing the code of the class <code>Tax</code>. The preceding code fragment also shows how you can pass a result of processing from one method to another. The value of the variable <code>yourTax</code> was calculated by <code>calcTax()</code> and then passed to the method <code>adjustForStudents()</code> as an <i>argument</i>.</p>
+</section>
+<section>
+<h3><a id="method_overriding"></a>Method Overriding</h3>
+<p>Yet another <a id="idp13631312"></a><a id="idp13633152"></a>important term in object-oriented programming is <i>method overriding</i>. Imagine class <code>Tax</code> with 20 methods. Most of them work fine for all states, but there is one method that is not valid for New Jersey. Instead of modifying this method in the superclass, you could create another method in the subclass <i>with the same name and argument list (</i>also known as<i> signature)</i>. If a subclass has that method with the same signature, it overrides (suppresses) the corresponding method of its ancestor.</p>
+<p>Method overriding comes in handy in the following situations:</p>
+<ul>
+	<li>
+	<p>The source code of the superclass is not available, but you still need to change its functionality.</p>
+	</li>
+	<li>
+	<p>The original version of the method is still valid in some cases and you want to keep it intact.</p>
+	</li>
+	<li>
+	<p>You use method overriding to enable polymorphism, which will be explained in <a href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>.</p>
+	</li>
+</ul>
+<p>You have a chance to try method overriding in the “Try It” section. In <a href="part0005.html#class_methods_and_constructors">Chapter 4</a> you read about method overloading, which is a completely different animal.</p>
+</section>
+</section>
+<section>
+<h2><a id="additional_materials-id00007"></a>Additional Materials</h2>
+<p>Java Garbage Collector Basics <code><a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html">http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html</a></code></p>
+</section>
+<section>
+<h2><a id="try_it-id00008"></a>Try It</h2>
+<p>In this section, you create in Eclipse the tax-calculation application described in this lesson, and then modify it to replace the hard-coded value returned by the method <code>calcTax()</code> with some calculations. After this is done, you subclass the class Tax and override <code>calcTax()</code>.</p>
+<section>
+<h3><a id="lesson_requirements-id00009"></a>Lesson Requirements</h3>
+<p>For this lesson you must have Eclipse IDE installed.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this “Try It” from the book’s web page at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>. <i>You can find them in</i> <code>Lesson3.zip</code>.</p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="hints"></a>Hints</h3>
+<p>This <span epub:type="pagebreak" title="34" id="Page_34"></span>lesson has only brief introductions to basic Java language constructs. The online Java tutorial may be handy while completing this and future assignments. It’s available at <code><a href="http://download.oracle.com/javase/tutorial/java/index.html">http://download.oracle.com/javase/tutorial/java/index.html</a></code>.</p>
+</section>
+<section>
+<h3><a id="step-by-step-id00010"></a>Step-by-Step</h3>
+<ol>
+	<li>
+	<p>In Eclipse, create a new project named Lesson3.</p>
+	</li>
+	<li>
+	<p>Create a new <code>Tax</code> class (File→New→Class). Enter the code shown in <a id="list-anc-c03-003" href="part0004.html#list-c03-003">Listing 3-3</a>.</p>
+	</li>
+	<li>
+	<p>Create another class, <code>TestTax</code>, and input the code from <a href="part0004.html#list-c03-004">Listing 3-4</a>.</p>
+	</li>
+	<li>
+	<p>Save both classes and run <code>TestTax</code> (right-click and select Run As→Java Application). The console view should display “Your tax is $234.55.”</p>
+	</li>
+	<li>
+	<p>Replace the return of a hard-coded value with some tax calculations. Let’s say that if the gross income was less than $30,000 you deduct 5% for state tax. If it’s greater than $30,000 you deduct 6%. Modify the code of the method <code>calcTax</code> as follows. Run the program several times, modifying the values of the class variables of the class <code>Tax</code>. Make sure that the tax value on the console is properly calculated:</p>
+	<pre>
+public double calcTax() {
+      double stateTax=0;
+      if (grossIncome &lt; 30000) {
+        stateTax=grossIncome*0.05;
+      }
+      else{
+        stateTax= grossIncome*0.06;
+      }
+        return stateTax;
+}</pre>
+	</li>
+	<li>
+	<p>Create the <code>NJTax</code> class shown in <a id="list-anc-c03-005" href="part0004.html#list-c03-005">Listing 3-5</a>.</p>
+	</li>
+	<li>
+	<p>Change the functionality of <code>calcTax()</code> by overriding it in <code>NJTax</code>. The new version of <code>calcTax()</code> should lower the tax by $500 before returning the value.</p>
+	</li>
+	<li>
+	<p>Modify the code of the <code>TestTax</code> class to instantiate <code>NJTax</code> instead of <code>Tax</code>. Observe that the $500 deduction is properly calculated.</p>
+	</li>
+</ol>
+<p>To get the sample database files, you can download <a href="part0004.html#object-oriented_programming">Chapter 3</a> from the book’s website at <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please <span epub:type="pagebreak" title="35" id="Page_35"></span>select the videos for <a href="part0004.html">Lesson 3</a> online at</i> <a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a><i>. You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</section></body></html>

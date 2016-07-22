@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Error Handling</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="error_handling"></a><span class="chapterTitle">Lesson 10<br/>Error Handling</span></h1>
+
+    <section>
+        <p>Fixing <span epub:type="pagebreak" title="115" id="Page_115"></span>the compiler’s errors becomes trivial as
+            you become more comfortable with the Java syntax. But you also should ensure that your programs handle
+            runtime errors that may happen regardless of your proficiency with the language itself.</p>
+        <p>Let’s say you have a Java program that reads customers’ data from a file deployed in production. What’s going
+            to happen if this file gets corrupted? Will the program crash with a scary geeky error message, or will it
+            stay alive, displaying a user-friendly message such as, “There seems to be a problem with the file <i>Customers</i>.
+            Please make sure that the file is not corrupted”? Error processing in the Java world is called <i>exception
+                handling</i>, which <a id="idp15306800"></a>is the subject of this lesson. An exception is a runtime
+            error that may stop the execution of your program.</p>
+    </section>
+    <section>
+        <h2><a id="stack_trace"></a>Stack Trace</h2>
+        <p>When a Java application is running, the JVM performs a number of internal and application-specific <a
+                id="idp15311488"></a><a id="idp15309600"></a>method calls. If a runtime error occurs that’s not handled
+            by the program, the program prints a <i>stack trace</i>, which reflects in the call stack the sequence of
+            unfortunate events that caused this error. A stack trace helps software developers follow the workflow of
+            the program that led to the error.</p>
+        <p>To illustrate what a stack trace may look like, consider the program shown in <a id="list-anc-c010-001"
+                                                                                            href="part0011.html#list-c010-001">Listing
+            10-1</a>, which deliberately divides by zero.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c010-001"
+                                           href="part0011.html#list-anc-c010-001">Listing 10-1</a>:</span> Generating
+                    stack trace by dividing by zero</h5>
+                <pre>
+1 public class TestStackTrace{
+2    TestStackTrace()
+3    {
+4        divideByZero();
+5    }
+6
+7    int divideByZero()
+8    {
+9       return 25/0;
+10   }
+11
+12    public static void main(String[] args)
+13    {
+14           new TestStackTrace();
+15    }
+16 }</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><a id="list-anc-c010-002" href="part0011.html#list-c010-002">Listing 10-2</a> depicts <span
+                epub:type="pagebreak" title="116" id="Page_116"></span>the output of this program, which has traced what
+            happened in the program stack before the error occurred. Read the output from the last line upward. It shows
+            that the program was executing the methods <code>main()</code>, <code>init()</code> for the constructor, and
+            <code>divideByZero()</code>. The line numbers 14, 4, and 9, respectively, indicate where in the program
+            these methods were called. After that the <code>ArithmeticException</code>was thrown—the code in line 9
+            tried to divide by zero. Turning the line numbers on in the Eclipse IDE helps you locate problematic code.
+        </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c010-002"
+                                           href="part0011.html#list-anc-c010-002">Listing 10-2</a>:</span> Sample stack
+                    trace</h5>
+                <pre>
+c:\temp&gt;java TestStackTrace
+     Exception in thread "main"
+     java.lang.ArithmeticException: / by zero
+        at TestStackTrace.divideByZero(TestStackTrace.java:9)
+        at TestStackTrace.&lt;init&gt;(TestStackTrace.java:4)
+        at TestStackTrace.main(TestStackTrace.java:14)</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Executing any Java program means running multiple threads, as explained in <a
+                href="part0018.html#introduction_to_multi-threading">introduction_to_multi-threading</a>, and the stack
+            trace output reflects what was happening in the main thread of the simple <code>TestStackTrace</code>
+            program.</p>
+    </section>
+    <section>
+        <h2><a id="java_exceptions"></a>Java Exceptions</h2>
+        <p>In many programming <a id="idp15326800"></a>languages, error processing depends on the programmer’s good will
+            and experience. Java forces a programmer to include the error-handling code for certain errors; otherwise
+            the programs won’t even compile.</p>
+        <p>Say you need to write a piece of code that reads a file containing data about customers. It’s easy to foresee
+            that unless the code includes error handling there is a chance that one day you’ll see a stack trace instead
+            of a customer list.</p>
+        <p>The creators of Java didn’t want to allow this code to fail just because some programmers are too lazy to
+            include error-handling code. Java forces you to place such code <a id="idp15332144"></a><a
+                    id="idp15329744"></a><a id="idp15330896"></a>inside a <code>try/catch</code> block, as in <a
+                    id="list-anc-c010-003" href="part0011.html#list-c010-003">Listing 10-3</a>. Whenever you read or
+            write files you have to process input/output (I/O) errors.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c010-003"
+                                           href="part0011.html#list-anc-c010-003">Listing 10-3</a>:</span> Catching
+                    <span epub:type="pagebreak" title="117" id="Page_117"></span>I/O errors</h5>
+                <pre>
+try {
+    fileCustomer.read(); // the file may be corrupted or missing
+}
+catch (IOException ioe) {
+    System.out.println(
+          "There seems to be a problem with the file customers.");
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Read the code from <a href="part0011.html#list-c010-003">Listing 10-3</a> as follows: “Try to execute <code>fileCustomer.read()</code>,
+            and if an error occurs, jump into the <code>catch</code> section and execute the code from there.” <code>IOException</code>
+            is a class that contains information about input/output errors.</p>
+        <p>In the case of an I/O error, the method <code>read()</code> <i>throws an exception</i> (for more details on
+            reading files refer to <a href="part0015.html#working_with_streams">Chapter 14</a>). The <code>catch</code>
+            block catches this error and processes it. The program doesn’t terminate, and this exception is considered
+            handled. If the method <code>read()</code> finishes successfully, the code in the <i>section</i>
+            <code>catch</code> isn’t executed.</p>
+    </section>
+    <section>
+        <h2><a id="exception_hierarchy"></a>Exception Hierarchy</h2>
+        <p>Errors in Java are <a id="idp15347056"></a><a id="idp15348384"></a>represented as classes that can be divided
+            into two major types: those that were caused by bad programming and those that were thrown because of some
+            other external condition. For example, if a program declares a variable of type <code>Tax</code>, but this
+            object was never instantiated, any attempts to call the (non-static) method <code>calcTax()</code> result in
+            <code>NullPointerException</code>:</p>
+        <pre>
+Tax tax;
+tax.calcTax();</pre>
+        <p>This situation could have been predicted and properly handled by the programmer.</p>
+        <p>If a runtime error can be handled programmatically, the exception is called <i>checked</i>. The method <code>reads()</code>
+            from <a href="part0011.html#list-c010-003">Listing 10-3</a> throws an exception and the JVM tries to find
+            the code that handles this error. Such an exception can be anticipated and recovered from without the need
+            to change the code. While the program remains operational, the user can find the missing file containing the
+            list of customers and try again to populate the GUI with this list.</p>
+        <p>All exceptions <a id="idp15355104"></a><a id="idp15356704"></a>are subclasses of <code>Throwable</code>,
+            which has two immediate descendants: <code>Error</code> and <code>Exception</code>.</p>
+        <p>Subclasses of the class <code>Error</code>  are fatal errors and are called <i>unchecked exceptions</i>, and
+            are not required to be caught. You don’t have to put them in <code>try/catch</code> blocks as there is not
+            much you can do if, say, the JVM runs out of memory and crashes.</p>
+        <p>Subclasses of <code>Exception</code> (excluding <code>RuntimeException</code>) are called checked exceptions
+            and have to be handled in your code.  </p>
+        <p>You <span epub:type="pagebreak" title="118" id="Page_118"></span>can declare and throw your own
+            application-specific exception; for example, <code>LoveFailedException</code> or <code>ShipmentCreationException.</code>
+        </p>
+        <figure>
+            <img class="center" src="../Images/image00529.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c010-001"
+                                                   href="part0011.html#fig-anc-c010-001">Figure 10-1</a>:</b></span> <a
+                        id="fig-anc-c010-001" href="part0011.html#fig-c010-001">Figure 10.1</a>. Sample Exceptions
+                    hierarchy with custom exception</p>
+            </figcaption>
+        </figure>
+        <p>How is a programmer supposed to know in advance if some Java method may throw a particular exception and that
+            the <code>try/catch</code> block should therefore be used? No need to memorize anything. If a method throws
+            an exception, the Java compiler prints an error message similar to this one:</p>
+        <pre>
+"Tax.java":  unreported exception: java.io.IOException; must be 
+caught or declared to be thrown at line 57</pre>
+        <p>If you see a message like this, find the description of the class method being invoked or search for the
+            documentation for the exception itself. For example, here’s the description of the <a
+                    href="http://docs.oracle.com/javase/8/docs/api/java/io/IOException.html">java.io.IOException</a>. Add
+            the appropriate try/catch block to handle this exception, as explained in the following section.</p>
+    </section>
+    <section>
+        <h2><a id="trysoliduscatch_blocks"></a>Try/Catch Blocks</h2>
+        <p>There are five Java keywords <a id="idp15368752"></a><a id="idp15373472"></a><a id="idp15375008"></a><a
+                id="idp15376224"></a><a id="idp15377648"></a><a id="idp15379072"></a><a id="idp15380496"></a><a
+                id="idp15381648"></a><a id="idp15382800"></a><a id="idp15383920"></a><a id="idp15385072"></a>that can be
+            used for exception handling: <code>try</code>, <code>catch</code>, <code>finally</code>, <code>throw</code>,
+            and <code>throws</code>. One <code>try</code> block can have multiple <code>catch</code> blocks, to provide
+            handling for more than one type of error. For example, when a program tries to read a file, the file may not
+            be there—you must catch the <code>FileNotFoundException</code>. If the file is there, but the code tries to
+            read past the end of file, the <code>catch</code> clause for <code>EOFException</code> is necessary. <a
+                    id="list-anc-c010-004" href="part0011.html#list-c010-004">Listing 10-4</a> illustrates a
+            multi-<code>catch</code> block.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c010-004"
+                                           href="part0011.html#list-anc-c010-004">Listing 10-4</a>:</span> One try with
+                    multiple catch statements</h5>
+                <pre>
+public void getCustomers() {
+   try {
+       fileCustomers.read();
+   } catch(FileNotFoundException fileEx) {
+       System.out.println("Cannot find file Customers");
+   } catch(EOFException eof) {
+       System.out.println("Done with file read");
+   } catch(IOException ioe) {
+       System.out.println("Problem reading file: " +
+                                          ioe.getMessage());
+   }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="119" id="Page_119"></span>The order of the <code>catch</code> statements
+            may be important if the exceptions being caught belong to the same inheritance branch. For example, the
+            class <code>EOFException</code> is a subclass of the more generic <code>IOException</code>, and you have to
+            put the <code>catch</code> block for the subclass first. If you place the <code>catch</code> block for
+            <code>IOException</code> before the one for <code>EOFException</code>, the latter block will never be
+            reached—the end-of-file errors will be intercepted by the <code>IOException</code> <code>catch</code> block.
+        </p>
+        <p>Starting from Java 7 you can catch multiple exceptions in one <code>catch</code> block. For example, the
+            preceding code may be rewritten as follows:</p>
+        <pre>
+public void getCustomers() {
+   try {
+       fileCustomers.read();  // may throw an error
+   } catch(FileNotFoundException | EOFException | IOException ioe) {
+     System.out.println("Problem reading file" + ioe.getMessage());
+   } catch (Exception ex) {
+     System.out.println("Exception in getCustomers:" + 
+                          ex.getMessage());
+   }
+}
+</pre>
+        <p>A <code>catch</code> block receives an instance of the <code>Exception</code> object that contains a short
+            explanation of a problem, and the method <code>getMessage()</code> of the <code>Exception</code> object
+            returns this info. If the description of an error returned by <code>getMessage()</code> is not clear enough,
+            try the method <code>Exception.toString()</code> instead.</p>
+        <p>If you need more detailed information about the exception, use the method <code>printStackTrace()</code> on
+            the received <code>Exception</code> object (see <a id="list-anc-c010-006"
+                                                               href="part0011.html#list-c010-006">Listing 10-6</a>). It
+            prints all internal method calls that led to this exception, as described in the section <a
+                    href="part0011.html#stack_trace">“Stack Trace”</a> earlier in this lesson.</p>
+    </section>
+    <section>
+        <h2><a id="throws_clause"></a>Using the throws Clause</h2>
+        <p>In some cases it <a id="idp15410400"></a><a id="idp15411920"></a>makes more sense to handle an exception not
+            in the method where it happened, but in the calling one. Let’s use the same example of code that reads a
+            file. Because the method <code>read()</code> may throw an <code>IOException</code>, you should either handle
+            it or declare that the calling method may throw it. The latter is done in <a id="list-anc-c010-005"
+                                                                                         href="part0011.html#list-c010-005">Listing
+                10-5</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c010-005"
+                                           href="part0011.html#list-anc-c010-005">Listing 10-5</a>:</span> Using the
+                    throws clause</h5>
+                <pre>
+public class CustomerList {
+    public void getAllCustomers() <strong>throws IOException</strong> {
+        // Some other code goes here
+        // Don't use try/catch if you are not handling 
+        // exceptions here
+        file.read();
+    }
+    public static void main(String[] args) {
+        System.out.println("Customer List");
+        // Some other code goes here
+        try {
+            // Since getAllCustomers() declared an exception,
+            // either handle it over here, or rethrow it
+            // (see the throw keyword explanation below)
+            getAllCustomers();
+        } catch(IOException ioe) {
+            System.out.println("Customer List is not available");
+        }
+    }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>In <a href="part0011.html#list-c010-005">Listing 10-5</a> <code>IOException</code> has been propagated from
+            the method <code>getAllCustomers()</code> to the <code>main()</code> method, and it has been handled there.
+        </p>
+    </section>
+    <section>
+        <h2><a id="finally_clause"></a>Using the finally Clause</h2>
+        <p><span epub:type="pagebreak" title="120" id="Page_120"></span>The code <a id="idp15423632"></a><a
+                id="idp15425216"></a>can exit the <code>try/catch</code> block in several ways:</p>
+        <ul>
+            <li>The code inside the <code>try</code> block successfully ends and the program continues.</li>
+            <li>The code inside the <code>try</code> block runs into a <code>return</code> statement and the program
+                control returns to the calling method.
+            </li>
+            <li>The code inside the <code>try</code> block throws an exception and control goes to the
+                <code>catch</code> block.
+            </li>
+        </ul>
+        <p>As you can see, in some cases only the code from the <code>try</code> block works; in some cases part of the
+            code from the <code>try</code> block and all the code in <code>catch</code> is invoked. If there is a piece
+            of code that must be executed regardless of the success or failure of the code in the <code>try</code>
+            block, put it under the <code>finally</code> clause.</p>
+    </section>
+    <aside epub:type="sidebar">
+        <div class="top hr">
+            <hr/>
+        </div>
+        <section class="feature3">
+            <h5><span class="label"><a id="list-c010-006"
+                                       href="part0011.html#list-anc-c010-006">Listing 10-6</a>:</span> Using the finally
+                clause</h5>
+            <pre>
+try {
+    file.read();
+    // file.close();   don't close files inside try block
+}
+catch(Exception e) {
+    e.printStackTrace();
+}
+finally {
+    try {
+        file.close();
+    } catch(IOException ioe) {
+        ioe.printStackTrace();
+    }
+}</pre>
+            <p>The <span epub:type="pagebreak" title="121" id="Page_121"></span>code in <a
+                    href="part0011.html#list-c010-006">Listing 10-6</a> will try to close the file regardless of the
+                success of the <code>read</code> operation because the <code>close()</code> function is called in the
+                <code>finally</code> block. If you had placed the <code>close()</code> function <i>inside</i> the <code>try</code>
+                block, then when an exception was thrown, the next code to execute would be in the <code>catch</code>
+                block,  skipping the <code>close()</code> operation, which would result in resource leak, the object
+                referred by the <code>file</code> variable would get stuck in memory for some time.  As a summary, you
+                should always use the <code>finally</code> clause for the release of system resources. To minimize the
+                programmer’s errors with unclosed resources Java introduced try-with-resources.</p>
+        </section>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp15441248"></a>Using printStackTrace</h3>
+                <p>In some of the code snippets I invoke the method <code>printStackTrace()</code> just to make the code
+                    samples short. But the <code>printStackTrace()</code> is a slow operation and it’s better to extract
+                    the error message from the exception object rather than printing the entire stack trace that led to
+                    the error.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <section>
+            <h3><a id="trywithresources"></a>Try-With-Resources</h3>
+            <p>Starting from Java 7 you can <a id="idp15447296"></a><a id="idp15449088"></a>simplify the code in
+                try/catch blocks by using <i>try-with-resources</i> syntax, which directs Java run time to automatically
+                close resources without using the <code>finally</code> clause. You just need to open the resources in
+                the parentheses right after the <code>try</code> keyword, and they’re automatically closed. The next
+                code fragment illustrates try-with-resources. The object <code>InputStream</code> (explained in <a
+                        href="part0018.html">Lesson 17</a>) is closed automatically without the need to use <code>finally</code>.  
+            </p>
+            <pre>
+InputStream myFileInputStream = null;
+try (myFileInputStream = new FileInputStream(“customers.txt”);) {
+    // the code that reads data from customers.txt goes here
+} catch (Exception e) {
+    e.printStackTrace();
+}
+</pre>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp15454176"></a>The AutoClosable Interface</h3>
+                    <p>The automatic closing <a id="idp15455136"></a><a id="idp15456704"></a><a id="idp15458128"></a>works
+                        only if the resource implements <code>java.lang.AutoCloseable</code>
+                        or <code>java.io.Closeable</code> interface, which is the case with <code><a
+                                href="http://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html">FileInputStream</a></code>. If
+                        you want to <span epub:type="pagebreak" title="122" id="Page_122"></span>create your classes
+                        that automatically close some resources, have them implement one of these interfaces. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <p>If you are not planning to handle exceptions in the current method, they will be propagated to the calling
+            method. In this case you can use the <code>finally</code> clause without the <code>catch</code> clause where
+            it would be mandatory otherwise:</p>
+        <pre>
+public void myMethod() throws IOException {
+    try {
+        // If an exception occurs the method calling this one 
+        // will deal with it
+        file.read();
+    } finally {
+        file.close();
+    }
+}</pre>
+        <div class="bottom hr">
+            <hr/>
+        </div>
+    </aside>
+</section>
+<section>
+    <h2><a id="throw_operator"></a>The throw Keyword</h2>
+    <p>If an exception has occurred in a method, you may want to do one of the following:</p>
+    <ol>
+        <li>Catch the exception. </li>
+        <li>Do some partial error processing (such as error logging).</li>
+        <li>Throw the exception to the calling method for further processing.</li>
+        <li>Just make the user aware of the problem.</li>
+    </ol>
+    <p>In some cases you may want to catch an exception and handle it by throwing another exception (with modified error
+        information) to the calling method.</p>
+    <p>The <code>throw</code> statement <a id="idp15469504"></a><a id="idp15470480"></a>is used to throw Java exception
+        objects. The object that a program throws must be <code>Throwable</code>. This means that you can throw only
+        subclasses of the <code>Throwable</code> class and that all Java exceptions are its subclasses:</p>
+    <pre>
+public class CustomerList {
+    public void getAllCustomers() throws Exception {
+    // some other code can go here
+    try {
+        file.read(); // this line may throw an exception
+    } catch (IOException ioe) {
+        // Log this error here, and rethrow another exception
+        // with a custom error description
+        throw new Exception ("Customer List is not available"+
+                                          ioe.getMessage());
+        }
+    }
+    public static void main(String[] args){
+        System.out.println("Customer List");
+        // some other code can go here
+        try {
+            // Since the getAllCustomers() declares an exception,
+            // you should either handle. Rethrowing is also an  
+            // option unless you are in the main() method already.
+            getAllCustomers();
+        }
+        catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+</pre>
+</section>
+<section>
+    <h2><a id="creating_your_own_exceptions"></a>Creating Your Own Exceptions</h2>
+    <p><span epub:type="pagebreak" title="123" id="Page_123"></span>You can also create <a id="except"></a>exceptions
+        customized to fit their business applications. Just create a class that’s a subclass of one of the classes from
+        the <code>Throwable</code> hierarchy.</p>
+    <p>Let’s say you are in business of selling bikes and need to validate a customer’s order. You can create a new
+        class, <code>TooManyBikesException</code>, and throw it if someone tries to order more bikes than can fit into
+        the store’s truck. The class <code>BikeOrder</code> shown in <a id="list-anc-c010-007"
+                                                                        href="part0011.html#list-c010-007">Listing
+            10-7</a> highlights this idea.</p>
+    <aside epub:type="sidebar">
+        <div class="top hr">
+            <hr/>
+        </div>
+        <section class="feature3">
+            <h5><span class="label"><a id="list-c010-007"
+                                       href="part0011.html#list-anc-c010-007">Listing 10-7</a>:</span> Creating and
+                throwing your own exceptions</h5>
+            <pre>
+public class TooManyBikesException extends Exception {
+    TooManyBikesException (String msgText){
+        super(msgText);
+    }
+}
+public class BikeOrder {
+    ...
+    public static void validateOrder(String bikeModel,
+                      int quantity) throws TooManyBikesException {
+        // perform some data validation, and if the entered
+        // the quantity or model is invalid, do the following:
+        throw new TooManyBikesException("Cannot ship" +
+          quantity + "bikes of the model" + bikeModel +);
+    }
+}
+public class OrderWindow extends JFrame {
+    ...
+    public void actionPerformed(ActionEvent e) {
+    // the user clicked on the "Validate Order" button
+    try {
+        bikeOrder.validateOrder("Model-123", 50);
+        // the next line will be skipped in case of exception
+        txtResult.setText("Order is valid");
+        } catch(TooManyBikesException e) {
+            txtResult.setText(e.getMessage());
+        }
+    }
+}</pre>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </section>
+    </aside>
+    <p><code>TooManyBikesException</code> shown in <a id="list-anc-c010-008" href="part0011.html#list-c010-008">Listing
+        10-8</a> has a unique name, and the text includes some information specific to the shipping business. But
+        another way to provide application-specific information is to declare one or more additional variables in the
+        custom exception. These variables can store multiple pieces of data that describe the erroneous situation.</p>
+    <aside epub:type="sidebar">
+        <div class="top hr">
+            <hr/>
+        </div>
+        <section class="feature3">
+            <h5><span class="label"><a id="list-c010-008"
+                                       href="part0011.html#list-anc-c010-008">Listing 10-8</a>:</span> A custom
+                exception with an extra property</h5>
+            <pre>
+public class TooManyBikesException extends Exception{
+    // Declare an application-specific property
+    ShippingErrorInfo shippingErrorInfo;
+    TooManyBikesException(String msgText,
+                         ShippingErrorInfo shippingErrorInfo) {
+        super(msgText);
+        this.shippingErrorInfo = shippingErrorInfo;
+    }
+}</pre>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </section>
+    </aside>
+    <p><a href="part0011.html#list-c010-008">Listing 10-8</a> illustrates the code that adds an application-specific
+        object, <code>ShippingErrorInfo</code>, to the custom exception class <code>TooManyBikesException</code>. An
+        application can prepare the object describing a shipping error and pass it as an argument to the constructor of
+        the exception. The latter stores it in the class variable <code>shippingInfo</code>, and whatever method catches
+        this exception can extract the <code>ShippingErrorInfo</code> object and act accordingly.</p>
+    <p><span epub:type="pagebreak" title="124" id="Page_124"></span>In distributed Java EE applications, an exception
+        can travel through several tiers (such as JMS, EJB, Servlet, Swing client), and not only does having a custom
+        property inside the exception object ensure that the valuable information isn’t lost, but each tier can add more
+        specifics to this custom property, which helps in tracing the error.</p>
+    <p>There is also a class <a id="idp15493376"></a><a id="idp15494304"></a><a id="idp15495984"></a>called <code>RemoteException</code>,
+        with a field called <code>detail</code>, that’s used for reporting communication errors. You can extend this
+        class to make remote exceptions more descriptive. This subject may be more appropriate for lessons 25 through 35
+        about the server-side technologies, but because this is the lesson dedicated to exceptions, I mentioned it here.
+    </p>
+    <p>Handling <span epub:type="pagebreak" title="125" id="Page_125"></span>programming errors is a must. Unfortunately
+        I’ve seen how some of the Java developers were quietly ignoring errors. Literally, they would write an empty
+        <code>catch</code> clause. This is the worst thing that could be done. It’s like a time bomb that will
+        definitely blow the program up one day, and finding such bombs is usually a time-consuming process. Don’t cut
+        corners; exception handling should be taken very seriously. For more details on Java <a id="idp15507008"></a>exceptions
+        refer to Oracle’s tutorial at <a href="http://bit.ly/1nO3wIO">http://bit.ly/1nO3wIO</a>.</p>
+</section>
+<section>
+    <h2><a id="bikestore"></a>Try It</h2>
+    <p>Create a Swing application for placing bike orders. It has to have a drop-down list (<code>JComboBox</code>)
+        containing several bike models, <code>JTextField</code> for entering quantity, and <code>JButton</code> for
+        validating the order.</p>
+    <p>Make up several <a id="idp15507584"></a><a id="idp15509072"></a>combinations of bike models and quantities that
+        throw an exception. Use the code snippets from <a href="part0011.html#list-c010-007">Listing 10-7</a> as
+        examples. The validation should start when the user clicks the button to validate the order.</p>
+    <section>
+        <h3><a id="lesson_requirements-id00047"></a>Lesson Requirements</h3>
+        <p>You should have Java installed.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this “Try
+                    It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                    You can find them in</i> <code>Lesson10.zip</code><i>.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h3><a id="step-by-step-id00048"></a>Step-by-Step</h3>
+        <ol>
+            <li>Create a new Eclipse project called Lesson10.</li>
+            <li>Learn how to work with <code>JComboBox</code> at the following tutorial: <a
+                    href="http://bit.ly/1qfPjbs">http://bit.ly/1qfPjbs</a> .
+            </li>
+            <li>Process events and revalidate the order whenever the user selects a new bike model or changes the
+                quantity of the order.
+            </li>
+            <li>Throw and handle <code>TooManyBikesException</code> if the order can’t be shipped.</li>
+        </ol>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature1">
+                <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0011.html">Lesson
+                    10</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                    will also be able to download the code and resources for this lesson from the website.</i></p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+</section>
+</body>
+</html>

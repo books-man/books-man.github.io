@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introducing JMS and MOM</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introducing_jms_and_mom"></a><span class="chapterTitle">Lesson 30<br/>Introducing JMS and MOM</span></h1>
+
+    <section>
+        <p>People <span epub:type="pagebreak" title="423" id="Page_423"></span>send messages <a id="idp21524208"></a><a
+                id="idp21525184"></a>to each other via e-mail, instant messages, Twitter, Facebook, and so on. People
+            can also communicate using more traditional methods by sending regular mail. You just need to drop a letter
+            in a mailbox, and the rest is taken care of by postal service providers and logistics companies such as
+            USPS, FedEx, UPS, and DHL.</p>
+        <p>Applications can send messages to each other using specialized servers known as message-oriented middleware
+            (MOM), which plays a role similar to that of the delivery services. A program “drops the message” into a<i>
+                message queue</i> (think <i>mailbox</i>) using <a id="idp21527904"></a><a id="idp21528944"></a>the Java
+            Messaging Service (JMS) application programming interface (API), and the message is delivered to another
+            application that reads messages off of this queue. In short,  <span>JMS is an API for working with MOM servers. </span>
+        </p>
+        <p>Although JMS is a part of the Java EE specification, you can use it with Java SE applications without needing
+            to have any Java application server—just make a <code>.jar</code> file containing JMS classes available to
+            your program. This lesson shows you how to write both standalone Java clients and those that live inside a
+            Java EE server. These clients send and receive applications with the JMS API via a MOM provider. In <a
+                    href="part0032.html#introduction_to_enterprise_javabeans">Lesson 31</a> you learn about the value
+            that message-driven beans bring to the table.</p>
+    </section>
+    <section>
+        <h2><a id="messaging_concepts_and_terminology"></a>Messaging Concepts and Terminology</h2>
+        <p>You have already learned several methods of data exchange in distributed Java applications: direct socket
+            communication, RMI, and HTTP-based interactions. But all of them were based <a id="idp21536208"></a>on
+            remote procedure calls (RPC) or the request/response model. MOM enables you to build distributed systems
+            that communicate <i>asynchronously</i>.</p>
+        <p>JMS itself isn’t the <a id="idp21537904"></a>transport for messages. JMS is to MOM what JDBC is to a
+            relational DBMS. Java applications can use the same JMS classes with any MOM provider. Here’s a list of some
+            popular MOM software:</p>
+        <ul>
+            <li>WebSphere MQ (IBM)</li>
+            <li>EMS (Tibco Software)</li>
+            <li>SonicMQ (Progress Software)</li>
+            <li>ActiveMQ <span epub:type="pagebreak" title="424" id="Page_424"></span>(open source, Apache)</li>
+            <li>Open MQ (open source, Oracle)</li>
+        </ul>
+        <p>If you place an order <a id="idp21543408"></a><a id="idp21544704"></a>to buy some stocks by invoking the
+            method <code>placeOrder()</code> on a remote machine, that’s an example of a <i>synchronous</i> or blocking
+            call (also known as remote procedure call). The calling program can’t continue until the code in the <code>placeOrder()</code>
+            method is finished or has thrown an error.</p>
+        <p>With <i>asynchronous</i> communications<a id="idp21548240"></a><a id="idp21549552"></a><a
+                id="idp21550944"></a> it’s different. You can place an order but don’t have to wait for its execution.
+            Similarly, when you drop a letter in a mailbox you don’t have to wait for a mail truck to arrive to the
+            recipient. The same applies to e-mail—press the Send button and continue working on other things without
+            waiting until your message has been delivered. Recipients of your e-mails also don’t have to be online when
+            you send a message; they can read it later.</p>
+        <p>The process of placing a trade <a id="idp21552960"></a>order comes down to putting a Java object that
+            describes your order into a certain <i>message queue</i> of your MOM provider. After placing an order, the
+            program may continue its execution without waiting until the processing of the order is finished. Multiple
+            users can place orders into the same queue. Another program (not necessarily in Java) should be <i>de-queueing</i>
+            and processing messages. <a id="fig-anc-c030-001" href="part0031.html#fig-c030-001">Figure 30-1</a> shows
+            how a trading application can place orders (and receive executions) with another application running on a
+            stock exchange.</p>
+        <figure>
+            <img class="center" src="../Images/image00597.gif" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-001"
+                                                   href="part0031.html#fig-anc-c030-001">Figure 30-1</a>:</b></span>
+                    Brokerage company communicates with a stock exchange via MOM </p>
+            </figcaption>
+        </figure>
+        <p>Even from this very high-level representation of a trading application you can see that messaging allows you
+            to build loosely coupled distributed systems.  Say, the stock exchange server is down, the brokerage company
+            servers can still take customers' orders and send them to MOM. As soon as the stock exchange servers become
+            operational, they start retrieving orders from the MOM queues. If the brokerage company would make
+            synchronous RPC-type calls to the stock exchange, the entire trading application would stop functioning it
+            the stock exchange servers were down. </p>
+        <p>The trading orders are placed in one queue, and when they are executed at the stock exchange the
+            confirmations go into another queue and, if the application at the brokerage firm is active at that time, it
+            will de-queue the messages immediately upon their arrival. If your application is not running, but you’ve
+            opted for guaranteed delivery, the messages will be preserved in the queue by the MOM provider.</p>
+        <p>To increase the throughput of your messaging-based application, add multiple parallel consumers reading
+            messages off of the same queue. You can create a consumer Java program that starts multiple threads, each of
+            them de-queuing messages from the same queue. But a better way is to configure multiple consumers using <a
+                    id="idp21557680"></a>message-driven beans (MDB), which l explain in <a
+                    href="part0032.html#introduction_to_enterprise_javabeans">Chapter 31</a>.</p>
+        <p>With <span epub:type="pagebreak" title="425" id="Page_425"></span>guaranteed message delivery, MOM—just like
+            the post office—keeps the message in a <a id="idp21565392"></a>queue until the receiver gets it. In this
+            mode messages are <i>persistent</i>—the MOM provider stores them in its internal storage, which can be a
+            DBMS or a filesystem. In a non-guaranteed mode, MOM delivers a message only to the receiving applications
+            that are up and running at the moment that the message arrives.</p>
+    </section>
+    <section>
+        <h2><a id="two_modes_of_message_delivery"></a>Two Modes of Message Delivery</h2>
+        <p>A program can <i>send</i> or <i>publish</i> a message. When <a id="idp21567488"></a>it sends a message to a
+            particular queue and another program receives the message from this queue it’s called <i>point-to-point
+                (P2P)</i> <a id="idp21571824"></a>messaging. In this mode a message is removed from a queue as soon as
+            it’s successfully received. <a id="fig-anc-c030-002" href="part0031.html#fig-c030-002">Figure 30-2</a> shows
+            that each message goes to only one consumer.</p>
+        <figure>
+            <img class="center" src="../Images/image00598.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-002"
+                                                   href="part0031.html#fig-anc-c030-002">Figure 30-2</a>:</b></span> P2P
+                    messaging</p>
+            </figcaption>
+        </figure>
+        <p>If a program publishes a message to be consumed by multiple recipients, that’s <i>publish/subscribe
+            (pub/sub)</i> mode. A message is published to a particular <i>topic</i> and many subscribers can subscribe
+            to receive it. <a id="fig-anc-c030-003" href="part0031.html#fig-c030-003">Figure 30-3</a> illustrates
+            pub-sub, where on message can be consumed by multiple subscribers. </p>
+        <figure>
+            <img class="center" src="../Images/image00599.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-003"
+                                                   href="part0031.html#fig-anc-c030-003">Figure 30-3</a>:</b></span>
+                    Pub/sub messaging</p>
+            </figcaption>
+        </figure>
+        <p>A topic represents some important news for applications and/or users; for
+            example, <code>PriceDropAlert</code>, <code>BreakingNews</code>, and so on. In pub/sub mode, a message is
+            usually removed from a queue as soon as all subscribers receive it (read about durable subscribers in the
+            section <a href="part0031.html#how_to_subscribe_for_a_topic">How to Subscribe for a Topic</a>).</p>
+        <p>Another <span epub:type="pagebreak" title="426" id="Page_426"></span>good example of a pub/sub application is
+            a <a id="idp21585216"></a>chat room. A message published by one person is received by the other people
+            present in the chat room. Developing a chat room with JMS and MOM is a pretty trivial task.  </p>
+    </section>
+    <section>
+        <h2><a id="idp21584480"></a>Introducing OpenMQ MOM</h2>
+        <p>To learn JMS, you need to <a id="mq1"></a><a id="mq2"></a><a id="mq3"></a>install a messaging server and
+            configure some message queues there. You can use an open source MOM provider called Open MQ. As a bonus, it
+            comes with GlassFish. You already have it installed in the <code>mq</code> directory in your GlassFish
+            install. If you want to use Open MQ with any other application server you could download Open MQ as a
+            separate product from <a href="https://mq.java.net/downloads/index.html">https://mq.java.net/downloads/index.html</a>.
+             </p>
+        <p>First, I’m not going to use Java EE server. The goal is to test standalone Java clients communicating with
+            Open MQ directly, without the middlemen. You need to start the Open MQ server and create a named queue
+            there.</p>
+        <p>Edit the configuration file <code>glassfish4/glassfish/mq/etc/imqenv.conf</code> to specify the location of
+            Java 8 on your computer. For example, this is how this configuration line looks on my Mac computer:</p>
+        <pre>
+IMQ_DEFAULT_JAVAHOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.j
+dk/Contents/Home
+</pre>
+        <p>Open a command (or Terminal) window to the <code>glassfish4/mq/bin</code> directory, and start the Open MQ
+            broker. In Windows you need to run the program <code>imqbrokerd.exe</code>. If you use Mac OS, enter the
+            following command:</p>
+        <pre>
+./imqbrokerd 
+</pre>
+        <p>You see a message informing you that the broker is ready on port 7676. Now open another command window,
+            change to the <code>glassfish4/mq/bin</code> directory, and start the admin graphical user interface (GUI)
+            tool<i></i> imqadmin to create the required messaging destinations:</p>
+        <pre>
+./imqadmin
+</pre>
+        <p>The administration console opens. In Open MQ there are applications called brokers that manage all message
+            exchanges between clients. So you configure a message broker that manages messages related to stock
+            trading. Right-click the <code>Brokers</code> node and add a new broker named <code>StockBroker</code>,
+            enter the password <i>admin</i>, and click OK. Then right-click <code>StockBroker</code> and select Connect
+            to Broker from the menu. <a id="fig-anc-c030-004" href="part0031.html#fig-c030-004">Figure 30-4</a> shows a
+            snapshot of my screen after these steps.</p>
+        <p>Now create a physical destination—a queue for placing trading orders. Right-click the Destinations under the
+            <code>StockBroker</code> node and select Add Broker Destination. In the pop-up window, enter the name of the
+            destination: <code>TradingOrdersQueue,</code> as in <a id="fig-anc-c030-005"
+                                                                   href="part0031.html#fig-c030-005">Figure 30-5</a>.
+        </p>
+        <figure>
+            <img class="center" src="../Images/image00600.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-004"
+                                                   href="part0031.html#fig-anc-c030-004">Figure 30-4</a>:</b></span>
+                    Open <span epub:type="pagebreak" title="427" id="Page_427"></span>MQ console with newly created
+                    StockBroker</p>
+            </figcaption>
+        </figure>
+        <figure>
+            <img class="center" src="../Images/image00601.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-005"
+                                                   href="part0031.html#fig-anc-c030-005">Figure 30-5</a>:</b></span>
+                    Configuring <span epub:type="pagebreak" title="428" id="Page_428"></span>a destination in Open MQ
+                </p>
+            </figcaption>
+        </figure>
+        <p>If you want to create a topic rather than a queue you just need to select the Topic radio button. As you can
+            see, there are some other parameters you can set on a destination.</p>
+        <p>It’s out of the scope of this book to include a detailed overview of Open MQ MOM; try reading the <a
+                href="https://glassfish.java.net/docs/4.0/mq-admin-guide.pdf">Open MQ Administration Guide</a> for more
+            information. As long as you have a MOM server running and the messaging destination is configured, you can
+            start writing programs that <a id="idp21614176"></a><a id="idp21613360"></a><a id="idp21617344"></a>send and
+            receive messages to/from this destination.</p>
+    </section>
+    <section>
+        <h2><a id="jms_api_overview"></a>JMS API Overview</h2>
+        <p>JMS <span epub:type="pagebreak" title="429" id="Page_429"></span>API that <a id="idp21620800"></a>includes
+            Java classes that enable you to send and receive messages. In this lesson you discuss JMS 2.0 introduced in
+            Java EE 7. If you have to work with application servers that support only older Java EE specifications look
+            for tutorials describing JMS 1.1 API. All of the supporting classes and interfaces are defined in the
+            package <code>javax.jms</code>, and you can read about them at <code><a
+                    href="http://docs.oracle.com/javaee/7/api/javax/jms/package-summary.html">http://docs.oracle.com/javaee/7/api/javax/jms/package-summary.htm</a></code><span
+                    style="letter-spacing: 0.01em; line-height: 1.3em;">.</span></p>
+        <p>In the old JMS specification you’d need to use multiple classes and interfaces such as <code>Queue</code>,
+            <code>QueueConnection</code>, <code>QueueConnectionFactory</code>, <code>QueueSession</code>, <code>Connection</code>,
+            <code>QueueSender</code>, <code>QueueReceiver</code> , <code>Topic</code>, <code>TopicPublisher</code>, and
+            more. With JMS 2.0 this list is shorter. You can send and receive messages using just the few classes and
+            interfaces listed here:  </p>
+        <ul>
+            <li><code>JMSContext</code> combines the JMS  <code>Connection</code> and <code>Session</code> objects. To
+                communication with MOM you need to connect to it and all your messaging exchanges are done within a
+                session.
+            </li>
+            <li>
+                <p><code>ConnectionFactory</code> is an object that creates <code>Connection</code> object(s)
+                    encapsulated in the <code>JMSContext</code> .</p>
+            </li>
+            <li>
+                <p><code>Destination</code> is a queue or a topic. Both <code>Queue</code> and <code>Topic</code>
+                    interfaces are inherited from <code>Destination</code>.</p>
+            </li>
+            <li><code>JMSProducer</code> is an interface that has methods to send messages to a destination.</li>
+            <li><code>JMSConsumer</code> is an interface that has methods to retrieve messages from a destination. </li>
+            <li><code>Message</code> is a root interface for all messages. It consists of a header and a body.</li>
+        </ul>
+        <section>
+            <h3><a id="types_of_messages"></a>Types of Messages</h3>
+            <p>Every message contains a <a id="idp21640256"></a>header and optional body and has facilities for
+                providing additional properties. The header contains the message identification (unique message ID,
+                destination, type, and so on). The optional properties can be set by a program to tag a message with
+                application-specific data; for example, <code>UrgentOrder</code>.</p>
+            <p>The optional body contains a message that has to be delivered. Following are the types of JMS messages
+                that you can place in a message body. All these interfaces are inherited from
+                <code>javax.jms.Message</code>.</p>
+            <ul>
+                <li><code>TextMessage</code> is an object that can contain any Java <code>String</code>.</li>
+                <li><code>ObjectMessage</code> can hold any <code>Serializable</code> Java object.</li>
+                <li><code>BytesMessage</code> holds an array of bytes.</li>
+                <li><code>StreamMessage</code> has a stream of Java primitives.</li>
+                <li><code>MapMessage</code> contains any key/value pairs; for example, <code>id=123</code>.</li>
+            </ul>
+            <p>Typically the message producer creates an object of one of the preceding types, initializes it with the
+                application data,  and then sends it to a MOM queue or topic. The only exception is <code>String</code>
+                messages, which can be sent as-is without wrapping them inside the <code>TextMessage</code>.  The
+                consumer application extracts the message content by invoking a method <code>Message.getBody()</code>,
+                which returns the <a
+                        href="http://docs.oracle.com/javaee/7/api/javax/jms/Message.html#getBody(java.lang.Class)">message
+                    body</a> of a specified type; for example:</p>
+            <pre>
+msg.getBody(String.class); // msg is a reference to received message
+</pre>
+            <p>If <span epub:type="pagebreak" title="430" id="Page_430"></span>you’d need to send an object of,
+                say <code>Order</code> type (must be <code>Serializable</code>),  the message producer needs to wrap it
+                up into the <code>ObjectMessage</code>—for example:</p>
+            <pre>
+Order order = new Order();
+ObjectMessage objMsg = context.createObjectMessage(order);
+</pre>
+            <p>then the invocation of <code>getBody()</code> on the message consumer would look like this:</p>
+            <pre>
+Order receivedOrder = msg.getBody(Order.class);  </pre>
+        </section>
+        <section>
+            <h3><a id="how_to_send_a_message"></a>How to Send a Message Directly to MOM</h3>
+            <p>This section <a id="idp21659120"></a><a id="idp21660960"></a>and the following section show you how a
+                Java SE client can communicate with MOM directly without using any Java EE server as a middleman. This
+                mode isn’t often used, but it’ll help you to understand the benefits that Java EE and JNDI bring to the
+                table when it comes to messaging. After you see these simple examples, you can rewrite them for a Java
+                EE server using JNDI. </p>
+            <p>To send and receive messages, queues or topics should be preconfigured in MOM and their names must be
+                known before a program can start sending messages. I used the world <i>should</i>, because even if you
+                wouldn’t preconfigure the queue, some MOM providers (Open MQ included) may create a temporary queue in
+                memory, which will be destroyed on server restart. </p>
+            <p>In the real world, a MOM server administrator manages queues and other messaging artifacts, but for the
+                training purposes you already did it in the previous section with the queue
+                <code>TradingOrdersQueue</code> . </p>
+            <p>To send messages directly to a MOM provider, a program has to perform the following steps:</p>
+            <ol>
+                <li>In a Java class create a <code>ConnectionFactory</code> object using the implementation classes
+                    provided by the MOM vendor. 
+                </li>
+                <li>Create a <code>JMSContext</code> object.</li>
+                <li>Using the <code>JMSContext</code> create a <code>Destination</code> (for example, invoke <code>createQueue()</code> ).
+                </li>
+                <li>Create a <code>JMSProducer</code> object.</li>
+                <li>Create one of the <code>Message</code> objects and put some data in it.</li>
+                <li>Call the <code>send()</code> method on the <code>JMSProducer</code> providing
+                    <code>Destination</code> and <code>Message</code> as arguments.
+                </li>
+            </ol>
+            <p><a id="list-anc-c030-001" href="part0031.html#list-c030-001">Listing 30-1</a> shows the class <code>DirectMessageSender</code> that
+                implements all of the preceding steps except creating a Message instance - for strings it’s not
+                required. This code sends a message to a queue <code>TradingOrdersQueue</code>. </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c030-001"
+                                               href="part0031.html#list-anc-c030-001">Listing 30-1</a>:</span> Sending a
+                        message directly to MOM</h5>
+                    <pre>
+public class DirectMessageSender{
+ public static void main(String[] args){
+  
+   // Vendor-specific factory implementation 
+   ConnectionFactory factory= 
+                   new com.sun.messaging.ConnectionFactory();  
+   try(JMSContext context=factory.createContext("admin","admin")){
+      factory.setProperty(ConnectionConfiguration.imqAddressList,
+                      "mq://127.0.0.1:7676,mq://127.0.0.1:7676");
+          
+      Destination ordersQueue = 
+                        context.createQueue("TradingOrdersQueue");
+      JMSProducer producer = context.createProducer();
+          
+      // Send msg to buy 200 shares of IBM at market price       
+      producer.send(ordersQueue,"IBM 200 Mkt");
+              
+      System.out.println("Placed an order to purchase 200 
+                            shares of IBM to TradingOrdersQueue");
+     } catch (JMSException e){
+               System.out.println("Error: " + e.getMessage());
+     } 
+  }        
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The class <code>DirectMessageSender</code> uses an Open MQ–specific implementation of JMS’s <code>ConnectionFactory</code>,
+                which is located in the vendor’s package <code>com.sun.messaging</code>. If you decide to change MOM
+                providers or the server address, you would need to modify, recompile, and redeploy this code.  This is
+                not great, but you’ll fix this issue <a id="idp21683664"></a><a id="idp21681536"></a>in the Java EE
+                version of this client. </p>
+        </section>
+        <section>
+            <h3><a id="how_to_receive_a_message"></a>How to Receive a Message Directly from MOM</h3>
+            <p><span epub:type="pagebreak" title="431" id="Page_431"></span>The program that <a id="idp21687904"></a><a
+                    id="idp21689936"></a><a id="idp21691744"></a><a id="idp21693104"></a>receives messages is called a
+                <i>message consumer</i> (a listener). It can be a standalone Java program or a message-driven bean. You
+                can receive messages either synchronously, using the <code>receive()</code> method, or asynchronously by
+                implementing the <code>MessageListener</code> interface <a id="idp21696688"></a><a id="idp21697184"></a>and
+                programming a callback <code>onMessage()</code>. The <code>receive()</code> method is rarely used
+                because it engages a polling mechanism that constantly asks for a message. </p>
+            <p>Using an asynchronous <a id="idp21699744"></a><a id="idp21700960"></a>callback method
+                 <code>onMessage()</code> on a message consumer is a preferred way to receive messages. The callback
+                method <code>onMessage()</code> is invoked immediately when a message is put in the queue. The consumer
+                class has to perform the following steps to receive messages asynchronously:</p>
+            <ol>
+                <li>Create a class that implements the <code>MessageListener</code> interface and instantiate it.</li>
+                <li>Create  a <code>ConnectionFactory</code> object using the implementation classes provided by the MOM
+                    vendor. 
+                </li>
+                <li>Create a <code>JMSContext</code> object.</li>
+                <li>Using the <code>JMSContext</code> to create a <code>Destination</code> (for example, invoke <code>createQueue()</code> ).
+                </li>
+                <li>Create a <code>JMSConsumer</code> object and invoke on it <code>setMessageListener()</code>,
+                    specifying the object that implements <code>MessageListener</code>.
+                </li>
+                <li>Implement <code>onMessage()</code> to handle the message when it arrives.</li>
+            </ol>
+            <p>The <span epub:type="pagebreak" title="432" id="Page_432"></span>sample class <code>MyReceiver</code> in
+                <a id="list-anc-c030-002" href="part0031.html#list-c030-002">Listing 30-2</a> shows how to consume
+                messages from the <code>TradingOrdersQueue</code> asynchronously. Its constructor creates JMS objects
+                and registers itself as a message listener. The callback <code>onMessage()</code> has code for
+                processing the received messages.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c030-002"
+                                               href="part0031.html#list-anc-c030-002">Listing 30-2</a>:</span> Receiving
+                        a message</h5>
+                    <pre>
+public class DirectMessageReceiver implements MessageListener{
+  ConnectionFactory factory = 
+                       new com.sun.messaging.ConnectionFactory();  
+  JMSConsumer consumer;
+    
+  DirectMessageReceiver(){
+   try(JMSContext context=factory.createContext("admin","admin")){
+       factory.setProperty(ConnectionConfiguration.imqAddressList,
+                       "mq://127.0.0.1:7676,mq://127.0.0.1:7676");
+            
+       Destination ordersQueue = context.createQueue(
+                                          "TradingOrdersQueue");
+            
+       consumer = context.createConsumer(ordersQueue);
+            
+       consumer.setMessageListener(this);
+              
+       System.out.println(
+                      "Listening to the TradingOrdersQueue...");
+              
+              // Keep the program running - wait for messages
+              Thread.sleep(100000);
+            
+   } catch (InterruptedException e){
+       System.out.println("Error: " + e.getMessage());
+   } catch (JMSException e){
+       System.out.println("Error: " + e.getMessage());
+   } 
+ }
+  public void onMessage(Message msg){
+        
+      try{
+       System.out.println("Got the text message from " + 
+         "the TradingOrdersQueue: " + msg.getBody(String.class));
+       
+       System.out.println("\n === Here's what toString() 
+                               on the message prints \n" + msg);
+       
+      } catch (JMSException e){
+          System.err.println("JMSException: " + e.toString());
+      }
+ }
+ public static void main(String[] args){
+      new DirectMessageReceiver();  // instantiate listener
+ }     
+}
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p><span epub:type="pagebreak" title="433" id="Page_433"></span>The class <code>DirectMessageReciever</code>
+                calls <a id="idp21719696"></a><a id="idp21720800"></a>the method <code>sleep(100000)</code> to prevent
+                the program from termination for 100 seconds. I did it for testing purposes so you can send messages to
+                the queue and see that they are being received. If you place a message in a queue by running <code>DirectMessageSender</code>
+                the <code>DirectMessageReciever</code> gets it, producing output on the console that might look like
+                this:</p>
+            <pre>
+Got the text message from the TradingOrdersQueue: IBM 200 Mkt
+ === Here's what toString() on the message prints 
+Text:    IBM 200 Mkt
+Class:            com.sun.messaging.jmq.jmsclient.TextMessageImpl
+getJMSMessageID():    ID:7-192.168.1.113(d8:86:af:a3:e1:8d)-62948-
+                         1412631694897
+getJMSTimestamp():    1412631694897
+getJMSCorrelationID():    null
+JMSReplyTo:        null
+JMSDestination:        TradingOrdersQueue
+getJMSDeliveryMode():    PERSISTENT
+getJMSRedelivered():    false
+getJMSType():        null
+getJMSExpiration():    0
+getJMSDeliveryTime():    0
+getJMSPriority():    4
+Properties:        {JMSXDeliveryCount=1}
+</pre>
+            <p>The first line is the result of extracting the text of the message by calling <code>getBody()</code>.</p>
+            <pre>
+msg.getBody(String.class)</pre>
+            <p>The argument <code>String.class</code> means “cast the message body to type <code>String</code>." </p>
+            <p>The rest of the console output is produced by the <code>toString()</code> method on the
+                <code>Message</code> object. I used it in <code>DirectMessageReceiver</code>just to show you that
+                besides message body there are a number of <a
+                        href="https://javaee-spec.java.net/nonav/javadocs/javax/jms/Message.html">properties</a> that
+                can be retrieved by<a id="idp21730752"></a><a id="idp21732912"></a> the corresponding getter. </p>
+        </section>
+        <section>
+            <h3><a id="how_to_publish_a_message"></a>How to Publish a Message</h3>
+            <p>Programs publish <a id="publish"></a><a id="idp21738320"></a>messages to topics, which should be created
+                in advance by the MOM system administrator. In the case of Open MQ, you need to select the Topic radio
+                button in the window shown in <a href="part0031.html#fig-c030-005">Figure 30-5</a>. Multiple subscribers
+                can get messages published to the same topic (this is also known as <i>one-to-many mode</i>).</p>
+            <p>Message publishing is very similar to message sending, but the program should create a <code>Topic</code>
+                instead of a <code>Queue</code>; the rest is the same. <a id="list-anc-c030-003"
+                                                                          href="part0031.html#list-c030-003">Listing
+                    30-3</a> shows how to change the <code>DirectMessageSender</code> to publish a text message with a
+                price quote to a topic called <code>PriceQuoteTopic</code>:</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c030-003"
+                                               href="part0031.html#list-anc-c030-003">Listing 30-3:</a></span>
+                        Publishing <span epub:type="pagebreak" title="434" id="Page_434"></span>a message to a topic
+                    </h5>
+                    <pre>
+Destination priceQuoteTopic  = context.createTopic(
+                                              "PriceQuoteTopic");
+                        
+// Publish a price quote msg to subscribers of PriceQuoteTopic 
+producer.send(priceQuoteTopic,"IBM 187.22");
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Multiple subscribers can receive the same message.</p>
+        </section>
+        <section>
+            <h3><a id="how_to_subscribe_for_a_topic"></a>How to Subscribe for a Topic</h3>
+            <p>Subscribers <a id="sub1"></a><a id="sub2"></a><a id="idp21753744"></a><a id="idp21754864"></a>can be <i>durable</i>
+                or <i>non-durable</i>. Durable subscribers are guaranteed to receive their messages; they do not have to
+                be active at the time a message arrives. Non-durable subscribers receive only those messages that come
+                when they are active. With non-durable subscriptions, MOM removes the message from its internal storage
+                as soon as all active subscribers have <a href="part0031.html#ack_section">acknowledged</a> message
+                delivery. With durable subscriptions MOM retains the message until it’s delivered to all subscribers.
+            </p>
+            <p>Some applications don’t need durable subscriptions. For example, if a subscriber missed a stock price
+                published a second ago it’s okay. But this is not the case if a brokerage company has to report a
+                suspicious transaction to several financial fraud prevention organizations—make such subscriptions
+                durable. </p>
+            <p>If you were to change the <code>DirectMessageRetriever</code> into a non-durable topic subscriber, the
+                following slight change would do the trick:</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c030-004"></a>Listing 30-4:</span> Creating a non-durable
+                        subscriber </h5>
+                    <pre>
+Destination priceQuoteTopic =
+                          context.createTopic("PriceQuoteTopic");
+consumer = context.createConsumer(priceQuoteTopic); </pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>Durable subscribers are <a id="idp21759152"></a><a id="idp21763984"></a>created by invoking <code>createDurableConsumer()</code>,
+                and each durable subscriber must have a unique client ID. Each durable subscription is identified by a
+                combination of the topic name, subscriber’s name, and the client ID. This is how you can create a
+                durable subscriber named  <code>FraudPreventionUnit</code>:</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c030-005"></a>Listing 30-5:</span> Creating a durable
+                        subscriber </h5>
+                    <pre>
+Destination priceQuoteTopic =
+                          context.createTopic("PriceQuoteTopic");
+context.setClientID("client123"); 
+consumer = context.createDurableConsumer((Topic)priceQuoteTopic,
+                                     "FraudPreventionUnit"); </pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p><span epub:type="pagebreak" title="435" id="Page_435"></span>For scalability reasons, <a
+                    id="idp21770128"></a>the same subscription can be shared by multiple standalone consumers working in
+                parallel (for example, running on different JVMs). In this case, a <i>shared consumer</i> has to be
+                created (it can be durable or non-durable). For example, you can create a shared durable subscriber, as
+                shown in <a id="list-anc-c030-006" href="part0031.html#list-c030-006">Listing 30-6</a>:</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c030-006"
+                                               href="part0031.html#list-anc-c030-006">Listing 30-6</a>:</span> Creating
+                        a shared durable subscriber </h5>
+                    <pre>
+Destination priceQuoteTopic =
+                          context.createTopic("PriceQuoteTopic");
+context.setClientID("client123");
+consumer = context.createSharedDurableConsumer(
+                   (Topic)priceQuoteTopic,"FraudPreventionUnit"); </pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp21774928"></a>Parallel Subscriptions with MDBs</h3>
+                    <p>In standalone Java applications you can’t create multiple threads to create several durable topic
+                        subscriptions; using a shared subscription is your only option. But if subscribers are created
+                        as message-driven beans in a Java EE server, more than one bean can consume messages from the
+                        same subscription. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>At any time an application can unsubscribe from a topic by calling the method <code>unsubscribe()</code>
+                on the <code>JMSContext</code> object, for example:</p>
+            <pre>
+context.unsubscribe("FraudPreventionUnit");
+</pre>
+        </section>
+        <section>
+            <h3><a id="ack_section"></a>Message Acknowledgments and Transactions Support</h3>
+            <p>When the <a id="ack"></a>message is successfully delivered, the MOM physically removes it from the queue.
+                But what does “successfully delivered” means? Is it when the message was passed to the method <code>onMessage()</code>
+                ?  But if the code in <code>onMessage()</code> fails due to some error, you want the message to remain
+                in the queue! </p>
+            <p>JMS API has a concept of a messaging session in which you can specify either <i>acknowledgments modes</i> or
+                request transaction support to give the applications control over message removals from queues or
+                topics.  </p>
+            <p>There are three acknowledgments modes:</p>
+            <ul>
+                <li><code>AUTO_ACKNOWLEDGE</code> mode <a id="idp21786384"></a>sends the acknowledgment back as soon as
+                    the method <code>onMessage()</code> is successfully finished. This is a  default acknowledgment
+                    mode.
+                </li>
+                <li><code>CLIENT_ACKNOWLEDGE</code> mode requires explicit acknowledgment by calling the method <code>acknowledge()</code>
+                    from the message receiver’s code. 
+                </li>
+                <li><code>DUP_<span epub:type="pagebreak" title="436" id="Page_436"></span>OK_ACKNOWLEDGE</code> mode is
+                    used in case the server fails; the same message may be delivered more than once. In some use cases
+                    it’s acceptable—for example, receiving a price quote twice doesn’t hurt.
+                </li>
+            </ul>
+            <p>The message acknowledgment mode is defined when the <code>JMSContext</code> is created. So far, our code
+                samples  <code>DirectMessageSender</code> and <code>DirectMessageReceiver</code> have created the <code>JMSContext</code> object
+                by specifying two arguments: user ID and password. But you could also use an overloaded <code>createContext()</code>
+                method to specify a messaging session mode; for example:</p>
+            <pre>
+ JMSContext context = factory.createContext("admin","admin", 
+                            JMSContext.CLIENT_ACKNOWLEDGE));
+</pre>
+            <p>As an alternative to using acknowledgments, you can request transaction support for message consumers.
+                Imagine if a received message contains the data that must be saved in a database and forwarded to a Web
+                Service as one unit of work, so unless both operations are successful the entire transaction must be
+                rolled back. You may need transaction support on the JMS producer side, too. For example, if you need to
+                send two messages as one logical unit of work—either both messages were successfully sent or rolled back
+                the transaction. The following code snippet shows how to create <code>JMSContext</code> and a <code>JMSProducer</code>
+                object that sends two messages in different queues as one transaction. </p>
+            <pre>
+try(JMSContext context = factory.createContext("admin","admin",
+                                         JMSContext.TRANSACTED)){
+     
+   JMSProducer producer = context.createProducer();
+   Destination queue1 = context.createQueue("Queue1");
+   Destination queue2 = context.createQueue("Queue2");        
+   
+   producer.send(queue1,"Msg1");
+   producer.send(queue2,"Msg2");
+   
+   context.commit(); // commit the JMS transaction
+} catch (JMSException e){ 
+    context.rollback(); // rollback the JMS transaction
+    System.out.println("Error: " + e.getMessage());
+}
+</pre>
+            <p>If both sends went through fine, the <code>Session</code> object ( encapsulated inside
+                <code>JMSContext</code>) issues a <a id="idp21798368"></a><a id="idp21800096"></a><a
+                        id="idp21801456"></a>commit. If the exception is thrown, no messages are placed in any of the
+                queues.</p>
+        </section>
+        <section>
+            <h3><a id="message_selectors"></a>Message Selectors</h3>
+            <p>If you have to share <a id="idp21804880"></a><a id="idp21807248"></a>a queue with some other applications
+                or developers from your team, use <i>message selectors</i> (also known as <i>filters</i>) to avoid
+                “stealing” somebody else’s messages. For example, in the message consumer application you can opt for
+                receiving messages that have a property <code>symbol</code> with the value <code>IBM</code>:</p>
+            <pre>
+String selector = "symbol=IBM";
+Context.createConsumer(ordersQueue, selector);</pre>
+            <p>In <span epub:type="pagebreak" title="437" id="Page_437"></span>this case the queue listener dequeues
+                only those messages that have a <code>String</code> property <code>symbol</code> with the value <code>IBM</code>.
+                Accordingly, the message producers have to set this property on the message object:</p>
+            <pre>
+TextMessage outMsg = context.createTextMessage(); 
+outMsg.setText("IBM 200 Mkt"); 
+outMsg.setStringProperty("symbol", "IBM");
+Destination ordersQueue=context.createQueue("TradingOrdersQueue");  
+JMSProducer producer = context.createProducer();
+producer.send(ordersQueue, outMsg);
+</pre>
+            <p>Remember that message selectors slow down the process of retrieval. Messages stay in a queue until the
+                listener with the matching selector picks them up. Selectors really help if your team has a limited
+                number of queues and everyone needs to receive messages without interfering with the others. But if
+                someone starts the queue listener without selectors, it just drains the queue.</p>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp21619264"></a>Sending Messages from Java EE Containers </h2>
+        <p>Now that you <a id="message1"></a><a id="message2"></a>know how the messaging works, you can see how to send
+            messages to MOM destinations from the Java objects that live inside a Java EE container. This time you bind
+            MOM objects like <code>ConnectionFactory</code>, <code>Queue</code>, and <code>Topic</code> to the JNDI
+            tree, and Java messaging clients get them from there. <a id="fig-anc-c030-006"
+                                                                     href="part0031.html#fig-c030-006">Figure 30-6</a>
+            shows a high-level picture of JMS clients communicating with MOM with or without Java EE.</p>
+        <figure>
+            <img class="center" src="../Images/image00602.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-006"
+                                                   href="part0031.html#fig-anc-c030-006">Figure 30-6</a>:</b></span>
+                    Bringing together JMS, Java EE , and MOM </p>
+            </figcaption>
+        </figure>
+        <p>An external client can talk to a MOM server directly or from inside the Java EE server represented by the
+            oval. When the Java EE server starts, it binds MOM objects to the JNDI tree as JMS objects. So if a Java
+            servlet or other <span epub:type="pagebreak" title="438" id="Page_438"></span>object deployed in Java EE
+            server needs to send messages to MOM, it gets the references to administered objects by using
+            <code>lookup()</code> or resource injection.  </p>
+        <p>I’ll give you an <a id="idp21826080"></a><a id="idp21826720"></a>example of a Java Servlet that reuses most
+            of the code shown in the <code>DirectMessageSender</code> class. Assuming that you are familiar with the
+            JNDI concepts from <a href="part0030.html#introducing_jndi">Lesson 29</a>, the code of <a
+                    id="idp21831296"></a>the  <code>MessageSenderServlet</code> should be easy to understand. </p>
+        <pre>
+@WebServlet("/MessageSenderServlet")
+public class MessageSenderServlet extends HttpServlet {
+    
+   @Resource(lookup ="java:comp/DefaultJMSConnectionFactory")
+   ConnectionFactory factory;
+      
+   @Resource(lookup = "OutgoingTradeOrders")  // JNDI queue name
+   Destination ordersQueue;
+  
+   protected void doGet(HttpServletRequest request, 
+                        HttpServletResponse response) 
+                              throws ServletException, IOException{ 
+        
+     try(JMSContext context=factory.createContext("admin","admin")){
+  
+           JMSProducer producer = context.createProducer();
+              
+           // Send msg to buy 200 shares of IBM at market price
+           producer.send(ordersQueue,"IBM 200 Mkt");
+                  
+           System.out.println("Placed an order to purchase 200" +
+                         "shares of IBM to OutgoingTradeOrders");
+    }
+  }
+}
+</pre>
+        <p>For the <code>MessageSenderServlet</code> to work, you need to configure JMS objects using the administration
+            console of the Java EE server. In this example, I use the JNDI queue name <code>OutgoingTradeOrders</code>
+            that will be mapped to the physical queue name <code>TradingOrdersQueue</code>. In the next <a
+                    id="idp21837312"></a><a id="idp21838400"></a>section I show you how to do it in GlassFish.</p>
+        <section>
+            <h3><a id="idp21840016"></a>Administering JMS Objects in GlassFish</h3>
+            <p>Configuring JMS objects <a id="JMSglass"></a><a id="glassJMS"></a>comes down to mapping JNDI names to
+                physical MOM objects. Assuming that Open MQ and GlassFish servers are up and running, open GlassFish
+                Administration Console by visiting http://localhost:4848. There is a JMS Resources node in the
+                navigation tree on the left. Click the server node, and you see a tab for adding the JMS physical
+                destination, as shown <a id="fig-anc-c030-007" href="part0031.html#fig-c030-007">Figure 30-7</a>.</p>
+            <figure>
+                <img class="center" src="../Images/image00603.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c030-007" href="part0031.html#fig-anc-c030-007">Figure 30-7</a>:</b></span>
+                        JMS <span epub:type="pagebreak" title="439" id="Page_439"></span>Physical Destinations in
+                        GlassFish</p>
+                </figcaption>
+            </figure>
+            <p>The only reason the destination  <code>TradingOrdersQueue</code>  is known is because Open MQ is
+                integrated with GlassFish. To configure another MOM server you’d need to create a new JMS host by using
+                the Configurations node in the navigation panel.</p>
+            <p>Now you need to create a GlassFish JMS entry mapped to the physical MOM queue. Add the new destination
+                resource to JMS Resources (see <a id="fig-anc-c030-008" href="part0031.html#fig-c030-008">Figure
+                    30-8</a>). I gave it a JNDI name <code>OutgoingTradeOrders</code>.</p>
+            <figure>
+                <img class="center" src="../Images/image00604.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c030-008" href="part0031.html#fig-anc-c030-008">Figure 30-8</a>:</b></span>
+                        Mapping JNDI name to a physical queue</p>
+                </figcaption>
+            </figure>
+            <p>Creation <span epub:type="pagebreak" title="440" id="Page_440"></span>and closing of JMS connections
+                (it’s done internally by <code>JMSContext</code>) are slow operations; you should consider using JMS
+                connection pools. Java EE servers enable you to automatically create such pools by configuring a
+                connection factory. <a id="fig-anc-c030-009" href="part0031.html#fig-c030-009">Figure 30-9</a> shows how
+                to configure a connection factory to use pooled connections. I set it to create 20 JMS connections on
+                the GlassFish server startup and, as the number of users increases, the pool size will grow to the
+                maximum size of 100 connections.</p>
+            <figure>
+                <img class="center" src="../Images/image00605.jpeg" alt="image"/>
+                <figcaption>
+                    <p><span class="figureLabel"><b><a id="fig-c030-009" href="part0031.html#fig-anc-c030-009">Figure 30-9</a>:</b></span>
+                        Configuring JMS connection factory</p>
+                </figcaption>
+            </figure>
+        </section>
+        <p>Now <span epub:type="pagebreak" title="441" id="Page_441"></span>you can create, deploy, and run the servlet
+            <code>MessageSenderServlet</code> in GlassFish. Do it in Eclipse as explained in <a
+                    href="part0027.html#programming_with_servlets">Lesson 26</a>. Create an Eclipse Dynamic Web Project
+            specifying GlassFish as a target run time. Then create a servlet <code>MessageSenderServlet</code> with the
+            code shown earlier in this section. Finally, deploy this Eclipse project using the right-click menu Add and
+            Remove on the GlassFish server and run it.</p>
+        <p><a href="part0032.html#introduction_to_enterprise_javabeans">Lesson 31</a> shows you how to retrieve messages
+            from a queue or topic using message-driven beans. The “Try It” section has instructions on how to use a
+            standalone message<a id="idp21862928"></a><a id="idp21864688"></a> consumer.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00110"></a>Try It</h2>
+        <p>The goal is to use <a id="idp21868416"></a><a id="idp21869952"></a>a standalone message consumer <code>DirectMessageReceiver</code>
+            to retrieve messages sent by the Java servlet. Test the messaging scenario depicted in <a
+                    id="fig-anc-c030-0010" href="part0031.html#fig-c030-0010">Figure 30-10</a>.</p>
+        <figure>
+            <img class="center" src="../Images/image00606.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c030-0010" href="part0031.html#fig-anc-c030-0010">Figure 30-10</a>:</b></span>
+                    Java <span epub:type="pagebreak" title="442" id="Page_442"></span>EE message sender and a standalone
+                    receiver</p>
+            </figcaption>
+        </figure>
+        <section>
+            <h3><a id="lesson_requirements-id00111"></a>Lesson Requirements</h3>
+            <p>You should have Eclipse for Java EE Developers and GlassFish 4.1 (it comes with Open MQ) installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” section from the book’s web page at</i> <code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>. <i>You
+                        can find them in the</i> <code>Lesson30.zip</code>.</p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="hints-id00112"></a>Hints</h3>
+            <p>Open MQ started independently with <code>imqbrokerd</code> runs on a different port than embedded Open MQ
+                started by GlassFish.</p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00113"></a>Step-by-Step</h3>
+            <ol>
+                <li>
+                    <p>Stop both the Open MQ server started independently and GlassFish.</p>
+                </li>
+                <li>
+                    <p>Open the file <code>glassfish/domains/domain1/config/domain.xml</code> and change the value of
+                        the system variable <code>JMS_PROVIDER_PORT</code> to be 7676. By default, GlassFish starts
+                        embedded Open MQ server on the port 27676, but our <code>DirectMessageReceiver</code> uses
+                        hardcoded 7676 as a port value.</p>
+                </li>
+                <li>Restart GlassFish. Now it starts embedded JMS provider on port 7676.</li>
+                <li>
+                    <p>Make sure that the <code>OutgoingTradeOrders</code> is configured in the GlassFish, as shown on
+                        <a href="part0031.html#fig-c030-008">Figure 30-8</a>.</p>
+                </li>
+                <li>
+                    <p>Run <span epub:type="pagebreak" title="443" id="Page_443"></span>the
+                        <code>MessageSenderServlet</code> as explained earlier. It’ll send the message to the queue that
+                        is known as <code>OutgoingTradeOrders</code> in the GlassFish JNDI tree.</p>
+                </li>
+                <li>Run <code>DirectMessageReceiver</code>. It prints on the console the message “Listening to the
+                    TestQueue” and then retrieves and prints the message from the physical queue named <code>TradingOrdersQueue</code>.
+                </li>
+                <li>Modify the code of <code>DirectMessageReceiver</code> so it has no hardcoded values of the Open MQ
+                    server.
+                </li>
+                <li>Self-study the use of the <code>QueueBrowser</code> class and write a program that prints the
+                    content of a queue without de-queuing messages.
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0031.html">Lesson 30</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

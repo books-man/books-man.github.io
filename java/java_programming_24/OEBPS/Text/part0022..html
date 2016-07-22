@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Working with Relational DBMS Using JDBC</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="working_with_databases_using_jdbc"></a><span class="chapterTitle">Lesson 21<br/>Working with Relational DBMS Using JDBC</span>
+    </h1>
+
+    <section>
+        <p>Business <span epub:type="pagebreak" title="297" id="Page_297"></span>applications usually store data in the
+            databases. In most of the enterprise applications, <a id="idp19018336"></a><a id="idp19016880"></a>Relational
+            Database Management Systems (RDBMSes) are used as data storage. They store the data records in
+            <i>tables.</i> Each record (such as that of an employee) is represented by a table row, which consists of
+            one or more columns or <i>record fields</i> (for example, name, address, hire date). RDBMSes understand the
+            SQL language.</p>
+        <p>The most popular RDBMSes are Oracle, DB2, Sybase, Microsoft SQL Server, and MySQL Server. This lesson uses <a
+                href="http://db.apache.org/derby/"
+                style="font-size: 1.12rem; letter-spacing: 0.01em; line-height: 1.3em;">Apache Derby DB</a><span
+                style="font-size: 1.12rem; letter-spacing: 0.01em; line-height: 1.3em;"> (also known as Java DB),</span> which
+            is included with Java SE for Windows, or you can separately install it on a Mac or Linux <a
+                    id="idp19024400"></a><a id="idp19021920"></a>machine.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp19025168"></a>NoSQL Database Management Systems</h3>
+                <p>Some database management systems are not relational—they don’t store data as rows and columns. Such
+                    database management systems are known as <i>NoSQL databases</i> (for example, MongoDB, Cassandra,
+                    Couchbase, and so on). This book doesn’t cover NoSQL databases. Refer to <a
+                            href="http://nosql-database.org">http://nosql-database.org</a> for further information. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>Java includes two packages that <a id="idp19028192"></a>contain classes required for work with DBMSes: <code>java.sql</code>
+            and <code>javax.sql</code>. The former contains commonly used classes such as <code>Connection</code>,
+            <code>Statement</code>, and <code>ResultSet</code>. The latter is used for supporting database connectivity
+            on the server side, containing classes such as <code>DataSource</code> and <code>RowSet</code>.</p>
+        <p>The JDBC API is <a id="idp19033328"></a><a id="idp19034960"></a>not DBMS-specific—if you write a program that
+            uses JDBC classes to retrieve/update data in Oracle, you’ll be using the same classes to work with MySQL
+            Server or DB2. You just need the JDBC drivers <span epub:type="pagebreak" title="298" id="Page_298"></span>from
+            the corresponding DBMS vendor; the drivers hide their database specifics behind the same public JDBC API.
+        </p>
+        <p>JDBC drivers <a id="idp19041616"></a><a id="idp19037280"></a>either pass SQL statements from Java to a DBMS
+            for execution or simply execute a program stored inside a DBMS (called a <i>stored procedure</i>). If some
+            data has been retrieved as the result of these actions, your Java program will handle it by making
+            appropriate calls to the JDBC API. Over the past 15 years the JDBC specification has been evolving and, at
+            the time of this writing, most drivers comply with <a
+                    href="http://download.oracle.com/otndocs/jcp/jdbc-4_1-mrel-spec/index.html">JDBC version 4.1</a>.
+        </p>
+        <p>In this lesson, all communications with the DBMS are made by supplying SQL statements to the JDBC API. There
+            is an alternative way of working with data by using Java Persistence API (JPA), which is covered in <a
+                    href="part0033.html#introduction_to_the_java_persistence_api">Lesson 32</a>. Some people prefer
+            using object-relational mapping (ORM) frameworks, such as Hibernate, or those that reduce mundane JDBC
+            programming like <a href="http://mybatis.github.io/mybatis-3/">MyBatis</a>; these frameworks are not covered
+            in this book. </p>
+    </section>
+    <section>
+        <h2><a id="jdbc_driver_types"></a>JDBC Driver Types</h2>
+        <p>A JDBC driver <a id="idp19044032"></a><a id="idp19047312"></a>plays the role of the middleman between a Java
+            program and a DBMS. Drivers are available from database vendors, from Oracle, and from third-party vendors
+            of Java application servers.</p>
+        <p>There are four general types of JDBC drivers:</p>
+        <ul>
+            <li>A Type 1 driver is a JDBC-ODBC bridge that enables Java programs to work with the database using ODBC
+                drivers from Microsoft. The drawbacks of ODBC drivers are that they are slower than the others, must be
+                installed and configured on each user’s machine, and work only on Windows machines. The Type 1 JDBC
+                driver has rarely been used lately, and Oracle has removed it as of Java 8 run time.
+            </li>
+            <li>A Type 2 driver consists of Java classes that work in conjunction with the non-Java native drivers
+                provided by the DBMS vendor. These drivers work much faster than Type 1, but they also require
+                installation and configuration on the machine on which Java programs run.
+            </li>
+            <li>A Type 3 driver is called a <i>middleware driver</i> and can be provided by vendors of application
+                servers. It consists of two parts: The <i>client</i> portion performs a DBMS-independent SQL call, which
+                is then translated to a specific DBMS protocol by the <i>server</i> portion of the driver.
+            </li>
+            <li>A Type 4 driver is a pure Java driver, which usually comes as a <code>.jar</code> file and performs
+                direct calls to the database server. It does not need any configuration on the client’s machine, other
+                than including the name of the main driver’s class in your Java code. That’s why it’s also known as the
+                <i>thin driver</i>. For example, Java applets can be packaged with this type of driver, which can be
+                automatically downloaded to the user’s machine along with the applets themselves.
+            </li>
+        </ul>
+        <p>For simplicity, this lesson uses JDBC drivers of Type 4, but many production systems can deploy Type 3
+            drivers to provide better performance.</p>
+    </section>
+    <section>
+        <h2><a id="creating_a_database_with_derby"></a>Installing Derby DB and Creating a Database</h2>
+        <p>Derby DB (also known as JavaDB) is  <a id="idp19059872"></a><a id="derb"></a>a small DBMS that you wouldn’t
+            use for serious production systems, but it’s great for learning JDBC or to use for many small systems. If
+            you’re using Windows OS,  it’s already installed with Java SDK  in the folder that looks similar to this
+            one:  <code>c:\Program Files\Java\jdk1.8.0_25\db</code>.  The numbers reflect the major and minor versions
+            of Java.</p>
+        <p>Modify <span epub:type="pagebreak" title="299" id="Page_299"></span>your system variable <code>PATH</code> so
+            it starts with the following: <code> c:\Program Files\Java\jdk1.8.0_25\db\bin;</code></p>
+        <p>If you work in something other than Windows OS,  download and install Derby DB from <a
+                href="http://db.apache.org/derby">http://db.apache.org/derby</a>. Derby DB is well-documented and if you
+            haven’t had a chance to work with relational DBMSes, download and read the “Getting Started with Derby”
+            manual. The installation of Derby DB comes down to downloading and unzipping one file. At the time of this
+            writing the filename is <code> db-derby-10.10.2.0-bin.zip</code>. Unzip it and rename the folder as
+            <i>derby</i>. </p>
+        <p>The configuration process is also simple; read the steps required for your operating system at the Swinburne
+            University web page at <a href="http://goo.gl/Q5a01N">http://goo.gl/</a><a href="http://goo.gl/Q5a01N">Q5a01N</a>.
+            You need to set the <code>DERBY_HOME</code> environment variable to point to your Derby DB installation
+            directory. For example, I’ve unzipped Derby into my root directory on my Mac OS computer and added the
+            following two lines to the file <code>.bash_profile</code>:</p>
+        <pre>
+export PATH=~/derby/bin:$PATH
+export DERBY_HOME=~/derby
+</pre>
+        <p>To insure that your Derby DB is properly installed, open a Command or Terminal window and enter the command
+            <code>sysinfo</code>. You should see an output describing the Derby DB install. </p>
+        <p>Derby DB has an interactive command-line utility called <i>ij</i> that you can use to create databases and
+            tables and populate them with data, among other actions. I show you how to create a sample database and a
+            table to store data about employees.</p>
+        <p>First open a Command or Terminal window and issue the command <code>startNetworkServer.exe</code> (or <code>startNetworkServer</code>
+            if you use  Mac OS).</p>
+        <p>The Derby DB server starts by displaying the message similar to this one:</p>
+        <pre>
+Apache Derby Network Server - 10.10.2.0 - (1582446) started and ready to
+accept connections on port 1527
+</pre>
+        <p>Open another command window and start ij—you’ll see the <i>ij&gt;</i> prompt. Now try connecting to the
+            database Lesson21 by issuing the following command:</p>
+        <pre>
+connect 'jdbc:derby://localhost:1527/Lesson21;create=true';</pre>
+        <p>This command tries to connect to the database Lesson21 and creates it if no such database is found. The next
+            <i>ij</i> command creates a database table—Employee—to store records that consist of three fields: <code>EMPNO</code>,
+            <code>ENAME</code>, and <code>JOB_TITLE</code>. The first field is stored as an integer, and the other two
+            as simple text (<code>varchar</code>) allowing 50 and 150 characters respectively.</p>
+        <pre>
+CREATE TABLE Employee (
+    EMPNO int NOT NULL,
+    ENAME varchar (50) NOT NULL,
+    JOB_TITLE varchar (150) NOT NULL
+);</pre>
+        <p>Finally, to populate the table with some data, issue the <code>INSERT</code> command in ij:</p>
+        <pre>
+INSERT INTO Employee values (7369,'John Smith', 'Clerk'), (7499,
+'Joe Allen','Salesman'), (7521,'Mary Lou','Director');</pre>
+        <p><span epub:type="pagebreak" title="300" id="Page_300"></span>If you want to ensure that the records were
+            successfully created in the database, in the ij utility issue the <code>SELECT</code> SQL statement to
+            retrieve the data:</p>
+        <pre>
+Select * from Employee;</pre>
+        <p>You see the data about the three employees that were added by the INSERT SQL command. If you are not familiar
+            with <a id="idp19082960"></a>the syntax of SQL, refer to the tutorial at  <a
+                    href="http://www.sqlcourse.com">http://www.sqlcourse.com</a>.</p>
+    </section>
+    <section>
+        <h2><a id="sample_jdbc_program"></a>Sample JDBC Program</h2>
+        <p>In this <a id="sample"></a>section you see the steps that you can perform to retrieve the data in any Java
+            program that works with a relational database using JDBC. A sample program  implements all of these steps to
+            display the list of employees from the database table Employee.</p>
+        <ol>
+            <li>
+                <p>Load the JDBC driver using the method <code>forName()</code> of the Java class <code>Class</code>.
+                    You have to find out the name of the class to load from the JDBC driver’s documentation. In the case
+                    of JavaDB, you can skip this step. If you work with Oracle DBMSes, you can load a Type 4 JDBC driver
+                    with the following Java statement:</p>
+                <pre>
+Class.forName("oracle.jdbc.driver.OracleDriver");
+</pre>
+            </li>
+            <li>
+                <p>Get the database connection to the database Lesson21 by calling</p>
+                <pre>
+DriverManager.getConnection(url, user, password);</pre>
+                <p>In the case of Derby DB, you don’t have to supply the user and the password; simply provide the URL
+                    of your database, for example:</p>
+                <pre>
+DriverManager.getConnection("jdbc:derby:Lesson21");</pre>
+            </li>
+            <li>
+                <p>Create an instance of the Java class <code>Statement</code>:</p>
+                <pre>
+Connection.createStatement();</pre>
+                <p>As an alternative, you can create <code>PreparedStatement</code> or <code>CallableStatement</code>,
+                    which are explained later in this lesson in the <a href="part0022.html#preparedstatement_class">“The
+                        PreparedStatement Class”</a> and <a href="part0022.html#callablestatement_class">“The
+                        CallableStatement Class”</a> sections.</p>
+            </li>
+            <li>
+                <p>To run  SQL <code>Select</code> queries, your program can include a statement similar to this one:
+                </p>
+                <pre>
+Statement.executeQuery("Select * from Employee");</pre>
+                <p>For SQL queries, which produce more than one result, you can use the method <code>execute()</code> of
+                    the class <code>Statement</code>.</p>
+                <p><span epub:type="pagebreak" title="301" id="Page_301"></span>For <code>Insert</code>,
+                    <code>Update</code>, and <code>Delete</code> SQL statement, use the method
+                    <code>updateQuery()</code>. For example:</p>
+                <pre>
+String myInsertStmt = "INSERT INTO Employee values " + 
+                      "(1234,'John Bush', 'Clerk')";
+Statement.updateQuery(myInsertStmt);</pre>
+            </li>
+            <li>
+                <p>To process a received data loop through the <code>ResultSet</code> object, use the following:</p>
+                <pre>
+while (ResultSet.next()) {
+   // get the values from each column here
+}</pre>
+            </li>
+            <li>Free system resources by closing the <code>ResultSet</code>, <code>Statement</code>, and <code>Connection</code>
+                objects.
+            </li>
+        </ol>
+        <p>All these steps are implemented in the class <code>EmployeeList</code>, shown in <a id="list-anc-c021-001"
+                                                                                               href="part0022.html#list-c021-001">Listing
+            21-1</a>, which prints the records from the table Employee. Even though you don’t need to explicitly load
+            the driver for Derby DB with <code>Class.forName()</code>, the location of the driver class has to be known
+            to your program, otherwise you’ll get a “No suitable driver” error. Either add <code>derbyclient.jar</code> located
+            in the lib directory in your Derby installation to the <code>CLASSPATH</code> system variable, or just add
+            it as an external <code>.jar</code> to your Eclipse project (see the project menu Properties → Java Build
+            Panel → Add External JARs).</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c021-001"
+                                           href="part0022.html#list-anc-c021-001">Listing 21-1</a>:</span> The
+                    EmployeeList program</h5>
+                <pre>
+class EmployeeList {
+  public static void main(String argv[]) {
+   
+   String sqlQuery = "SELECT * from Employee"; 
+   // Open autocloseable Connection, Statement and get the result set
+   try (Connection conn = DriverManager.getConnection( 
+                       "jdbc:derby://localhost:1527/Lesson21");
+        Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(sqlQuery); ) {  
+      // Process each column in the result set and print the data
+      while (rs.next()){ 
+         int empNo = rs.getInt("EMPNO");
+         String eName = rs.getString("ENAME");
+         String job = rs.getString("JOB_TITLE");
+         System.out.println(""+ empNo + ", " + eName + ", " + job ); 
+      }
+   } catch( SQLException se ) {
+      System.out.println ("SQLError: " + se.getMessage ()
+           + " code: " + se.getErrorCode ());
+   } catch( Exception e ) {
+      System.out.println(e.getMessage()); 
+      e.printStackTrace(); 
+   } 
+}
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The <span epub:type="pagebreak" title="302" id="Page_302"></span>output of the <code>EmployeeList</code>
+            program looks like this:</p>
+        <pre>
+7369, John Smith, CLERK
+7499, Joe Allen, SALESMAN
+7521, Mary Lou, Director</pre>
+        <p>When you execute any SQL statements, always include error-handling code. Catching the
+            <code>SQLException</code> is the right way to get the error message. Note that the code in <a
+                    href="part0022.html#list-c021-001">Listing 21-1</a> calls the method <code>getErrorCode()</code> to
+            extract the database-specific error <a id="idp19124000"></a>code from the <code>SQLException</code> object.
+        </p>
+    </section>
+    <section>
+        <h2><a id="processing_result_sets"></a>Processing Result Sets</h2>
+        <p>Let’s take a <a id="result"></a>closer look at the code in <a href="part0022.html#list-c021-001">Listing
+            21-1</a>. After <code>rs = stmt.executeQuery(sqlQuery)</code>, the cursor <code>rs</code> is positioned
+            before the very first record (row) of the result set in memory, if any. Each row contains as many fields
+            (columns) as were specified in the SQL <code>Select</code> statement. Each of the values is extracted by an
+            appropriate method based on the data type of the field. The names of these methods are self-explanatory:
+            <code>rs.getString()</code>, <code>rs.getInt()</code>, and so on. If you know the name of a column from the
+            result, use it as a method argument:</p>
+        <pre>
+int empNo = rs.getInt("EMPNO");
+String eName = rs.getString("ENAME");
+</pre>
+        <p>If you don’t know the column names, specify the relative position of the column (they start with 1) from the
+            result set:</p>
+        <pre>
+int empNo = rs.getInt(1);
+String eName = rs.getString(2);
+</pre>
+        <p>You can also query the database table to figure our the column names and their types with the help of the
+            class <code>ResultSetMetaData</code> explained <a href="part0022.html#resultsetmetadata_class">later in this
+                lesson</a>. JDBC drivers automatically convert the data from the database types to the corresponding
+            Java types: For example, Derby’s <code>varchar</code> becomes Java’s<code>String</code>.</p>
+        <p>The class <code>EmployeeList</code> just prints the retrieved data in a loop. You can also place the result
+            set data in a Java collection object for further processing. The <code>ResultSet</code> object holds the
+            database connection and is not serializable. That’s why common practice for programming server-side
+            operations with DBMSes is to create a class representing a row from the result set and populate, say, an
+            <code>ArrayList</code> or other Java collection with its instances. </p>
+        <p><a id="list-anc-c021-002" href="part0022.html#list-c021-002">Listing 21-2</a> shows an example of such a
+            class, which can represent one employee record. Classes that hold only the value of some data are often
+            called <i>value objects</i>. Because in distributed applications such objects may need to be transferred
+            between different computers, they are also known as <i>Data Transfer Objects (DTOs)</i>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c021-002"
+                                           href="part0022.html#list-anc-c021-002">Listing 21-2</a>:</span> The <span
+                        epub:type="pagebreak" title="303" id="Page_303"></span>EmployeeDTO</h5>
+                <pre>
+class EmployeeDTO{
+  //private properties
+  private int empNo;
+  private String eName;
+  private String jobTitle;
+  //setters
+  public void setEmpNo(int val){empNo=val;}
+  public void setEName(String val){eName=val;}
+  public void setJobTitle(String val){jobTitle=val;}
+  // getters
+  public int getEmpNo(){return empNo;}
+  public String getEName(){return eName;}
+  public String getJobTitle(){return jobTitle;}
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><code>EmployeeDTO</code> declares <a id="idp19145552"></a><a id="idp19147552"></a>private variables to store
+            the data but access to this data is performed via public <i>setters</i> and <i>getters</i>, the methods that
+            allow external code to set and get the appropriate values. This technique can be useful when some
+            application-specific logic has to be applied at the moment when some code needs to get or modify the
+            properties of the class <code>EmployeeDTO</code>.</p>
+        <p>For example, you can place some authorization code inside the setter to ensure that the external object has
+            enough permissions to change the property <code>jobTitle</code>. If the business logic of obtaining such
+            authorization changes in the future, you need to modify only the code inside the setter, but the external
+            code remains unchanged.</p>
+        <p>The next code snippet shows how to prepare a collection of <code>EmployeeDTO</code> objects while processing
+            the result set retrieved by the SQL <code>Select</code> statement.</p>
+        <pre>
+ // Create an object for collection of employees
+ ArrayList&lt;EmployeeDTO&gt; employees = new ArrayList&lt;&gt;();
+ // Process ResultSet and populate the collection
+ while (rs.next()){
+  EmployeeDTO currentEmp = new EmployeeDTO();
+  currentEmp.setEmpNo(rs.getInt("EMPNO"));
+  currentEmp.setEName(rs.getString("ENAME"));
+  currentEmp.setJobTitle(rs.getString("JOB_TITLE"));
+  employees.add(currentEmp);
+ }
+</pre>
+        <p>If this code is deployed on the server’s JVM and you need to send the data to another computer that runs,
+            say, a Swing client, you can consider applying Java serialization here for sending a collection of employees
+            to the front.  But make sure that the class <code>EmployeeDTO</code> implements the
+            <code>Serializable</code> interface. In case of a web client, consider <a id="idp19156384"></a>serializing
+            the <code>EmployeeDTO</code> into JSON data format discussed in <a href="part0034.html">Lesson 33</a>.</p>
+    </section>
+    <section>
+        <h2><a id="preparedstatement_class"></a>The PreparedStatement Class</h2>
+        <p><a href="part0022.html#list-c021-001">Listing 21-1</a> uses <a id="idp19160976"></a><a
+                id="idp19162368"></a><a id="idp19163488"></a>the <span epub:type="pagebreak" title="304"
+                                                                       id="Page_304"></span>class <code>Statement</code>
+            to create an object capable of executing SQL. But this is not the only way to supply SQL to the JDBC API.
+            The class <code>PreparedStatement</code> is a subclass of <code>Statement</code>, but it pre-compiles the
+            SQL statement before executing it.</p>
+        <p>With <code>PreparedStatement</code> you can create SQL with parameters that are dynamically passed by the
+            program. Suppose you need to execute the query <code>“SELECT * from EMP WHERE empno=...”</code> multiple
+            times, providing the <code>empno</code> values from the array <code>empNumbers[]</code>. If you use the
+            class <code>Statement</code> as in the following code snippet, the variable <code>sqlQuery</code> has to be
+            modified and pre-compiled on each iteration of the loop:</p>
+        <pre>
+for (int i=0;i&lt;empNumbers.length; i++){
+  sqlQuery="SELECT * from Employee WHERE empno=" + employees[i];
+  stmt.executeQuery(sqlQuery);
+}</pre>
+        <p>The class <code>PreparedStatement</code> offers a more efficient solution:</p>
+        <pre>
+PreparedStatement stmt=conn.prepareStatement(
+                       " SELECT * from Employee WHERE empno=?");
+for (int i=0;i&lt;employees.length; i++){
+  // pass the array's value that substitutes the question mark
+  stmt.setInt(1,employees[i]);
+  stmt.executeQuery();
+}</pre>
+        <p>In this case, the SQL statement is compiled only once and parameters are provided by the appropriate <code>setXXX()</code>
+            method depending on the data type. The SQL statement may have several parameters (question marks), and the
+            first argument of the setter enables you to specify each parameter’s number. For example:</p>
+        <pre>
+PreparedStatement stmt=conn.prepareStatement(
+      "SELECT * from Employee WHERE empno=? and ename=?");
+for (int i=0;i&lt;empNumbers.length; i++){
+  stmt.setInt(1,empNumbers[i];)
+  stmt.setString(2,empNames[i];)
+  stmt.executeQuery();
+}</pre>
+        <p>If you need to pass a <code>NULL</code> value as a parameter, use the method <code>setNull()</code>.</p>
+    </section>
+    <section>
+        <h2><a id="callablestatement_class"></a>The CallableStatement Class</h2>
+        <p>This <a id="idp19177472"></a><a id="idp19179280"></a><a id="idp19180368"></a>class extends <code>PreparedStatement</code>
+            and is used for executing database stored procedures from Java. Let’s say there is a stored procedure
+            entitled <code>changeEmpTitle</code> that takes two parameters: <code>empno</code> and <code>title</code>.
+            Here’s the code to execute this stored procedure:</p>
+        <pre>
+CallableStatement stmt = conn.prepareCall("{call changeEmpTitle(?,?)}");
+stmt.setInt(1,7566);
+stmt.setString (2,"Salesman");
+stmt.executeUpdate();</pre>
+        <p><span epub:type="pagebreak" title="305" id="Page_305"></span>If a stored procedure returns some values using
+            output parameters, each of the <code>OUT</code> data types has to be registered before the statement is
+            executed. The next code snippet shows you an example of executing a stored procedure that has two
+            parameters: The first is an input parameter, and the second is an output parameter by which the stored
+            procedure can return the result of its execution to the Java program:</p>
+        <pre>
+CallableStatement stmt = conn.prepareCall(
+                 ("{call getEmpTitle(?,?) }");
+stmt.setInt(1, 7566);
+stmt.registerOutParameter(2,java.sql.Types.VARCHAR);
+stmt.executeQuery();
+String title=stmt.getString(2);</pre>
+    </section>
+    <section>
+        <h2><a id="resultsetmetadata_class"></a>The ResultSetMetaData Class</h2>
+        <p>JDBC enables you <a id="idp19188304"></a><a id="idp19189792"></a><a id="idp19190912"></a>to process result
+            sets when the number of returned values is unknown. Imagine that you need to write a program that can accept
+            any SQL <code>Select</code> statement, execute it, and display the retrieved data. With the class <code>ResultSetMetaData</code>,
+            you can dynamically find out how many columns there are in the result set, as well as their names and data
+            types. The following code fragment gets the number of the database table columns in the result set and for
+            each of them identifies and prints the column name and type:</p>
+        <pre>
+String sqlQuery = "select * from Employee";
+ResultSet rs = stmt.executeQuery(query);
+ResultSetMetaData rsMeta = rs.getMetaData();
+int colCount = rsMeta.getColumnCount();
+for (int i = 1; i &lt;= colCount; i++) {
+  System.out.println(
+      " Column name: " + rsMeta.getColumnName(i) +
+      " Column type: " + rsMeta.getColumnTypeName(i));
+}</pre>
+        <p>This simple but powerful technique is used internally by ORM frameworks that can “magically” generate
+            database models and automatically generate Java classes representing database entities.</p>
+        <p><a id="list-anc-c021-003" href="part0022.html#list-c021-003">Listing 21-3</a> shows a Java program called
+            <code>ShowAnyData</code> that prints a result set based on any SQL <code>Select</code> statement passed from
+            the command line. For example, it can be started as follows:</p>
+        <pre>
+java ShowAnyData "Select * from Employee"</pre>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c021-003"
+                                           href="part0022.html#list-anc-c021-003">Listing 21-3</a>:</span> Using <span
+                        epub:type="pagebreak" title="306" id="Page_306"></span>ResultSetMetaData</h5>
+                <pre>
+class ShowAnyData {
+  public static void main(String args[]) {
+   if (args.length==0){
+     System.out.println(
+      "Usage: java ShowAnyData SQLSelectStatement");
+     System.out.println(
+      "For example: java ShowAnyData \"Select * from Employee\"");
+     System.exit(1);
+   }
+   try (Connection conn = DriverManager.getConnection( 
+                          "jdbc:derby://localhost:1527/Lesson21");
+        Statement stmt = conn.createStatement(); 
+        ResultSet rs = stmt.executeQuery(args[0]);) {    
+    // Find out the number of columns, their names 
+    // and display the data
+    ResultSetMetaData rsMeta = rs.getMetaData();
+    int colCount = rsMeta.getColumnCount();
+     for (int i = 1; i &lt;= colCount; i++)  {
+      System.out.print(rsMeta.getColumnName(i) + " "); 
+    }
+    System.out.println();
+   
+    while (rs.next()){ 
+       for (int i = 1; i &lt;= colCount; i++)  {
+         System.out.print(rs.getString(i) + " "); 
+       }
+       System.out.print("\n");   // new line character
+    }
+   } catch( SQLException se ) {
+      System.out.println ("SQLError: " + se.getMessage ()
+           + " code: " + se.getErrorCode ());
+   } catch( Exception e ) { 
+      e.printStackTrace(); 
+   } 
+ }
+}
+</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>The output of the <code>ShowAnyData</code> program is the same as that of EmployeeList shown in <a
+                href="part0022.html#list-c021-001">Listing 21-1</a>. But the <code>ShowAnyData</code> program can
+            execute any SQL SELECT statement as long as you are specifying valid database and table(s) names. Note that
+            the code in <code>ShowAnyData</code> first ensures that you have passed the command-line argument. If you
+            run this program from a command line, don’t forget to include the SQL statement in double quotes. In Eclipse
+            you can specify a command-line argument by selecting the Arguments tab in the Run Configuration panel.</p>
+    </section>
+    <section>
+        <h2><a id="scrollable_result_sets_and_rowset"></a>Scrollable Result Sets and Rowset</h2>
+        <p>In <span epub:type="pagebreak" title="307" id="Page_307"></span>all the preceding <a id="idp19207408"></a><a
+                id="idp19209520"></a><a id="idp19210912"></a><a id="idp19212336"></a><a id="idp19213456"></a>examples,
+            the code traversed the result set using the method <code>next()</code>, which moves the cursor only forward.
+            Another option is to create a scrollable result set so the cursor can be moved back and forth if need be.
+            There is a two-argument version of the method <code>createStatement()</code>. The first argument specifies
+            the type of scrolling (<code>TYPE_FORWARD_ONLY</code>, <code>TYPE_SCROLL_INSENSITIVE</code>, or <code>TYPE_SCROLL_SENSITIVE</code>)
+            and the second makes the result set updateable or read-only (<code>CONCUR_READ_ONLY</code> or <code>CONCUR_UPDATABLE</code>).
+            For example,</p>
+        <pre>
+Statement stmt = con.createStatement(
+ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+ResultSet rs = stmt.executeQuery("SELECT * from Employee");</pre>
+        <p>The <code>TYPE_FORWARD_ONLY</code> parameter allows only forward movement of the cursor. The difference
+            between <code>TYPE_SCROLL_INSENSITIVE</code> and <code>TYPE_SCROLL_SENSITIVE</code> is in whether scrolling
+            reflects changes that have been made to the result set. The next example sets the cursor at the end of the
+            result set and moves the cursor backward:</p>
+        <pre>
+rs.afterLast();
+while (rs.previous()){
+ int empNo = rs.getInt("EMPNO");
+ String eName = rs.getString("ENAME");
+ String job = rs.getString("JOB_TITLE");
+ System.out.println(""+ empNo + ", " + eName + ", " + job);
+}</pre>
+        <p>You can also move the cursor to a specific row by using the following self-explanatory methods:</p>
+        <pre>
+rs.absolute(25); // moves the cursor to the 25th row
+rs.relative(-4); // moves the cursor to the 21st row
+rs.first();
+rs.last();
+rs.beforeFirst();</pre>
+        <p>If the result set is updatable (<code>CONCUR_UPDATABLE</code>) then you can modify the underlying database
+            table while scrolling. For example, the following statements update the job title of the employee based on
+            the current cursor’s position:</p>
+        <pre>
+rs.updateString("JOB_TITLE","Manager");
+rs.updateRow();</pre>
+        <p>Scrollable result sets enable you to traverse the result set in both directions, but they have a drawback:
+            They hold the database connection, which may be required by another thread or program. The package <code>javax.sql</code>
+            includes the interface <code>RowSet</code>, which is inherited from <code>ResultSet</code>.
+            <code>RowSet</code> gets the data from the database, then disconnects, but still allows Java to work with
+            the data. The package <code>javax.sql.rowset</code> has several concrete classes that implement
+            <code>RowSet</code>, such as <code>CachedRowSet</code>, <code>FilteredRowSet</code>, and
+            <code>WebRowSet</code>. The latter can turn <code>RowSet</code> into an XML stream to be sent to another
+            tier in the distributed application.</p>
+    </section>
+    <section>
+        <h2><a id="transactional_updates"></a>Transactional Updates</h2>
+        <p>Transaction <span epub:type="pagebreak" title="308" id="Page_308"></span>is a <a id="idp19232160"></a>logical
+            unit of work. Sometimes several database modifications have to be processed as one transaction, and if one
+            of the updates fails, the whole transaction has to <a id="idp19235504"></a>be <i>rolled back</i>. These
+            database operations have to be explicitly <i>committed</i> (finalized) <a id="idp19234160"></a><a
+                    id="idp19238624"></a>in case of success. If you set the auto-commit parameter on the database
+            connection to <code>false</code>, the database transaction is not committed until the code explicitly calls
+            the <a id="idp19241936"></a><a id="idp19241056"></a>method <code>commit()</code>, as in the following
+            example:</p>
+        <pre>
+try{
+  conn.setAutoCommit(false);
+  Statement stmt = con.createStatement();
+  stmt.addBatch("insert into Orders " +
+              "values(123, 'Buy','IBM',200)");
+  stmt.addBatch("insert into OrderDetail " +
+              "values('JSmith', 'Broker131', '05/20/02')");
+  stmt.executeBatch();
+  conn.commit(); // Transaction succeded
+}catch(SQLException e){
+  conn.rollback(); // Transaction failed
+  e.printStackTrace();
+}</pre>
+        <p>In the preceding code snippet, two <code>Insert</code> statements have to be executed as one transaction, and
+            if any of them fails, an exceptionis thrown and the method <code>rollback()</code> undoes all the changes,
+            including those that succeeded.</p>
+    </section>
+    <section>
+        <h2><a id="connection_pools_and_datasources"></a>Connection Pools and DataSource</h2>
+        <p>Up until <a id="idp19248032"></a><a id="idp19249552"></a><a id="idp19250976"></a><a id="idp19252048"></a>now
+            you’ve been running all sample Java programs on your own computer. But imagine a distributed application in
+            which multiple clients make requests to the same server, which has to process their SQL queries. Because
+            obtaining a connection to the database is a slow process, it would be very inefficient to start every SQL
+            request by obtaining a database connection and disconnecting after the request is complete. Such
+            applications should reuse the same opened connection for multiple requests.</p>
+        <p>The package <code>javax.sql</code> includes the interface <code>DataSource</code>, which is an alternative to
+            <code>DriverManager</code>. Vendors of JDBC drivers for servers implement this interface, and a <code>DataSource</code>
+            is typically preconfigured for a certain number of connections (the <i>connection pool</i>). It is published
+            in a directory using the JNDI interface. In such a setup, all clients’ requests get their database
+            connections from this <code>DataSource</code> object, eliminating the need to open and close a new
+            connection for each request.  <span>The</span>  <code>DataSource</code> objects are<span> typically used on the server side bound to JNDI. But you can create an instance of a</span>
+            <span><code>DataSource</code></span> <span>in any Java application.</span> <a
+                    href="part0030.html#introducing_jndi">Chapter 29</a> provides an example of working with <code>DataSource</code>
+            objects.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00076"></a>Try It</h2>
+        <p>In <span epub:type="pagebreak" title="309" id="Page_309"></span>this assignment you modify the class <code>Portfolio</code>
+            from <a href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a>, which was just printing some
+            hard-coded statements. Now you create and populate the database table Portfolio and then read and display
+            the data from there.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00077"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson21.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="hint"></a>Hint</h3>
+            <p>Obtaining a database connection is a slow operation, and doing it from inside the method
+                <code>run()</code> every time you start a new thread is not the best solution. Consider creating a
+                database connection up front and passing it to the thread before starting it.</p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00078"></a>Step-by-Step</h3>
+            <ol>
+                <li>
+                    <p>In the database Lesson21 create the table Portfolio using the following SQL statement:</p>
+                    <pre>
+create table Portfolio(
+id INTEGER NOT NULL,
+symbol VARCHAR(10) NOT NULL,
+quantity INTEGER NOT NULL,
+price NUMERIC NOT NULL, PRIMARY KEY (id)
+);</pre>
+                </li>
+                <li>
+                    <p>Populate the table Portfolio with three records, for stocks traded under the symbols IBM, AMZN,
+                        and AAPL respectively:</p>
+                    <pre>
+insert into Portfolio values (1,'IBM',500,105.50),
+ (2,'AMZN',1000,15.25),(3,'AAPL',2000,272.50);</pre>
+                </li>
+                <li>Create a new Eclipse project.</li>
+                <li>Create a class called <code>Portfolio</code> that is similar to the one shown in <a
+                        href="part0018.html#list-c017-005">Listing 17-5</a> from <a href="part0018.html">Lesson 17</a>: 
+                    <pre>
+public class Portfolio implements Runnable {
+    public void run() {
+       System.out.println( "You have 500 shares of IBM ");
+     }
+}</pre>
+                </li>
+                <li> Modify <span epub:type="pagebreak" title="310" id="Page_310"></span>the code of
+                    <code>Portfolio</code>:  instead of just printing “You have 500 shares of IBM,” have it connect to
+                    the database, select all the data from the table <code>Portfolio</code>, and print the symbol,
+                    quantity, and total value. Calculate the total value by multiplying price by quantity.
+                </li>
+                <li>Create a testing class called <code>ShowMyPortfolio</code> that instantiates and starts the thread
+                    <code>Portfolio</code>.
+                </li>
+                <li>Test this program.</li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0022.html">Lesson 21</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

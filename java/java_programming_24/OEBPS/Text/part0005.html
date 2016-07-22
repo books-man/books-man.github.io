@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Class Methods and Constructors</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="class_methods_and_constructors"></a><span class="chapterTitle">Lesson 4<br/>Class Methods and Constructors</span></h1>
+
+<section>
+<p>Methods <span epub:type="pagebreak" title="37" id="Page_37"></span>contain code for actions or functions a class can perform. Although you started working with methods in previous lessons, in this lesson you find out how to work with them in detail. You also get familiar with a special type of method called a constructor.</p>
+</section>
+<section>
+<h2><a id="method_arguments"></a>Method Arguments</h2>
+<p>Each class <a id="idp13684272"></a><a id="idp13685648"></a>method performs some functionality, such as calculating tax, placing an order, or starting the car. If a method requires some external data to perform its function, such data can be provided in the form of arguments or parameters, as in the method <code>adjustForStudents()</code> shown in <a href="part0004.html#list-c03-005">Listing 3-5</a>, which has one argument: <code>stateTax</code>.</p>
+<p>In the <a id="idp13689776"></a><a id="idp13691296"></a><a id="idp13692720"></a>method signature, you need to declare the data type and the name of each argument. For example, the following method has three arguments: two of them are the <code>int</code> data type and one is <code>String</code>:</p>
+<pre>
+int calcLoanPayment(int amount, int numberOfMonths, String state){
+   // Your code goes here
+}</pre>
+<p>When you <a id="idp13695904"></a><a id="idp13697696"></a>call (or invoke) a method, the Java run time tries to find the method that has been declared with the specified signature. For example, if you try to call the preceding method like this:</p>
+<pre>
+calcLoanPayment(20000, 60);</pre>
+<p>the Java compiler will give you an error complaining that no <code>calcLoanPayment()</code> function has been found that expects just two arguments.</p>
+</section>
+<section>
+<h2><a id="method_overloading"></a>Method Overloading</h2>
+<p>If <span epub:type="pagebreak" title="38" id="Page_38"></span>you want <a id="idp13703072"></a><a id="idp13704528"></a>to allow the calling of a method with different numbers of arguments, you need to create multiple versions of this method. For example, you can create a method that will  use the state of New York as default to spare developers from providing the state as an argument. If most of the loan calculation is done for New Yorkers, such a method may be a good idea. So in addition to the method <code>calcLoanPayment() </code>with three arguments, you create another one with just two arguments. To avoid code duplication, only the method with three arguments implements the logic calculating payments. The method with two arguments simply calls it, adding “NY” as the third argument.</p>
+<pre>
+int calcLoanPayment(int amount, int numberOfMonths){
+   calcLoanPayment(amount, 12, “NY”);
+}</pre>
+<p><i>Method overloading</i> means having a class with more than one method that has the same name but different argument lists. A method can be overloaded not only in the same class but also in a descendant. For example, the class <code>LoanCalulator</code> can have the method <code>calcLoanPayment()</code> defined with three arguments, while its descendant <code>MyLoanCalculator</code> may have a two-argument version of <code>calcLoanPayment()</code>.</p>
+<p>Why overload methods in your classes? To provide programmers who use these classes with a more flexible <a id="idp13706704"></a>application program interface (API). Coming back to the loan-calculation example, programmers now have a choice of calling either a three- or two-argument version of this method.</p>
+<p>In <a href="part0002.html#introducing_java">Chapter 1</a> you used the method <code>println()</code> declared in the class <code>PrintStream</code> (see <a id="fig-anc-c04-001" href="part0005.html#fig-c04-001">Figure 4-1</a> or its description at <code><a href="http://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html">http://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html</a></code>). The function <code>println()</code> has been overloaded there to give Java developers the freedom to call “the same” method with different types of arguments. In reality they are calling different methods with the same name.</p>
+<figure>
+<img class="center" src="../Images/image00512.jpeg" alt="image"/>
+<figcaption>
+<p><span class="figureLabel"><b><a id="fig-c04-001" href="part0005.html#fig-anc-c04-001">Figure 4-1</a>:</b></span> JavaDoc for the PrintStream class</p>
+</figcaption>
+</figure>
+</section>
+<section>
+<h2><a id="constructors"></a>Constructors</h2>
+<p>When a <a id="idp13721152"></a>program <span epub:type="pagebreak" title="39" id="Page_39"></span>creates an instance of a class, Java invokes the class’s <i>constructor </i>— a special method that is called only once when the instance is being built with the operator <code>new</code>:</p>
+<pre>
+Tax t = new Tax();</pre>
+<p> Empty parentheses in the preceding code snippet mean that this code calls a no-argument constructor on the class <code>Tax</code>. If you didn’t declare a constructor on a class, Java creates a no-argument constructor for you.</p>
+<p>Constructors have the following characteristics:</p>
+<ul>
+	<li>
+	<p>They are called when the class is being instantiated.</p>
+	</li>
+	<li>
+	<p>They must have the same name as the class they’re in.</p>
+	</li>
+	<li>
+	<p>They can’t return a value and you don’t specify the keyword <code>void</code> as a return type.</p>
+	</li>
+</ul>
+<p>Typically constructors have very little code. There you just assign initial values to class variables. In the next code snippet, a three-argument constructor is defined:</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-001" href="part0005.html#list-anc-c04-001">Listing 4-1</a>:</span> Class Tax with constructor</h5>
+<pre>
+class Tax {
+    double grossIncome; // class variables
+    String state;
+    int dependents;
+    // Constructor
+    Tax (double gi, String st, int depen){
+      // Initializing class variables
+       grossIncome = gi;
+       state = st;
+       dependents=depen;
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Creating an instance of this class can look like this:</p>
+<pre>
+Tax t = new Tax(65000,”NJ”,3);</pre>
+<p>Note the difference in the initialization of the class variables: Here you pass the values during the class instantiation via the constructor’s arguments, whereas in <a href="part0004.html#list-c03-004">Listing 3-4</a> it took four lines of code to create an instance of <code>Tax</code> and then initialize the variables. But in the preceding code snippet you killed two birds with one stone: instantiated <code>Tax</code> and initialized its variables via class <code>constructor</code>.</p>
+<p>Note <span epub:type="pagebreak" title="40" id="Page_40"></span>that after defining a constructor with arguments, the rule of automatic creation of a default no-argument constructor does not apply anymore. If you need a class to have more than one constructor, and one of the constructors with no arguments, you have to explicitly write a no-argument constructor.</p>
+<p>The preceding code snippet declares the variable <code>t</code> that points at an instance of the object <code>Tax</code> in memory. To refer to any specific field or call a method on this instance, you need to use dot-notation — the name of the reference variable followed by a dot and the name of the field or a method. For example:</p>
+<pre>
+public static void main(){
+...
+Tax t = new Tax(65000,”NJ”,3);
+t.dependents = 4; // changing the number of dependents from 3 to 4
+...</pre>
+</section>
+</section>
+<section>
+<h2><a id="keyword_super"></a>The Keyword super</h2>
+<p>If a method <a id="idp13741296"></a><a id="idp13743792"></a>is overridden in a subclass, there are two versions of the method with the same signature. If you just call a method by name; for example, <code>calcTax()</code> in the class <code>NJTax</code> from <a href="part0004.html#object-oriented_programming">Chapter 3</a>, the JVM calls the overridden version of the method. Once in a while you may need to call the ancestor’s version of a method. The keyword <code>super</code> enables you to explicitly call the method or a constructor from the ancestor’s class. For example, to call the ancestor’s method <code>calcTax()</code>, you just write <code>super.calcTax();</code> in the descendant:</p>
+<p>If one class is inherited from another, each of them may have its own constructor explicitly defined. As opposed to regular class methods, a constructor of a subclass cannot override the constructor <a id="idp13749216"></a><a id="idp13746768"></a>of a superclass; they even have different names. But sometimes you may need to add into the subclass’s constructor some functionality that has to be called after the ancestor’s constructor code. To avoid code duplication, just add the explicit call to the constructor of a superclass followed by additional code you want to run during instantiation of the descendant (see <a id="list-anc-c04-002" href="part0005.html#list-c04-002">Listing 4-2</a>). Invocation of the constructor of the superclass must be the first line in the constructor.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-002" href="part0005.html#list-anc-c04-002">Listing 4-2</a>:</span> Calling the constructor of the ancestor</h5>
+<pre>
+class SmallerTax extends Tax{
+    // Constructor
+    SmallerTax (double gi, String st, int depen){
+       super(gi,st,depen);
+       // Adding code specific to descendant’s constructor
+       System.out.println("Applying special tax rates for my friends.”);
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h2><a id="keyword_this"></a>The Keyword this</h2>
+<p>The keyword <code>this</code> is useful <a id="idp13756976"></a><a id="idp13759968"></a>when you need to refer to the instance of the class from its method. Review the code of the constructor from <a id="list-anc-c04-001" href="part0005.html#list-c04-001">Listing 4-1</a>. The names of the constructor’s arguments were different from the names of <span epub:type="pagebreak" title="41" id="Page_41"></span>the class variables. But the code in <a id="list-anc-c04-003" href="part0005.html#list-c04-003">Listing 4-3</a> shows how you can use the same variable names, both in the arguments and in the class variables. Besides pointing at the current object, the keyword <code>this</code> helps to resolve name conflicts. To instruct JVM to use the instance variable <code>grossIncome</code>, use the following syntax:</p>
+<pre>
+this.grossIncome = 50000;</pre>
+<p>If there were only one <code>grossIncome</code> variable in the class <code>Tax</code>, you could simply omit the <code>this</code> prefix. But in <a href="part0005.html#list-c04-003">Listing 4-3</a> the absence of the <code>this</code> keyword would lead to ambiguity, and the instance variable would never be initialized.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-003" href="part0005.html#list-anc-c04-003">Listing 4-3</a>:</span> Resolving name conflicts with the this keyword</h5>
+<pre>
+class Tax {
+    double grossIncome; // class member variables
+    String state;
+    int dependents;
+    // Constructor
+    Tax (double grossIncome, String state, int dependents){
+       this.grossIncome = grossIncome;
+       this.state = state;
+       this.dependents=dependents;
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Consider a class called <code>SomeOtherClass</code> with a method defined as <code>verifyTax(Tax t)</code>. As you can see, it expects an instance of the <code>Tax</code> object as an argument. <a id="list-anc-c04-004" href="part0005.html#list-c04-004">Listing 4-4</a> shows how you can call it from the class <code>Tax</code> using the keyword <code>this</code> to pass a reference to the current instance of the object <code>Tax</code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-004" href="part0005.html#list-anc-c04-004">Listing 4-4:</a></span> Calling a method using the keyword this as an argument</h5>
+<pre>
+class Tax {
+     void verifyTax(){
+        SomeOtherClass s = new SomeOtherClass();
+        s.verifyTax(this);
+     }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Here’s another use case: A class has several overloaded constructors with different numbers of arguments. As with method overloading, the overloaded constructors give more choices in instantiation objects and helps avoid code duplication. You can use the <code>this()</code> notation to call a specific version of the constructor. In <a id="list-anc-c04-005" href="part0005.html#list-c04-005">Listing 4-5</a> the second constructor invokes the first one.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-005" href="part0005.html#list-anc-c04-005">Listing 4-5</a>:</span> Calling <span epub:type="pagebreak" title="42" id="Page_42"></span>an overloaded constructor with the keyword this</h5>
+<pre>
+class Tax {
+    double grossIncome; // class member variables
+    String state;
+    int dependents;
+    // First Constructor
+    Tax (double grossIncome, String state, int dependents){
+       this.grossIncome = grossIncome; // instance variable initialization
+       this.state = state;
+       this.dependents=dependents;
+    }
+   // Second Constructor
+    Tax (double grossIncome, int dependents){
+       this(grossIncome, "NY”, dependents);     }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<section>
+<h2><a id="passing_by_value_or_by_reference"></a>Passing by Value or by Reference</h2>
+<p>Calling a <a id="idp13785280"></a><a id="idp13786976"></a><a id="idp13788640"></a><a id="idp13790032"></a>method with arguments enables you to pass some required data to the method. The question is how JVM passes these values to the method. Does it create a copy of a variable in a calling program and give it to the method?</p>
+<p>The primitive values are passed <i>by value</i> (meaning that an extra copy is created in memory for each variable). If you create an instance of <code>Tax</code>, as in <a id="list-anc-c04-006" href="part0005.html#list-c04-006">Listing 4-6</a>, there will be two copies of <code>grossIncome</code> and two copies of the variable <code>dependents </code>— one in <code>TestTax</code> and the other one in <code>Tax</code>. But objects are passed <i>by reference</i>. The following code creates only one copy of “NJ” in memory. In Java, String objects have special rules of treatment, which are discussed in <a href="part0006.html#back_to_java_basics">Chapter 5</a>, but the rule still holds: Non-primitives are passed by reference.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-006" href="part0005.html#list-anc-c04-006">Listing 4-6</a>:</span> The TestTax class</h5>
+<pre>
+class TestTax{
+     public static void main(String[] args){
+            double grossIncome; // local variables
+            String state;
+            int dependents;
+            grossIncome= 50000;
+            dependents= 2;
+            state= "NJ”;
+            Tax   t = new Tax(grossIncome, state, dependents);
+            double yourTax = t.calcTax(); //calculating tax
+           // Printing the result
+           System.out.println("Your tax is ” + yourTax);
+     }
+ }</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>In <span epub:type="pagebreak" title="43" id="Page_43"></span>the preceding example, if you’ll be changing the value of <code>grossIncome</code> or <code>dependents</code> in the constructor of the class <code>Tax</code>, it won’t affect the values in the corresponding variables of the class <code>TestTax</code> because there will be two copies of these primitives.</p>
+<p>Now consider another example. I’m declaring another variable of type <code>Tax</code> and  assigning the value of <code>t</code> to it:</p>
+<pre>
+Tax   t2 = t;</pre>
+<p>The variable <code>t</code> is pointing to an instance of the object <code>Tax</code> in memory. In other words, the variable <code>t</code> holds the reference (the address in memory) to an object. The code line above does not create another copy of the <code>Tax</code> object in memory, but copies its address to the variable <code>t2</code>. You still have a single instance of the <code>Tax</code> object, but now you have two reference variables —  <code>t</code> and <code>t2 </code>— pointing at it. Until both of these variables go out of scope (something that’s explained in the next section), the object <code>Tax</code> is not removed from memory.</p>
+<p>As I mentioned before, the process of removal of unused objects from memory is called garbage collection. JVM runs GC automatically.</p>
+<p>Here’s another example of passing by reference: The code in <a href="part0005.html#list-c04-005">Listing 4-5</a> does not create a copy of the object <code>Tax</code> just to pass it to the method <code>verifyTax()</code>. A copy of just the reference variable pointing at the <code>Tax</code> instance can be created inside the method <code>SomeOtherClass.verifyTax()</code>, pointing at the one and only instance of the class <code>Tax</code>.</p>
+<p>This means that if the code in <code>SomeOtherClass</code> is changing some properties of the <code>Tax</code> instance, the changes are applied to the only copy of the <code>Tax</code> instance and are visible from both <code>Tax</code> and <code>SomeOtherClass</code>.</p>
+</section>
+<section>
+<h2><a id="variable_scopes"></a>Variable Scopes</h2>
+<p>Variable scope <a id="idp13819136"></a><a id="idp13820912"></a>defines how long the variable lives and remains usable. If you declared the variable inside a method, it’s a local variable that goes out of scope (becomes unavailable) as soon as the method finishes its execution. For example, variables <code>t</code>, <code>grossIncome</code>, <code>dependents</code>, and <code>state</code> from <a href="part0005.html#list-c04-006">Listing 4-6</a> are local.</p>
+<p>If a variable is defined inside any block of code between curly braces located inside the method, the scope of the variable is limited to the code within this block. In the following code fragment the variable <code>taxCredit</code> has a block scope and is visible only inside the code for the case when <code>grossIncome &lt; 30000</code>.</p>
+<pre>
+public double calcTax() {
+      double stateTax=0;
+      if (grossIncome &lt; 30000) {
+        int taxCredit = 300;
+        stateTax=grossIncome*0.05 - taxCredit;
+      }
+      else{
+        stateTax= grossIncome*0.06;
+      }
+        return stateTax;
+}</pre>
+<p>If <span epub:type="pagebreak" title="44" id="Page_44"></span>variables have been declared outside the method (such as <code>grossIncome</code>, <code>dependents</code>, and <code>state</code> in <a href="part0005.html#list-c04-001">Listing 4-1</a>) they are <i>class variables</i> and can be used by any method of this class. On the other hand, the variables <code>grossIncome</code>, <code>dependents</code>, and <code>state</code> in <a href="part0005.html#list-c04-001">Listing 4-1</a> are also <i>instance variables</i> and store instance-specific data.</p>
+<p>You can create more than one instance of the class <code>Tax</code>, and each instance can have different values in its instance variables. For example, the following lines of code  create two instances of <code>Tax</code>, with different values for <code>grossIncome</code>, <code>dependents</code>, and <code>state</code> (these instance variables are initialized in the constructor):</p>
+<pre>
+Tax   t1 = new Tax(50000, "NY”, 3 );
+Tax   t2 = new Tax(65000, "TX”, 4 );</pre>
+</section>
+<section>
+<h2><a id="keyword_static"></a>The Keyword static</h2>
+<p>Java has a <a id="idp13839216"></a><a id="idp13841120"></a>special keyword, <code>static</code>, that indicates that the class variable is shared by all instances of the same class. If the class <code>Tax</code> has the declaration <code>static double grossIncome;</code> then this variable’s value is shared by all instances of the class <code>Tax</code>, which doesn’t make sense in the tax calculation scenarios.</p>
+<p>Besides, after the creation of two instances (<code>t1</code> and <code>t2</code>), as in the preceding code, the first value of the variable (<code>50000</code>) is overwritten with the second one (<code>65000</code>).</p>
+<p>But, if you introduce in <code>Tax</code> a class variable to count the number of its instances (think the number of customers whose taxes have been calculated), such a variable has to be declared as <code>static</code>, so its only version can be incremented by each instance on creation, as in <a id="list-anc-c04-007" href="part0005.html#list-c04-007">Listing 4-7</a>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c04-007" href="part0005.html#list-anc-c04-007">Listing 4-7</a>:</span> The Tax class with the keyword static</h5>
+<pre>
+class Tax {
+    double grossIncome; // class member variables
+    String state;
+    int dependents;
+    static int customerCounter;
+    // Constructor
+    Tax (double gi, String st, int depen){
+       grossIncome = gi; // member variable initialization
+       state = st;
+       dependents=depen;
+       customerCounter++;   // increment the counter by one
+    }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>You <span epub:type="pagebreak" title="45" id="Page_45"></span>can also declare methods with the <code>static</code> qualifier. Such methods can be called without the need to instantiate the class first. This is usually done for utility methods that don’t use any instance variables, but do get input via the argument and return the result.</p>
+<p>The following function converts Fahrenheit to Celsius and returns the result:</p>
+<pre>
+class WeatherReport{
+      static double convertToCelsius(double far){
+           return ((far - 32) * 5 / 9);
+    }
+}</pre>
+<p>You can call this function from another class without the need to instantiate <code>WeatherReport</code> first:</p>
+<pre>
+double centigrees=WeatherReport.convertToCelsius(98.7);</pre>
+<p>Note that because you never instantiated the class <code>WeatherReport</code>, there is no reference variable to any object. You just use the name of the class followed by dot and the method name.</p>
+<p>Java 8 introduced static methods in interfaces, which is covered in <a href="part0007.html">Lesson 6</a>.</p>
+</section>
+<section>
+<h2><a id="try_it-id00012"></a>Try It</h2>
+<p>In this section you create yet another version of the <code>Tax</code> class with a three-argument constructor and add a utility function to convert the tax value from dollars to euros, assuming the dollar-to-euro conversion rate is 1.25.</p>
+<section>
+<h3><a id="lesson_requirements-id00013"></a>Lesson Requirements</h3>
+<p>For this lesson you should have Eclipse IDE installed.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;You can download the code and resources for this “Try It” from the book’s web page at <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>. You can find them in <code>Lesson4.zip</code>.</p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="step-by-step-id00014"></a>Step-by-Step</h3>
+<ol>
+	<li>
+	<p>In Eclipse IDE, create a new project named Lesson4.</p>
+	</li>
+	<li>
+	<p>Create a new class called <code>Tax</code> (File → New → Class). Enter the code shown in <a href="part0005.html#list-c04-007">Listing 4-7</a>.</p>
+	</li>
+	<li>
+	<p>Add the following statement as the last line of the constructor of the class <code>Tax</code>:</p>
+	<pre>
+System.out.println("Preparing the tax data for customer #” +
+customerCounter);</pre>
+	</li>
+	<li>
+	<p>Add <span epub:type="pagebreak" title="46" id="Page_46"></span>the method <code>calcTax()</code> to the class <code>Tax</code> and calculate tax by multiplying the gross income by 0.33 and deducting the number of dependents multiplied by one hundred:</p>
+	<pre>
+return (grossIncome*0.33 - dependents*100);</pre>
+	</li>
+	<li>
+	<p>Add the <code>static</code> function to <code>Tax</code> to convert the calculated tax to euros, applying the currency-conversion rate of 1.25.</p>
+	<pre>
+public static void convertToEuros(double taxInDollars){
+    System.out.println("Tax in Euros: " + taxInDollars/1.25);
+}</pre>
+	</li>
+	<li>
+	<p>Create a <code>TestTax</code> class and input the code from <a href="part0005.html#list-c04-006">Listing 4-6</a>. Add to this class’s <code>main()</code> method a line to create another instance of the class <code>Tax</code>:</p>
+	<pre>
+Tax   t2 = new Tax(65000, "TX”, 4 );</pre>
+	<p>Calculate the tax using the second instance of the class <code>Tax</code>:</p>
+	<pre>
+double hisTax = t2.calcTax();</pre>
+	</li>
+	<li>
+	<p>Call the method <code>convertToEuros()</code> twice to convert the currency, passing the calculated tax from <code>t</code> and <code>t2</code> as an argument.</p>
+	</li>
+	<li>
+	<p>Run the class <code>TestTax</code> (right-click and select Run As → Java Application). The Console view should display the two “Preparing the tax...” messages followed by the two messages with the calculated tax in Euros as follows:</p>
+	<p>Preparing the tax data for customer #1</p>
+	<p>Preparing the tax data for customer #2</p>
+	<p>Tax in Euros: 13040.0</p>
+	<p>Tax in Euros: 16840.0</p>
+	</li>
+</ol>
+<p>To get the sample files, download the content of the <a href="part0005.html#class_methods_and_constructors">Chapter 4</a> folder from the book’s website at <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0005.html">Lesson 4</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</section>
+</body></html>

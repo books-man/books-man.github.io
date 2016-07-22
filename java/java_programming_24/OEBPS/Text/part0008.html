@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en"><head>
+<title>Programming with Abstract Classes and Interfaces</title>
+<link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head><body epub:type="bodymatter">
+<section epub:type="chapter">
+<header>
+</header><h1><a id="programming_with_abstract_classes_and_in"></a><span class="chapterTitle">Lesson 7<br/>Programming with Abstract Classes and Interfaces</span></h1>
+
+<section>
+<p>In <span epub:type="pagebreak" title="73" id="Page_73"></span>this lesson you learn about <i>abstract classes</i>, and then you build a complete application that illustrates how to design and implement programs with abstract classes and interfaces. You also learn about the notion of <i>polymorphism</i>.</p>
+</section>
+<section>
+<h2><a id="abstract_classes"></a>Abstract Classes</h2>
+<p>If a class is <a id="abstract"></a><a id="idp14494704"></a><a id="idp14495680"></a><a id="idp14497136"></a>declared <i>abstract</i> it can’t be instantiated. The keyword <code>abstract</code> has to be placed in the declaration of a class. The abstract class may have abstract method(s). The question is, “Who needs a class that can’t be instantiated?”</p>
+<p>It’s easiest to answer this question by showing you how to use abstract classes while designing an application. Previous lessons ended with assignments, but this lesson starts with one.</p>
+<section>
+<h3><a id="assignment"></a>Assignment</h3>
+<p>A company has employees and contractors. Design the classes without using interfaces to represent the people who work for this company. The classes should have the following methods:</p>
+<pre>
+changeAddress()
+promote()
+giveDayOff()
+increasePay()</pre>
+<p>A one-time promotion means giving one day off and raising the salary by a specified percentage. The method <code>increasePay()</code> should raise the yearly salary for employees and increase the hourly rate for contractors.</p>
+</section>
+<section>
+<h3><a id="solution_with_an_abstract_class"></a>Solution with an Abstract Class</h3>
+<p>Classes <code>Employee</code> and <code>Contractor</code> should <span epub:type="pagebreak" title="74" id="Page_74"></span>have some common functionality, but because <code>increasePay()</code> has to be implemented differently for <code>Employee</code> and <code>Contractor</code>, let’s declare a superclass <code>Person</code> for them with an abstract (not implemented) method <code>increasePay()</code>.  The class <code>Person</code> also has three concrete (implemented) methods. The fact that the abstract class <code>Person</code> cannot be instantiated forces you, the developer, to implement abstract methods in its subclasses.</p>
+<p>Start by redesigning the class <code>Person</code> from the “Try It” section of <a id="list-anc-c07-001" href="part0008.html#list-c07-001">Listing 7-1</a>).</p>
+<p>This is a different approach from the one in <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a>, which used interfaces. In this case some methods are implemented in the superclass and some are not. As per the assignment, this solution won’t be using any interfaces.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c07-001" href="part0008.html#list-anc-c07-001">Listing 7-1</a>:</span> Abstract class Person</h5>
+<pre>
+package com.practicaljava.lesson7;
+public abstract class Person {
+       private String name;
+       private String address;
+       int INCREASE_CAP = 20; // cap on pay increase
+       public Person(String name){
+              this.name=name;
+       }
+       public String getName(){
+              return "Person's name is " + name;
+       }
+       public void changeAddress(String address){
+           this.address = address;
+           System.out.println("New address is" + address);
+       }
+       private void giveDayOff(){
+              System.out.println("Giving a day off to " + name);
+       }
+       public void promote(int percent){
+                 System.out.println(" Promoting a worker...");
+                 giveDayOff();
+                 //calling an abstract method
+                 increasePay(percent);
+       }
+       // an abstract method to be implemented in subclasses
+       public abstract boolean increasePay(int percent);
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>The <span epub:type="pagebreak" title="75" id="Page_75"></span>method <code>increasePay()</code> is abstract, and the author of the class <code>Person</code> doesn’t have to know the specifics of implementing raising pay. The subclasses may even be programmed by other developers. But the author of <code>Person</code> can write code that even invokes  <code>increasePay()</code>, as in the method <code>promote()</code>. This is allowed because by the time the concrete class is instantiated, the method <code>increasePay()</code> will definitely have been implemented. For simplicity, I didn’t write any code that looks like an actual increase of pay — this is irrelevant for understanding the concept of abstract classes.</p>
+<p>The next step is to create the subclasses <code>Employee</code> and <code>Contractor</code>, implementing the method <code>increasePay()</code> in two different ways, as shown in <a id="list-anc-c07-002" href="part0008.html#list-c07-002">Listing 7-2</a> and <a id="list-anc-c07-003" href="part0008.html#list-c07-003">Listing 7-3</a>.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c07-002" href="part0008.html#list-anc-c07-002">Listing 7-2</a>:</span> Class Employee</h5>
+<pre>
+package com.practicaljava.lesson7;
+public class Employee extends Person{
+       public Employee(String name){
+              super(name);
+       }
+       public boolean increasePay(int percent) {
+              System.out.println("Increasing salary by " +
+                     percent + "%. "+ getName());
+              return true;
+       }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c07-003" href="part0008.html#list-anc-c07-003">Listing 7-3</a>:</span> Class Contractor</h5>
+<pre>
+package com.practicaljava.lesson7;
+public class Contractor extends Person {
+       public Contractor(String name){
+              super(name);
+       }
+       public boolean increasePay(int percent) {
+              if(percent &lt; INCREASE_CAP){
+                 System.out.println("Increasing hourly rate by " +
+                                     percent + "%. "+ getName());
+                return true;
+             } else {
+                System.out.println("Sorry, can't increase hourly rate by more
+                       than " + INCREASE_CAP + "%. "+ getName());
+                return false;
+             }
+       }
+}</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Programmers <span epub:type="pagebreak" title="76" id="Page_76"></span>writing subclasses are forced to write an implementation of <code>increasePay()</code> according to its signature, declared in the abstract class. If they declare a method increasing pay that has a different name or argument list, their classes remain abstract. So they don’t have a choice and have to play by the rules dictated in the abstract class.</p>
+<p>The class <code>TestPayIncrease</code> in <a id="list-anc-c07-004" href="part0008.html#list-c07-004">Listing 7-4</a> shows how to use the classes <code>Employee</code> and <code>Contractor</code> for promoting workers.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c07-004" href="part0008.html#list-anc-c07-004">Listing 7-4</a>:</span> Class TestPayincrease</h5>
+<pre>
+import com.practicaljava.lesson7.Person;
+import com.practicaljava.lesson7.Contractor;
+import com.practicaljava.lesson7.Employee;
+public class TestPayIncrease {
+      public static void main(String[] args) {
+        Person workers[] = new Person[3];
+              workers[0] = new Employee("John");
+              workers[1] = new Contractor("Mary");
+              workers[2] = new Employee("Steve");
+              for (Person p: workers){
+                        p.promote(30);
+              }
+        }
+}
+</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Compare the code of the preceding class  <code>TestPayIncrease</code> with the one from the “Try It” section of <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a>. Which one do you like better? I like this version better; it exhibits polymorphic behavior, <a id="idp14544272"></a><a id="idp14542768"></a>explained next.</p>
+</section>
+</section>
+<section>
+<h2><a id="polymorphism_ch07_section"></a>Polymorphism</h2>
+<p>Polymorphism <a id="poly"></a>is easier to understand through an example. Let’s look at the classes <code>Person</code>, <code>Employee</code>, and <code>Contractor</code> from a different angle. The code in <a href="part0008.html#list-c07-004">Listing 7-4</a> populates an array, mixing up the instances of the classes <code>Employee</code> and <code>Contractor</code> with hard-coded names. In real life, the data about workers usually comes from an external data source. For example, a program could get a person’s work status from the database and instantiate an appropriate concrete class. The earlier class <code>TestPayIncrease</code> gives an additional vacation day and attempts to increase the salary or hourly rate of every worker by 30 percent.</p>
+<p>Note <span epub:type="pagebreak" title="77" id="Page_77"></span>that even though the loop variable <code>p</code> is of its ancestor’s type <code>Person</code> in <a href="part0008.html#list-c07-004">Listing 7-4</a>, at every iteration it actually points at either an <code>Employee</code> or a <code>Contractor</code> instance. The actual object type will be evaluated only during the run time. This feature <a id="idp14559904"></a><a id="idp14558480"></a>of object-oriented languages is called <i>run-time binding</i> or <i>late binding</i>.</p>
+<p>The output of the class <code>TestPayIncrease</code> looks like the following:</p>
+<pre>
+Promoting a worker...
+Giving a day off to John
+Increasing salary by 30%. Person's name is John
+ Promoting a worker...
+Giving a day off to Mary
+Sorry, can't increase hourly rate by more than 20%. Person's name 
+is Mary
+ Promoting a worker...
+Giving a day off to Steve
+Increasing salary by 30%. Person's name is Steve</pre>
+<p>Both classes, <code>Employee</code> and <code>Contractor</code>, were inherited from the same base class, <code>Person</code>. Instead of having different methods for increasing the worker’s compensation based on the worker’s type, you give a polymorphic behavior to the method <code>increasePay()</code>, which applies different business logic depending on the type of the object.</p>
+<p>You’re calling the same method, <code>promote()</code>, on every object from the array <code>workers</code>, but because the actual object type is evaluated during run time, the pay is raised properly according to this particular object’s implementation of the method <code>increasePay()</code>. This is polymorphism in action.</p>
+<p>The <code>for</code> loop in the class <code>TestPayIncrease</code> remains the same even if you add some other types of workers inherited from the class <code>Person</code>. For example, to add a new category of worker — a foreign contractor — you have to create a class called <code>ForeignContractor</code> derived from the class <code>Person</code> and implement yet another version of the method <code>increasePay()</code> there. The class <code>TestPayIncrease</code>  keeps evaluating the actual type of <code>Person</code>’s descendants during run time and calls the proper implementation of the method <code>increasePay()</code>.</p>
+<p>Polymorphism enables you to avoid using <code>switch</code> or <code>if</code> statements with the rather slow operator <code>instanceof</code>, which you used in <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a>. Would you agree that even though <code>TestPayIncrease</code> from <a href="part0007.html">Lesson 6</a> is producing the same results, its code looks pretty ugly compared to this version of this class? The code in the <a href="part0007.html">Lesson 6</a> version of <code>TestPayIncrease</code> works more slowly than the polymorphic version, and its <code>if</code> statement will have to be modified every time a new type of worker is added.</p>
+<section>
+<h3><a id="making_the_interface_solution_polymorphi"></a>Making the Interface Solution Polymorphic</h3>
+<p>After discussing the abstract class version of the assignment’s solution, it’s time to modify its interface version from <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a> with the polymorphic solution. Note that the array <code>workers</code> has been declared of type <code>Payable</code> . It is populated by objects of types <code>Employee</code> and <code>Contractor</code>, which implement the <code>Payable</code> interface.</p>
+<p>You’ve eliminated not only the need of using <code>instanceof</code>, but even the casting to <code>Payable</code> is not required. The array is of type <code>Payable</code>, and you use only the behavior defined in Payable (that is, the <code>increasePay()</code> method) without worrying too much about whether the current worker is an employee or a contractor (see <a id="list-anc-c07-005" href="part0008.html#list-c07-005">Listing 7-5</a>).</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature3">
+<h5><span class="label"><a id="list-c07-005" href="part0008.html#list-anc-c07-005">Listing 7-5</a>:</span> Class <span epub:type="pagebreak" title="78" id="Page_78"></span>TestPayincreasePoly</h5>
+<pre>
+// For reusing the interface version of Employee and Contractor
+// let's keep this sample in the code for <a href="part0007.html">Lesson 6</a>
+import com.practicaljava.lesson6.*;
+public class TestPayInceasePoly {
+    public static void main(String[] args) {
+        Payable workers[] = new Payable[3];
+        workers[0] = new Employee("John");
+        workers[1] = new Contractor("Mary");
+        workers[2] = new Employee("Steve");
+        
+            for (Payable p: workers){
+                      p.increasePay(30);
+             }
+        }
+}
+</pre>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+<p>Note that the variable <code>p</code> can “see” only the methods declared in <code>Payable</code>. The variable <code>p</code> could not be used to invoke any methods from <code>Person</code> regardless of the fact that both <code>Employee</code> and <code>Contractor</code> are inherited from this class. </p>
+<p>What can go wrong during the execution of the code from <a href="part0008.html#list-c07-005">Listing 7-5</a>? What if a developer creates a class called <code>ForeignContractor</code> without implementing the <code>Payable</code> interface, and by mistake tries to add its instance to the array <code>workers</code>? You get a compile-time error “Cannot convert from <code>ForeignContractor</code> to <code>Payable</code>."  Compiler errors are easy to fix. In the “Try It” section you purposely create <a id="idp14597872"></a>a situation that causes a run-time casting error.</p>
+</section>
+</section>
+<section>
+<h2><a id="interfaces_versus_abstract_classes"></a>Interfaces Versus Abstract Classes</h2>
+<p>The next <a id="idp14599600"></a><a id="idp14601056"></a><a id="idp14602416"></a>question is, “When should you use interfaces and when should you use abstract classes?" If two or more classes have lots of common functionality, but some methods should be implemented differently, you can create a common abstract ancestor and as many subclasses inheriting this common behavior as needed. Declare those methods abstract so subclasses implement them differently, and implement these methods in subclasses. </p>
+<p>If several classes don’t have common functionality but need to exhibit some common behavior, do not create a common ancestor; have them implement an interface that declares the required behavior. This scenario was not presented in the <a href="part0007.html#interfaces">“Interfaces”</a> section of <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a>, but it’s going to be a part of the hands-on exercise in the “Try It” section of this lesson.</p>
+<p>Interfaces and abstract classes are similar in that they ensure that required methods are implemented according to required method signatures. But they differ in how the program is designed. Whereas abstract classes require you to provide a common ancestor for the classes, interfaces don’t.</p>
+<p>Interfaces <span epub:type="pagebreak" title="79" id="Page_79"></span>could be your only option if a class already has an ancestor that cannot be changed. Java doesn’t support multiple inheritance; a class can have only one ancestor. For example, to write Java applets you must inherit your class from the class <code>Applet</code>, or, in the case of Swing applets, from <code>JApplet</code>. Using your own abstract ancestor here is not an option.</p>
+<p>Although using abstract classes, interfaces, and polymorphism is not a must, it certainly improves the design of Java code by making it more readable and understandable to others who may need to work on programs written by you. In general, it’s a good habit to think over the behavior of the classes you’re about to write and list it in separate interfaces. </p>
+<p>In <a href="part0012.html">Lesson 11</a> I give you another reason for using interfaces in the note titled "<a href="part0012.html#programming_to_interfaces">Programming to Interfaces</a>“.</p>
+</section>
+<section>
+<h2><a id="try_it-id00024"></a>Try It</h2>
+<p>In the first part of the assignment <a id="inter_ch07"></a><a id="idp14609088"></a>your goal is to break the code from <a href="part0008.html#list-c07-005">Listing 7-5</a> to produce the run-time error <code>ClassCastException</code>. You create a situation when the array workers will be of type <code>Person</code>, which can store any <code>Person</code> or its descendants. Then, you purposely add its subclass that doesn’t implement <code>Payable</code>, but will try to cast it to <code>Payable</code> anyway to generate a run-time exception. In the second part of the assignment you need to rewrite the assignment from <a href="part0007.html#packagescomma_interfacescomma_and_encaps">Chapter 6</a> to keep the <code>Payable</code> interface but remove the common ancestor <code>Person</code>.</p>
+<section>
+<h3><a id="lesson_requirements-id00025"></a>Lesson Requirements</h3>
+<p>For this lesson you should have Java installed.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this “Try It” from the book’s web page at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>. You can find them in </i> <code>Lesson6.zip</code><i> and in</i> <code>Lesson7.zip</code><i>.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+<section>
+<h3><a id="step-by-step-id00026"></a>Step-by-Step</h3>
+<section>
+<h4><a id="part_1"></a>Part 1</h4>
+<ol>
+	<li>In Eclipse, open the project Lesson6 — yes, the one you’ve imported in the previous lesson.</li>
+	<li>
+	<p>Create a new class called <code>ForeignContractor</code>, as shown in the following code. Note that this class doesn’t implement the <code>Payable</code> interface:</p>
+	<pre>
+package com.practicaljava.lesson6;
+public class ForeignContractor extends Person {
+       public ForeignContractor(String name){
+              super(name);
+       }
+       public boolean increasePay(int percent) {
+              System.out.println("I'm just a foreign worker");
+              return true;
+       }
+}</pre>
+	</li>
+	<li>
+	<p><span epub:type="pagebreak" title="80" id="Page_80"></span>Create the class <code>TestPayIncreasePolyError</code>, adding an instance of the <code>ForeignContractor</code> class. Note that you’re casting every element of the array to <code>Payable</code>:</p>
+	<pre>
+import com.practicaljava.lesson6.*;
+public class TestPayIncreasePolyError {
+   public static void main(String[] args) {
+       Person workers[] = new Person[3];
+       workers[0] = new Employee("John");
+       workers[1] = new Contractor("Mary");
+       workers[2] = new ForeignContractor("Boris");
+              for (Person p: workers){
+                        ((Payable)p).increasePay(30);
+              }
+       }
+}</pre>
+	</li>
+	<li>
+	<p>Run the program <code>TestPayIncreasePolyError</code>. Observe the output in the console view. You get the run-time error <code>java.lang.ClassCastException</code> on the third element of the array. Note the number <code>14 </code>— this is the line number of <code>TestPayIncreasePolyError</code> program, which casts each object to the <code>Payable</code> interface:</p>
+	<pre>
+Increasing salary by 30%. Person's name is John
+Sorry, can't increase hourly rate by more than 20%. Person's name is Mary
+Exception in thread "main" java.lang.<strong>ClassCastException</strong>:
+com.practicaljava.lesson6.<strong>ForeignContractor cannot be cast to</strong>
+<strong>com.practicaljava.lesson6.Payable</strong>
+         at TestPayInceasePolyError.main(TestPayInceasePolyError.java:<strong>14</strong>)</pre>
+	</li>
+	<li>
+	<p>Modify the code of <code>TestPayIncreasePolyError</code>, changing the type of the array from <code>Person</code> to <code>Payable</code> and changing the type of the loop variable accordingly:</p>
+	<pre>
+Payable workers[] = new Payable [3];
+workers[0] = new Employee("John");
+workers[1] = new Contractor("Mary");
+workers[2] = new ForeignContractor("Boris");
+       for (Payable p: workers){
+                 p.increasePay(30);
+       }</pre>
+	</li>
+	<li>Observe <span epub:type="pagebreak" title="81" id="Page_81"></span>that now you are getting a Java compiler error preventing you from even adding to the array the instance of <code>ForeignContractor</code> because it doesn’t implement <code>Payable</code>. Predicting and preventing run-time errors is a very important task for every software developer, and this subject is covered in detail in <a href="part0011.html#error_handling">Chapter 10</a>.</li>
+</ol>
+</section>
+<section>
+<h4><a id="part_2"></a>Part 2</h4>
+<ol>
+	<li>Open the the project Lesson7 in Eclipse, select the menu File  →  New  →  Package, and create the new package <code>com.practicaljava.lesson7.tryit</code>.</li>
+	<li>Using Ctrl+C/Ctrl+V copy the <code>Payable</code> interface from Eclipse project Lesson6 to the package <code>com.practicaljava.lesson7.tryit</code>. Change the package name to be <code>com.practicaljava.lesson7.tryit</code>.</li>
+	<li>
+	<p>In the same package create the class <code>Employee</code> as follows:</p>
+	<pre>
+package com.practicaljava.lesson7.tryit;
+public class Employee implements Payable{
+       private String name;
+       public Employee(String name){
+              this.name=name;
+       }
+       public boolean increasePay(int percent) {
+         System.out.println("Increasing salary by " + percent
+             + "%: " + name);
+         return true;
+       }
+}</pre>
+	</li>
+	<li>
+	<p>In the same package create the class <code>Contractor</code> as follows:</p>
+	<pre>
+package com.practicaljava.lesson7.tryit;
+public class Contractor implements Payable {
+       private String name;
+       public Contractor(String name){
+              this.name=name;
+       }
+       public boolean increasePay(int percent) {
+         if(percent &lt; Payable.INCREASE_CAP){
+           System.out.println("Increasing hourly rate by " +
+                          percent + "%. ");
+           return true;
+         } else {
+            System.out.println(
+            "Sorry,can't increase hourly rate by more than " 
+                + Payable.INCREASE_CAP + "%: " + name);
+            return false;
+         }
+       }
+}       
+</pre>
+	</li>
+	<li>
+	<p>Create a class called <code>TestPayIncreaseInterface</code>:</p>
+	<pre>
+public class TestPayIncreaseInterface {
+      public static void main(String[] args) {
+        Payable workers[] = new Payable [3];
+              workers[0] = new Employee("John");
+              workers[1] = new Contractor("Mary");
+              workers[2] = new Employee("Steve");
+                     for (Payable p: workers){
+                              ((Payable)p).increasePay(30);
+                     }
+              }
+}</pre>
+	</li>
+	<li>
+	<p>Run this program. It should produce the following output:</p>
+	<pre>
+Increasing salary by 30%: John
+Sorry, can't increase hourly rate by more than 20%: Mary
+Increasing salary by 30%: Steve
+</pre>
+	</li>
+</ol>
+<p><span epub:type="pagebreak" title="82" id="Page_82"></span>Note that neither <code>Employee</code> nor <code>Contractor</code> extends <code>Person</code> any longer. Both classes are free to extend any other classes now, but on the other hand, each of them has to declare the variable name and the method <code>getName()</code>, which was done once in the <a id="idp14666800"></a><a id="idp14668256"></a>class <code>Person</code> before.</p>
+<aside epub:type="sidebar">
+<div class="top hr"><hr/></div>
+<section class="feature1">
+<p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a href="part0008.html">Lesson 7</a> online at </i><code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You will also be able to download the code and resources for this lesson from the website.</i></p>
+<div class="bottom hr"><hr/></div>
+</section>
+</aside>
+</section>
+</section>
+</section>
+</section></body></html>

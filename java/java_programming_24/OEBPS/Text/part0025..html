@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Remote Method Invocation</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="remote_method_invocation"></a><span class="chapterTitle">Lesson 24<br/>Remote Method Invocation</span>
+    </h1>
+
+    <section>
+        <p> So <span epub:type="pagebreak" title="335" id="Page_335"></span>far most of the Java programs <a
+                id="idp19787392"></a><a id="idp19788816"></a>in this tutorial have been running in a single Java virtual
+            machine (JVM). There were two exceptions: In <a href="part0017.html">Lesson 16</a> in the section on <a
+                    href="part0017.html#socket_programming">“Socket Programming”</a> you used two JVMs, and your JDBC
+            programs from <a href="part0022.html#working_with_databases_using_jdbc">Chapter 21</a> communicated with
+            another JVM running a database server. The application running on the user’s computer isn’t always allowed
+            to access remote data directly—that’s one of the reasons <i>distributed Java applications</i> came <a
+                    id="idp19791568"></a><a id="idp19794000"></a>into the picture. (The word distributed means having
+            parts of the applications running on several computers.) The other reason was to provide a centralized
+            server catering to multiple lightweight clients.</p>
+        <p>There are lots of ways to create Java distributed applications that run on more than one JVM, and <a
+                id="idp19797664"></a>Remote Method Invocation (RMI) is one of them even though it’s seldom used these
+            days. For example, a client Java application (JVM1) connects to a server Java application (JVM2), which
+            connects to the DBMS that runs on a third computer. The client application knows nothing about the DBMS; it
+            gets the data, an <code>ArrayList</code> (or other data collection) of <code>Employee</code> objects, from
+            the server’s application that runs in JVM2. RMI uses object serialization for the data exchange between JVM1
+            and JVM2.</p>
+        <p>But unlike with socket programming, <a id="idp19798560"></a><a id="idp19800640"></a><a id="idp19802064"></a>where
+            the client simply connects to a port on the server, with RMI one Java class can <i>invoke methods</i> on
+            Java objects that live in another (remote) JVM. Although from a syntax perspective it looks as if the caller
+            and the server’s class are located in the same JVM, they may be thousands of miles away. The RMI client
+            won’t have a copy of the server-side method; it just has the method’s local <a id="idp19803664"></a><a
+                    id="idp19809728"></a><a id="idp19806000"></a><a id="idp19807328"></a>representative—a <i>proxy</i>,
+            or, using the RMI terminology, a <i>stub</i>.</p>
+        <p>Any RMI application consists of an RMI server, a client, and the <i>registry</i> (a naming service). These
+            three components could run on three different JVMs running on different networked computers. The RMI server
+            creates Java objects that implement business logic, registers them with the naming service, and waits for
+            remote clients to invoke the server’s methods.</p>
+        <p>A client application gets a reference to a remote server object or objects from the registry and then invokes
+            methods on this remote object. RMI uses the transport layer that hides the communications between the
+            client’s stub and the server-side Java objects, and even though the <a id="idp19811664"></a>methods are
+            called in the client’s JVM, they are executed on the server’s. All RMI supporting classes and the registry
+            tool are included with the Java SE.</p>
+    </section>
+    <section>
+        <h2><a id="developing_applications_with_rmi"></a>Developing Applications with RMI</h2>
+        <p>This <span epub:type="pagebreak" title="336" id="Page_336"></span>lesson is <a id="dev"></a>written as an
+            illustration of a sample RMI application with a minimum theory. For a more detailed description of RMI,
+            refer to <a href="http://docs.oracle.com/javase/tutorial/rmi/">Oracle’s online tutorial</a> on the subject.
+        </p>
+        <p>Writing distributed RMI applications involves the following steps:</p>
+        <ol>
+            <li>Declaring the remote interface.</li>
+            <li>Implementing the remote interface.</li>
+            <li>Writing a Java client that connects to the remote server and calls remote methods.</li>
+            <li>Starting the registry and registering the RMI server with it. The server associates (binds) its services
+                with the registry names.
+            </li>
+            <li>Starting the server and the client applications. The client looks up services by names and invokes
+                them.
+            </li>
+        </ol>
+        <p>Let’s perform each of these steps by developing the RMI version of the Stock Quotes Server (see its version
+            with sockets in <a href="part0017.html#socket_programming">socket programming</a>), which provides a client
+            with price quotes for a specified stock. Some of the preceding steps could be combined—for example, creating
+            a registry and binding a service to it. The package<code> java.rmi</code> contains all RMI supporting
+            classes used in the following code samples. </p>
+    </section>
+    <section>
+        <h3><a id="defining_remote_interfaces"></a>Defining Remote Interfaces</h3>
+        <p>The Java classes <a id="idp19826496"></a><a id="idp19827680"></a><a id="idp19829280"></a>that you are
+            planning to deploy on the server side have to implement <i>remote interfaces</i>, which declare business
+            method(s) to be invoked remotely by RMI clients. The client’s code looks as if it’s calling local methods,
+            but these calls are redirected to a remote server via the RMI protocol. Following are the rules for creating
+            remote interfaces:</p>
+        <ul>
+            <li>The remote interface must declare public methods to allow clients to perform remote method invocation.
+            </li>
+            <li>The remote interface must extend <code>java.rmi.Remote</code>.</li>
+            <li>Each method must declare <code>java.rmi.RemoteException</code>.</li>
+            <li>If method arguments are not primitives, they should be serializable objects to be able to travel across
+                the network.
+            </li>
+        </ul>
+        <p>In RMI, development of a the server-side layer starts with answering the question, “What business methods
+            have to be exposed to the client applications and what should their signatures be?” When you know the
+            answer, define remote interfaces that declare those methods and classes that implement them. Let’s see how
+            to apply this rule for the server that can serve stock prices. </p>
+        <p><a id="list-anc-c024-001" href="part0025.html#list-c024-001">Listing 24-1</a> shows the code <a
+                id="idp19835008"></a><a id="idp19836448"></a><a id="idp19838128"></a>of the <code>StockServer</code>
+            remote interface that will be implemented on the server but <i>also must exist on the client side</i>. This
+            interface declares two business methods: <code>getQuote()</code> and <code>getNasdaqSymbols()</code>. The
+            first method generates a random price quote for the specified symbol, and the second returns the list of
+            valid stock symbols.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c024-001"
+                                           href="part0025.html#list-anc-c024-001">Listing 24-1</a>:</span> StockServer
+                    <span epub:type="pagebreak" title="337" id="Page_337"></span>interface</h5>
+                <pre>
+public interface StockServer extends Remote {
+  public String getQuote(String symbol) throws RemoteException;
+  public List&lt;String&gt; getNasdaqSymbols()throws RemoteException;
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        In RMI, class definitions are dynamically loaded from one JVM to another. Implementation of the classes resided
+        on the server side may change—for example, new methods may be introduced to the implementation of the class. But
+        the client sees the stubs with only the methods defined in the interface that extends <code>Remote</code>. In
+        our example, to make more server-side methods available to the RMI client, you’d need to add them to the <code>StockServer</code>
+        interface and make this new version available on both the client and the server.
+    </section>
+    <section>
+        <h3><a id="implementing_remote_interfaces"></a>Implementing Remote Interfaces</h3>
+        <p>Although the remote <a id="idp19847600"></a><a id="idp19849296"></a><a id="idp19852256"></a>interface just
+            declares the methods, you need to create a class that runs on the server side and provides implementation
+            for those methods. There is a special requirement to <i>export</i> such a class to the Java RMI runtime to
+            enable the class to receive remote calls. This is somewhat similar to binding to a port in the case of
+            <code>ServerSocket</code> (see <a href="part0017.html#list-c016-005">Listing 16-5</a>), but in the case of
+            Java RMI, the server also creates a stub—a dummy class (for the client side) that contains proxies of each
+            implemented method from remote interfaces.</p>
+        <p>One RMI client communicates to one server. It’s known as <i>unicast</i> as <a id="idp19855792"></a>opposed to
+            <i>multicast</i> (one to many) or <i>broadcast</i> (one to all). The easiest way to export an RMI server
+            instance is by extending it from <code>java.rmi.server.UnicastRemoteObject</code>, as in <a
+                    id="list-anc-c024-002" href="part0025.html#list-c024-002">Listing 24-2</a>. If your server has to be
+            extended from another class you can explicitly export the server object by calling <code>UnicastRemoteObject.export()</code>.
+        </p>
+        <p><a href="part0025.html#list-c024-002">Listing 24-2</a> shows an implementation of the class <code>StockServerImpl</code>,
+            which processes the client’s requests. This class generates random price quotes for the stocks located in
+            <code>ArrayList nasdaqSymbols.</code></p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c024-002"
+                                           href="part0025.html#list-anc-c024-002">Listing 24-2</a>:</span>
+                    StockServerimpl class</h5>
+                <pre>
+public class StockServerImpl extends UnicastRemoteObject 
+                             implements StockServer {
+  private String price=null;
+  private ArrayList&lt;String&gt; nasdaqSymbols = new ArrayList&lt;&gt;();
+  public StockServerImpl() throws RemoteException {
+    super();
+     // Define some hard-coded NASDAQ symbols
+     nasdaqSymbols.add("AAPL");
+     nasdaqSymbols.add("MSFT");
+     nasdaqSymbols.add("YHOO");
+     nasdaqSymbols.add("AMZN");
+  }
+  public String getQuote(String symbol)
+                          throws RemoteException {
+    if(nasdaqSymbols.indexOf(symbol.toUpperCase()) != -1) {
+        // Generate a random price for valid symbols
+        price = (new Double(Math.random()*100)).toString();
+    }
+    return price;
+  }
+  public ArrayList&lt;String&gt; getNasdaqSymbols()
+                                   throws RemoteException {
+    return nasdaqSymbols;
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+    </section>
+    <section>
+        <h3><a id="registering_remote_objects"></a>Registering Remote Objects</h3>
+        <p><span epub:type="pagebreak" title="338" id="Page_338"></span>To make a remote <a id="idp19869008"></a><a
+                id="idp19870384"></a>object available to clients, you need to bind it to some name in a registry, a
+            naming service that knows where exactly in the network your RMI server <code>StockServerImpl</code> is
+            running. This allows Java clients to look up the object on the host machine by name.</p>
+        <p><a id="list-anc-c024-003" href="part0025.html#list-c024-003">Listing 24-3</a> depicts the code that binds the
+            instance of <code>StockServerImpl</code> to port 1099 on the host machine, which is the local computer in my
+            example. To the rest of the world this server is known as <code>QuoteService</code>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c024-003"
+                                           href="part0025.html#list-anc-c024-003">Listing 24-3</a>:</span> Creating
+                    registry, starting the server, and binding it to a registry</h5>
+                <pre>
+public class StartServer {
+  public static void main (String args[]) {
+   try {
+    // Create the registry on port 1099
+    LocateRegistry.createRegistry(1099);
+    // Instantiate the StockServerInmpl and bind it 
+    // to the registry under the name QuoteService
+      StockServerImpl ssi = new StockServerImpl();
+      Naming.rebind("rmi://localhost:1099/QuoteService",ssi);
+    }catch (MalformedURLException e1){
+         System.out.println(e1.getMessage());
+    }catch(RemoteException ex) {
+          ex.printStackTrace();
+    }
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>There <span epub:type="pagebreak" title="339" id="Page_339"></span>are <a id="idp19878272"></a><a
+                id="idp19879616"></a>two methods in the class <code>java.rmi.Naming</code> that can bind an object in
+            the registry. The method <code>bind()</code> binds an RMI server to a name. It throws <code>AlreadyBoundException</code>
+            if the binding already exists. The method <code>rebind()</code> replaces any possibly existing binding with
+            the new one. In addition to binding a server to a name, this also ensures that the clients requesting such
+            services as <code>getQuotes()</code> or <code>getNasdaqSymbols()</code> receive their stubs—the local
+            proxies of the remote methods.</p>
+        <p>The registry must be up and running by the time you start the program in <a
+                href="part0025.html#list-c024-003">Listing 24-3</a>. One way to start the registry is by entering <code>start
+            rmiregistry</code> in the Windows command window or <code>rmiregistry</code> in Mac OS. Instead of starting
+            the registry manually, you can start it from within the <code>StartServer</code> program itself by calling
+            the following method:</p>
+        <pre>
+LocateRegistry.createRegistry(1099);</pre>
+        <p>If you know that another process has already pre-created the registry, just get its reference and bind the
+            server to it. The <code>getRegistry()</code> method can be called without arguments if the RMI registry runs
+            on the default port 1099. If this is not the case, specify the port number (5048 in the following example).
+            The variable <code>registry</code> in the following code fragment is a stub to the remote object <code>StockServerImpl</code>:
+        </p>
+        <pre>
+StockServerImpl ssi = new StockServerImpl();
+Registry registry = LocateRegistry.getRegistry(5048);
+registry.bind("QuoteService", ssi);</pre>
+    </section>
+    <section>
+        <h3><a id="writing_rmi_clients"></a>Writing RMI Clients</h3>
+        <p>The client program, <a id="idp19892624"></a><a id="idp19894016"></a>running anywhere on the Internet,
+            performs a lookup in the registry on the host machine (using the host machine’s domain name or IP address)
+            and obtains a reference to the remote object. <a id="list-anc-c024-004" href="part0025.html#list-c024-004">Listing
+                24-4</a> shows a sample client program. Notice the casting to the <code>StockServer</code> type of the
+            data returned by the method <code>lookup()</code>.</p>
+        <p>Even though the class <code>StockServerImpl</code> has been bound to the name <code>QuoteService</code>,
+            because this class implements the <code>StockServer</code> interface you can cast the returned object to it.
+            The variable <code>myServer</code> sees only the methods defined in this interface, while the class <code>StockServerImpl</code>
+            may have other public methods, too.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c024-004"
+                                           href="part0025.html#list-anc-c024-004">Listing 24-4</a>:</span> RMI client
+                </h5>
+                <pre>
+public class Client {
+  public static void main (String args[]) {
+   if (args.length == 0) {
+     System.out.println(
+                 "\n Sample usage: java client.Client AAPL");
+     System.exit(0);
+   }
+   try {
+        StockServer myServer = (StockServer)
+        Naming.lookup("rmi://localhost:1099/QuoteService");
+      String price = myServer.getQuote(args[0]);
+       if  (price != null){
+         System.out.println("The price of " + args[0] +
+                            " is: $" + price);
+       }
+       else{
+          System.out.println("Invalid Nasdaq symbol. " +
+             "Please use one of these:" +
+             myServer.getNasdaqSymbols().toString());
+      }
+  } catch (MalformedURLException exMF) {
+       System.out.println(exMF.getMessage());
+  } catch (NotBoundException exNB) { 
+       System.out.println(exNB.getMessage());
+​  } catch (RemoteException exRE) {
+       System.out.println(exRE.getMessage());
+    }
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p><span epub:type="pagebreak" title="340" id="Page_340"></span>Multiple clients can connect to the same RMI
+            server, but each client/server communication is done over the separate socket connection. This is done
+            internally, so the application programmer doesn’t need to explicitly program sockets. If you remember, in <a
+                    href="part0017.html">Lesson 16</a> we had to invent a simple communication protocol in the example
+            on socket connection. RMI uses its own proprietary protocol called <a
+                    href="http://en.wikipedia.org/wiki/Java_Remote_Method_Protocol">JRMP</a>, hence it can be used only
+            in Java-to-Java communications.</p>  
+    </section>
+    <section>
+        <h3><a id="security_considerations"></a>Security Considerations</h3>
+        <p>Can any RMI client <a id="idp19906576"></a><a id="idp19908048"></a>restrict the actions that remotely loaded
+            code can perform on the local computer? Can the server restrict access? You can specify a security policy
+            file containing access restrictions. For example, in the code in <a href="part0025.html#list-c024-003">Listing
+                24-3</a> and <a href="part0025.html#list-c024-004">Listing 24-4</a> you can start the
+            <code>main()</code> method with the following code:</p>
+        <pre>
+if (System.getSecurityManager() == null) {
+       System.setSecurityManager(new RMISecurityManager());
+ }</pre>
+        <p>The class <code>java.rmi.RMISecurityManager</code> extends the class <code>java.lang.SecurityManager</code>
+            and provides a security context under which the RMI application executes. In RMI clients, the goal is to
+            prevent remotely loaded stub code from downloading unsecured code via remote method invocation.</p>
+        <p>The RMI client uses a file in which security policies are defined. You can use the default security file,
+            <code>java.policy</code>, located in your JDK or JRE installation directory under <code>lib/security</code>.
+            The default policy file gives all permissions to the code, but you can create your own file and supply it
+            either via the command-line parameter or in the code before the security manager is set:</p>
+        <pre>
+System.setProperty("java.security.policy", "mypolicyfile");</pre>
+        <p>For <span epub:type="pagebreak" title="341" id="Page_341"></span>a more detailed description of security
+            policy files, refer to the documentation at <code><a
+                    href="http://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html">http://docs.oracle.com/javase/8/docs/technotes/guides/security/PolicyFiles.html</a></code>.
+        </p>
+        <p>Java applets <a id="idp19919072"></a><a id="idp19920944"></a><a id="idp19922576"></a>can also serve as RMI
+            clients, but they don’t need RMI security managers. The only restriction on them is that they can connect
+            only to the RMI server running on the same host on which they were deployed.</p>
+    </section>
+    <section>
+        <h3><a id="finding_remote_objects"></a>Finding Remote Objects</h3>
+        <p>RMI clients find <a id="idp19924608"></a><a id="idp19926336"></a><a id="idp19929280"></a><a
+                id="idp19930432"></a>remote services by using a <i>naming</i> or <i>directory service</i>. A naming
+            service runs on a known host and port number. The subject of naming and directory services is covered in
+            more detail in <a href="part0030.html#introducing_jndi">Chapter 29</a>.</p>
+        <p>By now you know that an RMI server can start its own registry that offers naming services for RMI clients.
+            The behavior of the registry is defined by the interface <code>java.rmi.registry.Registry</code>, and you
+            saw an example of binding to the registry in the section <a href="part0025.html#registering_remote_objects">“Registering
+                Remote Objects”</a>.</p>
+        <p>By default, the RMI registry runs on port 1099, unless another port number is specified. When the client
+            wants to invoke methods on a remote object it obtains a reference to that object by looking up the name. The
+            lookup returns to the client a remote reference, also known as a <i>stub</i>.</p>
+        <p>The method <code>lookup()</code> takes the object name’s URL as an argument in the following format:</p>
+        <pre>
+rmi://&lt;host_name&gt;[:&lt;name_service_port&gt;]/&lt;service_name&gt;</pre>
+        <p><code>host_name</code> stands for the name of a computer on the local area network (LAN), or the name of a
+            domain name system (DNS) on the Internet. <code>name_service_port</code> has to be specified only if the
+            naming service is running on a port other than the default. <code>service_name</code> stands for the name of
+            the remote object that should be bound to the registry.</p>
+        <p><a id="fig-anc-c024-001" href="part0025.html#fig-c024-001">Figure 24-1</a> illustrates the architecture of an
+            RMI application. In the “Try It,” section you implement this architecture for the <a id="idp19939328"></a>sample
+            stock quote service.</p>
+        <figure>
+            <img class="center" src="../Images/image00566.gif" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c024-001"
+                                                   href="part0025.html#fig-anc-c024-001">Figure 24-1</a></b></span></p>
+            </figcaption>
+        </figure>
+    </section>
+    <section>
+        <h2><a id="try_it-id00089"></a>Try It</h2>
+        <p>In this exercise your goal is <a id="idp19948144"></a><a id="idp19949488"></a>to start and test all the parts
+            of the distributed Stock Server application, and you run all these parts on the same computer. The <code>StartServer</code>
+            program creates a registry and binds the <code>StockServerImpl</code> under the name <i>QuoteService</i>. To
+            emulate multiple computers you start the client from a command window. If everything is done properly you
+            should be able to start the RMI client with one of the stock symbols known to the server, and get a price
+            quote back.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00090"></a>Lesson Requirements</h3>
+            <p>You <span epub:type="pagebreak" title="342" id="Page_342"></span>should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for this
+                        “Try It” from the book’s web page at</i> <code><a href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You</i> <i>can find them in the file Lesson24.zip.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="hints-id00091"></a>Hints</h3>
+            <p>There is an RMI plug-in for the Eclipse RMI that may be handy for developing RMI-based distributed
+                applications. It contains a useful utility called RMI Spy that shows all outgoing and incoming method
+                calls, and measures execution times. Another useful utility in this plug-in is Registry Inspector, which
+                displays information about objects in the registry. The RMI plug-in is available from <code>www.genady.net/rmi/index.html</code>.
+            </p>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00092"></a>Step-by-Step</h3>
+            <ol>
+                <li>Import the Eclipse project called Lesson24. It has two packages: <code>client</code> and <code>server</code>.
+                </li>
+                <li>Rebuild the project (use the menu Project → Clean). Note the location of the Eclipse workspace; you
+                    need it because you run all code samples from command windows. Make sure that after importing the
+                    project it points at the JRE that’s installed on your compute (right-click on the project name and
+                    use the menu Properties → Java Build Path).
+                </li>
+                <li>
+                    <p>Run the program <code>StartServer</code> to start and register <code>StockServer</code> with the
+                        registry (note the creation of registry with <code>LocateRegistry</code> ). After you enter a
+                        command similar to the one shown below, the server starts and binds to the registry, printing
+                        the following message in the Eclipse console:</p>
+                    <pre>
+&lt;QuoteService&gt; server is ready.</pre>
+                    The server stays up and running waiting for requests from the clients.
+                </li>
+                <li>
+                    <p>You can run the client from Eclipse, too, but to better illustrate the fact that you use
+                        different JVMs, run the client from a command window. Open a command (or Terminal) window and go
+                        to the <code>bin</code> directory of the project Lesson24 in your Eclipse workspace. On my
+                        computer I did it as follows:</p>
+                    <p><code>cd /Users/yfain11/practicalJava/workspace/Lesson24/bin</code></p>
+                </li>
+                <li>
+                    <p>Run the <code>Client</code> program located in the <code>client</code> package, passing the stock
+                        symbol as a command-line argument, and the <code>Client</code> connects to your “remote” server
+                        and receives the price quote—for example:</p>
+                    <pre>
+java client.Client AAPL</pre>
+                    On my computer the output looked as follows:
+                    <p><code>The price of AAPL is: $91.85776369781252</code></p>
+                </li>
+                <li>Open several command windows and run the client program in each of them, emulating multiple clients
+                    sending requests to the same server.
+                </li>
+                <li>Add <span epub:type="pagebreak" title="343" id="Page_343"></span>the following statement to the
+                    method <code>getQuote()</code> of <code>StockServerImpl</code> class and note how the server reports
+                    each quote request in the Eclipse console:
+                    <p><code>System.out.println("Got the price quote request for " +<br/>
+                                                                        symbol);</code></p>
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0025.html">Lesson 24</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>

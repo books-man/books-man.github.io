@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Introduction to Collections</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="introduction_to_collections"></a><span
+            class="chapterTitle">Lesson 11<br/>Introduction to Collections</span></h1>
+
+    <section>
+        <p>So <span epub:type="pagebreak" title="127" id="Page_127"></span>far you’ve been introduced to only one way of
+            storing a collection of objects—with Java arrays, which are good for storage but fall short when you need to
+            dynamically add, remove, or traverse the data. There are a number of classes and interfaces in the package
+            <code>java.util</code> that are quite handy when multiple instances of some objects (collections) have to be
+            co-located in memory. This lesson introduces you to several of them.</p>
+        <p>You can find more collections in the <code>java.util.concurrent</code> package, but you review those in
+            digging_deeper_into_concurrent_execution after you become familiar with the concept of multithreading.
+            Together, the collection classes and interfaces located in <code>java.util</code> and <code>java.util.concurrent</code>
+            are often called  Java Collection Framework.</p>
+        <p>Collection <a id="idp15531248"></a><a id="idp15533056"></a>classes implement different interfaces, and
+            several are covered in this lesson. The image in <a id="fig-anc-c011-001" href="part0012.html#fig-c011-001">Figure
+                11-1</a> is taken from Oracl<a href="http://bit.ly/1kV9EAh ">e Java documentation</a>. It depicts the
+            top-level core collection interfaces.</p>
+        <figure>
+            <img class="center" src="../Images/image00530.jpeg" alt="image"/>
+            <figcaption>
+                <p><span class="figureLabel"><b><a id="fig-c011-001"
+                                                   href="part0012.html#fig-anc-c011-001">Figure 11-1</a>:</b></span> <a
+                        href="part0012.html#fig-c011-001">Figure 11-1</a>. Core Collection Interfaces </p>
+            </figcaption>
+        </figure>
+        <p>Java 8 introduced substantial improvements in collection data manipulation, and I highlight these changes in
+            this lesson as well as in <a href="part0021.html#introduction_to_streams">Lesson 20</a>.  </p>
+    </section>
+    <section>
+        <h2><a id="arrays_revisited"></a>Arrays Revisited</h2>
+        <p>Java <span epub:type="pagebreak" title="128" id="Page_128"></span>collection classes <a id="idp15541088"></a>enable
+            the storing of primitives or object references in one place in memory. You were introduced to arrays in <a
+                    href="part0006.html#back_to_java_basics">Chapter 5</a>: Arrays let you store and access a group of
+            variables of the same type. Let’s go over the steps you follow to declare and populate an array.</p>
+        <p>First, declare <a id="idp15543424"></a><a id="idp15545504"></a><a id="idp15547088"></a>a variable of the type
+            that matches the types of the objects (or primitives) that will be stored in the array, and reserve enough
+            memory to accommodate all objects. For example, to reserve memory enough for storing 10 instances of class
+            <code>Customer</code> you can declare a variable <code>customers</code>, as follows:</p>
+        <pre>
+Customer customers[] = new Customers[10];</pre>
+        <p>At this <a id="idp15550368"></a>point you’ve allocated enough space for the storage of 10 memory references,
+            not for the actual objects. Next, create instances of the objects and store their references in the array. 
+        </p>
+        <pre>
+Customer[] customers = new Customer[10];
+customers[0] = new Customer("David","Lee");
+customers[1] = new Customer("Ringo","Starr");
+     ...
+customers[9] = new Customer("Lucy","Mann");</pre>
+        <p>Now give a 15 percent discount to all customers who spent more than $500 in the online store:</p>
+        <pre>
+for (Customer c: customers){
+  if (c.getTotalCharges() &gt; 500){
+      c.setDiscount(15);
+  }
+}</pre>
+        <p>Note the use of the <code>for-each</code> loop here. It safely iterates through this array without trying to
+            access elements beyond its boundaries. If a programmer forgot to check the size of the array (remember, if
+            an array has <code>n</code> elements then the last element’s index is <code>n - 1</code>) and tried to
+            access, say, the eleventh element like <code>customers[10].setDiscount(15)</code>, Java would throw a
+            runtime <code>ArrayIndexOutOfBoundsException</code>.</p>
+    </section>
+    <section>
+        <h2><a id="collection_interfaces_from_javadotutil"></a>Collection Interfaces From <i>java.util</i></h2>
+        <p>A typical <a id="idp15559632"></a><a id="idp15561520"></a><a id="idp15562880"></a>collection class implements
+            several interfaces, which represent a well-designed hierarchy. For example, <code>ArrayList</code>
+            implements the <code>List</code> interface, which extends <code>Collection</code>. For allowing a program to
+            iterate over the collection without worrying about specific implementation of a particular collection. The
+            <a id="idp15565712"></a><a id="idp15566624"></a>interface <code>Collection</code> extends
+            <code>Iterable</code>, so <a id="idp15569248"></a><a id="idp15570464"></a>the application code can request a
+            reference to the <code>Iterator</code> object and simply ask for the next element in the collection. You’ll
+            see an example of using <code>Iterator</code> later in this chapter.     </p>
+        <p>You can use a for-each loop with classes that implement <code>Iterable</code>, and this would be external
+            (a.k.a. imperative) iteration of a collection. But Java 8 has introduced a new and preferable way of
+            iterating collections with <code>Iterable.<span epub:type="pagebreak" title="129" id="Page_129"></span>forEach()</code>
+            method, which would be an internal iteration. I’ll explain why internal iteration is better in <a
+                    href="part0014.html#foreach">Lesson 13</a>.</p>
+        <p>The <code>List</code> interface <a id="idp15576688"></a><a id="idp15577552"></a><a id="idp15578928"></a><a
+                id="idp15580064"></a><a id="idp15581136"></a><a id="idp15582512"></a>is used by the ordered collections
+            like  <code>ArrayList</code> and <code>LinkedList</code>. It allows duplicate elements. For example, the
+            following code snippet will create two elements in <code>ArrayList</code>:</p>
+        <pre>
+myArrayList.add("Mary");
+myArrayList.add("Mary");</pre>
+        <p>The <code>Set</code> interface <a id="idp15587104"></a><a id="idp15588512"></a>is implemented by collections
+            that don’t allow duplicate elements—for example, <code>HashSet</code> and <code>SortedSet</code>. For
+            example, the following code snippet creates one element in <code>HashSet</code>. The second line finds out
+            that Mary already exists, doesn’t change it, and returns <code>false</code>:</p>
+        <pre>
+myHashSet.add("Mary");
+myHashSet.add("Mary"); // Returns false</pre>
+        <p>The <code>Map</code> interface <a id="idp15593360"></a><a id="idp15594496"></a>is for storing key/value
+            pairs. A map can’t contain duplicate keys, and each key can be mapped to only one value (object). You see
+            some relevant code examples later in this lesson.</p>
+        <p>The <code>Queue</code> interface <a id="idp15596960"></a><a id="idp15598096"></a>is mainly for collections
+            that require first-in-first-out (FIFO) operation (so-called <i>priority queues</i> are the exception). Every
+            new element is added to the tail of the queue and the elements are retrieved from the head of the queue. You
+            can restrict the size of the queue if need be. <code>LinkedList</code> is one of the classes that implement
+            the <code>Queue</code> interface.</p>
+        <p>Now let’s look at some of the classes that implement these interfaces.</p>
+    </section>
+    <section>
+        <h2><a id="classes_arraylist_and_vector"></a>Dynamic Arrays with ArrayList</h2>
+        <p>Arrays offer <a id="ArrayList1"></a><a id="ArrayList2"></a><a id="ArrayList3"></a>the fastest access to the
+            collection of data, but you have to know in advance the number of elements to be stored there. Luckily Java
+            has classes that don’t have this restriction, and you can add more elements to a collection during the run
+            time if needed. This lesson shows you several collection classes starting from  <code>ArrayList</code> .</p>
+        <p>Internally this collection uses an array for storage, but when you keep adding elements to
+             <code>ArrayList</code>, it increases (by small increments) the size of the underlying array.
+            Correspondingly, as elements are deleted, this collection shrinks in size. You can store duplicate objects
+            in <code>ArrayList</code>.</p>
+        <p><code>ArrayList</code> implements the <code>List</code> interface and <a id="idp15610080"></a><a
+                id="idp15611744"></a>can store only objects; primitives are not allowed. Having said this, keep in mind
+            that Java supports autoboxing (see <a href="part0004.html#object-oriented_programming">Chapter 3</a>), and
+            if you try to add a primitive to a collection, it is automatically converted into the corresponding wrapper
+            object. You have to pay a price for this convenience; <code>ArrayList</code> is a little slower than the
+            array as it needs to do internal copying from one array to another to change the collection’s size.</p>
+        <p>To create and <a id="idp15615808"></a>populate an <code>ArrayList</code> object you should first instantiate
+            it, and then you add instances of other objects to the <code>ArrayList</code> by calling the <a
+                    id="idp15618736"></a><a id="idp15620304"></a>method <code>add()</code>, as in <a
+                    id="list-anc-c011-001" href="part0012.html#list-c011-001">Listing 11-1</a>.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c011-001"
+                                           href="part0012.html#list-anc-c011-001">Listing 11-1</a>:</span> Populating
+                    <span epub:type="pagebreak" title="130" id="Page_130"></span>ArrayList</h5>
+                <pre>
+ArrayList customers = new ArrayList();
+Customer customer1 = new Customer("David","Lee");
+customers.add(customer1);
+Customer customer2 = new Customer("Ringo","Starr");
+customers.add(customer2);</pre>
+                <p>The method <code>add()</code> doesn’t copy the instance of the object into the <code>customers</code>
+                    collection, it just stores the memory address of the object being added. The element numbering in
+                    <code>ArrayList</code> starts with <code>0</code>. If you know that an <code>ArrayList</code> will
+                    store, say, 20 objects, instantiate it with the constructor that allocates the right amount of
+                    memory on creation:</p>
+            </section>
+            <div class="bottom hr">
+                <hr/>
+            </div>
+        </aside>
+        <pre>
+ArrayList customers = new ArrayList(20);</pre>
+        <p>You can still add more than 20 elements, but JVM allocates additional memory as needed. The method <code>get()</code>
+            is <a id="idp15631776"></a><a id="idp15630784"></a>used to extract a particular element from
+            <code>ArrayList</code>. Because <code>ArrayList</code> is generic storage for any type of object, the method
+            <code>get()</code> returns elements as <code>Object</code> data types. It’s the responsibility of the
+            programmer to provide proper casting, such as the following:</p>
+        <pre>
+Customer theBestCustomer =  (Customer) customers.get(1);</pre>
+        <p>To illustrate a possible runtime error that will occur if the casting was not properly done, add an object of
+            another type to your <code>customers</code> collection from <a href="part0012.html#list-c011-001">Listing
+                11-1</a>:</p>
+        <pre>
+Order order = new Order(123, 500, "IBM");
+customers.add(order);</pre>
+        <p>The Java compiler does not complain because <code>ArrayList</code> can store any objects. At this point you
+            have the elements in <code>customers</code>—two customers and one order. The following code throws the
+            <code>IllegalCastException</code> on the third iteration of the loop:</p>
+        <pre>
+int totalElem = customers.size(); // number of elements
+for (int i = 0; i &lt; totalElem; i++){
+  Customer currentCustomer = (Customer) customers.get(i);
+  currentCustomer.doSomething();
+}</pre>
+        <p><a id="list-anc-c011-002" href="part0012.html#list-c011-002">Listing 11-2</a> shows how <a
+                id="idp15643280"></a><a id="idp15644416"></a>the operator <code>instanceof</code> helps you avoid this
+            exception. But before using <code>instanceof</code>, see if you can come up with a more elegant solution, as
+            you learned to do in the section <a href="part0008.html#polymorphism_ch07_section">“Polymorphism”</a> in <a
+                    href="part0008.html#programming_with_abstract_classes_and_in">Chapter 7</a>. In <a
+                    href="part0013.html">Lesson 12</a> you’ll learn how to use generics, which allow to remove the need
+            of using <code>instanceof</code> and in particular control during the compilation time which objects can be
+            added to a collection.</p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature3">
+                <h5><span class="label"><a id="list-c011-002"
+                                           href="part0012.html#list-anc-c011-002">Listing 11-2</a>:</span> ArrayList
+                    <span epub:type="pagebreak" title="131" id="Page_131"></span>and instanceof</h5>
+                <pre>
+ArrayList customers = new ArrayList(3);
+// The code to populate customers with instances of 
+// Customer and Order objects is omitted for brevity
+int totalElem = customers.size();
+// Iterate through the list customers and do something with each
+// element of this collection
+for (int i=0; i&lt;totalElem;i++){
+  Object currentElement = customers.get(i);
+  if (currentElement instanceof Customer){
+    Customer currentCustomer= (Customer)customers.get(i);
+    currentCustomer.doSomething();
+  }
+  else if (currentElement instanceof Order){
+    Order currentOrder = (Order) customers.get(i);
+    currentOrder.doSomething();
+  }
+}</pre>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <p>In the section <a href="part0012.html#programming_to_interfaces">Programming to Interfaces</a> I’ll show you
+            what has to be changed in the declaration of the variable <code>customers</code>. </p>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="idp15655056"></a>ArrayList and Concurrent Access</h3>
+                <p>In <a href="part0018.html#introduction_to_multi-threading">Lesson 17</a> you <a id="idp15658144"></a><a
+                        id="idp15659568"></a>learn about concurrent access to the data from multiple threads. If the
+                    data is stored in an <code>ArrayList</code>, you may run into concurrency issues (<i>race
+                        condition</i>). To prevent this from happening, you can turn on synchronization by invoking the
+                    method <code>Collections.synchronizedList()</code> on an <code>ArrayList</code> object. </p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <aside epub:type="sidebar">
+            <div class="top hr">
+                <hr/>
+            </div>
+            <section class="feature2">
+                <h3><a id="programming_to_interfaces"></a>Programming to Interfaces</h3>
+                <p>In this section code <a id="idp15664720"></a><a id="idp15666288"></a>samples start with declaring a
+                    variable of type <code>ArrayList</code>; for example:</p>
+                <pre>
+ArrayList customers = new ArrayList(3);</pre>
+                <p>While this code is correct,  there a better way of declaring the variable <code>customers</code>:</p>
+                <pre>
+List customers = new ArrayList(3);</pre>
+                <p>You <span epub:type="pagebreak" title="132" id="Page_132"></span>can read the first example as
+                    follows: “I want to declare a variable <code>customers</code> that will have all access to all API
+                    offered by the class <code>ArrayList</code>.” The second version means the following: “I want to
+                    declare a variable <code>customers</code> that has a behavior declared in the <code>List</code>
+                    interface”.</p>
+                <p>The first example declares a variable of a specific implementation—  <code>ArrayList</code>—of the
+                    <code>List</code> interface.</p>
+                <p><code>ArrayList</code> implements <a id="idp15674400"></a>several interfaces besides
+                    <code>List</code>, which means that it has more methods that the <code>List</code> defines. But if
+                    you read the <a
+                            href="http://docs.oracle.com/javase/8/docs/api/java/util/List.html">documentation</a> on
+                    the <code>List</code> interface, you’ll see that among others it includes the methods as
+                    <code>add()</code>, <code>get()</code>, and <code>size()</code>, which are the only ones used with
+                    our collection <code>customers</code>. If this is all we need, declaring a variable
+                    <code>customers</code> of type <code>List</code> gives us more flexibility. If later we decide to
+                    switch to a different implementation of the List (e.g., <code>LinkedList</code> instead of <code>ArrayList</code> )
+                    we won’t need to change the type of the variable <code>customers</code>.</p>
+                <p>You may say that changing a variable declaration from <code>ArrayList</code> to
+                    <code>LinkedList</code> it’s not a big deal—it’s still the same line of code. But it may be a bigger
+                    deal if, say, your program needs to pass the object referred by <code>customers</code> to another
+                    object’s method that also was declared with the argument of type <code>ArrayList</code>. Now we need
+                    to make changes in two places. In large projects such a refactoring may become a time-consuming
+                    process.</p>
+                <p>If you just need a behavior <a id="idp15687680"></a><a id="idp15687216"></a><a id="idp15689392"></a>defined
+                    in a particular interface, declare the variable of this interface type rather than of a concrete
+                    implementation of this interface.</p>
+                <div class="bottom hr">
+                    <hr/>
+                </div>
+            </section>
+        </aside>
+        <section>
+            <h2><a id="classes_hashtable_and_hashmap"></a>Classes Hashtable and Hashmap</h2>
+            <p>The classes <code>Hashtable</code> and <code>HashMap</code> <a id="idp15694128"></a><a
+                    id="idp15695376"></a><a id="idp15696464"></a><a id="idp15697920"></a><a id="idp15699312"></a><a
+                    id="idp15700736"></a>implement the <code>Map</code> interface and stores key/value pairs. These
+                classes offer a convenient way of storing and accessing the elements of a collection by key. You can
+                assign a key to an instance of some Java object and use it as a reference. Let’s say you need to store
+                instances of the classes <code>Customer</code>, <code>Order</code>, and <code>Portfolio</code> in the
+                same collection. The code snippet from <a id="list-anc-c011-003" href="part0012.html#list-c011-003">Listing
+                    11-3</a> creates these instances first, and then puts them in the collection under some identifiers
+                (keys).</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c011-003"
+                                               href="part0012.html#list-anc-c011-003">Listing 11-3</a>:</span> Hashtable
+                        for key/value pairs</h5>
+                    <pre>
+Customer customer = new Customer("David", "Lee");
+Order order = new Order(123, 500, "IBM");
+Portfolio portfolio = new Portfolio(123);
+Map data = new Hashtable();  // programming to interfaces
+data.put("Customer", customer);
+data.put("Order",order);
+data.put("Portfolio", portfolio);</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The <span epub:type="pagebreak" title="133" id="Page_133"></span>values in double quotes represent keys
+                by which the objects could be retrieved. In this example the keys are represented by the Java class
+                <code>String</code>, but you can use any objects as keys. The keys are selected based on the application
+                needs; for example, the code in <a href="part0012.html#list-c011-003">Listing 11-3</a> could be written
+                in some order management application.</p>
+            <p>If you have an idea of how many elements you are planning to store in a <code>Hashtable</code>, use the
+                constructor with the capacity argument:</p>
+            <pre>
+Hashtable data = new Hashtable(10); // 10-element capacity</pre>
+            <p>The method <code>get()</code> provides <a id="idp15712720"></a><a id="idp15713760"></a>access to these
+                objects via the key. You need to either perform the proper casting as shown <a id="idp15717136"></a>in
+                the following code or use <i>generics</i> (explained in <a
+                        href="part0013.html#introduction_to_generics">Chapter 12</a>):</p>
+            <pre>
+Order myOrder = (Order) data.get("Order");</pre>
+            <p>The method <code>size()</code> returns <a id="idp15719632"></a><a id="idp15720816"></a>the number of
+                elements in the <code>Hashtable</code>:</p>
+            <pre>
+int totalElem = data.size();</pre>
+            <p>Methods <code>containsKey()</code> and <code>containsValue()</code> help <a id="idp15724928"></a><a
+                    id="idp15726112"></a><a id="idp15727264"></a><a id="idp15728688"></a>you to find out if the
+                collection contains a specific key or value. </p>
+            <p>The class <code>HashMap</code> is <a id="idp15731376"></a>similar to <code>Hashtable</code>, but it
+                allows <code>null</code> as a key or value and is not <i>synchronized</i> (explained in <a
+                        href="part0020.html">Lesson 19</a>). If you are writing code that doesn’t need to access the
+                same element concurrently without using multithreading, use <code>HashMap</code> because it performs
+                faster than <code>Hashtable</code>. If you do need concurrent access, the other alternative to <code>Hashtable</code>
+                is <code>ConcurrentHashMap</code>.</p>
+            <p>To speed up the table lookup, both <code>HashMap</code> and <code>Hashtable</code> index the data by
+                applying <a id="idp15737216"></a><a id="idp15738256"></a>a <i>hash function</i> that (based on the
+                contents of the object) generates a <i>hash code</i>, one number that represents a large object. There’s
+                a slight chance that two different objects will generate the same hash code, but the same object always
+                produces the same hash code. You can read more about hash functions in Wikipedia at <a
+                        href="http://en.wikipedia.org/wiki/Hash_function">http://en.wikipedia.org/wiki/Hash_function</a>.
+            </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp15734864"></a>The java.util.Collections class</h3>
+                    <p>The class <code>java.util.Collections</code> consists <a id="idp15743872"></a><a
+                            id="idp15744992"></a><a id="idp15746224"></a>of useful static methods that work with <a
+                            id="idp15748688"></a>collection classes; for example, <a id="idp15747920"></a><a
+                            id="idp15750128"></a><a id="idp15751312"></a><a id="idp15752672"></a><a
+                            id="idp15754064"></a><code>sort()</code>, <code>reverse()</code>, <code>swap()</code>, and
+                        more. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <section>
+                <h3><a id="class_properties"></a>Class Properties</h3>
+                <p>Pretty often a <a id="idp15758832"></a><a id="idp15760064"></a>desktop application offers you a way
+                    to specify and store user preferences such as fonts and colors. This is a use case in which storage
+                    of key/value pairs is exactly what’s needed. You can store such preferences locally or on remote
+                    servers. In <a href="part0015.html#working_with_streams">Chapter 14</a> you find out how to work
+                    with files and other I/O streams, but from a data structure perspective you’ll be dealing with a
+                    collection of key/value pairs, such as <i>color=red, font=verdana</i>.</p>
+                <p>Windows-based applications often store some configurable parameters in the <code>.ini</code> files.
+                    In general, Java applications store their properties in plain text files, XML files, database
+                    tables, and others.</p>
+                <p>In <span epub:type="pagebreak" title="134" id="Page_134"></span>this section you see some code
+                    fragments illustrating <a id="idp15766224"></a><a id="idp15762512"></a>how the Java class <code>Properties</code>,
+                    which extends <code>Hashtable</code>, can be used to manipulate with properties using key/value
+                    pairs. The class <code>Properties</code> has one restriction that <code>Hashtable</code> does not.
+                    For example, if you’d need to write a program that sends e-mails, you can store the URL of the mail
+                    server and from/to addresses from the <code>mailman.properties</code> file, which has the following
+                    contents:</p>
+                <pre>
+SmtpServer=mail.xyz.com
+to=abc@xyz.com
+cc=mary@xyz.com
+from=yakov@xyz.com</pre>
+                <p>To load this file into the <code>Properties</code> object, just define an input I/O stream on this
+                    file (see <a id="list-anc-c011-004" href="part0012.html#list-c011-004">Listing 11-4</a>. After the
+                    file has been loaded into the <code>Properties</code> object, each <a id="idp15774272"></a><a
+                            id="idp15776096"></a>individual property can be obtained with the method
+                    <code>getProperty()</code>.</p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature3">
+                        <h5><span class="label"><a id="list-c011-004" href="part0012.html#list-anc-c011-004">Listing 11-4</a>:</span>
+                            Reading file mailman.properties into the Properties object</h5>
+                        <pre>
+Properties properties=new Properties();
+FileInputStream in =null;
+try{
+  in = new FileInputStream ("mailman.properties");
+  properties.load(in);
+}catch(Exception e){...}
+finally{... in.close();...}
+String from = properties.getPropery("from");
+String mailServer=properties.getProperty("SmtpServer");
+...</pre>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+                <p>Java does not have global variables, but as a workaround you can make these properties available to
+                    any object in your application by turning them into system properties available from any class in
+                    your application:</p>
+                <pre>
+System.setProperties(properties);</pre>
+                <p>Keep in mind that the preceding line also replaces the existing system properties, which you may or
+                    may not want to do. Now you can get these values from any other class in your application; for
+                    example:</p>
+                <pre>
+String mailServer = System.getProperty("SmtpServer");</pre>
+                <p>If you decide to store properties in XML files, the class <code>Properties</code> offers you the
+                    method <code>loadFromXML()</code> to read properties and the method <code>storeToXML()</code> to
+                    store them in a simple XML format.</p>
+                <p>You see a practical example of using the <code>Properties</code> class in <a
+                        href="part0030.html#initial_context">Lesson 29</a> while learning about Java Naming and
+                    Directory Interface (JNDI).</p>
+            </section>
+        </section>
+        <section>
+            <h2><a id="enumeration_and_iterator"></a>Classes Enumeration and Iterator</h2>
+            <p>In <span epub:type="pagebreak" title="135" id="Page_135"></span>general, <a id="idp15788624"></a><a
+                    id="idp15790160"></a><a id="idp15791312"></a><a id="idp15792432"></a><a id="idp15793504"></a><a
+                    id="idp15794960"></a>enumerations are sets of items that are related to each other. For example,
+                shipment options or ice cream flavors—such enumerations are supported by the Java keyword
+                <code>enum</code> (see <a href="part0018.html#introduction_to_multi-threading">Chapter 17</a>). But
+                because we are talking about collections, the meaning of the term <i>enumeration</i> is somewhat
+                different. If a collection object implements the <a id="idp15797376"></a><a id="idp15798432"></a>interface
+                <code>Enumeration</code>, you can traverse its elements sequentially, without even knowing the total
+                number. You just need to obtain the enumeration of all elements and use the <a id="idp15801568"></a><a
+                        id="idp15803024"></a><a id="idp15804816"></a><a id="idp15805824"></a>methods <code>hasMoreElements()</code>
+                and <code>nextElement()</code>. For example, to process all elements of <code>ArrayList</code><code>customers</code> you
+                can do the following:</p>
+            <pre>
+Enumeration enumCustomers = Collections.enumeration(customers);
+while(enumCustomer.hasMoreElements()){ 
+  Customer currentCustomer = (Customer)enumCustomer.nextElement()); 
+  currentCustomer.doSomething(); 
+}
+</pre>
+            <p>You can also obtain the enumeration of a <code>Hashtable</code>’s keys or elements. For example:</p>
+            <pre>
+Hashtable customerData = new Hashtable();
+// Get the keys
+Enumeration enumKeys = customerData.keys();
+while(enumKeys.hasMoreElements()){
+  // do some keys processing
+}
+// Get the elements
+Enumeration enumElements = customerData.elements();
+// do some customer objects processing
+</pre>
+            <p>The  <code>Iterator</code> interface is <code>Enumeration</code> on <a id="idp15812944"></a><a
+                    id="idp15814128"></a><a id="idp15815248"></a><a id="idp15816640"></a>steroids. It also offers a
+                standard way to process elements of a collection sequentially. The main difference between the two is
+                that <code>Enumeration</code> is a read-only means of traversing a collection, whereas
+                <code>Iterator</code> has a method called <code>remove()</code> that <a id="idp15820256"></a><a
+                        id="idp15820912"></a>enables you to delete unwanted elements of the collection. <code>Enumeration</code>
+                is considered a legacy interface, and you should use <code>Iterator</code>. For example, you can iterate
+                through the <code>ArrayList</code> <code>customers</code> as follows:</p>
+            <pre>
+Iterator iCust = customers.iterator();
+while (iCust.hasNext()){
+   System.out.println(iCust.next())
+}</pre>
+        </section>
+        <section>
+            <h2><a id="class_linkedlist"></a>Class LinkedList</h2>
+            <p>Java collection <a id="idp15826912"></a><a id="idp15828144"></a><a id="idp15829248"></a><a
+                    id="idp15830384"></a><a id="idp15831456"></a>classes differ in how you can retrieve and insert
+                objects. If you need to work with a sequential list of objects and often insert (remove) the object into
+                (from) the list, the data structure called <i>linked list</i> can fit the bill.</p>
+            <p>Linked lists store elements so that each contains a reference to the next one. <i>D</i><i>oubly linked
+                lists</i> also contain a reference to both the next and the previous elements. Java includes the the
+                doubly linked class <code>LinkedList</code>, <span epub:type="pagebreak" title="136"
+                                                                   id="Page_136"></span>which enable you to create the
+                data structures known as <i>queues</i> (first-in-first-out or FIFO) and <i>stacks</i> (last-in-first-out
+                or LIFO).</p>
+            <p>Insertion of a new object inside the list comes down to a simple update of two references: The previous
+                element of the list has to be pointed to the newly inserted object, which has to include a reference to
+                the next element, if any. Compare this to the complexity of lots of memory allocations and objects
+                moving in memory to increase the size of an <code>ArrayList</code>, and you’ll appreciate the value that
+                linked lists bring to the table. On the other hand, collections that use arrays for the underlying data
+                storage offer random access to the data elements, whereas linked lists can be processed only
+                sequentially.</p>
+            <p>You can navigate through the list using the class <code>ListIterator</code>, which supports going through
+                the list in both directions via its methods <code>next()</code> and <code>previous()</code>. <a
+                        id="list-anc-c011-005" href="part0012.html#list-c011-005">Listing 11-5</a> shows you an example,
+                in which a standby passenger list is created at the boarding gate of some airline company.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature3">
+                    <h5><span class="label"><a id="list-c011-005"
+                                               href="part0012.html#list-anc-c011-005">Listing 11-5</a>:</span>
+                        LinkedList example</h5>
+                    <pre>
+import java.util.LinkedList;
+import java.util.ListIterator;
+public class TestLinkedList {
+ public static void main(String[] args) { 
+   LinkedList passengerList = new LinkedList(); 
+   passengerList.add("Alex Smith"); 
+   passengerList.add("Mary Lou"); 
+   passengerList.add("Sim Monk");
+   ListIterator iterator = passengerList.listIterator();
+   System.out.println(iterator.next()); 
+   System.out.println(iterator.next());
+   System.out.println(iterator.next());
+  }
+}</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>The code in <a href="part0012.html#list-c011-005">Listing 11-5</a> iterates and prints all the objects
+                from the list using <code>ListIterator </code>interface, which allows a program to traverse the list in
+                both directions. </p>
+            <p>You might be wondering how the <code>println()</code> method knows how to print an object returned by the
+                iterator. It tries to find the method <code>toString()</code> defined on the object and call it. In our
+                example the object is a string itself, but in a real-world situation you might need to print objects,
+                and defining the <code>toString()</code> method is the right way to do so.</p>
+            <p>If you use <code>add()</code> or <code>remove()</code> while iterating through the list, the new element
+                is either inserted or removed at the iterator’s current position.</p>
+        </section>
+        <section>
+            <h2><a id="class_bitset"></a>Class BitSet</h2>
+            <p>The <span epub:type="pagebreak" title="137" id="Page_137"></span>class <code>BitSet</code> stores <a
+                    id="BitSet1"></a><a id="BitSet2"></a>a sequence of bits. It’s a pretty efficient class when you need
+                to pass to a program a number of flags that indicate certain conditions. Think of a financial trading
+                application that must be extremely fast. One way to improve the performance is to represent the maximum
+                amount of information in a minimal number of bytes. </p>
+            <p>Another use case for <code>BitSet</code> are programs that send signals with information about the state
+                of a certain device or as sensor. For example, some vending machines have smart chips that can
+                automatically dial their owner’s phone number and send a signal containing status information. Sending a
+                set of flags (bits that are set to <code>1</code> or <code>0</code>) instead of text or numbers is the
+                most economical way to do this.</p>
+            <p>The <code>BitSet</code> class does not have a size limit and can grow as needed. Depending on which bit
+                is set (for example, has the value of <code>1</code>) the class could indicate the following:</p>
+            <ul>
+                <li><b>Bit 0</b>: The coin box is empty.</li>
+                <li><b>Bit 1</b>: The coin box is half full.</li>
+                <li><b>Bit 2</b>: The coin box is full.</li>
+                <li><b>Bit 3</b>: The coin box has been removed.</li>
+                <li><b>Bit 4</b>: The Coca-Cola row is empty.</li>
+            </ul>
+            <p>One instance of a <code>BitSet</code> object carries multiple parameters describing its status. The
+                program that receives this signal could print a nice report, and the owner of this remote machine could
+                decide if he or she needs to send a technician to look at the machine.</p>
+            <p>The Java class <code>BitSet</code> is nothing more than a collection of bits. The following code prepares
+                a signal indicating that the coin box is full and there are no Coca-Cola bottles left:</p>
+            <pre>
+import java.util.BitSet;
+class VendingMachineSender {
+   public static void main(String args[]){
+       BitSet report = new BitSet();
+       report.set(2);   // box is full
+       report.set(4);   // no Coca-Cola
+   }
+}</pre>
+            <p>When the phone call comes in, the callback method <code>phoneRinging()</code> is invoked and the signal
+                can be decoded like this:</p>
+            <pre>
+import java.util.BitSet;
+class VendingMachineListener {
+   public void phoneRinging(BitSet signal)
+      int size = signal.size();
+      for (int i=0;i&lt;size;i++){
+          if (signal.get(i)){
+            switch (i){
+               case 0:
+                 System.out.println("Box is empty");
+                 break;
+               case 1:
+                 System.out.println("Box is half full");
+                 break;
+               case 2:
+                 System.out.println("Box is full");
+                 break;
+               // more cases come here
+            }
+         }
+      }
+   }
+}
+</pre>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp15866608"></a>Internet of Things</h3>
+                    <p>The Internet Of Things (IoT) is a buzzword that’s used to describe Internet applications that
+                        deal with small, sensor-like devices, which have a limited amount of memory and processing
+                        power. Consider using the class <code>BitSet</code> if you need to program <a
+                                id="idp15870352"></a><a id="idp15871888"></a>sensors. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h2><a id="idp15848992"></a>Choosing the Right Collection</h2>
+            <p><span epub:type="pagebreak" title="138" id="Page_138"></span>Java has dozens of <a id="idp15875168"></a>collection
+                classes and interfaces. In this lesson I’ve shown just a few of them. But which collection is the right
+                one for your needs? Below are some of the considerations that may help you to choose one.</p>
+            <ul>
+                <li>If you need to access data by index, consider using <code>ArrayList</code>. </li>
+                <li>If you need to often insert or remove data in/from a collection, a <code>LinkedList</code> should be
+                    a good choice
+                </li>
+                <li>If you need a collection that doesn’t allow duplicate elements, use one of the collections that
+                    implements <code>Set</code> interface. For fast access use  <code>HashSet</code>. For sorted set
+                    use <code>TreeSet</code>.
+                </li>
+                <li>For storing key/value pairs use a collection that implements the <code>Map</code>
+                    interface; e.g. <code>HashMap</code> or <code>HashTable</code>.
+                </li>
+                <li>If you need a collection for a fast search that remains fast regardless of the size of the data set
+                    use <code>HashSet</code>.
+                </li>
+            </ul>
+            <p>These recommendations are applicable for cases when there is no need to access data concurrently by
+                multiple threads (see <a
+                        href="https://atlas.oreilly.com/wiley/java-programming-24hr-trainer/editor/master/ch11.html#introduction_to_multi-threading">Lesson
+                    17</a>). Java has many <a
+                        href="http://docs.oracle.com/javase/tutorial/essential/concurrency/collections.html">concurrent
+                    collections</a> located in the package <code>java.util.concurrent</code>, and these collections have
+                to be used for concurrent data access. Oracle’s <a
+                        href="http://docs.oracle.com/javase/tutorial/collections/">Collections tutorial</a> and Java API
+                on collection classes is a good resource for finding the right collection for your application. </p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp15887424"></a>The Big O Notation</h3>
+                    <p>In computing <a id="idp15889200"></a><a id="idp15890592"></a>there is something called <i><a
+                            href="http://en.wikipedia.org/wiki/Big_O_notation">Big O notation</a></i>, which describes
+                        how the time to do a certain thing grows when the size of the input data grows. The Big O
+                        notation is represented as O(n). The <span epub:type="pagebreak" title="139"
+                                                                   id="Page_139"></span>higher value of n represents
+                        greater dependency of the task from the data size. Hence O(1) means that the speed of a task
+                        doesn’t depend on the collection size. The article on <a
+                                href="http://infotechgems.blogspot.com/2011/11/java-collections-performance-time.html">Performance
+                            of Java Collections</a> includes Big O notations for various Java collections and
+                        operations. </p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h2><a id="try_it-id00049"></a>Try It</h2>
+            <p>Modify the <code>LinkedList</code> example from <a href="part0012.html#list-c011-005">Listing 11-5</a> to
+                add an arbitrary object, say, the VIP customer <a id="idp15896656"></a>after the very first element of
+                the list. You must do this while iterating through the list. When the program is ready it should print
+                the following:</p>
+            <pre>
+Alex Smith
+VIP Customer
+Mary Lou
+Sim Monk</pre>
+            <section>
+                <h3><a id="lesson_requirements-id00050"></a>Lesson Requirements</h3>
+                <p>You should have Java installed.</p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature1">
+                        <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You can download the code and resources for
+                            this “Try It” from the book’s web page at</i> <code><a
+                                href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                            You can find them in the</i> <code>Lesson11.zip</code><i>.</i></p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+            <section>
+                <h3><a id="step-by-step-id00051"></a>Step-by-Step</h3>
+                <ol>
+                    <li>Create a new Eclipse project called Lesson11.</li>
+                    <li>After the first call to <code>iterator.next()</code> add the following line:
+                        <code>iterator.add(</code>“<code>VIP Customer</code>”<code>);</code></li>
+                    <li>Run the program and observe that it doesn’t print “VIP Customer.” This happens because the
+                        iterator is already positioned after the newly inserted object.
+                    </li>
+                    <li>Add the line <code>iterator.previous()</code> right after the “VIP Customer” to move the
+                        iterator one element back.
+                    </li>
+                    <li>Add one more print statement (otherwise the program won’t reach Sim Monk). Compile and run the
+                        program. It prints all four elements as requested.
+                    </li>
+                    <li>Now break the code by changing the line that you added in Step 2 to
+                        <code>passengerList.add(</code>“<code>VIP Customer</code>”<code>);</code>. 
+                    </li>
+                    <li>Run the program. It prints the first element of the linked list and then produces a runtime
+                        exception:
+                        <pre>
+ Alex Smith
+ Exception in thread "main" 
+      java.util.ConcurrentModificationException
+      at java.util.LinkedList$ListItr.checkForComodification(
+                LinkedList.java:761)
+      at java.util.LinkedList$ListItr.next(LinkedList.java:696)
+      at TestLinkedList.main(TestLinkedList.java:20)</pre>
+                    </li>
+                </ol>
+                <p><span epub:type="pagebreak" title="140" id="Page_140"></span>The reason for this concurrent
+                    modification exception is that one <i>thread of execution</i> was iterating through a collection,
+                    and at the same time another thread was trying to modify the underlying collection in an unsafe way.
+                    The concept of threads is introduced in <a href="part0018.html#introduction_to_multi-threading">Chapter 17</a>.
+                </p>
+                <aside epub:type="sidebar">
+                    <div class="top hr">
+                        <hr/>
+                    </div>
+                    <section class="feature1">
+                        <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                                href="part0012.html">Lesson 11</a> online at </i><code><a
+                                href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                            will also be able to download the code and resources for this lesson from the website.</i>
+                        </p>
+                        <div class="bottom hr">
+                            <hr/>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+        </section>
+    </section>
+</section>
+</body>
+</html>

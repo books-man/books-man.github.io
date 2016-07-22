@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"
+      epub:prefix="index: http://www.index.com/" xml:lang="en" lang="en">
+<head>
+    <title>Java Logging API</title>
+    <link href="../Styles/style0001.css" rel="stylesheet" type="text/css"/>
+</head>
+<body epub:type="bodymatter">
+<section epub:type="chapter">
+    <header>
+    </header>
+    <h1><a id="logging"></a><span class="chapterTitle">Lesson 34<br/>Java Logging API</span></h1>
+
+    <section>
+        <p>Every <span epub:type="pagebreak" title="499" id="Page_499"></span>Java program performs <a
+                id="idp22973904"></a><a id="idp22974880"></a>various functions during its life cycle—for example, it
+            opens files, connects to databases or remote services, or it performs some calculations. Often software
+            developers need to print application-specific messages from various parts of the program. Sometimes
+            developers need to confirm that a program visited a certain method or print the results of intermediate
+            calculations.</p>
+        <p>Proper reporting of runtime errors is even more important. You may want to print not only the error messages,
+            but also the messages that inform about the control flow of the program (for example, an order has been
+            placed or cancelled). If your Java application server won’t start, the first place to check is its log
+            files, which may have a description of an issue, or at least you can see at which stage the launch process
+            stopped working. </p>
+        <p>Until now, in most of the code samples in this book (except graphical user interface applications) I’ve used
+            the tried and true method  <code>System.out.println()</code>,  but this approach has several issues:<br/>
+            <br/>
+            1. It’s not easy to “turn off” multiple informational <code>println()</code> calls when the application goes
+            into quality assurance (QA) or production. You need to find and comment out these statements that are
+            sprinkled through your application code. And if a bug is reported <a id="idp22983792"></a><a
+                    id="idp22976704"></a>in the production application, you need to uncomment several
+            <code>println()</code> statements and potentially add more of them.</p>
+        <p>2. There is no trace of what’s happened in the application after it’s complete.</p>
+        <p>3. If one of many users of a server-side Java application calls the support team about an issue, the support
+            personnel needs to be able to quickly identify and analyze the messages related to this particular user’s
+            interaction—when the issue happened and in which software module it occurred.</p>
+        <p>Replacing <code>println()</code> statements with a Java Logging application programming interface (API) or a
+            third-party logging framework addresses these issues, and you should use in all applications both on the
+            server and the client sides. Logging is used both in development and production. The logging messages can be
+            directed to the end users as well. </p>
+        <p>There are many Java <a href="http://en.wikipedia.org/wiki/Java_logging_framework">logging frameworks</a>. But
+            the majority of this lesson is dedicated to the Java Logging API, which is a part of Java SE.</p>
+    </section>
+    <section>
+        <h2><a id="idp22988240"></a>Java Logging API</h2>
+        <p>The <span epub:type="pagebreak" title="500" id="Page_500"></span>Java Logging API is implemented in the
+            package <code>java.util.logging</code>. The two main classes of the logging API are <code>Logger</code> and
+            <code>Handle</code>. An application obtains an instance of the <code>Logger</code> object, which creates an
+            instance of the <code>LogRecord</code> and gives it to a <code>Handler</code> object for publishing. The
+            Java Logging API includes several <a id="idp22993136"></a>types of handlers, and the default one is <code>ConsoleHandler</code>
+            that publishes messages on the system console.  </p>
+        <p>For a simple application, you can create one <i>global logger</i> that takes care of all message logging. In
+            more complex applications, you can create a hierarchy of loggers where each package or class has its own
+            logger.  </p>
+        <p>The Java Logging API enables <a id="idp22990512"></a>you to group messages by different levels. For example,
+            you can assign the <code>INFO</code> level to the messages that do not report errors, and you can assign
+            serious error messages the <code>SEVERE</code> level. These are the logging levels defined in the class
+            <code>Level</code>:</p>
+        <ol>
+            <li><code>SEVERE</code>   </li>
+            <li><code>WARNING</code></li>
+            <li><code>INFO</code></li>
+            <li><code>CONFIG</code></li>
+            <li><code>FINE</code></li>
+            <li><code>FINER</code></li>
+            <li><code>FINEST</code></li>
+        </ol>
+        <p>The order of these levels is important as these levels represent ordered integers. <code>SEVERE</code> is the
+            highest number and <code>FINEST</code> is the lowest. The default logging level is <code>INFO</code>, which
+            means that all log messages marked as <code>INFO</code>, and the higher levels (<code>WARNING</code> and
+            <code>SEVERE</code>) will be logged. If you change the default logging level to <code>WARNING</code>, then
+            only the messages of the levels <code>WARNING</code> and <code>SEVERE</code> are logged.</p>
+        <p>The levels <code>FINE</code>, <code>FINER</code>, and <code>FINEST</code> are used to create log records with
+            more descriptive messages. To turn on all logging levels, set the level to <code>Level.ALL</code>, and to
+            turn the logging off set the level to <code>Level.OFF</code>. For more details of the logging level refer to
+            <a href="http://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html">Oracle javadoc</a> for the
+            class <code>Level</code>.  Regardless of what level you decide to use, make sure that the log messages are
+            informative.</p>
+        <p>You can set the log level on both the <code>Logger</code> and the <code>Handler</code> objects. You do this
+            programmatically or in a configuration file. The latter allows you to change the default level during the
+            run time for a deployed application.  One logger object can have several handlers that publish messages to
+            different destinations, and each of the handlers can have a different log level.</p>
+        <p>Writing lots of logging messages can affect the performance of your application. When you change the default
+            log level you minimize the performance burden in applications that are deployed in production. I explain how
+            you set and change log levels a bit later, but for now let’s create a very basic logging application. </p>
+        <section>
+            <h3><a id="idp23013360"></a>Hello World with the Java Logging API</h3>
+            <p>Everyone starts <a id="idp23014608"></a><a id="idp23015936"></a>learning Java by writing a simple program
+                that prints  <code>Hello World</code> on the system console using the following statement:</p>
+            <pre>
+System.out.println("Hello World");
+</pre>
+            <p>It’s time to replace this statement with the Java Logging API.</p>
+            <section>
+                <h4><a id="idp23020672"></a>Hello World with a Global Logger</h4>
+                <p><span epub:type="pagebreak" title="501" id="Page_501"></span>Start with creating <a
+                        id="idp23022144"></a><a id="idp23024160"></a>an Eclipse Java project called Lesson34. In it,
+                    create a new class <code>HelloLoggingWorld</code> in a package <code>com.lesson34</code>. In
+                    the <code>main()</code> method of this class you’re going to use the  <code>Logger</code> object to
+                    greet the world as follows:</p>
+                <pre>
+package com.lesson34;
+import java.util.logging.Logger;
+public class HelloWorldGlobalLogger {
+    
+    private static Logger logger = 
+            Logger.getGlobal();
+    public static void main(String[] args) {
+        
+        logger.fine("Hello fine world!");
+        logger.info("Hello info world!");
+        logger.severe("Hello severe world!");
+    }
+}
+</pre>
+                <p>Although an application can have a hierarchy of loggers, this simple program uses a single global
+                    logger obtained by calling the method <code>getGlobal()</code>. The program starts with initializing
+                    the <code>logger</code> variable with the <code>Logger</code> object. Then the program invokes three
+                    methods on this logger: <code>fine()</code>, <code>info()</code>, and <code>severe()</code>. The
+                    names of the methods correspond to the logging levels. But if you run this program, only two
+                    messages are printed on the system console:</p>
+                <pre>
+Jan 28, 2015 11:27:17 AM com.lesson34.HelloWorldGlobalLogger main
+INFO: Hello info world!
+Jan 28, 2015 11:27:17 AM com.lesson34.HelloWorldGlobalLogger main
+SEVERE: Hello severe world
+</pre>
+                <p>Because the default logging level is <code>INFO</code>, the message of the <code>FINE</code> level
+                    was not printed. By default the log records published on the console include the date and time, the
+                    name of the class, the level, and the message. </p>
+            </section>
+            <section>
+                <h4><a id="idp23034416"></a>Hello World with a Class-Level Logger</h4>
+                <p>The application <a id="idp23036288"></a><a id="idp23038240"></a>can have more than one logger, all of
+                    which are children of the global logger. For example, you can create a class-level logger identified
+                    by a hierarchical name that looks similar to a fully qualified class name. You can create a Java
+                    class that creates the logger specifically for this class:</p>
+                <pre>
+private static Logger logger = 
+            Logger.getLogger("com.lesson34.HelloWorldClassLogger");
+</pre>
+                <p>To <span epub:type="pagebreak" title="502" id="Page_502"></span>avoid hardcoding the class name (it
+                    can be moved to a different package) you can ask Java to obtain a fully qualified class name, as
+                    shown here: </p>
+                <pre>
+private static Logger helloLogger =         
+         Logger.getLogger(HelloWorldClassLogger.class.getName());
+</pre>
+                <p>The following program purposely divides by zero just to show the use of the class-level logger:</p>
+                <pre>
+package com.lesson34;
+import java.util.logging.Logger;
+public class HelloWorldClassLogger {
+        
+    private static Logger helloLogger =         
+            Logger.getLogger(HelloWorldClassLogger.class.getName());
+    
+    public static void main(String[] args) {
+                
+        helloLogger.info("Trying to divide by zero");
+        try{
+            int result = 25/0;
+        } catch(ArithmeticException e){
+            helloLogger.severe("Division by zero");    
+        } 
+    }
+}
+</pre>
+                <p>The output of this program is shown here:</p>
+                <pre>
+Jan 28, 2015 2:54:26 PM com.lesson34.HelloWorldClassLogger main
+INFO: Trying to divide by zero
+Jan 28, 2015 2:54:26 PM com.lesson34.HelloWorldClassLogger main
+SEVERE: Division by zero
+</pre>
+                <p>Software developers often create a separate logger not only for each class but also for each
+                    package. But the procedure remains the same; just specify the name of the package as the logger
+                    name:</p>
+                <pre>
+private static Logger logger = Logger.getLogger(
+                HelloWorldClassLogger.class.getPackage().getName());
+</pre>
+            </section>
+        </section>
+        <section>
+            <h3><a id="handlers"></a>Using Handlers and Setting Log Levels</h3>
+            <p>The <code>Logger</code> object doesn’t log <a id="handle1"></a><a id="handle2"></a><a id="handle3"></a>messages
+                on its own. It creates a <code>LogRecord</code> and passes it to a <code>Handler</code> object for
+                publication to a specified destination. So far the log messages from the code examples have been sent to
+                the system console because the Java Logging API uses a <code>ConsoleHandler</code> object <a
+                        id="idp23055888"></a><a id="idp23057008"></a>by default. It was a <code>ConsoleHandler</code>
+                that printed the log messages.</p>
+            <p>To set the logging level, you need to <a id="idp23059472"></a><a id="idp23060976"></a>call a method
+                <code>setLevel()</code>; for example, to set the <code>FINE</code> logger level you need to call a
+                method <code>setLevel(Level.FINE)</code>.  You can set the severity level of the log messages on both
+                the <span epub:type="pagebreak" title="503" id="Page_503"></span>logger and the handler, and they don’t
+                have to be the same. For example, you may want to record only <code>SEVERE</code> messages in the log
+                file, while sending to the console messages of the level <code>INFO</code> and higher. </p>
+            <p>You can also log one message under different logging level without changing the current level by using
+                the method <code>log()</code>:</p>
+            <pre>
+log(Level.FINE, "Hello fine world");
+</pre>
+            <p>You can assign one or more handlers to <a id="idp23066992"></a><a id="idp23068464"></a>the
+                <code>Logger</code> objects so the log messages are published in one or more destinations. The Java
+                Logging API supports the following handlers:</p>
+            <ul>
+                <li><code>ConsoleHandler</code>: A handler for writing log records to the <code>System.err</code> object
+                    (by default it points at the same device as <code>System.out</code>).
+                </li>
+                <li>
+                    <p><code>FileHandler</code>: A handler that writes log records either to a single file or to a set
+                        of rotating log files.</p>
+                </li>
+                <li><code>StreamHandler</code>: A handler for writing log records to an <code>OutputStream</code>.</li>
+                <li><code>SocketHandler</code>: A handler that writes log records to local or remote Transmission
+                    Control Protocol (TCP) ports.
+                </li>
+                <li><code>MemoryHandler</code>: A handler that buffers log records in memory.</li>
+            </ul>
+            <p>To assign a handler(s) to a logger object you need to create an instance of one of the previously listed
+                handlers and add it to the <code>Logger</code> object by invoking the method <code>addHandler()</code>:
+                 </p>
+            <pre>
+FileHandler helloFileHandler 
+helloFindHandler = new FileHandler("helloWorld.log");
+helloLogger.addHandler(helloFileHandler);
+</pre>
+            <p>Now write yet another small program that publishes log messages on the console and in a log file. The
+                logger that you’ve used in the previous examples internally created an instance of the <code>ConsoleHandler</code>
+                class that published messages on the system console. Now you’re adding another handler, <code>FileHandler</code>,
+                to write log messages into a file, so you have the logs in the system console as well as in a file.  To
+                make this example more interesting, publish only <code>WARNING</code> and <code>SEVERE</code> messages
+                in a file and have the console get the messages of the level <code>FINE</code> and above.</p>
+            <p>Create the directory named <code>logs</code> in the root of your Eclipse project, and see whether the
+                following program <code>HelloWorldHandlers</code> properly publishes messages in the log file and system
+                console:</p>
+            <pre>
+package com.lesson34;
+import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+public class HelloWorldHandlers {
+    
+    private static Logger helloLogger =         
+            Logger.getLogger(HelloWorldClassLogger.class.getName());
+    
+    public static void main(String[] args) {
+        
+        FileHandler helloFileHandler;
+        try {
+          helloFileHandler = new FileHandler("<strong>logs/helloWorld.log"</strong>);
+          helloLogger.addHandler(helloFileHandler);
+          helloFileHandler.setLevel(Level.WARNING);
+        } catch (SecurityException se) {
+           System.out.println(se.getMessage());
+        } catch (IOException ioe) {
+           System.out.println(ioe.getMessage());
+        }
+        
+        helloLogger.fine("Hello from fine world");
+        helloLogger.info("Trying to divide by zero");
+        try{
+            int result = 25/0;
+        } catch(Exception e){
+            helloLogger.severe("Division by zero");    
+        }
+    }
+}
+</pre>
+            <p>The program <code>HelloWorldHandlers</code> adds a <code>FileHandler</code> to the logger to publish
+                messages to the file <code>logs/helloWorld.log</code>. You can create and assign a
+                <code>Formatter</code> object to the handler to format the output in a way that fits your needs.  <code>XMLFormatter</code>
+                is the default formatter for <code>FileHandler</code>. Having log files in the XML format allows writing
+                programs that can read and parse log files, which can be pretty useful for large log files.</p>
+            <p><span epub:type="pagebreak" title="504" id="Page_504"></span>Creating an instance of the <code>FileHandler</code>
+                may throw <code>SecurityException</code> if access to log files was protected by<a
+                        href="http://docs.oracle.com/javase/tutorial/essential/environment/security.html"> Java Security
+                    Manager</a>, which is not the case in our example.</p>
+            <p><span style="letter-spacing: 0.01em; line-height: 1.3em;">Run</span> <code
+                    style="letter-spacing: 0.01em; line-height: 1.3em;">HelloWorldHandlers</code><span
+                    style="letter-spacing: 0.01em; line-height: 1.3em;"> and it creates a file</span> <code
+                    style="letter-spacing: 0.01em; line-height: 1.3em;">helloWorld.log</code><span
+                    style="letter-spacing: 0.01em; line-height: 1.3em;"> in the <code>logs</code> directory of your Eclipse project (you may need to refresh the project view to see it). Here’s the content of this log file:  </span>
+            </p>
+            <pre>
+&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+&lt;!DOCTYPE log SYSTEM "logger.dtd"&gt;
+&lt;log&gt;
+&lt;record&gt;
+  &lt;date&gt;2015-01-28T17:20:38&lt;/date&gt;
+  &lt;millis&gt;1422483638650&lt;/millis&gt;
+  &lt;sequence&gt;1&lt;/sequence&gt;
+  &lt;logger&gt;com.lesson34.HelloWorldClassLogger&lt;/logger&gt;
+  &lt;level&gt;<strong>SEVERE</strong>&lt;/level&gt;
+  &lt;class&gt;com.lesson34.HelloWorldHandlers&lt;/class&gt;
+  &lt;method&gt;main&lt;/method&gt;
+  &lt;thread&gt;1&lt;/thread&gt;
+  &lt;message&gt;Division by zero&lt;/message&gt;
+&lt;/record&gt;
+&lt;/log&gt;
+</pre>
+            <p>The preceding file contains only the <code>SEVERE</code> message, which is correct. At the same time, the
+                <code>ConsoleHandler</code> also printed <code>INFO</code> messages on the system console: </p>
+            <pre>
+Jan 28, 2015 5:20:38 PM com.lesson34.HelloWorldHandlers main
+INFO: Trying to divide by zero
+Jan 28, 2015 5:20:38 PM com.lesson34.HelloWorldHandlers main
+SEVERE: Division by zero
+</pre>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature2">
+                    <h3><a id="idp23099728"></a>Avoiding Duplicate Log Messages</h3>
+                    <p><span epub:type="pagebreak" title="505" id="Page_505"></span>The program
+                        <code>HelloWorldHandlers</code> uses a <a id="idp23101760"></a>default console handler of the
+                        global logger to publish messages on the console. If you add an instance of the <code>ConsoleHandler</code>
+                        object to <code>helloLogger</code>, you have two console handlers: one on the class level and
+                        one global. This results in displaying duplicate messages on the console because the global
+                        logger is a parent of <code>helloLogger</code>, and all handlers in this hierarchy are invoked.
+                        If you want to turn the parent loggers off, use the method <code>setUseParentHandlers()</code>:
+                    </p>
+                    <pre>
+helloLogger.setUseParentHandlers(false);
+</pre>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+            <p>But why was the <code>FINE</code> level message “Hello from fine world” not displayed on the console?
+                Invoking <code>helloLogger.setLevel(Level.FINE)</code> from <code>HelloWorldHandlers</code> won’t
+                help. The reason is that the Java Runtime Environment (JRE) comes with the configuration file <code>logging.properties</code>,
+                which may supersede the log levels set in the program.</p>
+            <section>
+                <h4><a id="idp23109504"></a>The File logging.properties</h4>
+                <p>If you open the directory <code>jre/lib</code> in your Java <a id="idp23111152"></a>distribution, you
+                    find the file <code>logging.properties</code>, which sets various logging properties including
+                    these:</p>
+                <pre>
+.level= INFO
+java.util.logging.ConsoleHandler.level = INFO
+</pre>
+                <p>The first one restricts the default global level across all loggers, and the second limits the
+                    messages that are printed on the console. Both levels default to <code>INFO</code>. If you change
+                    these values to <code>FINE</code> or <code>ALL</code>, the program <code>HelloWorldHandlers</code>
+                    starts publishing <code>FINE</code> messages on the console.</p>
+                <p>Each application can have its own logging properties file that you can pass as the Java Virtual
+                    Machine (JVM) parameter from the command line, for example:</p>
+                <pre>
+java -Djava.util.logging.config.file="myLogging.properties" MyApp
+</pre>
+                <p>You can also load the application-specific logging properties file programmatically as follows:</p>
+                <pre>
+LogManager.getLogManager().readConfiguration(
+                        newFileInputStream("mylogging.properties"));
+</pre>
+                <p>If your program creates named loggers, you can override the log levels in your
+                    <code>log.properties</code> file; for example:</p>
+                <pre>
+com.lesson34.HelloWorldClassLogger.level=ALL
+</pre>
+            </section>
+            <section>
+                <h4><a id="idp23108752"></a>More About Logging with FileHandler </h4>
+                <p>Writing <span epub:type="pagebreak" title="506" id="Page_506"></span>log messages into files is the  <a
+                        id="idp23123456"></a><a id="idp23122528"></a>most common practice. The <code>FileHandler</code> class
+                    has several overloaded constructors. To work with log files in the append mode (log records are
+                    being added to the existing file), use a two-argument constructor:  </p>
+                <pre>
+helloFileHandler = new FileHandler("logs/helloWorld.log", true);</pre>
+                <p>To avoid littering your disk space by tons of log files, you can create rotating log files. You can
+                    specify the maximum file size and maximum number of log files. A new file is created as soon as the
+                    current log file reaches a specified size.  When the new log file is maxed out, another one is
+                    created. If the number of the allowed log files is reached the oldest log file is replaced with a
+                    new one, and log records are directed there.</p>
+                <p>For example, the following code snippet creates a <code>FileHandler</code> object that initially
+                    creates a log file named <code>helloWorld.log.0</code>, and as soon as its size grows to 1000 bytes,
+                    the handler renames the log file into <code>helloWorld.log.1</code> and creates a new one
+                    named <code>helloWorld.log.0</code> and so on. This <code>FileHandler</code> creates not more than
+                    three files in total, and logging is done in the append mode:  </p>
+                <pre>
+helloFileHandler = 
+           new FileHandler("logs/helloWorld.log", 1000, 3, true);
+</pre>
+                <p>You see this code in <a id="idp23129264"></a><a id="idp23131264"></a><a id="idp23132656"></a>action
+                    while working on the assignment from the “Try It” section of this lesson. </p>
+            </section>
+        </section>
+        <section>
+            <h3><a id="idp23047520"></a>Formatters and Filters</h3>
+            <p>Formatters allow you to  change the format of logging messages and filters (in addition to log levels),
+                so the handlers can decide if they are interested in a particular <code>LogRecord</code>. You can assign
+                formatters to the log handlers. Filters can be assigned to both loggers and handlers.</p>
+            <section>
+                <h4><a id="idp23138544"></a>Formatters</h4>
+                <p>You can format <a id="formatter"></a><a id="idp23142032"></a>log messages using classes <code>SimpleFormatter</code> or <code>XMLFormatter</code> included
+                    in with Java Development Kit (JDK) , or create your own custom formatter. By default, console
+                    handlers use <code>SimpleFormatter</code>, and file handlers use <code>XMLFormatter</code>.</p>
+                <p><code>SimpleFormatter</code> <a id="idp23145616"></a><a id="idp23147040"></a>outputs the time-stamp,
+                    class name, method name, level, log message, and possible exception. <code>XMLFormatter</code>
+                    outputs messages in a form of an XML structure as XML-formatted messages as you’ve seen in the
+                    section on <a href="part0035.html#handlers">log handlers</a>.</p>
+                <p>To create a custom formatter, declare a class the extends an abstract class <code>Formatter</code> <a
+                        id="idp23151312"></a><a id="idp23152496"></a>and override its method <code>format()</code>.  You
+                    can implement any formatting you like. Just prepare a <code>String</code> with the required content
+                    and let the method <code>format()</code> return it. The following example shows a simple custom
+                    formatter that doesn’t print a timestamp and uses the symbols <code>==&gt;</code> as a separator
+                    between the fields of the <code>LogRecord</code>:   </p>
+                <pre>
+package com.lesson34;
+import java.util.Date;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+ 
+public class MyFormatter extends Formatter {
+ 
+    @Override
+    public String format(LogRecord logRecord) {
+        return logRecord.getSourceClassName()+"==&gt;"
+                + logRecord.getSourceMethodName()+"==&gt;"
+                + logRecord.getMessage()+"\n";
+    }
+}
+</pre>
+                <p><span epub:type="pagebreak" title="507" id="Page_507"></span>Open your
+                    <code>logging.properties</code> file and assign this class to be a formatter for the console
+                    handler:</p>
+                <pre>
+java.util.logging.ConsoleHandler.formatter=com.lesson34.<strong>MyFormatter</strong>
+</pre>
+                <p>Now if you run the <code>HelloWorldHandlers</code> (or any other sample from this lesson), the output
+                    of the logger should look like this:</p>
+                <pre>
+com.lesson34.HelloWorldHandlers==&gt;main==&gt;Hello from the fine world
+com.lesson34.HelloWorldHandlers==&gt;main==&gt;Trying to divide by zero
+com.lesson34.HelloWorldHandlers==&gt;main==&gt;Division by zero
+</pre>
+                <p>Invoking the method <code>setFormatter()</code> on the handler object is an alternative to specifying
+                    a formatter to a handler from the command line.  </p>
+            </section>
+            <section>
+                <h4><a id="idp23140464"></a>Filters</h4>
+                <p>With filters, you can <a id="idp23163696"></a><a id="idp23165632"></a>program application logic to
+                    decide if a particular <code>LogRecord</code> should be logged. If you don’t want to publish a
+                    particular <code>LogRecord</code>, simply return false and it won’t be published. Otherwise, return
+                    true.  <code>Filter</code> is an interface with a single method <code>isLoggable()</code>.
+                     Remember <a style="letter-spacing: 0.01em; line-height: 1.3em;"
+                                 href="part0014.html#functional-interfaces">functional</a> <span
+                            style="letter-spacing: 0.01em; line-height: 1.3em;">interfaces from <a href="part0014.html">Lesson 13</a>? You can implement a filter with a lambda expression.</span>
+                </p>
+                <p><span style="letter-spacing: 0.01em; line-height: 1.3em;">The following example generates random prices for stocks, but it logs only those prices that are greater than $60:</span>
+                </p>
+                <pre>
+package com.lesson34;
+import java.util.logging.Filter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+public class StockQuotePublisher {
+    
+    private static Logger stockLogger =         
+            Logger.getLogger(StockQuotePublisher.class.getName());
+    
+   // A lambda expression 
+   static Filter expensiveStocks = (logRecord) -&gt; {
+        Object[] parameters = logRecord.getParameters();
+        double price = ((Double)parameters[0]).doubleValue();
+        return ( price &gt; 60) ? true: false;           
+    };
+    
+    public static void main(String args[]){
+        
+        stockLogger.setFilter(expensiveStocks);
+        
+        getPrice("IBM");
+        getPrice("MSFT");
+        getPrice("AAPL");
+        getPrice("CAT");
+        getPrice("VZ");
+    }
+    
+    private static double getPrice(String stockSymbol){
+        
+        double price = Math.random()*100;
+        stockLogger.log(Level.INFO, stockSymbol + ":" 
+                                                 + price, price); 
+        return price;
+    }
+}
+</pre>
+                <p><span epub:type="pagebreak" title="508" id="Page_508"></span>The method <code>getPrice()</code>generates
+                    prices in the range between 0 and 100. This method logs messages using a different logging API—the
+                    method <code>log()</code>—which has several overloaded versions.  In this case, I use the version
+                    with three arguments: level, message, and an object. The last argument can be any object; it’s
+                    considered a parameter of the <code>LogRecord</code>. Even though it seems that you log the price
+                    value of the primitive <code>double</code>, Java knows that an object is required and uses the
+                    autoboxing feature to create an instance of the <code>Double</code> wrapper.  </p>
+                <p>The program calls <code>getPrice()</code> from the <code>main()</code> method for five different
+                    stocks. If you didn’t apply a filter, all generated prices would be published on the console. But
+                    the class <code>StockQuotePublisher</code> declares a lambda expression <code>expensiveStocks</code>
+                    that implements the functional interface <code>Filter</code> , which returns <code>true</code> only
+                    if the stock price is greater than 60. This filter is assigned to the logger:</p>
+                <pre>
+stockLogger.setFilter(expensiveStocks);
+</pre>
+                <p>You can assign a filter to a <code>Handler</code> the same way you assign it to a <code>Logger</code>
+                    object. Log filters go one step further than log levels: they offer data-driven logging.
+                    Running <code>StockQuotePublisher</code> produces different results on each run because of the
+                    random price generation. But none of the published log records show a price lower than 60. Here’s a
+                    sample console output:</p>
+                <pre>
+Jan 29, 2015 8:29:29 PM com.lesson34.StockQuotePublisher getPrice
+INFO: AAPL:92.09444632063976
+Jan 29, 2015 8:29:29 PM com.lesson34.StockQuotePublisher getPrice
+INFO: VZ:85.58149465560332
+</pre>
+            </section>
+        </section>
+    </section>
+    <section>
+        <h2><a id="idp22986768"></a>Logging Frameworks</h2>
+        <p>Although the <a id="frame1"></a><a id="frame2"></a><a id="frame3"></a>Java Logging API is a good solution
+            for  small and mid-size applications, it may present a performance bottleneck in high-load multiuser
+            applications where adding a couple of hundred milliseconds for publishing <span epub:type="pagebreak"
+                                                                                            title="509"
+                                                                                            id="Page_509"></span>each
+            message is not acceptable. There are numerous open-source logging frameworks on the market, which you can
+            easily learn if you’re familiar with the Java Logging API.</p>
+        <p><a href="http://logging.apache.org/log4j/2.x/">Apache Log4J 2</a> is the most popular framework used in
+            commercial Java applications. It’s a newer version of Log4J. Log4J also has a logger object. Appenders
+            perform the same role as handlers. Layouts are similar to formatters. A log record is represented by a log
+            event in Log4J. Whereas the Java Logging API allows file rotation by size only, Log4J supports file rotation
+            by date/time.   </p>
+        <p>But Log4J 2 also supports asynchronous loggers and appenders, which can make it an order of magnitude faster
+            than the Java Logging API. Log4J 2 is the right choice for high-performance logging. To see how many
+            messages Log4J 2 can publish per second, see the statistics on <a
+                    href="http://logging.apache.org/log4j/2.x/manual/async.html#Performance">low-latency logging</a>. 
+        </p>
+        <p>The second popular logging framework is called <a
+                href="http://logback.qos.ch/reasonsToSwitch.html">Logback</a>. It’s similar to Log4J as it was founded
+            by the same developer. Logback is faster than Log4J, but Log4J 2 asynchronous logging is faster than
+            Logback’s. Start your next project with one of these frameworks, and if your application requires some
+            special logging features, see if there is a framework that offer them out of the box.  </p>
+        <p>To minimize the dependency of any particular logging framework, it is recommended to use an abstraction layer
+            that will allow you to easily switch logging frameworks, if need be. Simple Logging Facade for Java (SLFJ)
+            is the most popular implementation of such a layer. <a href="http://www.slf4j.org/">SLFJ</a> allows you to
+            decouple the logging API from a particular implementation. For example, no matter what logging framework you
+            use, creating a <code>Logger</code> object and publishing an <code>INFO</code>-level message looks the same
+            in SLFJ:</p>
+        <pre>
+Logger logger = LoggerFactory.getLogger(HelloWorld.class);
+logger.info("Hello World");</pre>
+        <p>With SLFJ you’re not afraid that you picked the wrong logging framework; you can easily change it without
+            modifying even one line of code. SLFJ logging levels include <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>,
+            <code>DEBUG</code>, and <code>TRACE</code>, which correspond to the <code>SEVERE</code>,
+            <code>WARNING</code>, <code>INFO</code>, <code>FINE</code>, <code>FINER</code> levels of the Java Logging
+            API or similar levels in other frameworks. Watch <a
+                    href="https://www.youtube.com/watch?v=tMLEbGJ2z7I&amp;hd=1;">this video</a> to see how easy it is to
+            switch from one logging framework to another.</p>
+        <p>To add SLFJ you need to add two JARs to your project: one with the SLFJ API, and another that binds a
+            particular logging framework to SLFJ. In <a href="part0037.html#repos">Lesson 36</a>, you’ll learn how to
+            automate getting required JARs from public repositories of binaries. If you decide to try using SLFJ with
+            the Java Logging API, you can find the required two JARs in <a
+                    href="http://search.maven.org/#search%7Cga%7C1%7Cslf4j-api">Maven Central</a> by searching for the
+            following artifacts:  <code>slf4j-api</code> and <code>slf4j-jdk14</code>.</p>
+        <p>But no matter what logging framework you choose, the sooner you stop using <code>System.out.println()</code>
+            the <a id="idp23208704"></a><a id="idp23210688"></a><a id="idp23212112"></a>better.</p>
+    </section>
+    <section>
+        <h2><a id="try_it-id00130"></a>Try It</h2>
+        <p>In this excercise, you create, configure, <a id="idp23216608"></a><a id="idp23215616"></a>and use an
+            application-specific <code>logging.properties</code> file. You also use a rotating file handler to control
+            the size and number of your log files.</p>
+        <section>
+            <h3><a id="lesson_requirements-id00131"></a>Lesson Requirements</h3>
+            <p>You should have Java installed.</p>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>NOTE</i></b>&#x000A0;&#x000A0;&#x000A0;<i>You <span epub:type="pagebreak" title="510"
+                                                                                 id="Page_510"></span>can download the
+                        code and resources for this “Try It” from the book’s web page at</i> <code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code><i>.
+                        You can find them in the Lesson34 folder in the download.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <section>
+            <h3><a id="step-by-step-id00132"></a>Step-by-Step</h3>
+            <ol>
+                <li>Copy the file <code>logging.properties</code> from your <code>jre/lib </code>directory into the root
+                    directory of the project Lesson34. Rename this file to <code>myLogging.properties</code>. I’m
+                    assuming that you previously created the <code>logs</code> directory.
+                </li>
+                <li>
+                    <p>Set the levels of the logger and the console handler to <code>FINE</code> in <code>myLogging.properties</code>:
+                    </p>
+                    <pre>
+.level= FINE
+java.util.logging.ConsoleHandler.level = FINE
+</pre>
+                </li>
+                <li>
+                    <p>In Eclipse create a package <code>tryit</code> and copy the file
+                        <code>HelloWorldHandlers.java</code> there. Rename this file and refactor the code so it uses
+                        the class name <code>RotatingFilesLogger</code>.</p>
+                </li>
+                <li>
+                    <p>Open the Run Configurations window for the class <code>RotatingFilesLogger</code>, select the
+                        Arguments tab, and add the following JRE property in the VM Arguments text field:</p>
+                    <pre>
+-Djava.util.logging.config.file="myLogging.properties"
+</pre>
+                </li>
+                <li>
+                    <p>Modify the line in <code>RotatingFilesHandler</code> to direct the log records to the file <code>logs/rotating.log</code>.
+                    </p>
+                </li>
+                <li>
+                    <p>Run the <code>RotatingFilesLogger</code> program. It should publish  <code>FINE</code>, <code>INFO</code>,
+                        and <code>SEVERE</code> messages into Eclipse console view regardless of the settings in the
+                        JRE’s global <code>logging.properties</code> file. This version of the program also creates a
+                        log file <code>rotating.log</code> in the <code>logs</code> directory. We implement file
+                        rotation in the next step.</p>
+                </li>
+                <li>Modify the line that creates <code>FileHandler</code> to use the constructor for rotating files in
+                    the append mode:
+                    <pre>
+helloFileHandler = 
+           new FileHandler("logs/rotating.log", 1000, 3, true);
+</pre>
+                </li>
+                <li>
+                    <p>Run the program several times and monitor the content of the <code>logs</code> directory. After
+                        several runs you should see the files named like  <code>rotating.log.0</code>, <code>rotating.log.1</code>,
+                        and  <code>rotating.log.2 </code>there.  The numeric suffix will never go higher than 2 as the
+                        logger creates and rotates only three log files. The name of the newest log file always has the
+                        suffix 0.</p>
+                </li>
+            </ol>
+            <aside epub:type="sidebar">
+                <div class="top hr">
+                    <hr/>
+                </div>
+                <section class="feature1">
+                    <p><b><i>TIP</i></b>&#x000A0;&#x000A0;&#x000A0;<i>Please select the videos for <a
+                            href="part0035.html">Lesson 34</a> online at </i><code><a
+                            href="http://www.wrox.com/go/javaprog24hr2e">www.wrox.com/go/javaprog24hr2e</a></code>.<i> </i><i>You
+                        will also be able to download the code and resources for this lesson from the website.</i></p>
+                    <div class="bottom hr">
+                        <hr/>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </section>
+</section>
+</body>
+</html>
