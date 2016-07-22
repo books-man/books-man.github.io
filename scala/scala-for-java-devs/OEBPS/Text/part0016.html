@@ -1,0 +1,918 @@
+﻿<?Xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<tiTLE>Generics</tITLE>
+<LInk HRef="../Styles/style0001.css" tyPE=text/css REL="stylesheet"/>
+
+<dIv>
+<h2 id="leanpub-auto-generics">Generics</h2>
+
+<p>In this chapter we’ll look at generics or <EM>type parameterisation</em> or generic programming in Scala. We’ll look at:
+
+<ul><LI>Syntax for generics: defining types and methods</lI>
+  <Li>Bounded types, <codE>extends</cODE> and <CodE>super</CoDe>
+  <lI>Wildcards in both Java and Scala</Li>
+  <LI>Covariance and contravariance
+</uL><H3 id="leanpub-auto-parametric-polymorphism">Parametric Polymorphism</H3>
+
+<p>We talked briefly about subtype or <eM>inclusion</EM> polymorphism; the idea that subtypes can be substituted to stand in for their super-types. These stand-ins can provide different behaviour without changing the structure of your code. The types of polymorphism include:</P>
+
+<uL><LI>Inclusion polymorphism (see the <A HREF=part0014.xhtml#inclusion_poly>Inheritance</a> chapter)
+  <LI>Ad hoc polymorphism (which is basically method overloading)
+  <li>Parametric polymorphism
+</ul><P>Parametric polymorphism allows us to write code generically without depending on specific types, yet still maintain type safety. We use it all the time when we work with classes that work against multiple types. For example:
+
+<DIv cLASS=code-block>
+<DIV CLaSs=highlight><pRe>  <coDE clasS="n">List</COdE><cOdE CLasS=o>&lt;</Code><CodE ClasS="n">Customer</cOdE><codE Class="o">&gt;</COde> <cOdE CLasS="n">customers</CodE> <cOdE ClasS="o">=</COdE> <CODe cLaSs="k">new</coDE> <Code CLASs=n>ArrayList</COdE><COde CLASs=o>&lt;&gt;();</COde>         <coDE CLASS="c1">// java</COdE>
+</pre></dIV>
+
+</Div>
+
+<P>Parametric polymorphism will be familiar if you’ve ever created a list of something in Java. It’s more commonly referred to as generics; by giving a generic type (like <CODe>List</CODE>) a parameterised type, we can treat it as a list yet still refer to its contents in a type-safe way. Generics are at play even if you don’t specify the parameterised type in Java. So although you can write the following:</p>
+
+<dIv class="code-block">
+<div claSS="highlight"><pRE>  <CodE CLasS=n>List</cOde> <CoDE CLAss="n">collection</CODE> <coDE cLass=o>=</CODe> <COde claSS=k>new</cODE> <CoDE clAss="n">ArrayList</codE><CODe ClASS="o">();</coDE>                    <cODE ClasS="c1">// java</cODE>
+</pRE></dIV>
+
+</dIV>
+
+<P>You’re actually creating a generic <COde>List</coDe> of type <code>Object</cOde>.</P>
+
+<DIv CLAss="code-block">
+<DiV CLaSS=highlight><PRe>  <CODe cLASS="n">List</COdE><CODe CLAss=o>&lt;</cODE><coDE clAsS=n>Object</coDE><coDe CLaSS=o>&gt;</CODe> <coDE claSS=n>collection</cODe> <CODE cLasS="o">=</cODE> <COde CLaSS="k">new</CODE> <coDe CLAsS="n">ArrayList</coDe><coDe CLAsS="o">&lt;&gt;();</CoDe>          <CoDe clASs=c1>// java</code>
+</pRe></dIV>
+
+</dIV>
+
+<div clAss="aside sidebarish">
+  <H4 id="leanpub-auto-diamond-operator">Diamond Operator</H4>
+
+  <P>You can create a list of <coDE>Object</COde> in Java like this:
+
+  <DIv CLASs="code-block">
+<diV CLaSs="highlight"><prE>  <CODE cLASs=n>List</CoDe><COde claSs="o">&lt;</CODe><CODe clASs=n>Object</CodE><COdE claSS=o>&gt;</cODe> <CoDe CLAss=n>collection</CODe> <cOde ClASS="o">=</coDe> <COdE ClAsS="k">new</CODe> <CoDe cLaSs="n">ArrayList</coDE><CODE cLass=o>&lt;&gt;();</codE>
+</pRE></Div>
+  
+</DIv>
+
+  <P>The diamond operator (&lt;&gt;) on the right-hand side of the assignment above was new in Java 7. Before Java 7, you were forced to repeat the generic type declaration on the right-hand side.</P>
+
+
+</DIV>
+
+<h4 id="leanpub-auto-class-generics">Class Generics</h4>
+
+<p>When you create a list of a specific type, Java will give you type safety on <Code>List</cOde> methods that take parameters and return things of that type. For example, creating a list of customers but then trying to add an object that isn’t a customer will result in a compiler failure.
+
+<diV cLasS="code-block">
+<dIV clASS="highlight"><pRe>  <CODE cLasS="n">List</CODE><cODE CLASS="o">&lt;</cODe><COdE CLaSS=n>Customer</code><COde claSs="o">&gt;</cOdE> <cODe CLASs="n">customers</CoDe> <cODE cLaSs="o">=</code> <CODE CLASS="k">new</cODe> <CoDe ClAss=n>ArrayList</COdE><cODe clAss=o>&lt;&gt;();</CodE>
+  <CodE CLass="n">customers</COdE><code CLasS="o">.</coDE><codE ClASs="na">add</CoDE><coDE ClAss="o">(</CODE><CoDe ClaSS=k>new</COde> <cOdE claSs="n">HockeyPuck</cODE><coDe clasS="o">());</CODe>               <Code ClASS=c1>// compiler failure</coDE>
+</pre></dIv>
+
+</div>
+
+<p>The basic syntax for Scala will look familiar to Java developers; we just replace the chevrons with square brackets.
+
+<DiV claSS="code-block">
+<Div ClASs="highlight"><PRe>  <CODe claSs="n">List</CODe><cOdE clasS="o">&lt;</coDe><codE clASS=n>Customer</cODE><CODE cLasS=o>&gt;</CoDe> <coDE ClasS="n">customers</code> <Code clASS=o>=</cOde> <Code cLAsS=k>new</coDE> <CoDE CLAss=n>ArrayList</COde><coDE ClAss=o>&lt;&gt;();</codE>     <COde CLaSS="c1">// java</cOdE>
+</PRE></dIV>
+
+</Div>
+
+<P>versus
+
+<DIv ClaSS="code-block">
+<DIV cLAsS=highlight><PRE>  <CODE cLASs="k">val</CodE> <CoDe clasS=n>customers</coDe><coDe CLaSs="k">:</cODE> <cODE cLAss="kt">List</cOde><codE CLASS=o>[</cOde><CODe clAss="kt">Customer</CODe><CoDe cLAss=o>]</cODe> <CODE clASS="k">=</cOde> <CodE CLaSs=nc>List</CoDe><codE CLAss="o">()</cODe>            <cOdE ClAss="c1">// scala</CoDE>
+</PRe></Div>
+
+</diV>
+
+<p>Creating a list in Scala like this also shows that it has the equivalent of the diamond operator. Scala’s type inference can work out that <cOdE>customers</CODE> is of type <COdE>Customer</CoDE> without repeating the generics on the right-hand side.</P>
+
+<DiV ClAss="code-block">
+<Div cLAsS="highlight"><pre>  <cOdE CLasS="k">val</COdE> <Code ClASS="n">customers</CODe><CoDe CLASs=k>:</CoDE> <CoDe cLaSS=kt>List</codE><CoDE cLaSS="o">[</cOdE><COde ClaSS="kt">Customer</CoDe><coDE ClAsS=o>]</COde> <cOdE clASs="k">=</CODe> <cOdE class=nc>List</CoDE><CODe cLAss="o">[</CoDE><coDE clASs=kt>Customer</cODe><cODE CLAss=o>]()</cODE>
+                                           <COde ClaSs="o">^</coDE>
+                            <code cLaSs=c1>// no need to repeat the type</COde>
+</PRe></dIV>
+
+</DiV>
+
+<h4 id="leanpub-auto-method-generics">Method Generics</h4>
+
+<P>You can define generic parameters for methods in a similar way. To define a generic parameter to a method without defining a generic type for the whole class, you’d do something like this in Java, where the generic type is defined straight after the <cOdE>public</CoDE> keyword and used as the type of the parameter <COde>a</CODE>:
+
+<div cLaSs="code-block">
+<div cLass="highlight"><pre>  <codE ClasS="kd">public</CODE> <code ClaSS=o>&lt;</cOde><code Class=n>A</CODE><codE ClAss=o>&gt;</CODe> <code ClAsS="kt">void</CODe> <cODE cLaSS="n">add</COde><COdE cLasS=o>(</CodE><cODE clAss="n">A</CodE> <CoDE clASS="n">a</coDe><codE cLaSs="o">)</CoDe>      <COdE CLASS=c1>// java</CoDe>
+</PRE></diV>
+
+</dIv>
+
+<P>versus this in Scala:</P>
+
+<dIV clASs="code-block">
+<dIv cLAsS="highlight"><pre>  <CodE CLasS=k>def</cODE> <codE cLASs=n>add</cODE><CodE clAsS=o>[</coDe><cOdE CLass=kt>A</CoDe><coDe ClaSS="o">](</CODE><cODE ClAss=n>a</code><CODe cLaSS="k">:</codE> <Code ClASs=kt>A</cOdE><cODe cLAss=o>)</cODE>              <CoDE clAss=c1>// scala</coDe>
+</prE></DIv>
+
+</DiV>
+
+<h4 id="leanpub-auto-stack-example">Stack Example</H4>
+
+<P>As a slightly more expanded example, in Java, we could generalise a <cODE>Stack</cOde> class. We could create an interface <CodE>Stack</CoDE> with a generic type <CodE>T</code> and ensure that the <cODE>push</Code> method takes a <CoDe>T</CODe> and the <coDe>pop</COde> method returns a <cOdE>T</CoDe>.</P>
+
+<DIV CLass=code-block>
+<dIv CLASS=highlight><pRE>  <codE clAsS=c1>// java</coDE>
+  <Code cLass="kd">public</code> <COdE CLasS=kd>interface</CoDe> <Code clasS=nc>Stack</cOdE><coDe clAss="o">&lt;</CoDe><cODe CLAsS="n">T</coDE><cODE cLaSs=o>&gt;</COde> <cOde class="o">{</cODe>
+      <cODE clAss=kt>void</COde> <code CLAsS=nf>push</COde><COdE claSS="o">(</codE><CODE cLAss="n">T</CODE> <coDe cLaSs="n">t</codE><coDe cLAss="o">);</coDe>
+      <cOdE clAss=n>T</cODE> <CodE cLASs="nf">pop</code><cODe cLass="o">();</codE>
+  <cODe clAss=o>}</CODe>
+</PRE></DiV>
+
+</diV>
+
+<P>In Scala:
+
+<DIV cLAss=code-block>
+<Div cLasS=highlight><PRe>  <codE ClAss=c1>// scala</CodE>
+  <COdE cLaSS=k>trait</CodE> <cOde CLaSS=nc>Stack</coDE><cOde ClASs=o>[</cOdE><coDE CLASS=kt>T</CodE><code cLAss=o>]</Code> <cOde CLaSS=o>{</coDe>
+    <CODE ClASS=k>def</CODE> <coDE Class="n">push</CODe><code clASs="o">(</code><cOdE clAss="n">t</coDe><CodE ClaSs=k>:</cODe> <Code cLaSs="kt">T</coDe><coDE CLAsS=o>)</CoDe>
+    <coDE cLass="k">def</CoDE> <coDe class="n">pop</cOde><coDe claSs="k">:</cODE> <coDE CLASS="kt">T</cODe>
+  <Code CLASS=o>}</CoDE>
+</PRE></dIv>
+
+</Div>
+
+<p>For demonstration purposes, we could implement <cOdE>Stack</coDE> using a list in Java like this:</P>
+
+<div ClASs="code-block">
+<diV cLaSs=highlight><prE>  <cODE cLaSS="c1">// java</coDE>
+  <Code CLAsS=kd>public</CODe> <cODE cLASS=kd>class</Code> <CODe CLASs="nc">ListStack</cODE><code CLAsS=o>&lt;</COdE><cOde cLASs="n">T</cOdE><CoDe ClasS=o>&gt;</codE> <CoDe CLAsS=kd>implements</COde> <CODE CLASs="n">Stack</CoDE><codE cLASS="o">&lt;</cODE><CoDe cLaSS="n">T</code><codE clASs="o">&gt;</CODe> <cODE clASS=o>{</COde>
+
+      <COde cLASs="kd">private</CODE> <codE cLass="kd">final</CodE> <cODE ClaSs=n>List</cODe><COdE ClaSS=o>&lt;</cOde><codE CLAsS="n">T</coDe><CodE clASS=o>&gt;</Code> <CoDe CLaSs="n">elements</CodE> <CODe clASS="o">=</coDe> <cOde CLASs=k>new</cODe> <cOde cLaSs="n">ArrayList</CODe><code cLASs="o">&lt;&gt;();</CoDE>
+
+      <coDE ClAss="nd">@Override</COde>
+      <CodE claSs="kd">public</CoDE> <Code clasS="kt">void</coDE> <CODe CLaSS=nf>push</cODE><coDe cLasS=o>(</COde><COdE cLaSs=n>T</COde> <coDE cLass=n>t</CoDe><CODe CLasS=o>)</code> <CodE CLaSS="o">{</code>
+          <coDE clASs="n">elements</CODe><coDe ClaSS=o>.</CODe><cODE clAsS=na>add</CODe><CODe cLAss=o>(</cOdE><cODe class="mi">0</cODE><cODE clAss="o">,</cODE> <cOde cLASS="n">t</cODe><codE CLASS=o>);</codE>
+      <Code claSs="o">}</CODe>
+
+      <cODE CLAss="nd">@Override</CodE>
+      <COdE CLASS=kd>public</cOdE> <code cLasS="n">T</codE> <COde claSs="nf">pop</cODE><COdE claSS="o">()</CoDE> <CoDE CLASS=o>{</cOdE>
+          <CODE cLASS="k">if</COdE> <CODe cLass=o>(</CoDE><cOdE cLAsS=n>elements</cODE><codE claSs=o>.</CODe><CODe CLAss=na>isEmpty</coDe><Code cLASs=o>())</cODe>
+              <codE ClAss="k">throw</code> <COdE CLASs="k">new</code> <Code cLASs="nf">IndexOutOfBoundsException</CoDE><cODe CLaSS=o>();</Code>
+          <CODe clAss="k">return</COde> <cOde ClaSS="n">elements</CODE><codE cLass=o>.</COde><coDe clASS=na>remove</coDe><CoDE clASs=o>(</CoDE><CodE cLASS="mi">0</cOde><coDe ClaSS="o">);</cOde>
+      <CodE ClasS="o">}</CoDE>
+  <cODe cLAsS=o>}</cOde>
+</PrE></dIV>
+
+</DIV>
+
+<P>We “bind” a concrete type to the generic type when we supply the compiler with a concrete type. Adding <Code>String</CODE> to the declaration below (on line 3) “binds” what was the generic type <CodE>T</CoDE> to <coDE>String</CODE>. The compiler knows to replace <CODE>T</codE> with <code>String</cOdE> and we can start using strings as arguments and return types. If we try to add a number to the stack in our example, we’d get a compiler error.
+
+<dIv cLaSS=code-block>
+<DIv CLasS="highlight"><PrE><COdE cLasS=lineno>1</CodE>   <codE CLaSS="c1">// java</CoDe>
+<cOdE cLass="lineno">2</Code>   <CODe cLasS=kd>public</CODe> <codE cLAsS="kd">static</coDe> <cODe clAss=kt>void</CodE> <cODe cLAss=nf>main</COde><coDe class="o">(</cOdE><CODE CLass=n>String</coDE><CodE cLAsS="o">...</CoDE> <coDe ClAss=n>args</CodE><CoDe ClASS="o">)</CODE> <code class=o>{</Code>
+<coDE CLAss=lineno>3</CODE>       <coDE clasS="n">Stack</Code><codE cLaSS=o>&lt;</CoDe><COdE clASs=n>String</coDe><CodE CLASs="o">&gt;</cOdE> <cOdE cLASs="n">stack</CoDe> <coDe cLaSS="o">=</Code> <CODE claSS="k">new</code> <codE CLAss="n">ListStack</cODe><COde cLASS=o>&lt;&gt;();</COdE>
+<CoDE claSs="lineno">4</COdE>       <COdE claSS="n">stack</coDE><CODE class=o>.</Code><COdE ClAss=na>push</COdE><CoDE ClAss="o">(</cOdE><COde ClasS=s>"C"</CodE><cOde cLass="o">);</coDE>
+<coDE Class="lineno">5</cODe>       <cOde cLASS=n>stack</COdE><cOde ClASS=o>.</CODe><cODe class=na>push</CODE><CoDe ClaSs="o">(</cODE><code clASs="s">"B"</Code><cODE clAss=o>);</COde>
+<cODE CLASS=lineno>6</cODE>       <COdE cLAsS="n">stack</Code><CoDe cLASs=o>.</COdE><cODE CLasS="na">push</coDE><CODe ClASS="o">(</CODE><COde ClaSS="s">"A"</CoDe><code cLAsS="o">);</coDE>
+<codE ClASs="lineno">7</cOdE>       <coDE cLaSS="n">stack</coDE><codE CLasS="o">.</COde><Code CLAss=na>push</codE><cOde clasS=o>(</CODe><Code CLaSs=mi>12</COdE><CoDE clASS="o">);</CoDE>                           <COdE ClAsS=c1>// compilation failure</COde>
+<CodE clASs=lineno>8</coDE>       <CoDE cLaSS=n>String</codE> <COdE Class="n">element</codE> <cODE ClASS=o>=</COdE> <CoDE CLasS="n">stack</CoDE><cOde claSS="o">.</Code><cOde CLaSs="na">pop</cOde><CODe cLAsS="o">());</CoDE>
+<cODe cLASS="lineno">9</CodE>   <coDe ClAss=o>}</CoDE>
+</pRE></Div>
+
+</diV>
+
+<P>Creating the <cODe>ListStack</code> in Scala is straightforward. It would look something like this:</P>
+
+<DiV ClAsS="code-block">
+<DiV CLASS="highlight"><PrE>  <COde CLasS=c1>// scala</cODE>
+  <CODE cLASs=k>class</code> <CODE clasS="nc">ListStack</cOde><coDE cLasS=o>[</cOdE><coDE CLAsS=kt>T</Code><COdE clAsS=o>]</codE> <COdE CLAss="nc">extends</CODE> <COde claSs="nc">Stack</COde><CODe ClasS="o">[</coDe><COdE clAsS=kt>T</cOde><CoDe Class="o">]</coDE> <cOdE class="o">{</Code>
+
+    <CoDe cLASS=k>private</CODE> <COdE claSS=k>var</code> <CODe cLaSs=n>elements</CODe><coDE cLAss=k>:</cODe> <Code cLasS="kt">List</CoDE><coDE CLaSS="o">[</codE><COdE CLaSS=kt>T</cOde><codE ClASS=o>]</COdE> <COde class=k>=</cODE> <cOde CLass="nc">List</cODE><codE ClaSs=o>()</CoDE>
+
+    <CoDe cLasS=k>override</cOde> <COde cLAsS="k">def</code> <COde class=n>push</COdE><COdE cLaSs="o">(</codE><cODE clASS="n">t</code><COde ClASs=k>:</cOdE> <codE CLass="kt">T</COde><COdE CLAss=o>)</coDE><cOde claSs=k>:</cODe> <CodE cLass="kt">Unit</CODE> <cOde cLaSS="o">=</cODe> <cOdE cLASs="o">{</codE>
+      <coDE clAsS="n">elements</CodE> <cOde claSs=k>=</COdE> <cOde cLASS="n">t</cODe> <codE clASS="o">+:</code> <coDE CLAsS=n>elements</coDE>
+    <CodE CLass=o>}</coDe>
+
+    <code ClasS=k>override</cODe> <cODe cLAsS=k>def</cOde> <coDe ClaSS="n">pop</CODe><coDe clAss="k">:</cOdE> <CodE class="kt">T</coDe> <cOdE cLASS=o>=</coDE> <COdE CLASS=o>{</coDE>
+      <code class=k>if</cOdE> <CoDe clASs=o>(</cODE><CODe cLass="n">elements</cOdE><CODe class="o">.</cODE><CoDe cLASs=n>isEmpty</COde><COdE CLaSS="o">)</cOdE> <cODE ClasS=k>throw</CoDe> <Code cLaSs=k>new</COde> <coDE cLasS="nc">IndexOutOfBoundsException</CoDe>
+      <cODE clAss="k">val</cODE> <cOde clASs="n">head</cODE> <codE cLASs=k>=</CodE> <coDe cLass="n">elements</coDE><cODe CLASS=o>.</codE><coDE CLass="n">head</Code>
+      <CoDE CLaSS="n">elements</cOdE> <cODE CLASs=k>=</codE> <COde Class="n">elements</cOde><coDe ClaSS="o">.</COdE><code ClaSs="n">tail</CoDe>
+      <CoDE clAss="n">head</code>
+    <cOde clAss=o>}</code>
+  <coDe cLASs="o">}</codE>
+</PrE></div>
+
+</diV>
+
+<P>We still use a <coDe>List</cODe> to store the elements but because Scala’s <codE>List</code> is immutable, in the <COde>push</coDE> method, we replace the instance with a new list with the element prepended.
+
+<p>Similarly, when we <COdE>pop</coDE>, we have to replace the elements with all but the first element using the <code>tail</CodE> method. We get and return the first element using the <cODe>head</code> method. You’ll come across the idea of head (the first) and tail (the remainder) a lot in Scala and functional programming.
+
+<P>Binding to a concrete type is just the same. In the example below, I’m not declaring the <CodE>stack</cODE> variable with a type, so we need to give the compiler a hint about what kind of <COde>List</CODe> it will be by adding the parameterised type on line 3.</p>
+
+<diV claSs=code-block>
+<div clASs="highlight"><pre><code cLAsS=lineno>1</CoDe>   <CODe clAsS=c1>// scala</coDE>
+<Code class="lineno">2</cODe>   <cODE ClASs="k">def</CoDE> <CodE cLass=n>main</cODE><CodE cLaSs="o">(</Code><CoDE clAss=n>args</CoDE><code cLaSs="k">:</cODe> <COdE claSS=kt>String*</code><CoDE class="o">)</Code> <CodE cLass=o>{</Code>
+<coDE cLaSS=lineno>3</coDE>       <cODE cLASS=k>val</CodE> <CODE cLaSS="n">stack</cODe> <CoDe CLAss=k>=</cOde> <coDE ClaSs=k>new</cODE> <Code cLAsS=nc>ListStack</CODE><cODE CLAsS=o>[</code><coDe cLASs="kt">String</cODE><CODe claSS="o">]</CoDe>
+<Code cLaSs=lineno>4</COdE>       <cODE ClAsS="n">stack</cODE><Code clAss=o>.</COdE><code ClAsS=n>push</CoDE><cOdE cLass="o">(</codE><coDe clAss="s">"C"</COde><CodE CLASS=o>)</cODe>
+<Code CLass="lineno">5</coDe>       <codE class="n">stack</cOdE><CodE ClAsS=o>.</cOde><CodE ClaSs="n">push</code><cOde ClASs=o>(</cOde><coDE clASs="s">"B"</CODe><COdE cLASS="o">)</code>
+<COdE ClASs=lineno>6</CodE>       <cOde class=n>stack</CODe><COdE clASS=o>.</CoDE><CODE class=n>push</coDe><cOdE Class="o">(</CODE><cODe ClaSS="s">"A"</code><CoDE CLasS="o">)</CODE>
+<code cLasS=lineno>7</code>       <coDe CLass=k>val</COdE> <cOdE Class=n>element</coDe><CoDe cLaSs="k">:</COdE> <Code clASs="kt">String</coDE> <coDe CLAsS="o">=</cOde> <CoDe CLaSS=n>stack</CoDe><CodE claSS=o>.</cODe><coDe cLass=n>pop</code>
+<COde cLASs=lineno>8</CoDe>   <CoDE cLass="o">}</cOde>
+</PRE></dIv>
+
+</DIv>
+
+<p>To demonstrate method-level generics, we could add a method to convert a <coDe>Stack</CODE> to an array. The thing to note here is that the generic is defined solely in terms of the method. <CodE>A</cODe> isn’t related to the generic type on the class definition.
+
+<diV CLass="code-block">
+<dIv clASs="highlight"><PrE>  <CoDE CLaSS=c1>// java</CodE>
+  <coDe class=kd>public</cOde> <cODe CLasS=kd>interface</COde> <cODE ClaSs="nc">Stack</CODe><CoDe ClASS="o">&lt;</cODe><CODe cLAss="n">T</Code><CodE cLAss=o>&gt;</CodE> <COdE cLaSs="o">{</code>
+      <coDE cLaSS=kd>static</CodE> <Code cLAsS="o">&lt;</CoDe><coDe Class="n">A</coDE><codE claSs="o">&gt;</CODE> <cODe CLASS="n">A</CodE><coDE ClASs="o">[]</coDe> <code ClAsS=n>toArray</cOde><Code ClASS="o">(</CodE><COde claSs="n">Stack</coDe><Code cLaSS=o>&lt;</CoDe><CoDe cLASs="n">A</coDE><CoDE CLAsS=o>&gt;</cODE> <cODE claSS=n>stack</CODe><cODE CLAsS="o">)</cOdE> <COdE CLass="o">{</CodE>
+          <Code clASS="k">throw</CoDe> <cODe CLASS="k">new</cOde> <coDe CLAsS="nf">UnsupportedOperationException</coDe><COde cLaSS="o">();</CoDe>
+      <Code ClASs="o">}</coDe>
+  <cODe ClAss=o>}</COde>
+</PRE></dIv>
+
+</Div>
+
+<P>You define method-level generics in Scala in just the same way. Below, <COde>A</codE> is defined purely in scope for the method.
+
+<dIV ClASS="code-block">
+<div CLASS="highlight"><Pre>  <coDE clAsS=c1>// scala</CoDe>
+  <CoDe CLASs="k">object</codE> <cODE cLaSs=nc>Stack</cODe> <cODe cLASS="o">{</code>
+    <coDE CLAsS="k">def</CODE> <cOdE cLASS=n>toArray</cOde><CoDe cLASs="o">[</CODE><CodE clASS="kt">A</cODe><cODE Class=o>](</Code><CoDE ClASS=n>a</coDE><Code class="k">:</codE> <CoDE clAss="kt">Stack</cOdE><cOdE cLaSS="o">[</code><cOde cLaSS=kt>A</COdE><codE cLaSs=o>])</CODE><cOde ClaSs="k">:</cODE> <cODe ClAsS=kt>Array</CoDe><coDe clAsS="o">[</cODE><Code clASS=kt>A</coDe><cOde cLaSs=o>]</COdE> <cODe CLass="k">=</coDE> <CoDE cLass="o">{</cOde>
+      <CoDE cLASS="o">???</cODe>
+    <CoDE ClASS="o">}</CoDE>
+  <cOde clAss=o>}</CoDE>
+</pre></dIv>
+
+</diV>
+
+<Div CLASs="page-break"></DiV><dIv STYle="page-break-after:always"></DIv>
+<H3 id="leanpub-auto-bounded-classes">Bounded Classes</H3>
+
+<p>Let’s go back to the list example with a generic type of <Code>Customer</COde>.</p>
+
+<diV cLAsS="code-block">
+<Div ClaSS=highlight><PRE>  <COdE CLaSS="n">List</CODe><CoDe ClaSs=o>&lt;</CodE><coDe cLass="n">Customer</CoDE><cOdE CLaSS=o>&gt;</CODe> <cODE CLASS="n">customers</CODE> <cODe ClAsS="o">=</CODE> <cODe CLASs=k>new</coDe> <codE ClasS=n>ArrayList</COde><CODE cLaSs=o>&lt;&gt;();</CoDE>         <CoDe CLAss=c1>// java</CoDE>
+</PRe></dIV>
+
+</DIv>
+
+<P>The contents of the list can be any <Code>Customer</CODE> or subtype of <COde>Customer</cODE>, so we can add a <cOde>DiscountedCustomer</CodE> to the list.
+
+
+<DiV CLAsS=code-block>
+<dIV claSS="highlight"><PRE>  <CODe cLaSS=n>List</code><COdE claSS=o>&lt;</cODe><cOdE cLaSs=n>Customer</cOdE><CoDE clAsS=o>&gt;</COdE> <Code claSS=n>customers</coDe> <coDE ClaSS="o">=</cODE> <CoDE clASS=k>new</coDe> <coDe ClASS=n>ArrayList</COdE><CODe CLaSS="o">&lt;&gt;();</COde>
+  <CoDe CLaSs=n>customers</cOde><CODe class=o>.</COde><coDE clasS=na>add</CoDE><CODe CLAsS=o>(</cOde><Code CLASs=k>new</COde> <cOde ClaSs="n">Customer</Code><codE clASs="o">(</cOdE><COde cLaSS="s">"Bob Crispin"</coDE><CODe cLass=o>,</cODe> <coDE cLass=s>"15 Fleetwood Mack Road"</COdE><coDE ClaSs=o>));</coDE>
+  <CoDE CLasS="n">customers</COdE><CODE ClASS="o">.</cOde><COdE ClAss="na">add</cODe><codE class=o>(</cOdE><COde ClASs=k>new</CodE> <code clAsS=n>DiscountedCustomer</coDe><COdE CLAss=o>(</cOde><COdE cLAsS=s>"Derick Jonar"</cOdE><coDE cLAsS=o>,</code> <CODE CLAss=s>"23 Woodfield Way"</coDe><code cLass=o>));</CodE>
+</Pre></diV>
+
+</dIV>
+
+<p>Type erasure sees the collection as containing only <COde>Object</codE>s. The compiler will ensure that only things of the correct type go into the collection and use a cast on the way out. That means that anything you take out of our example can only be treated as a <cOde>Customer</codE>.</P>
+
+<P>If all you’ve done is override <COde>Customer</coDe> behaviour in the <COdE>DiscountedCustomer</coDe>, you can treat the objects polymorphically and you wouldn’t see a problem. If you’ve added methods to <CODE>DiscountedCustomer</CoDe>, however, you can’t call them without an unchecked cast.</p>
+
+<DIv cLaSs="code-block">
+<dIV ClaSS=highlight><pRE>  <code clASS="k">for</cODE> <codE ClAss=o>(</cODE><cOdE class="n">Customer</cOde> <coDE CLaSS=n>customer</cODe> <CoDe cLaSS=o>:</coDe> <codE clAsS=n>customers</CODe><CoDe cLaSS="o">)</code> <code claSs="o">{</CoDE>   <cOde cLasS=c1>// some may be DiscountedCustomers</coDE>
+      <COdE cLass="c1">// total will be the discounted total for any DiscountedCustomers</Code>
+      <CODe class="n">System</coDE><CodE clasS=o>.</CodE><CoDE CLaSS=na>out</CoDe><cOdE clAss=o>.</COdE><Code cLaSS="na">println</cOde><CoDe ClASS="o">(</cODe><COde CLASS=n>customer</COde><CoDE CLasS="o">.</CODE><COde clASs=na>getName</cOde><CoDE ClAss="o">()</CodE> <COdE ClAss="o">+</cODe> <cOdE cLass="s">" : "</cOdE> <codE CLAsS="o">+</cOde> <coDe CLasS="n">customer</CodE><coDE ClASs=o>.</cODe><coDE CLasS="na">total</CoDe><CodE cLasS=o>());</CoDe>
+  <CoDE cLASS="o">}</cODE>
+
+  <cOdE cLaSs="n">DiscountedCustomer</COdE> <COdE ClaSS="n">customer</CoDe> <coDe ClAsS=o>=</COdE> <code CLaSs="o">(</cOdE><code ClaSs=n>DiscountedCustomer</CODe><COde CLAss="o">)</CODe> <CODE CLass=n>customers</cOdE><CODE CLaSS="o">.</code><cODE CLaSS=na>get</COde><COde ClASs="o">(</cODE><coDE cLAss=mi>0</coDE><cODE ClaSs=o>);</CODE>
+  <cOde ClASS="n">System</cODE><cOde CLASS="o">.</coDE><Code cLASs=na>out</CodE><Code class="o">.</COde><cOde CLASs="na">println</Code><CODe claSS="o">(</CoDE><cODe clAss=n>customer</Code><COde CLAss=o>.</codE><CODE ClASS="na">getDiscountAmount</CODe><COde clASs="o">());</COde>
+</Pre></dIV>
+
+</div>
+
+<p>To get round this limitation, you can force generic types to be bound to specific types within a class hierarchy. These are called <Em>bounded types</em>.</P>
+
+<h4 id="leanpub-auto-upper-bounds-u-extends-t">Upper Bounds (<CoDE>&lt;U extends T&gt;</COdE>)</h4>
+
+<p>You can restrict a generic type using <coDE>extends</CODE> or <COde>super</CoDe> in Java. These set the bounds of that type to either be a subtype or super-type. You use <CoDe>extends</cODE> to set the upper bounds and <code>super</cOdE>, the lower bounds. They can refer to a class or an interface.</P>
+
+<p>We’ve actually already seen an example of setting an upper bound in the <codE>Sortable</CodE> interface we wrote back in the <A HReF=part0014.xhtml#inheritance_chapter>inheritance chapter</A>. We created an interface describing generically that things can be sortable.
+
+<diV Class="code-block">
+<div Class="highlight"><PrE>  <cODE ClaSs="c1">// java</CODe>
+  <codE CLAsS=kd>public</cODe> <CoDe ClASS=kd>interface</CODE> <Code cLAss="nc">Sortable</cODe><code ClAss=o>&lt;</code><Code cLAss="n">A</CoDe> <coDe CLaSs="kd">extends</codE> <COde ClasS=n>Comparable</coDe><cOdE cLaSs="o">&lt;</cODe><cODe cLAsS=n>A</code><coDE cLASs=o>&gt;&gt;</CODe> <CoDE clAss=kd>extends</CODe> <Code CLAsS="n">Iterable</cODe><CODe cLASs=o>&lt;</COdE><cOde cLAsS=n>A</coDe><CoDe Class=o>&gt;</CoDe> <CODe CLAsS="o">{</CoDE>
+      <CoDE ClaSs="k">default</Code> <COde cLAsS=kd>public</Code> <COde clasS="n">List</COde><CodE CLass=o>&lt;</cOde><cODE Class="n">A</code><COdE class=o>&gt;</CODe> <cODE cLAsS=nf>sort</Code><CoDe CLAsS="o">()</Code> <COde cLass=o>{</cOde>
+        <CODE clAsS="n">List</coDe><cODe CLAsS="o">&lt;</COdE><Code CLasS=n>A</COdE><CODe CLAss="o">&gt;</COdE> <CodE CLAss="n">list</code> <cODE ClASs=o>=</COde> <codE cLaSS=k>new</CoDE> <cOde class="n">ArrayList</CoDE><CODe CLass="o">&lt;&gt;();</COde>
+        <cOdE cLAsS=k>for</cODE> <Code cLasS="o">(</cODe><cOdE ClaSS="n">A</CodE> <COdE CLAsS=nl>elements:</CODe> <CODE CLass="k">this</CodE><coDe claSs="o">)</COde>
+            <COde ClASS="n">list</COde><coDE claSs="o">.</CoDE><cOde CLaSS=na>add</CODe><codE cLaSs=o>(</CoDE><cODe CLaSS=n>elements</CoDe><CODe ClASs="o">);</coDe>
+        <cODE clasS=n>list</codE><code ClASS="o">.</coDe><cODE ClaSS="na">sort</COdE><code cLasS="o">((</CodE><cODE claSS=n>first</cOde><codE clAss="o">,</code> <cOde claSS=n>second</Code><CoDe cLasS="o">)</COdE> <coDE ClaSs=o>-&gt;</CoDE> <CoDE clASS=n>first</cOde><CoDe CLass="o">.</CODE><Code cLaSs=na>compareTo</CODE><COdE cLASS="o">(</cOde><CODe CLASS=n>second</cOdE><cODE CLasS=o>));</COdE>
+        <COdE ClAss="k">return</COde> <cOde CLasS=n>list</CoDE><CoDE ClASS=o>;</CodE>
+      <COde CLAsS=o>}</coDe>
+      <COde claSs="c1">// etc</COdE>
+  <cODE CLASs="o">}</cODe>
+</PRE></DIV>
+
+</div>
+
+<P>This does a couple of things with generics. It both defines a generic type <cOdE>A</code> which must be a subclass of <codE>Comparable</CoDe>, and also says that implementing classes must be able to iterate over <CoDE>A</Code>. <CoDe>Comparable</cOde> is the upper bound of <CoDE>A</codE>.</p>
+
+<P>This is a good example of why bounded types are useful; because we want to define a general-purpose algorithm yet constrain the types enough that we can call known methods in that algorithm. In the example, we can’t implement the <CODE>sort</CodE> method unless the class has the <cODe>compareTo</CoDE> method from <CoDE>Comparable</CODE> and also is iterable.</P>
+
+<P>We bind the type parameter when we implement the interface.
+
+<dIV ClAsS="code-block">
+<dIv CLAsS="highlight"><PrE>  <COdE CLASS="kd">public</code> <Code claSS="kd">class</cOde> <cOdE clASS=nc>Customers</code> <code cLass=kd>implements</CodE> <cODE Class="n">Sortable</cODE><Code claSs="o">&lt;</cODE><COdE Class="n">Customer</cODE><Code cLaSS=o>&gt;</Code> <code CLasS=o>{</CODe> <coDE clASs="o">...</coDe> <cODe ClAsS="o">}</cODe>      <CODE CLAsS="c1">// java</cOde>
+</pRe></DIv>
+
+</dIv>
+
+<p>It’s at this point that the compiler can start treating <CODe>A</CODe> as a <code>Customer</CoDE> and check that <CoDE>Customer</cODE> implements <coDe>Comparable</cODE> and that <COde>Customers</cOde> implements <cOde>Iterable</cOde>.</P>
+
+<p>In Scala, it would look like this:
+
+<DIv clASS=code-block>
+<DIV CLAsS=highlight><Pre>  <COdE CLasS="c1">// scala</code>
+  <Code cLaSs=k>trait</coDe> <Code cLaSs="nc">Sortable</COde><codE cLass=o>[</CODe><Code ClASs=kt>A</cOdE> <codE CLASS=k>&lt;:</cODE> <cOde cLaSs="kt">Ordered</CODE><COdE clAsS=o>[</Code><Code claSS="kt">A</cOde><codE cLASs="o">]]</coDE> <cOdE CLass="nc">extends</coDe> <coDE cLASS="nc">Iterable</CODE><code CLass=o>[</COdE><codE cLAss=kt>A</COdE><cOde ClASS="o">]</CODE> <codE cLASS=o>{</codE>
+    <cODE CLAsS="k">def</COde> <cOde CLasS=n>sort</code><cODe CLasS=k>:</coDe> <coDE cLass=kt>Seq</cODE><code cLASs=o>[</COdE><COdE CLaSs=kt>A</cODE><CODe Class=o>]</codE> <Code ClASs=k>=</code> <codE clASs=o>{</CODe>
+      <COdE claSs="k">this</cODe><cODE cLasS=o>.</code><cODE cLaSs="n">toList</COde><code cLaSs=o>.</codE><cODe Class=n>sorted</codE>
+    <CODe Class="o">}</CodE>
+  <COdE cLASs=o>}</CoDe>
+
+  <CoDe cLAsS="k">class</Code> <CoDE CLAsS="nc">Customers</codE> <CodE cLAss="k">extends</Code> <coDE class=nc>Sortable</COdE><cODe clasS="o">[</CODE><coDE clasS=kt>Customer</CodE><COdE clasS=o>]</cOde> <coDE ClaSS="o">{</Code> <codE ClaSS=o>...</code> <cODe CLASs="o">}</COde>
+</PrE></div>
+
+</DIv>
+
+<p>The upper bound tells you what you can <em>get out</eM> of a data structure. In our example, the sorting algorithm needed to get something out and use it as a <CODE>Comparable</cOde>; it enforces type safety. It’s set using <CodE>extends</codE> in Java and <CODe>&lt;:</COde> in Scala.</p>
+
+<h4 id="leanpub-auto-lower-bounds-u-super-t">Lower Bounds (<cOde>&lt;U super T&gt;</code>)</h4>
+
+<p>Setting a lower bound means using the <cODe>super</coDE> keyword in Java, something like the following:</p>
+
+<div ClaSs="code-block">
+<dIV Class="highlight"><PrE>  <CoDE ClASs="kd">public</CODe> <COde ClasS="kd">class</coDE> <COde cLaSS=nc>Example</COde><coDe Class=o>&lt;</CODe><CoDe clAsS="n">T</COde><coDe Class="o">,</coDE> <code clasS=n>U</CoDe> <coDE CLass=kd>super</cOde> <Code cLass=n>T</code><coDE Class=o>&gt;</code> <CoDE CLAss=o>{</code> <CodE CLaSs="o">}</cODE>            <CoDE CLasS=c1>// java</COde>
+</Pre></diV>
+
+</DIV>
+
+<p>It’s saying that <code>U</COde> has to be a super-type of <COde>T</cOde>. It’s useful when we want to be flexible in our API design; you’ll see it a lot in Java library code or in libraries like Hamcrest. For example, suppose we have a class hierarchy to represent animals.</P>
+
+<dIv ClAsS="code-block">
+<DiV clAsS="highlight"><prE>  <CodE CLAsS=c1>// java</cODe>
+  <codE CLasS="kd">static</Code> <CODe ClaSs=kd>class</COde> <CODe cLass="nc">Animal</CODE> <coDe CLaSs="o">{}</coDE>
+  <CODe cLAsS="kd">static</cODe> <coDE ClasS="kd">class</cOde> <CoDe cLAsS=nc>Lion</coDe> <CoDE cLasS=kd>extends</Code> <Code CLASS=n>Animal</CODE> <COdE cLASS="o">{}</codE>
+  <coDe ClASs=kd>static</CoDE> <CoDe clASs="kd">class</CODe> <CODE cLASs="nc">Zebra</CodE> <CODE ClASs=kd>extends</coDE> <CoDe ClAss=n>Animal</COde> <cODe ClAss="o">{}</coDe>
+</PrE></dIV>
+
+</diV>
+
+<P>We might want collect the lions together in an enclosure.</p>
+
+<dIv CLass="code-block">
+<DIv CLaSs=highlight><pRE>  <cOde CLASs="c1">// java</CoDe>
+  <coDE cLASs="n">List</code><cOdE cLass="o">&lt;</CodE><cODe ClASS="n">Lion</cODE><CoDe claSs="o">&gt;</cOde> <COdE ClaSS=n>enclosure</cOdE> <CodE ClAss=o>=</cODe> <cOdE cLAss="k">new</cOdE> <CoDE cLASS=n>ArrayList</codE><CODe CLAsS=o>&lt;&gt;();</CODe>
+  <cODe clASS=n>enclosure</cOde><CodE ClAss=o>.</CoDE><cODE ClAss=na>add</COde><cODe CLasS=o>(</code><cODE CLass="k">new</coDE> <code cLasS=n>Lion</COde><Code ClAss=o>());</coDE>
+  <CODE cLASs="n">enclosure</CoDE><Code ClAsS=o>.</COdE><cODE ClaSS="na">add</code><CODE claSS=o>(</coDE><cOde CLaSs=k>new</CODe> <coDE clAsS=n>Lion</codE><coDe CLass=o>());</COde>
+</PRe></DIv>
+
+</DiV>
+
+<p>Let’s say that we want to sort the lions, and that we already have a helper method, similar to the <Code>Sortable</code> interface, that sorts anything that is <COdE>Comparable</CODe>.
+
+<dIV CLaSS="code-block">
+<DIV CLAss="highlight"><PrE>  <code clAss=c1>// java</COdE>
+  <cODe clAsS=kd>public</COde> <coDe ClASS=kd>static</COde> <CoDe ClaSs="o">&lt;</cODE><cOde ClAss="n">A</CodE> <Code ClAsS="kd">extends</cODE> <codE CLASs=n>Comparable</cOdE><coDe clasS=o>&lt;</CoDe><coDe CLASS="n">A</coDe><cODE CLaSs="o">&gt;&gt;</cODE> <coDE CLaSS="kt">void</Code> <cOde clASS="n">sort</CoDE><CODe claSs="o">(</Code><coDE cLass=n>List</CODE><cODe clASS=o>&lt;</coDe><codE cLasS="n">A</CODe><CoDE class="o">&gt;</codE> <CODe CLASs="n">list</code><cODE CLAsS="o">)</coDE> <CODE CLAsS=o>{</cOdE>
+      <cOdE CLAss=n>Collections</COde><cODE cLAss="o">.</cODe><coDE clAss=na>sort</CODe><cODE clASs="o">(</cOdE><COde claSs="n">list</COdE><coDe ClaSs=o>);</COdE>
+  <COde cLaSs=o>}</cOde>
+</pRe></DIv>
+
+</DiV>
+
+<p>To sort our lions, we just make them comparable and call the <COde>sort</codE> method.
+
+<DIv cLAss=code-block>
+<div ClASS="highlight"><pRe>  <cODe Class=c1>// java</CodE>
+  <coDE ClASs=kd>static</CoDE> <CodE claSs="kd">class</code> <cOdE cLAss=nc>Lion</cOde> <codE cLASs="kd">extends</cOdE> <cOde CLass=n>Animal</CodE> <codE cLaSs="kd">implements</cODE> <CodE CLASs="n">Comparable</cOde><Code cLASs=o>&lt;</CODE><COde ClASS="n">Lion</CoDE><CODE cLASs="o">&gt;</COde> <CoDE ClASs=o>{</cODe>
+      <CODE cLAss=nd>@Override</Code>
+      <codE CLaSs=kd>public</cODE> <cOde ClAss=kt>int</CoDe> <codE CLaSs="nf">compareTo</CodE><CodE ClASS=o>(</cOdE><Code cLASS=n>Lion</CodE> <cODE clasS=n>other</cODe><CODe ClaSs=o>)</CodE> <cOde ClASS=o>{</coDE>
+          <CodE cLasS=k>return</cODe> <CODe CLass="k">this</CodE><cOde claSs="o">.</codE><cOde claSS=na>age</coDE><cOde CLasS="o">.</CodE><cOde class="na">compareTo</coDe><coDe claSs="o">(</CODE><CodE CLAss="n">other</codE><Code ClASs=o>.</CODE><CoDe CLAsS="na">age</cOdE><Code CLAss="o">);</code>
+      <coDe Class="o">}</cODE>
+  <code CLasS=o>}</Code>
+  <cODe cLasS=n>sort</cOde><CODe claSS="o">(</CODe><COde cLAsS=n>enclosure</CODe><cODe clASs=o>);</cODe>
+</PrE></DIv>
+
+</DiV>
+
+<p>Great, but what if we expand our enclosure and create a zoo?</P>
+
+<dIV class=code-block>
+<dIv ClaSS=highlight><pre>  <cOdE cLAsS=c1>// java</CoDe>
+  <cODe CLAsS="n">List</CODE><COde CLAss=o>&lt;</codE><codE class=n>Animal</CODE><CODE claSs="o">&gt;</cOdE> <CODE claSs=n>zoo</CoDe> <cODe clasS="o">=</CodE> <CODE clASS=k>new</CODe> <cODE cLasS="n">ArrayList</CODE><cOdE ClaSs=o>&lt;&gt;();</CODE>
+  <codE cLASS="n">zoo</cODE><coDE cLaSs=o>.</CODe><CODE CLass=na>add</CoDe><COdE clASS="o">(</CODe><CoDE CLAsS="k">new</COde> <code CLASs=n>Lion</CoDE><CodE claSs=o>());</cODE>
+  <code CLasS="n">zoo</coDe><Code cLaSS=o>.</CodE><Code clasS=na>add</COde><code cLass=o>(</CodE><code CLAss="k">new</cODe> <code CLaSS=n>Lion</COdE><coDE CLASS="o">());</CODe>
+  <cOde CLass=n>zoo</CodE><Code Class=o>.</COdE><coDE claSS=na>add</CODe><code cLaSs="o">(</coDE><coDe ClaSS="k">new</CODE> <CoDe ClaSs=n>Zebra</coDe><CODE CLaSS=o>());</coDE>
+  <codE cLass=n>sort</CODe><coDe CLAsS=o>(</CodE><CODe claSs=n>zoo</cODE><coDE claSs="o">);</COdE>
+</PrE></Div>
+
+</dIv>
+
+<P>It won’t compile, as we can’t compare zebras and lions.
+
+<P>It would make sense to implement <cODE>Comparable</coDE> in terms of <CODe>Animals</coDE> rather than the subtypes. That way, we can compare zebras to lions and presumably keep them away from each other.</p>
+
+<P>If we make the <CODE>Lion</CoDE> and <COdE>Zebra</CODe> <code>Comparable</cODe> with <cODe>Animal</code>, in theory we should be able to compare them with each other and themselves. However, if we move the comparable implementation up to the super-type (i.e., <cODE>Animal implements Comparable</coDE> and remove it from <COde>Lion</CODE>), like this:
+
+<DIV cLAss="code-block">
+<dIV CLASS="highlight"><pre>  <code class=c1>// java</CoDe>
+  <cOde CLASS=kd>static</COde> <cODe cLAss="kd">class</COdE> <coDE ClaSS="nc">Animal</CODe> <CODe cLass="kd">implements</cODe> <CODe CLASs="n">Comparable</code><coDe ClAsS=o>&lt;</CODE><cODe CLAss="n">Animal</CODE><Code ClAsS="o">&gt;</coDE> <cODe cLASs=o>{</CODE>
+      <coDe ClASs="nd">@Override</COde>
+      <coDe CLasS="kd">public</codE> <cODe CLASS=kt>int</CoDE> <cOdE claSs="nf">compareTo</Code><Code CLASs=o>(</Code><cOdE ClASS=n>Animal</cOde> <CODe CLaSS=n>o</coDe><cOde clASs=o>)</CoDE> <cODe claSs=o>{</COdE>
+          <cOde clasS="k">return</Code> <codE cLaSS=mi>0</coDe><cODE clASS="o">;</cOde>
+      <CODe claSs=o>}</coDe>
+  <code ClaSS="o">}</COde>
+  <cODe clASS="kd">static</code> <cOdE clAss=kd>class</COdE> <CoDe CLASs="nc">Lion</cODe> <Code clASs="kd">extends</cODE> <cODe claSS="n">Animal</cOde> <CodE cLASS=o>{</CodE> <coDE CLASS=o>}</codE>
+  <CodE Class=kd>static</codE> <cOde CLASS="kd">class</CodE> <cODE cLaSS="nc">Zebra</CoDe> <cOde cLaSs="kd">extends</COdE> <code CLass="n">Animal</cOde> <COdE ClaSs=o>{</cOde> <codE claSs=o>}</coDE>
+</PRE></DIV>
+
+</diV>
+
+<p>…we get a compiler error when trying to sort the <CodE>Lion</coDE> enclosure (a <CoDE>List&lt;Lion&gt;</Code>).</P>
+
+<DiV clasS=code-block>
+<DIV ClASS="highlight"><pRe>  <CoDe CLAsS="n">java</CoDE><CoDE Class="k">:</cODe> <coDe CLasS="kt">method</cODe> <coDe ClAss="kt">sort</CODE> <codE CLASs="kt">in</cOdE> <cOde clASs=kt>class</cOdE> <cOdE clAss="kt">Zoo</coDe> <CodE cLass="kt">cannot</coDe> <cOdE CLasS="kt">be</CoDe> <CODe ClASs=kt>applied</cOde> <CodE claSs=kt>to</cODE> <coDe clASs=kt>given</cODe> <codE clAss="k">type</Code><Code cLAsS="kt">s</cODe><cOde ClaSS="o">;</cODE>
+    <CoDe CLasS=n>required</COde><coDE cLAss=k>:</COde> <cODE CLAsS=kt>java.util.List&lt;A&gt;</codE>
+    <CoDE cLaSS=n>found</codE><COde CLaSS=k>:</COdE> <CoDE CLASs=kt>java.util.List&lt;Lion&gt;</CoDE>
+    <cOdE CLAsS="n">reason</coDe><CoDe cLASS=k>:</cOdE> <COdE claSS=kt>inferred</cODE> <cODe clASS="k">type</CoDe> <Code CLaSs="kt">does</coDe> <codE claSs="kt">not</CodE> <codE claSs=kt>conform</COdE> <COdE clasS=kt>to</cOde> <codE ClAss=kt>equality</CoDE> <CODe CLAsS=kt>constraint</coDE><Code CLASS="o">(</CodE><CODE Class="kt">s</CodE><code cLAsS="o">)</CODE>
+      <CODe CLASS="kt">inferred:</cODe> <CoDe ClaSs=kt>Animal</code>
+      <codE ClaSs=n>equality</CoDE> <cODE CLASS="n">constraints</cOdE><CODE cLass="o">(</cOde><CoDE Class="n">s</CODe><CoDE ClAss=o>)</CODE><CODE clAss="k">:</cOdE> <codE clASS=kt>Lion</cOde>
+</pre></DiV>
+
+</DIV>
+
+<p>Otherwise known as:
+
+<div CLAsS=code-block>
+<DIv ClaSS="highlight"><PRE>  <codE ClASS=nc>Inferred</coDe> <CoDE clAsS="k">type</coDe> <coDE cLASS="err">'</COde><cOde cLAss=kt>Lion</COde><COdE ClAss=err>'</Code> <cODe clASS=kt>for</CodE> <CodE clAss="k">type</COdE> <CODE CLASs=kt>parameter</COdE> <COde claSs="err">'</COdE><CODE ClAsS=kt>A</Code><Code ClAss="err">'</coDe> <cODe CLass="kt">is</cODe> <coDe claSs="kt">not</CODe> <CoDe CLasS="kt">within</COdE> <cODE cLass="kt">its</Code> <cODe cLAsS=kt>bounds</COde><CODE clASS=o>;</CODE>
+    <cODe clAsS="n">should</code> <cOdE ClasS=n>implement</code> <COde cLAss="-Symbol">'Lion</CODE><CoDe clAss="err">'</CodE>
+</pre></DIv>
+
+</DiV>
+
+
+<p>This is because the <cOdE>sort</CodE> method (<CODe>public static &lt;A extends Comparable&lt;A&gt;&gt; void sort(List&lt;A&gt; list)</cODe>) expects a type that is comparable to itself, and we’re trying to compare it to something higher up the class hierarchy. When <cODe>A</cODe> is bound to a concrete type, for example <CoDe>Lion</coDE>, <CODE>Lion</cOde> must also be <COdE>Comparable</CodE> against <CoDE>Lion</COdE>. The problem is that we’ve just made it comparable to <code>Animal</coDE>.</p>
+
+<Div ClaSs=code-block>
+<diV cLaSS=highlight><PRE>  <coDe CLass="kd">static</Code> <coDe cLasS="kd">class</CoDe> <CodE cLASs=nc>Lion</cOde> <CoDe CLAss=kd>extends</Code> <code CLASs="n">Animal</Code> <CODe CLaSS=kd>implements</coDe> <code cLASs=n>Comparable</cODE><Code cLaSs="o">&lt;</code><COde cLaSS=n>Animal</Code><cOde cLaSs="o">&gt;</CodE> <code CLaSS=o>{</CoDe> <cOdE CLAss="o">}</CoDe>
+                                                          <CODe ClaSS=o>^</COdE>
+</PRe></dIV>
+
+</Div>
+
+<P>The zoo (a <CODE>List&lt;Animal&gt;</cOdE>) can be sorted because the generic type of the collection is <cOdE>Animal</cOde>.</P>
+
+<p>We can fix it by adding <cODE>? super A</COde> to the signature of <Code>sort</cODe>. This means that whilst <CoDE>A</COdE> is still bound to a concrete type, say <cODE>Lion</cOde>, we’re now saying that it needs to be comparable to some super-type of <cODE>Lion</CODE>. As <codE>Animal</coDe> is a super-type of <COde>Lion</coDE>, it conforms and the whole thing compiles again.
+
+<DIV ClASs=code-block>
+<Div CLass=highlight><pRE>  <COde cLAsS="kd">public</Code> <Code ClASS="kd">static</CodE> <cOde CLAss=o>&lt;</CodE><COde ClAss=n>A</cODE> <code clasS=kd>extends</cOde> <cODe Class="n">Comparable</cODe><CoDE clAss=o>&lt;?</cOde> <cOdE ClaSs=kd>super</Code> <coDe cLASs=n>A</CoDe><codE ClasS="o">&gt;&gt;</code> <Code ClasS=kt>void</CODE> <CODE Class="n">sort</CoDe><Code ClAsS="o">(</Code><coDE ClASs=n>List</cODE><cOdE ClAsS=o>&lt;</CodE><CODe cLAsS=n>A</COdE><COde clAsS="o">&gt;</Code> <cODe clASs="n">list</CODE><CODe clasS="o">)</CoDE> <cOde ClaSS=o>{</cOdE> <cOdE cLAsS="o">}</coDe>
+</pre></dIV>
+
+</div>
+
+<p>The upshot to all this is that our API method <CoDe>sort</CodE> is much more flexible with a lower bound; without it, we wouldn’t be able to sort different types of animal.
+
+<p>In Scala, we can go through the same steps and create the <CODe>Animal</Code> hierarchy.</p>
+
+<dIV cLaSS="code-block">
+<diV CLaSS=highlight><PrE>  <cOde cLAss="c1">// scala</CODE>
+  <codE ClaSS="k">class</cODe> <CodE cLasS=nc>Animal</CoDE> <Code clASs="k">extends</CoDe> <coDe ClaSs="nc">Comparable</Code><COdE claSs="o">[</code><CODE claSs="kt">Animal</cODE><code CLASs="o">]</CoDE> <cODe CLASs=o>{</code>
+    <codE clAss=k>def</coDe> <code clAss="n">compareTo</CodE><CODe cLaSs="o">(</CoDE><CoDE CLass="n">o</cODE><codE cLASS=k>:</CODE> <COdE claSS="kt">Animal</cOdE><Code CLASs="o">)</cOdE><cOdE cLASS="k">:</CoDe> <COdE ClAss="kt">Int</code> <codE clasS=o>=</code> <CoDe ClaSs=mi>0</cOde>
+  <CODe clASS="o">}</cOdE>
+  <Code clAsS=k>class</cOdE> <codE ClASS="nc">Lion</coDe> <coDE cLASS=k>extends</coDe> <cOde cLASs="nc">Animal</codE>
+  <COde clASs=k>class</CoDe> <code cLAsS=nc>Zebra</code> <CodE ClASS=k>extends</Code> <coDe cLASS=nc>Animal</Code>
+</pre></diV>
+
+</DIv>
+
+<P>Then we can create our <cOdE>sort</cOdE> method again and recreate our enclosure.
+
+<DIv clASS="code-block">
+<div claSS="highlight"><prE>  <code CLASs="c1">// scala</cODE>
+  <cOde cLAsS="k">def</cOdE> <COdE cLAss="n">sort</COdE><coDE CLass=o>[</coDe><CODE cLASS=kt>A</cODe> <Code cLAss="k">&lt;:</coDe> <coDe CLasS=kt>Comparable</CODe><CODe clAss=o>[</CODe><CodE ClAss="kt">A</COde><Code claSs=o>]](</Code><COde cLaSs=n>list</code><cODE Class=k>:</codE> <coDE claSs=kt>List</COde><coDE clAss="o">[</CODE><code claSS="kt">A</Code><CODE class="o">])</CoDE> <cODE ClAsS=k>=</coDE> <cOde CLAss=o>{</cOdE> <CODe CLass=o>}</CodE>
+</PRe></DIv>
+
+</DIv>
+
+<DIv CLass="code-block">
+<div clASS="highlight"><pRE>  <Code cLAsS=c1>// scala</cODe>
+  <CODE cLAsS=k>def</codE> <CoDe CLASs="n">main</codE><code ClASs=o>(</cOde><cOde clASS="n">args</CODe><cOde ClaSS=k>:</code> <cODe CLASs=kt>String*</cOde><CODE CLAss=o>)</cODE> <CoDe clAss="o">{</cOde>
+    <cODE CLAsS="k">var</CoDE> <coDe CLaSs="n">enclosure</cODE> <COdE cLasS=k>=</coDe> <code cLaSS="nc">List</cODe><cOde ClAss="o">[</CoDe><cOde CLass=kt>Lion</CODE><cODe cLasS=o>]()</code>
+    <coDe claSS=n>enclosure</cOde> <coDE cLASS=k>=</COdE> <coDE clAss=k>new</coDE> <code ClaSs=nc>Lion</Code> <Code ClaSS=o>+:</coDE> <code class="n">enclosure</coDE>
+    <CoDE cLass=n>enclosure</codE> <CODe clAsS=k>=</CoDe> <coDe cLAss="k">new</COde> <coDe cLASs=nc>Lion</Code> <CODe ClAsS="o">+:</coDe> <CodE cLass=n>enclosure</Code>
+    <CoDE cLAsS="n">sort</CoDE><Code cLasS=o>(</cOdE><COdE CLasS="n">enclosure</cODE><CodE cLAsS="o">)</CoDe>                                  <CoDE cLaSS="c1">// compiler failure</CODE>
+    <CODe cLASs=k>var</cODE> <CoDe cLAsS=n>lion</coDe><cODe cLASS=k>:</cOdE> <cOdE Class="kt">Lion</CoDE> <coDe ClasS="o">=</cODE> <CODE CLAsS="n">enclosure</codE><CoDE cLAsS="o">(</CoDe><CoDE claSS="mi">1</COde><CODe cLaSs=o>)</cODe>
+
+    <CODe CLAss=k>var</cODe> <coDE ClasS=n>zoo</cOde> <cOdE cLAsS="k">=</CODE> <COde claSs="nc">List</CoDe><cOde ClASs=o>[</COde><coDe CLAss="kt">Animal</cODe><Code cLAss="o">]()</CoDe>
+    <COde CLASs="n">zoo</CoDE> <cOde clAsS=k>=</coDe> <COde CLASS="k">new</CoDE> <Code CLaSs="nc">Zebra</COdE> <cODE CLasS="o">+:</cODe> <CODE ClaSS=n>zoo</CODe>
+    <CODe CLaSs="n">zoo</CoDE> <CoDe cLass=k>=</COde> <coDe class="k">new</COdE> <coDE ClAss="nc">Lion</codE> <cOdE cLasS="o">+:</coDE> <CODe CLAsS=n>zoo</cODE>
+    <COdE claSs=n>zoo</code> <CODE CLasS=k>=</coDe> <cODe CLaSS="k">new</CoDE> <COdE clASs=nc>Lion</cODe> <COde class="o">+:</CoDe> <cOdE class=n>zoo</COdE>
+    <CoDE clASs="n">sort</COdE><cODe ClASS="o">(</code><code ClASs=n>zoo</cOde><cOdE CLASs="o">)</COdE>                                        <code ClAss=c1>// compiles OK</codE>
+    <CodE clASS="k">var</cODE> <cOdE clASs=n>animal</code><CodE clAss="k">:</codE> <cODe ClAss=kt>Animal</CODe> <coDe CLAss="o">=</CodE> <CODE ClASS=n>zoo</CodE><CODE CLASS="o">(</CODE><COdE CLAsS="mi">1</CODe><cODe CLASS=o>)</CODe>
+  <CODe clAss=o>}</cODE>
+</pRE></dIV>
+
+</DiV>
+
+<P>Like before, we get a compilation failure.</P>
+
+<dIV cLAss=code-block>
+<DiV ClASs=highlight><PRe>  <CoDe cLaSs="nc">Error</codE><coDE CLass="k">:</codE><CodE ClasS=o>(</coDE><Code claSS=err>30</cODe><COde CLaSS=o>,</code> <CODE ClAss=err>5</CODe><cODE Class="o">)</CODe> <CODe cLaSs=n>inferred</CODe> <cOdE cLASS=k>type</CODe> <CoDE ClASS="kt">arguments</cOdE> <cOde cLass="o">[</cOdE><coDe cLAss=kt>Lion</cODE><code cLass="o">]</CoDE> <cODe clAsS=k>do</CoDE> <CoDE ClaSs=n>not</COde> <CoDe ClAsS="n">conform</CoDe> <cOde clASS="n">to</coDe> <cODe CLAss=n>method</COdE>
+    <cODE ClaSs=n>sort</Code><cODE CLASs=-Symbol>'s</coDE> <COde ClasS="k">type</coDe> <Code CLass=kt>parameter</CoDE> <COde cLaSS=kt>bounds</cOdE> <CODe cLAsS="o">[</coDe><cODe clASs="kt">A</coDe> <CODE CLAsS="k">&lt;:</code> <CODE CLasS="kt">Comparable</CoDe><codE CLAsS=o>[</CODe><cODe CLAsS="kt">A</cODE><coDE ClAsS=o>]]</CODe> <coDe ClaSS=n>sort</CODe><cOde ClasS="o">(</CODE><COdE CLaSs=n>enclosure</codE><Code clASS=o>)</codE>
+                                                      <coDE cLAsS=o>^</coDE>
+</prE></dIv>
+
+</Div>
+
+<p>It correctly enforces that <code>A</CodE> must be of the same type but we’re treating <COde>A</code> as both <coDe>Lion</cOdE> and <COdE>Animal</coDe>. So just like before, we need to constrain the generic type with a lower bound.
+
+<P>You might be tempted to try a direct equivalent: using an underscore with <cOde>&gt;: A</cOdE>:</p>
+
+<Div clASs="code-block">
+<DIV clASs=highlight><Pre>  <cOdE cLASS="k">def</CODE> <COde cLAsS="n">sort</cODe><cOdE ClAsS="o">[</coDe><codE claSs="kt">A</CODe> <code ClaSs=k>&lt;:</coDe> <CoDE cLass=kt>Comparable</coDe><codE cLAsS=o>[</CoDe><code CLasS="k">_</cOde> <coDe claSs="k">&gt;:</CODe> <code ClAsS="kt">A</COde><code CLaSs=o>]](</cOde><Code clASs="n">a</COdE><cODE cLaSS="k">:</code> <cODE class="kt">List</COde><cODe ClASS=o>[</Code><Code cLass="kt">A</COde><cODE ClaSS=o>])</cODe> <cODe cLass=k>=</cOdE> <CODE cLasS=o>{</CODe> <CODe ClAss=o>}</cOde>  <cOde CLASS="c1">// compiler failure</cODe>
+</PrE></DiV>
+
+</DiV>
+
+<P>But unfortunately, this would cause a compilation failure:
+
+<DIv cLASs="code-block">
+<DIV ClaSS="highlight"><pre>  <CODE cLASs=n>failure</cODE><Code CLaSS="k">:</CODE> <COde ClaSs="kt">illegal</CodE> <CODE cLASs="kt">cyclic</cOde> <COdE class=kt>reference</Code> <COde claSs=kt>involving</CoDE> <CoDe cLAsS=k>type</codE> <cOdE clAsS="kt">A</cOdE>
+</PrE></diV>
+
+</div>
+
+<P>It can’t cope with the reference to <cOdE>A</COde>; it sees it as cyclic. So you have to try and keep the relationship with the bounds but remove the cyclic reference. The answer is to define a new generic type <code>U</coDe> and write something like this:
+
+<DIv clAsS=code-block>
+<Div clAsS=highlight><Pre>  <cODe cLASs=k>def</CODe> <CoDe clASS=n>sort</cOde><Code claSS=o>[</cODE><CoDE CLAss=kt>A</coDE> <CoDe clASs=k>&lt;:</cOde> <COde CLass=kt>Comparable</CoDe><COdE CLaSs="o">[</cOdE><cODE clasS="kt">U</CODe><cODE cLass=o>]</cODE>, <coDE class=kt>U</CODe> <code cLass=k>&gt;:</cODe> <cOdE CLAss=kt>A</code><CoDe ClASS="o">](</cODe><cODE cLASs="n">list</Code><COde CLass="k">:</CODE> <CoDe cLAss=kt>List</coDE><coDe claSs="o">[</CODE><CodE ClASs="kt">A</cODE><CodE CLasS="o">])</CoDe> <COde claSs="k">=</code> <coDE ClasS="o">{</Code> <cOdE clAsS="o">}</Code>
+</prE></diV>
+
+</Div>
+
+<P>So <cOdE>A</CodE> must extend <code>Comparable</COdE> where the <code>Comparable</CODe>’s generic type <cODe>U</cOde> must itself be a super-type of <coDE>A</codE>. This gets rid of the cyclic problem, but the compiler would still complain.
+
+<DIv cLaSS=code-block>
+<DIv Class="highlight"><pRe>  <CodE claSs="n">inferred</COde> <CODE ClAss="k">type</CoDE> <CODE claSS="kt">arguments</cODE> <codE ClAss="o">[</COdE><cODe ClaSs="kt">Lion</cODe>,<cOde cLAss="kt">Lion</cOdE><CODe cLAss=o>]</cODe> <CODe CLASs="k">do</COdE> <coDE ClaSs=n>not</cODE> <cOdE cLAss="n">conform</cODE> <cOde CLasS=n>to</CodE> <cODe cLASS=n>method</CoDe> <COdE cLaSs=n>sort</cODE><coDE ClAss="-Symbol">'s</cODE>
+    <Code cLASS="k">type</codE> <COdE ClAss="kt">parameter</cODE> <CODE ClAss="kt">bounds</COde> <cOdE CLASs=o>[</coDe><CoDE CLAsS="kt">A</coDe> <coDE class=k>&lt;:</cOdE> <codE clASS="kt">Comparable</CoDE><CoDE ClASS="o">[</cODe><codE CLAsS=kt>U</coDE><CodE cLaSS=o>]</CODE>, <cODE cLAsS="kt">U</cOdE> <CODE ClaSS="k">&gt;:</CoDe> <CoDe claSS="kt">A</cODE><coDe clasS=o>]</cOdE> <code ClASS=n>sort</COdE><coDe CLAsS="o">(</cODe><codE ClASs="n">enclosure</Code><CoDE ClASS="o">)</CoDe>
+                                                       <coDe ClASs="o">^</CoDE>
+</PRE></dIV>
+
+</DIv>
+
+<p>It’s saying that the inferred types for the enclosure don’t match the constraints we’ve set. It has inferred the two types to both be Lion because the inference engine just doesn’t have enough to go on. We can give it a hint if we specify the types <EM>we</eM> know to be true. So just like a type witness in Java, we can clarify that we want the types to be <coDe>Lion</CoDE> and <COdE>Animal</coDE>.
+
+<dIv cLAsS="code-block">
+<diV ClaSs="highlight"><PRe>  <cOdE clAsS="k">var</Code> <COdE CLaSS=n>enclosure</Code> <cODE CLaSs=k>=</cODe> <CODE ClASS="nc">List</cOde><Code cLaSS="o">[</coDE><CODE Class="kt">Lion</COdE><cOde ClaSS="o">]()</CoDE>
+  <coDe clAss=n>enclosure</codE> <Code ClAss=k>=</codE> <cODe clAss="k">new</cOde> <COde ClasS=nc>Lion</code> <coDE cLASs=o>+:</COdE> <code clASS=n>enclosure</cODe>
+  <cOdE cLass=n>enclosure</code> <CoDe clasS=k>=</coDe> <Code cLASs="k">new</coDe> <codE CLAss="nc">Lion</CoDE> <CodE ClasS=o>+:</CoDE> <COde cLAsS=n>enclosure</Code>
+  <CODe CLaSS="n">sort</cODe><cODe cLASs="o">[</cOde><cODE ClaSs=kt>Lion</cOde>, <coDe ClaSs="kt">Animal</CODe><COdE ClasS=o>](</CodE><CODe ClasS="n">enclosure</CoDE><cOde cLaSS=o>)</CoDE>         <coDe ClasS="c1">// add a type hint</coDe>
+</PRe></div>
+
+</dIv>
+
+<P>When you round-trip the byte code, the final version looks like this:
+
+<div cLasS=code-block>
+<DIv cLass=highlight><prE>  <coDe ClasS="c1">// java</cOdE>
+  <cOdE clAsS=kd>public</cODe> <codE Class=o>&lt;</codE><cOdE CLaSS="n">T</CoDE> <CODe cLass=kd>extends</cODe> <codE CLAsS="n">Comparable</CODE><CODE cLaSs=o>&lt;</cOde><Code ClASs="n">U</CoDE><COde clasS="o">&gt;,</cODe> <coDE claSs=n>U</cODe><CodE CLASS="o">&gt;</coDE> <coDe ClAss=kt>void</coDe> <coDE cLASS=n>sort</cOde><COdE cLass="o">(</cOde><COde clasS="n">List</cODE><CoDe cLAss="o">&lt;</cOde><Code cLASS="n">U</coDe><COde CLasS="o">&gt;</cOdE> <cOde CLass=n>a</cOdE><coDe cLaSs="o">)</codE> <CoDe class="o">{</CoDe> <codE cLass="o">}</COdE>
+</pre></DIV>
+
+</div>
+
+<p>Which is pretty much equivalent to the following:</P>
+
+<diV CLaSS=code-block>
+<DIV ClasS="highlight"><PRe>  <CoDE ClASs=c1>// java</codE>
+  <CODe CLasS="kd">public</CODE> <cOde cLASS="o">&lt;</cOde><cODe cLAss=n>T</CoDe> <codE ClAsS=kd>extends</codE> <COde cLASs="n">Comparable</code><COdE ClaSs=o>&lt;?&gt;&gt;</CODe> <CoDe clAss="kt">void</cOde> <codE cLasS=n>sort</Code><CoDE CLAsS=o>(</COde><code clASs="n">List</CODe><COdE CLaSs=o>&lt;</cOdE><cOdE CLASS="n">T</COdE><codE CLaSS="o">&gt;</code> <coDe clasS=n>a</cOde><CoDe clASs=o>)</CodE> <cODE clASs="o">{</CoDe> <CoDe cLass=o>}</CodE>
+</PRe></DiV>
+
+</DIV>
+
+<P>Which is pretty much the same as the Scala version:</p>
+
+<dIv clASS=code-block>
+<Div ClasS=highlight><pre>  <COde cLAsS=k>def</CODe> <codE cLAsS=n>sort</cOdE><cODE CLass=o>[</CoDe><CoDE CLAsS="kt">A</code> <cODe clASS=k>&lt;:</coDE> <COde claSs="kt">Comparable</COdE><cODe CLaSS="o">[</coDe><coDE CLASs=k>_</coDe><COdE clASS=o>]](</Code><Code ClASS=n>list</coDe><COdE class=k>:</coDE> <codE clasS="kt">List</Code><cODE clasS=o>[</CoDE><coDe cLaSs="kt">A</code><cODE cLasS="o">])</cODE> <Code CLAss="o">{</coDE> <coDE clASs=o>}</CoDe>         <COde ClaSS="c1">// scala</cODE>
+</Pre></div>
+
+</Div>
+
+<p>So it treats it like an unbounded type under the covers. That’s not quite true, in the sense that the Scala compiler is doing all the hard work here and leaves <CODE>U</coDE> unbounded because it’s doing all the type checking. In this example, it doesn’t make complete sense to round-trip from byte code to Java, as it’s not like-for-like, but it’s interesting to see what’s going on behind the scenes.</P>
+
+<P>A lower bound tells you what you can <em>put in</eM> a data structure. In our <CodE>Lion</code> example, using a lower bound means you can put more than just lions in the zoo. You use <COde>super</CoDe> in Java and greater than colon (<Code>&gt;:</COde>) in Scala.
+
+<H4 id="leanpub-auto-wildcard-bounds--extends-t--super-t">Wildcard Bounds (<cODE>&lt;? extends T</COdE>, <codE>&lt;? super T&gt;</cODe>)</h4>
+
+<p>We’ve already seen some examples of wildcards: the <CodE>?</Code> in Java and the <COde>_</CoDE> in Scala.</P>
+
+<P>Wildcards with an upper bound look like this:</P>
+
+<dIv cLass=code-block>
+<diV ClASs=highlight><prE>  <CodE CLASS=c1>// java</COde>
+  <codE Class="kt">void</CodE> <cODe clASS="nf">printAnimals</CoDE><cODE cLaSS="o">(</codE><codE ClAss=n>List</CoDe><cODe ClasS="o">&lt;?</cOde> <codE ClasS=kd>extends</CodE> <CODe CLaSs="n">Animal</cODe><COde CLaSs=o>&gt;</COde> <CodE CLaSS="n">animals</CodE><cODe claSS="o">)</Code> <Code cLaSs=o>{</CODe>
+      <cODE cLaSs="k">for</cOdE> <CodE CLaSs=o>(</COdE><Code cLASS="n">Animal</coDE> <COdE cLAsS="n">animal</cODe> <CODe ClaSs="o">:</codE> <cOdE ClASs="n">animals</cODe><CODE CLaSS=o>)</CODE> <codE claSs="o">{</CODe>
+          <coDE cLaSS=n>System</COde><CoDe cLASs=o>.</CODe><COde cLasS=na>out</cOdE><COde clAsS="o">.</cODE><cOdE ClAss="na">println</cODE><coDE claSs="o">(</coDe><coDe cLAsS=n>animal</CoDe><CoDE clASS=o>);</coDe>
+      <code cLAsS=o>}</codE>
+  <CodE clASS="o">}</CoDe>
+</pRE></DIv>
+
+</div>
+
+<DIV ClaSS="code-block">
+<DiV cLaSS="highlight"><PRE>  <COdE CLaSS="c1">// scala</cODe>
+  <cODe cLaSS=k>def</code> <cOdE cLAss="n">printAnimals</cODE><CoDe ClASs="o">(</CoDE><Code ClASs="n">animals</cODe><Code CLasS="k">:</Code> <cODE cLasS="kt">List</cODE><CODE claSS=o>[</CoDe><cOde CLass=k>_</code> <cODE CLaSs="k">&lt;:</Code> <code clASs="kt">Animal</cODE><COdE CLASS="o">])</CodE> <COde cLAss="o">{</COde>
+    <codE cLASS="k">for</COde> <CODE clASs=o>(</cODE><cOde clASS="n">animal</COde> <cODE ClAsS="k">&lt;-</CodE> <COde CLaSs="n">animals</Code><COdE cLAss="o">)</CoDe> <codE CLAsS=o>{</cOde>
+      <coDe CLaSs=n>println</codE><COdE CLASS="o">(</CoDe><coDe cLass=n>animal</CoDE><CoDE ClASS=o>)</COde>
+    <CoDE ClAsS=o>}</cOde>
+  <CodE cLaSS="o">}</CODE>
+</pRe></div>
+
+</dIV>
+
+<P>Wildcards with a lower bound look like this:
+
+<div Class=code-block>
+<div cLaSS=highlight><prE>  <cODe ClASs="c1">// java</cODe>
+  <cOde CLasS=kd>static</coDe> <CoDe clasS=kt>void</CoDe> <CoDe ClasS=nf>addNumbers</coDe><cOdE clAss=o>(</cODe><CodE CLAss="n">List</COdE><cOdE ClASS="o">&lt;?</coDE> <CODE ClASS=kd>super</coDe> <code ClaSs="n">Integer</codE><codE claSs="o">&gt;</code> <codE ClASS=n>numbers</COdE><CodE ClAss="o">)</CODe> <CodE cLaSS=o>{</cOdE>
+      <CoDe ClAsS="k">for</cODE> <cOdE clAss=o>(</COde><coDE class="kt">int</coDE> <cODe ClASS="n">i</CodE> <Code class="o">=</COdE> <CODe ClasS="mi">0</code><codE CLasS=o>;</cODE> <codE CLASs="n">i</cOde> <cODE ClAss=o>&lt;</cOdE> <coDE cLAsS="mi">100</cOde><cODe clASs=o>;</coDe> <CoDe Class=n>i</cOde><CODe ClaSs="o">++)</CODe> <CoDE ClAss=o>{</CoDE>
+          <COde class="n">numbers</cODE><coDe ClasS="o">.</COdE><COdE CLAss=na>add</Code><CODe Class=o>(</CODE><cODE cLASS="n">i</CoDe><codE clasS="o">);</code>
+      <CODE CLASs="o">}</cODe>
+  <COde CLaSS="o">}</COdE>
+</prE></dIV>
+
+</DIV>
+
+<dIV CLASs="code-block">
+<dIv clasS="highlight"><PRe>  <coDE cLaSs="c1">// scala</cODE>
+  <CoDe clASs=k>def</CodE> <codE cLAss=n>addNumbers</CoDE><coDe cLaSs="o">(</cODe><Code cLAss=n>numbers</COde><Code CLASS="k">:</coDe> <cODE CLaSS="kt">List</CODe><CODE clAsS=o>[</COdE><coDe clASS="k">_</Code> <coDE CLaSS=k>&gt;:</CoDe> <CodE cLASs="kt">Int</CoDE><codE cLaSS="o">])</cOde> <coDE ClaSS="o">{</CoDE>
+    <coDE cLASS="k">for</CodE> <cOde CLASS=o>(</cOdE><coDe ClaSs=n>i</CoDe> <CodE clASs="k">&lt;-</CodE> <cOdE claSS="mi">0</coDE> <cODe ClAss="n">to</cOde> <cODE clAsS=mi>99</COdE><code ClASS=o>)</cODE> <cODe clASS="o">{</COde>
+      <codE CLass="c1">// ...</coDE>
+    <code clASS=o>}</coDE>
+  <CodE clASS="o">}</CoDe>
+</pRe></diV>
+
+</dIV>
+
+<p>Unbounded wildcards look like this in Java:
+
+<DiV cLaSs="code-block">
+<dIv clasS="highlight"><pRe>  <CoDE ClASs="n">List</CoDe><cODe cLasS="o">&lt;?&gt;</cOde> <COdE CLASS=n>list</COdE>          <CoDe claSs=c1>// java</CoDe>
+</Pre></DiV>
+
+</div>
+
+<p>…and like this in Scala:
+
+<DIV CLass="code-block">
+<Div CLAsS=highlight><pRE>  <coDE Class=nc>List</cODe><code CLaSS=o>[</cODE><CODe ClasS="k">_</Code><coDe clAsS=o>]</cODe>               <CODe claSS="c1">// scala</COdE>
+</pRE></dIV>
+
+</diV>
+
+<P>An unbounded wildcard refers to an unknown generic type. For example, printing elements of a list of unknown type will work with all lists. Just add upper- or lower-bound constraints to limit the options.
+
+<diV ClAsS=code-block>
+<DIv ClaSs=highlight><PRe>  <CoDe cLASS="c1">// java</cODe>
+  <COde CLAsS="kt">void</cODe> <coDE cLaSS="nf">printUnknown</cOde><CodE claSS="o">(</codE><cOde ClaSs=n>List</CODE><COdE clASS=o>&lt;?&gt;</CoDE> <CoDE cLAsS="n">list</code><COde clAss=o>)</coDE> <cODE CLass=o>{</cODE>
+      <COde clASs=k>for</cOdE> <coDe claSS="o">(</cODE><cOde ClASS=n>Object</codE> <code clAsS="n">element</cOdE> <CODE claSs=o>:</coDe> <cODe clasS=n>list</cOdE><COde ClASS=o>)</coDE> <cOde class=o>{</coDE>
+          <COdE claSs="n">System</COdE><cOde claSs="o">.</codE><codE ClAss=na>out</cOdE><codE CLasS="o">.</cOdE><COdE clAsS="na">println</COde><codE CLasS=o>(</coDe><CoDE CLaSS="n">element</CODe><cODE cLAsS="o">);</Code>
+      <coDe cLasS="o">}</coDe>
+  <cODe CLass=o>}</CODE>
+</prE></dIV>
+
+</DIv>
+
+<diV cLaSs=code-block>
+<DIV ClAsS=highlight><pRe>  <CodE class=c1>// scala</coDe>
+  <CODE ClaSS="k">def</COdE> <code CLasS=n>printUnknown</coDe><COdE cLass="o">(</cOdE><cODE CLASS=n>list</CodE><cOde ClaSs="k">:</codE> <COde CLASS=kt>List</code><COde CLASs="o">[</coDe><CoDE CLass=k>_</cODe><CoDe cLaSs=o>])</cODe> <cOde clAsS="o">{</cODE>
+    <CodE ClASS=k>for</CodE> <CoDe ClAsS="o">(</code><cOde ClAsS=n>e</Code> <Code clAsS=k>&lt;-</code> <CODE ClaSs=n>list</COde><coDE cLAss="o">)</code> <COde ClAss="o">{</code>
+      <cODe CLasS="k">val</cODE> <cOdE class="n">f</CoDE><CoDE ClasS="k">:</cOde> <codE cLASS="kt">Any</Code> <cOdE cLASs="o">=</CodE> <CoDe cLASS="n">e</code>
+      <COde cLaSS=n>println</CoDe><cOde CLass=o>(</codE><coDE ClaSs=n>f</CoDe><cODe CLaSS="o">)</cODe>
+    <CodE Class="o">}</CoDE>
+  <Code CLAss=o>}</CoDE>
+</PRE></Div>
+
+</dIV>
+
+<P>Although the implementation can treat the elements as <CoDE>Object</code> because everything is an object, you can’t add anything to a list of unknown type.</P>
+
+<diV clAss="code-block">
+<DiV class="highlight"><prE>  <CODe cLASS="c1">// java</code>
+  <CODe class="n">List</COde><COdE ClASs=o>&lt;?&gt;</coDe> <CODe CLASs="n">list</cOde> <code claSs="o">=</cOde> <cODE CLASS="k">new</cOde> <cOde ClaSs=n>ArrayList</CODE><CODE clAss="o">&lt;</cODe><cOde CLAsS=n>String</CoDE><cODe cLaSS="o">&gt;();</CODE>
+  <coDe cLASs=n>list</codE><code cLaSs="o">.</COde><CoDe cLASs=na>add</CODE><cOde ClaSS=o>(</cOdE><code ClasS="k">new</CodE> <code claSs="n">Object</CodE><cOdE CLass=o>());</codE> <cODe ClaSS="c1">// compiler error</COde>
+</prE></dIV>
+
+</DIV>
+
+<P>The one exception is <coDe>null</cOde>.
+
+<dIv clAss="code-block">
+<diV ClASS="highlight"><pRe>  <Code cLASS="n">list</COde><COdE cLAsS=o>.</CODe><CoDe cLASs=na>add</code><CODe clAss="o">(</coDE><coDe CLASs="kc">null</codE><cOde ClaSs=o>);</CODE>
+</Pre></dIv>
+
+</Div>
+
+<P>You get the same effect in Scala, where you can’t even create a list without a valid type:
+
+<Div ClAsS="code-block">
+<dIV ClaSs="highlight"><pre>  <coDe clAss="n">scala</cOdE><CoDe CLAsS="o">&gt;</cOde> <CodE cLasS="k">val</CodE> <CODE cLASS="n">list</cODE> <cOdE ClASS="k">=</CODe> <cOde CLass="n">mutable</cOdE><cODe cLaSS=o>.</CoDE><cOde ClAsS="nc">MutableList</cOdE><Code clASS=o>[</CODE><cODE CLasS=k>_</CoDE><COdE cLASs="o">]()</CODE>
+  <cODE CLaSS="o">&lt;</coDe><CoDE ClAsS=n>console</cOde><CoDe claSs=k>&gt;:</CoDE><coDe claSS="mi">7</coDE><coDe clAsS=k>:</CoDe> <cODe CLASS="kt">error:</codE> <coDe CLaSs=kt>unbound</Code> <CODe CLAss="kt">wildcard</COdE> <COdE CLASS="k">type</CODE>
+         <coDe CLASS="kt">val</Code> <cODE CLasS=kt>list</COde> <cODE cLASs=o>=</CODE> <CODe ClaSS="n">mutable</cODe><CoDe cLAss="o">.</cODe><CODE clasS="nc">MutableList</COdE><code CLAsS="o">[</CodE><coDe CLasS="k">_</CODe><CODE ClASS=o>]()</code>
+                                  <code CLAsS=o>^</CODe>
+</prE></div>
+
+</DiV>
+
+<P>You mainly use wildcards when you really don’t care about the type parameter, just any constraints on an upper or lower bounding, or when you can treat the type as an instance of <cODE>Object</Code> or <COde>Any</code>.</P>
+
+<h4 id="leanpub-auto-multiple-bounds">Multiple Bounds</H4>
+
+<p>Types can also have multiple bounds in both Java and Scala.
+
+<UL><Li>Java is limited to multiple upper bounds.</lI>
+  <li>Java can’t set a lower <em>and</eM> upper bound on types (so you can’t have a generic type extend one thing and also be a super-type to another).
+  <li>Scala can set a single lower <em>and</Em> an upper bound, unlike Java.
+  <li>However, it can’t set multiple upper or lower bounds. Instead it can constrain bounds by also forcing you to extend traits.</li>
+</ul><p>Using multiple bounds, another way to express the constraints on the <cOde>Animal</CodE> sorting method would be to explicitly state that <coDE>A</cODe> must extend <cOdE>Animal</codE> <Em>and</Em> be comparable to <COde>Animal</COdE>, using the <cOdE>&amp;</COde> symbol in Java.</P>
+
+<dIv cLaSs=code-block>
+<DIv cLaSs="highlight"><prE>  <cOdE cLAsS="c1">// java</cODe>
+  <coDe clASs="kd">public</Code> <coDe ClAsS=kd>static</coDe> <CoDE ClASs="o">&lt;</cODE><COdE ClasS=n>A</cODE> <codE CLAsS="kd">extends</cODE> <code claSS=n>Animal</CodE> <code clAss=o>&amp;</COde> <coDE cLASs="n">Comparable</CoDe><CoDE clAss="o">&lt;</code><cODe CLASS=n>Animal</coDe><codE class="o">&gt;&gt;</CodE> <cODe cLaSS=kt>void</CoDe> <CodE clasS="n">sort</CoDe><CoDE ClasS=o>(</cODe><CODE clAss=n>List</cODe><cOdE claSs="o">&lt;</cODe><coDe ClAss="n">A</CODe><cODE class=o>&gt;</CoDE> <cODe claSS=n>l</CODE><cODE claSs=o>)</code>
+</prE></diV>
+
+</DiV>
+
+<p>This sets two upper bounds to the generic type <COde>A</CodE> in Java. You can’t set two upper bounds on <cOde>A</CODE> in Scala, but you can achieve the same effect by specifying that your bound must also extend certain traits.</P>
+
+<DiV clASs=code-block>
+<DIV clAsS="highlight"><pRE>  <Code CLasS=c1>// scala</Code>
+  <COde clAss=k>def</coDE> <cODe class="n">sort</COde><CoDe CLass=o>[</cODe><CODE class="kt">A</COde> <cODE ClAss=k>&lt;:</code> <code ClaSS="kt">Animal</cOdE> <coDE cLAsS="kt">with</CODe> <cODE ClAss=kt>Comparable</COdE><coDe cLASS=o>[</CoDe><coDe claSs="kt">Animal</codE><cODE ClAsS="o">]](</COde><coDE cLASs="n">list</cOde><CoDE cLAsS="k">:</code> <cOde claSs=kt>List</cODE><cOde clAss=o>[</cODE><coDE CLaSs=kt>A</cODe><CoDE ClasS=o>])</codE> <COde cLass=k>=</code> <CodE ClasS=o>{</code> <COde clasS="o">}</cODe>
+</pre></DIV>
+
+</div>
+
+<p>Because we’re being more explicit, we can remove the type hints when calling the <coDe>sort</CoDe> method.</p>
+
+<div cLASs="code-block">
+<dIV Class=highlight><pre>  <codE CLASs="k">var</CoDE> <COde CLaSs=n>enclosure</coDe> <codE CLAsS="k">=</COde> <cOde CLASs=nc>List</codE><CodE ClASs=o>[</CodE><codE ClASS="kt">Lion</cOdE><codE cLasS=o>]()</CODE>
+  <COdE cLASs="n">enclosure</CODE> <code CLasS=k>=</CODE> <CodE Class=k>new</CodE> <cODe cLasS="nc">Lion</CODE> <CODe CLASS="o">+:</CODe> <CoDe ClasS=n>enclosure</CodE>
+  <CodE ClAsS="n">enclosure</coDe> <CoDe CLasS="k">=</CoDe> <CoDE CLASS="k">new</Code> <CODE CLasS="nc">Lion</COde> <codE clASs=o>+:</CodE> <code CLaSS=n>enclosure</cODE>
+  <COdE CLaSs=n>sort</coDE><cOde cLASS=o>(</coDe><codE cLasS=n>enclosure</Code><CoDe ClasS=o>)</cOde>
+</prE></div>
+
+</diV>
+
+<p>In Scala, you can also set both a lower and upper bound using <codE>&gt;:</coDe> and <cODE>&lt;:</Code>, like this:
+
+<DIV Class=code-block>
+<diV CLAsS="highlight"><PrE>  <CodE clasS="k">def</COdE> <CoDE clAsS=n>example</CoDE><coDe CLASs=o>[</code><CodE CLAss="kt">A</cOdE> <CoDE ClAss="k">&gt;:</CODE> <Code CLaSs=kt>Lion</CodE> <CodE clAss="k">&lt;:</CoDE> <coDe clAss="kt">Animal</COde><cODe cLASs="o">](</cOde><coDE CLAsS=n>a</COdE><cOdE CLaSS=k>:</coDE> <cOdE clasS="kt">A</COde><CODE class=o>)</Code> <CoDE claSs=k>=</CoDE> <Code CLAsS=o>()</cODE>               <CoDe cLAsS=c1>// scala</coDe>
+                    <CodE CLAss="o">^</cODe>         <COdE cLASs=o>^</cOde>
+                  <code cLass="n">lower</cOde>     <codE ClaSs="n">upper</CODe>
+</PRE></DiV>
+
+</DIV>
+
+<P>…where <CoDe>A</cODe> must be a super-type of <cODE>Lion</coDe> and a subtype of <CoDE>Animal</COde>.</p>
+
+<h3 id="leanpub-auto-variance">Variance</H3>
+
+<p>Without involving generics, a simple class <CodE>B</cODE> that extends <code>A</code> can be assigned to an instance of <code>A</cODe>; it is after all, an <CoDE>A</cOdE> as well as a <CoDe>B</codE>. Obviously, subtyping is only in one direction; the other way round, and you get a compiler failure.
+
+<DIv clASs="image-with-caption center">
+  <Img SrC=../Images/image00241.jpeg ALT="Fig. 2.9. `B extends A`."><p clASS=caption>Fig. 2.9. <CoDE>B extends A</codE>.
+</DIv>
+
+<dIv CLass=code-block>
+<dIV cLaSs=highlight><PrE>  <CoDE CLaSs=c1>// java</CODe>
+  <cOdE ClaSs=n>A</cOde> <code ClASS=n>a</code> <coDE CLasS="o">=</COde> <COde clAss="k">new</CODE> <code clAsS=n>A</code><coDE clAsS=o>();</codE>
+  <cODe CLass="n">B</coDe> <Code clASS="n">b</cOdE> <coDE CLASS="o">=</CoDe> <CodE ClAss=k>new</code> <cODE cLASs="n">B</cOde><cODE class=o>();</coDE>
+  <CoDE CLaSs="n">a</cOde> <cOdE claSs="o">=</Code> <codE ClASS=n>b</cOde><CodE ClAsS=o>;</COdE>
+  <codE class=n>b</coDE> <code cLAss=o>=</CoDe> <codE CLASs="n">a</cODe><cOde claSS=o>;</code>                <cODE claSS="c1">// compiler failure</coDE>
+</PRE></diV>
+
+</Div>
+
+<P>Generic classes, however, are not subclasses themselves just because their parameterised type may be. So, if <CoDe>B</CoDe> is a subclass of <Code>A</cOde>, should <CODE>List&lt;B&gt;</codE> be a subclass of <code>List&lt;A&gt;</cOde>? In Java <COdE>List</COde> of <code>B</CODE> is not a subtype of <cODE>List</CoDe> of <cODE>A</COde> even though their parameterised types are.
+
+<dIV CLASs="image-with-caption center">
+  <Img sRc="../Images/image00242.jpeg" aLT="Fig. 2.10. `List&lt;B&gt;` cannot extend `List&lt;A&gt;` in Java."><p cLass=caption>Fig. 2.10. <CoDE>List&lt;B&gt;</COdE> cannot extend <cOde>List&lt;A&gt;</cODe> in Java.</P>
+</dIv>
+
+
+<dIv cLaSS="code-block">
+<div clAsS="highlight"><prE>  <coDE clasS=c1>// java</COde>
+  <COdE claSs=n>List</COdE><CoDe ClASS=o>&lt;</CODe><CODe CLass="n">B</cOde><cOde cLasS="o">&gt;</cOdE> <CoDe cLasS="n">a</COde> <coDE clAss="o">=</code> <CODE ClASS=k>new</CODe> <codE clAsS="n">ArrayList</cODE><COdE ClaSS="o">&lt;&gt;();</CODE>
+  <CodE ClasS=n>List</cOde><Code cLAss="o">&lt;</COde><CODE claSs="n">A</cOdE><cODe ClasS="o">&gt;</cOdE> <coDE cLAss=n>b</code> <cOde CLaSS=o>=</cOde> <cOdE CLasS="k">new</CoDe> <CODe clASS=n>ArrayList</cOde><cOdE ClASs="o">&lt;&gt;();</coDe>
+
+  <cOdE cLass=n>a</code> <CodE cLass="o">=</cODE> <CODe CLAss="n">b</codE><COde cLAsS=o>;</cODE>  <Code ClaSs=c1>// compiler failure</cODe>
+</PrE></DIv>
+
+</DIV>
+
+<P>This is where variance comes in. Variance describes how subtyping generic types (like lists or “container” types) relates to subtyping their parameterised type.
+
+<P>There are three types of subtype relationship described by variance:
+
+<oL cLaSs=numeric><lI>Invariant</Li>
+  <Li>Covariant</li>
+  <Li>Contravariant
+</ol><DIV cLasS="page-break"></Div><dIv StyLE=page-break-after:always></div>
+<H4 id="leanpub-auto-invariance">Invariance</H4>
+
+<p>Java only supports one of the three for its generic types: all generic types in Java are <eM>invariant</em> which is why we can’t assign a <CODE>List&lt;B&gt;</COdE> to a <cODe>List&lt;A&gt;</CODe> above. Invariant generic types don’t preserve the subtype relationship of their parameterised types.
+
+<P>However, you can vary the parameterised types when you use wildcards with methods and variables.</P>
+
+<p>The invariant relationship between generic types says that there is no relationship even if their contents have a subtype relationship. You can’t substitute one for another. Java and Scala share syntax here, as defining any generic type in chevrons (Java) or square brackets (Scala) describes the type as invariant.</p>
+
+<div clAsS=code-block>
+<DIV cLaSS=highlight><PrE>  <cODe clAsS=n>public</COde> <CODe clAss=k>class</coDE> <cODe ClAsS=nc>List</Code><CoDE ClasS="o">&lt;</COdE><CodE CLaSs=n>T</CODE><cOde cLaSs=o>&gt;</code> <CoDE CLass=o>{</cOdE> <cODE CLasS="o">}</cODE>          <COde CLasS=c1>// java</code>
+  <Code cLaSS="k">class</CODE> <COdE CLasS=nc>List</coDe><cODe clAss="o">[</cOdE><cOdE ClaSS=kt>T</cOde><cOdE ClASS=o>]</CODe> <cOde ClaSS=o>{</cOde> <COde CLass=o>}</CODE>                 <coDE Class="c1">// scala</CoDe>
+</prE></DiV>
+
+</Div>
+
+<H4 id="leanpub-auto-covariance">Covariance</H4>
+
+<p>Covariant generic types preserve the relationship between two generic types as subtypes when their parameterised types are subtypes. So <COde>List&lt;B&gt;</cODE> <EM>is a</Em> subtype of <cODe>List&lt;A&gt;</coDe> when a generic type is set up as covariant. Java doesn’t support covariance. Scala supports covariant generic types by using a <coDe>+</CoDE> when you define a generic class.
+
+<div clAss="code-block">
+<DIv cLaSS=highlight><pre>  <CodE cLass="k">class</CODE> <code cLASS=nc>List</COdE><CoDE ClAsS=o>[</CODE><Code cLaSs=kt>+T</cODE><coDE class="o">]</coDE> <codE CLASs="o">{</code> <CoDe clAsS="o">}</COdE>
+</PRE></DiV>
+
+</DIv>
+
+<H4 id="leanpub-auto-contravariance">Contravariance</h4>
+
+<p>Contravariance reverses a subtype relationship. So if <coDE>A</cODe> is contravariant, <Code>List&lt;A&gt;</cODe> is also a <COdE>List&lt;B&gt;</coDE>; it’s a subtype. The relationship of the parameterised types are reversed for their generic types. Java doesn’t support contravariant but in Scala you just add a <coDe>-</cOdE> to the generic type definition.</P>
+
+<dIV cLASS=code-block>
+<DiV ClasS=highlight><pRE>  <cOde ClaSS="k">class</CodE> <CODE ClasS="nc">List</cODE><Code clAss=o>[</cODE><CodE clASs="kt">-T</cODE><cOde cLass=o>]</CodE>
+</pRe></Div>
+
+</dIv>
+
+<H4 id="leanpub-auto-variance-summary">Variance Summary</H4>
+
+<P>In summary, invariant generic types are not related, regardless of the relationship of their parameterised types. Covariant types maintain the subtype relationship of their parameterised types, and contravariant types reverse it.
+
+<TABlE styLe="width: 100%;">
+  <ThEAD>
+    <Tr><th> </th>
+      <Th>Description</Th>
+      <Th>Scala Syntax
+    </tR>
+  </tHeAd>
+  <TBody>
+    <TR><tD>Invariant
+      <TD><CodE>List&lt;A&gt;</cODe> and <CODe>List&lt;B&gt;</cODe> are not related</TD>
+      <td><Code>[A]</COdE></td>
+    </Tr>
+    <tR><Td>Covariant</TD>
+      <TD><COde>List&lt;B&gt;</code> is a subclass of <CoDE>List&lt;A&gt;</cOdE></tD>
+      <TD><COdE>[+A]</coDe></td>
+    
+    <TR><td>Contravariant
+      <tD><codE>List&lt;A&gt;</cODe> is a subclass of <CoDe>List&lt;B&gt;</CoDE>
+      <td><cODe>[-T]</coDe></tD>
+    
+  </tbODY>
+</TAbLE><P>The syntax for each is summarised below.</P>
+
+<taBLe StylE="width: 100%;">
+  <THEad>
+    <Tr><Th> 
+      <Th>Invariant</TH>
+      <Th>Covariant</TH>
+      <tH>Contravariance
+    
+  </thead>
+  <tbODy>
+    <tr><TD>Java</Td>
+      <Td><cOdE>&lt;T&gt;</CodE>
+      <td><CoDE>&lt;? extends T&gt;</CODE>
+      <td><cOdE>&lt;? super T&gt;</Code>
+    
+    <tR><TD>Scala
+      <Td><Code>[T]</cOdE></tD>
+      <td><CoDe>[+T]</COde></td>
+      <td><cODe>[-T]</CoDe></Td>
+    
+    <Tr><td>Scala (wildcards)</tD>
+      <TD><cODe>[T]</cOdE></td>
+      <tD><Code>[_ &lt;: T]</cOde></tD>
+      <TD><CODE>[_ &gt;: T]</CODe></tD>
+    
+  </TBODY>
+</TABle><p> </P>
+
+<DIV cLASS="aside sidebarish">
+  <h4 id="leanpub-auto-java-limitations">Java Limitations</H4>
+  <P>In Java all generic types are invariant, which means you can’t assign a <Code>List&lt;Foo&gt;</CODE> to a <COde>List&lt;Object&gt;</COdE>. You <Em>can</EM> vary the types where you use them with wildcards, but only for methods and variable definitions, not classes.</p>
+
+
+</dIv>
+</div>

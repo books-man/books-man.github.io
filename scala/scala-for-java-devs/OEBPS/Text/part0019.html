@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Faking Language Constructs</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-faking-language-constructs">Faking Language Constructs</h2>
+
+<p>Scala allows you to write your code in such a way as to give the impression that you’re working with native language constructs, when really you’re just working with regular methods.</p>
+
+<p>This chapter will cover:</p>
+
+<ul><li>How Scala allows you to use curly braces instead of regular parentheses when calling methods.</li>
+  <li>How Scala supports higher-order functions: functions that take functions as arguments and return functions as results.</li>
+  <li>How Scala supports currying out of the box.</li>
+</ul><p>These things don’t sound that impressive, but combined they allow for a surprising amount of flexibility. We’ll see how these techniques can help you write more flexible and readable code.</p>
+
+<p>All the code samples in this chapter are in Scala.</p>
+
+<h3 id="curly_braces">Curly Braces (and Function Literals)</h3>
+
+<p>There’s a simple rule in Scala:</p>
+
+<blockquote>
+  <p>Any method call which accepts exactly one argument can use curly braces to surround the argument instead of parentheses.</p>
+</blockquote>
+
+<p>So, instead of this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">numerals</code><code class="o">.</code><code class="n">foreach</code><code class="o">(</code><code class="n">println</code><code class="o">(</code><code class="k">_</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>You can write this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">numerals</code><code class="o">.</code><code class="n">foreach</code><code class="o">{</code><code class="n">println</code><code class="o">(</code><code class="k">_</code><code class="o">)}</code>
+</pre></div>
+
+</div>
+
+<p>All we’ve done is swap the brackets for curly braces. Not very impressive, but things start to look a bit more interesting when we introduce some new lines.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">numerals</code><code class="o">.</code><code class="n">foreach</code> <code class="o">{</code>
+    <code class="n">println</code><code class="o">(</code><code class="k">_</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Now it begins to look like a built-in control structure. Developers are used to interpreting curly braces as demarcation of language syntax. So this looks more like the built-in <code>for</code> loop, even though it’s just a method call.</p>
+
+<p>The main reason for doing this is to allow clients to pass in functions as arguments in a natural and concise way. When you write functions that can take functions as arguments, you’re creating <em>higher-order</em> functions. These allow for greater flexibility and re-use.</p>
+
+<p>For example, let’s say we want to do some work and update a UI element, like a progress bar or a customer basket. The best way to do this is in a new thread so that we don’t slow down the main UI thread and cause pauses for the user.</p>
+
+<h4 id="leanpub-auto-higher-order-functions-1">Higher-Order Functions</h4>
+
+<p>If every call to update a UI element must be done on its own thread, we might end up with a naive implementation like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Ui</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+        <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+      <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+
+      <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+        <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+      <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The <code>Ui</code> object executes the sequence of updates one after another, each on a new thread. The <code>Ui</code> object is managing the threading policy <em>and</em> the update behaviour. It would be better if something else was responsible for coordinating threading and the <code>Ui</code> object was left to the update behaviour. That way, we could avoid duplication and if the threading policy changes, we wouldn’t have to find all the usages scattered about the place.</p>
+
+<p>The solution is to define a function that can run some other function on a thread. We could create a function called <code>runInThread</code> with the boilerplate threading code.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">()</code> <code class="o">{</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="o">???</code>
+    <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>It will create and start a new thread but it doesn’t do anything interesting. How do we pass in a function? In Java, you’d probably pass in a anonymous instance of a <code>Runnable</code> or <code>Callable</code> or a lambda.</p>
+
+<p>You do the same in Scala but rather than pass in a functional interface as the argument, you pass in a shorthand signature denoting a function argument. You define a variable as usual (<code>function</code> in our example below) but the type that follows the colon represents a function. Our example has no arguments and returns a value of <code>Unit</code>. It’s equivalent to Java 8’s signature for a lambda: <code>() -&gt; Void</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">(</code><code class="n">function</code><code class="k">:</code> <code class="o">()</code> <code class="o">=&gt;</code> <code class="nc">Unit</code><code class="o">)</code> <code class="o">{</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="o">???</code>
+    <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Then we just execute the function in the body of the thread. Remember the brackets denote the shorthand for executing the <code>apply</code> method.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">(</code><code class="n">function</code><code class="k">:</code> <code class="o">()</code> <code class="o">=&gt;</code> <code class="nc">Unit</code><code class="o">)</code> <code class="o">{</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">function</code><code class="o">()</code>     <code class="c1">// aka function.apply()</code>
+    <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Given the new <code>runInThread</code> method, we can rewrite the UI code like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+    <code class="n">runInThread</code><code class="o">(()</code> <code class="k">=&gt;</code> <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">))</code>
+    <code class="n">runInThread</code><code class="o">(()</code> <code class="k">=&gt;</code> <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">))</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>We’ve eliminated the duplication by passing in functions to <code>runInThread</code>.</p>
+
+<h4 id="leanpub-auto-higher-order-functions-with-curly-braces">Higher Order Functions with Curly Braces</h4>
+
+<p>This doesn’t really live up to the promise of clients being able to pass functions as arguments “in a natural and concise way”. It looks a lot like Java’s lambda syntax, but we can make it look more natural and more like language syntax if we use the curly braces.</p>
+
+<p>If we just replace the parentheses with curly braces, it doesn’t really improve things.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// yuk!</code>
+  <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+    <code class="n">runInThread</code> <code class="o">{</code> <code class="o">()</code> <code class="k">=&gt;</code>
+      <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+    <code class="o">}</code>
+    <code class="n">runInThread</code> <code class="o">{</code> <code class="o">()</code> <code class="k">=&gt;</code>
+      <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>But we can employ another trick to get rid of the empty parentheses and arrows. We can used what’s called a <em>call-by-name</em> parameter.</p>
+
+<h4 id="leanpub-auto-call-by-name">Call-by-Name</h4>
+
+<p>In Java, you can’t do anything about an empty lambda argument list (e.g., <code>() -&gt; Void</code>) but in Scala, you can drop the brackets from a function signature to indicate that the argument is call-by-name. To invoke it, you no longer need to call the <code>apply</code> method. Instead, you simply reference it.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">(</code><code class="n">function</code><code class="k">:</code> <code class="o">=&gt;</code> <code class="nc">Unit</code><code class="o">)</code> <code class="o">{</code>        <code class="c1">// call-by-name</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">function</code>     <code class="c1">// not function()</code>
+    <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The by-name parameter expression isn’t evaluated until it’s actually used; not when it’s defined. It behaves just like the longhand function did even though it looks like we’re calling the function at the point where we pass it into our <code>runInThread</code> method.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+    <code class="n">runInThread</code> <code class="o">{</code>
+      <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+    <code class="o">}</code>
+    <code class="n">runInThread</code> <code class="o">{</code>
+      <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>This starts to make things look a lot more natural, especially if we want to do more within a running thread. For example, let’s say we want to apply a discount before updating a customer’s basket. The braces and indents make it very clear that this happens in the same thread as the update.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+    <code class="n">runInThread</code> <code class="o">{</code>
+      <code class="n">applyDiscountToBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+      <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+    <code class="o">}</code>
+    <code class="n">runInThread</code> <code class="o">{</code>
+      <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>You can think of it as shorthand for creating a parameter-less lambda.</p>
+
+<div class="page-break"></div><div style="page-break-after:always"></div>
+<div class="aside sidebarish">
+  <h4 id="leanpub-auto-call-by-name--lazy">Call-by-name != Lazy</h4>
+  <p>People often think that by-name parameters are the same thing as <em>lazy values</em> but this isn’t technically accurate. Yes, they aren’t evaluated until they’re encountered at runtime but unlike true lazy values, they will be evaluated <em>every</em> time they’re encountered.</p>
+
+  <p>True lazy values are evaluated the first time they’re encountered and stored so the second time you ask for the value, it’s just returned, not evaluated again.</p>
+
+  <p>So by-name parameters are not lazy.</p>
+
+</div>
+
+<h3 id="currying">Currying</h3>
+
+<p>Using the <code>apply</code> method and curly braces allows us to create APIs that are expressive and natural to use. It allows us to create control abstractions that conform to what we already expect from the language in terms of syntax.</p>
+
+<p>But remember what we said earlier about the curly braces rule.</p>
+
+<blockquote>
+  <p>Any method call which accepts exactly one argument can use curly braces to surround the argument instead of parentheses.</p>
+</blockquote>
+
+<p>We can only use curly braces with single-argument methods. What if we want to add an argument to our <code>runInThread</code> method and still use the elegant syntax? The good news is that it’s entirely possible; we employ a technique called <em>currying</em>.</p>
+
+<p>Let’s extend our <code>runInThread</code> method to add a new argument to assign a thread group.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">(</code><code class="n">group</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">function</code><code class="k">:</code> <code class="o">=&gt;</code> <code class="nc">Unit</code><code class="o">)</code> <code class="o">{</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">(</code><code class="k">new</code> <code class="nc">ThreadGroup</code><code class="o">(</code><code class="n">group</code><code class="o">),</code> <code class="k">new</code> <code class="nc">Runnable</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">function</code>
+    <code class="o">}).</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>As only single-argument lists can use braces, we have to regress the <code>Ui</code> object back to using parentheses.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// yuk!</code>
+  <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+    <code class="n">runInThread</code><code class="o">(</code><code class="s">"basket"</code><code class="o">,</code> <code class="o">{</code>
+      <code class="n">applyDiscountToBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+      <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+    <code class="o">})</code>
+    <code class="n">runInThread</code><code class="o">(</code><code class="s">"customer"</code><code class="o">,</code>
+      <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+    <code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>If we could convert our function with two arguments into a function that takes one argument we’d be able to use the curly braces again. Fortunately for us, that’s exactly what currying is about. Currying is the process of turning a function of two or more arguments into a series of functions, each taking a single argument.</p>
+
+<p>For a function of two arguments, currying would produce a function that takes one argument and returns another function. This returned function would also have a single argument (for what would have been the second argument of the original function). Confused? Let’s work through an example.</p>
+
+<p>Let’s say we have a function <img src="../Images/image00243.gif" alt="f" class="inline-equation"/> that takes two arguments, <img src="../Images/image00244.gif" alt="a" class="inline-equation"/> and <img src="../Images/image00245.gif" alt="b" class="inline-equation"/>, and returns <img src="../Images/image00246.gif" alt="a + b" class="inline-equation"/>.</p>
+
+<img src="../Images/image00247.gif" alt="f\left ( a, b \right ) = a + b" class="block-equation"/><p>To convert this into two functions, each with a single argument, first we create a function to take <img src="../Images/image00248.gif" alt="a" class="inline-equation"/> and give back a new function (<img src="../Images/image00249.gif" alt="f′" class="inline-equation"/>).</p>
+
+<img src="../Images/image00250.gif" alt="f\left ( a \right )\rightarrow f′" class="block-equation"/><p>This new function should itself take a single argument, <img src="../Images/image00251.gif" alt="b" class="inline-equation"/>.</p>
+
+<img src="../Images/image00252.gif" alt="f\left ( a \right )\rightarrow f′\left ( b \right )" class="block-equation"/><p>That entire function should return the result, <img src="../Images/image00253.gif" alt="a + b" class="inline-equation"/></p>
+
+<img src="../Images/image00254.gif" alt="f\left ( a \right )\rightarrow f′\left ( b \right )\rightarrow a + b" class="block-equation"/><p>We’re left with two functions (<img src="../Images/image00255.gif" alt="f" class="inline-equation"/> and <img src="../Images/image00256.gif" alt="f′" class="inline-equation"/>), each taking a single argument.</p>
+
+<p>With the pseudo-mathematical notation on the same page, it’s worth restating my original definition and comparing the original to the curried form of the function.</p>
+
+<blockquote>
+  <p>For a function of two arguments, currying would produce a function that takes one argument and returns another function. This returned function would also have a single argument (for what would have been the second argument of the original function).</p>
+</blockquote>
+
+<div class="image-with-caption center">
+  <img src="../Images/image00257.jpeg" alt="Fig. 3.1. Original function and steps to arrive at its curried form."/><p class="caption">Fig. 3.1. Original function and steps to arrive at its curried form.</p>
+</div>
+
+<p>To evaluate the functions of the curried form, we’d evaluate the first function (for example, passing in a value <img src="../Images/image00258.gif" alt="1" class="inline-equation"/>).</p>
+
+<img src="../Images/image00259.gif" alt="f\left ( 1 \right )" class="block-equation"/><p>This would return a function which captures the value, and because what’s returned is a function, we can just evaluate it, providing a value for the last argument (<img src="../Images/image00260.gif" alt="2" class="inline-equation"/>).</p>
+
+<img src="../Images/image00261.gif" alt="f\left ( 1 \right )\left ( 2 \right )" class="block-equation"/><p>At this point, both values are in scope and any computation can be applied giving the final result.</p>
+
+<p>I’ve been using a bit of a gorilla notation<sup id="fnref-math_syntax"><a rel="footnote" href="part0019.xhtml#fn-math_syntax">1</a></sup> to get my point across here. Using a more mathematically correct notation, we could show the function as being curried by creating a new function taking <img src="../Images/image00262.gif" alt="a" class="inline-equation"/> and mapping <img src="../Images/image00263.gif" alt="b" class="inline-equation"/> to <img src="../Images/image00264.gif" alt="a + b" class="inline-equation"/>.</p>
+
+<img src="../Images/image00265.gif" alt="f\left ( a \right ) = \left ( b \mapsto a + b \right )" class="block-equation"/><p>If you’re familiar with the lambda calculus<sup id="fnref-lambda_calc"><a rel="footnote" href="part0019.xhtml#fn-lambda_calc">2</a></sup>, you’ll already know that <img src="../Images/image00266.gif" alt="\lambda ab.a + b" class="inline-equation"/> is shorthand for its curried form <img src="../Images/image00267.gif" alt="\lambda a.\left ( \lambda b.\left ( a + b \right ) \right )" class="inline-equation"/>.</p>
+
+<p> </p>
+
+<div class="aside sidebarish">
+  <h4 id="leanpub-auto-closures">Closures</h4>
+  <p>Interestingly, the process of capturing a value and making it available to a second function like this is called <em>closure</em>. It’s where we get the term <em>closure</em> from when referring to anonymous functions or lambdas that capture values.</p>
+
+</div>
+
+<h4 id="leanpub-auto-scala-support-for-curried-functions">Scala Support for Curried Functions</h4>
+
+<p>A regular uncurried function to add two numbers might look like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>
+</pre></div>
+
+</div>
+
+<p>Scala supports curried functions out of the box, so we don’t need to do any manual conversion; all we do to turn this into its curried version is to separate out the arguments using parentheses.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)(</code><code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>
+</pre></div>
+
+</div>
+
+<p>Scala has created two single-argument parameter lists for us. To evaluate the function, we’d do the following:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="n">add</code><code class="o">(</code><code class="mi">1</code><code class="o">)(</code><code class="mi">2</code><code class="o">)</code>
+  <code class="n">res1</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="mi">3</code>
+</pre></div>
+
+</div>
+
+<p>To see it in stages, we could just evaluate the first half like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="k">val</code> <code class="n">f</code> <code class="k">=</code> <code class="n">add</code><code class="o">(</code><code class="mi">1</code><code class="o">)</code> <code class="k">_</code>
+  <code class="n">f</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=&gt;</code> <code class="nc">Int</code> <code class="k">=</code> <code class="o">&lt;</code><code class="n">function1</code><code class="o">&gt;</code>
+</pre></div>
+
+</div>
+
+<p>The underscore gives the REPL a hint about what we’re trying to do. The result <code>f</code> is a function from <code>Int</code> to <code>Int</code>. The value <code>1</code> has been <em>captured</em> and is available to that function. So we can now just execute the returned function supplying our second value.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="n">f</code><code class="o">(</code><code class="mi">2</code><code class="o">)</code>
+  <code class="n">res2</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="mi">3</code>
+</pre></div>
+
+</div>
+
+<p>So what does this mean for our <code>runInThread</code> method? Well, if we create a curried version of the function, we can get back to using our lovely curly braces.</p>
+
+<p>We start by splitting the argument into two to create the curried form of the original.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">(</code><code class="n">group</code><code class="k">:</code> <code class="kt">String</code><code class="o">)(</code><code class="n">function</code><code class="k">:</code> <code class="o">=&gt;</code> <code class="nc">Unit</code><code class="o">)</code> <code class="o">{</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">(</code><code class="k">new</code> <code class="nc">ThreadGroup</code><code class="o">(</code><code class="n">group</code><code class="o">),</code> <code class="k">new</code> <code class="nc">Runnable</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">function</code>
+    <code class="o">}).</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Notice there are no other changes to make to the function. Inside <code>runInThread</code> everything is just as it was. However, we can now change the <code>Ui</code> object back to using curly braces for the second argument.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">updateUiElements</code><code class="o">()</code> <code class="o">{</code>
+    <code class="n">runInThread</code><code class="o">(</code><code class="s">"basket"</code><code class="o">)</code> <code class="o">{</code>
+      <code class="n">applyDiscountToBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+      <code class="n">updateCustomerBasket</code><code class="o">(</code><code class="n">basket</code><code class="o">)</code>
+    <code class="o">}</code>
+    <code class="n">runInThread</code><code class="o">(</code><code class="s">"customer"</code><code class="o">,</code>
+      <code class="n">updateOffersFor</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+    <code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<h3 id="leanpub-auto-summary-3">Summary</h3>
+
+<p>With a few built-in features, Scala allows us to write methods that look like language constructs. We can use higher-order functions to create control abstractions: functions that abstract over complex behaviour and reduce duplication yet still offer flexibility to the code that calls them.</p>
+
+<p>We can use curly braces anywhere a single-argument method is used. We can use this to provide visual cues and patterns that are immediately recognisable. Using built-in currying support, we’re not limited to using this only for single-argument functions; we can create even richer APIs by converting multiple-argument functions into multiple single-argument functions.</p>
+
+<div class="footnotes">
+  <ol><li id="fn-math_syntax">A discussion of the notation used can be found at http://bit.ly/1Q2bU6s<a rev="footnote" href="part0019.xhtml#fnref-math_syntax">↩</a></li>
+    <li id="fn-lambda_calc">Some notes on the Lambda Calculus can be found at http://bit.ly/1G4OdVo<a rev="footnote" href="part0019.xhtml#fnref-lambda_calc">↩</a></li>
+  </ol></div>
+</div>
+</body></html>

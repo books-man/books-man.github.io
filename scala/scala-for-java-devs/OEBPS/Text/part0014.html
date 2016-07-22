@@ -1,0 +1,902 @@
+﻿<?xML version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<TItLe>Inheritance</TitlE>
+<lInk hreF="../Styles/style0001.css" TYpe=text/css rEl=stylesheet/>
+
+<div>
+<h2 id="inheritance_chapter">Inheritance</H2>
+
+<P>In this chapter we’ll look at inheritance in Scala: how you create subclasses and override methods, the Scala equivalent of interfaces and abstract classes, and the mechanisms Scala offers for mixing in reusable behaviour. We’ll finish by discussing how to pick between all the options.</P>
+
+<H3 id="leanpub-auto-subtype-inheritance">Subtype Inheritance</H3>
+
+<p>Creating a subtype of another class is the same as in Java. You use the <COde>extends</coDe> keyword and you can prevent subclassing with the <CoDe>final</code> modifier on a class definition.</P>
+
+<P>Let’s suppose we want to extend the basic <coDe>Customer</code> class from earlier and create a special subtype to represent a <cOdE>DiscountedCustomer</code>. A shopping basket might belong to the <COde>Customer</COde> super-class, along with methods to add items to the basket and total its value.</P>
+
+<DIV claSS="code-block">
+<DIv cLass=highlight><pre>  <CoDe ClasS="c1">// java</coDe>
+  <CODE ClaSs=kd>public</coDE> <Code ClaSs="kd">class</coDe> <cOdE CLasS="nc">Customer</coDE> <code CLASS=o>{</coDE>
+
+      <CoDE clASS="kd">private</CoDe> <CODE cLaSS=kd>final</CODe> <cOdE cLaSS="n">String</codE> <CoDE cLAsS="n">name</cODE><CodE clASs="o">;</CoDe>
+      <cODe ClASS="kd">private</cOde> <cOde class="kd">final</coDe> <COdE CLASS=n>String</CoDE> <cODE CLASS=n>address</code><CoDE ClasS="o">;</COdE>
+      <Code claSS="kd">private</CODE> <CodE ClAss="kd">final</CoDE> <CoDE ClASS=n>ShoppingBasket</COdE> <codE clAsS="n">basket</codE> <coDe claSS="o">=</cOdE> <cOde cLaSS="k">new</code> <cODE cLass="n">ShoppingBasket</COde><cODe CLASS="o">();</cOdE>
+
+      <cOdE class=kd>public</CODe> <cODe ClAss="nf">Customer</code><COdE cLaSS=o>(</codE><Code clasS="n">String</cODE> <cODE Class=n>name</codE><cOde CLAsS="o">,</CODe> <COdE cLAsS=n>String</cODe> <cODE ClaSs="n">address</CodE><COdE CLAsS=o>)</CoDE> <CoDe CLASS="o">{</CODe>
+          <coDe ClasS="k">this</cOdE><COdE ClaSS="o">.</cODe><coDE cLASs=na>name</CODE> <CoDE clAss="o">=</CodE> <Code ClASS="n">name</cOde><CoDe ClAsS=o>;</codE>
+          <coDe CLasS="k">this</codE><CODe cLAss="o">.</CoDE><cOde claSs="na">address</COde> <code clASS=o>=</CODE> <COdE ClAss="n">address</CODE><COdE clAss="o">;</code>
+      <cODE CLasS=o>}</coDe>
+
+      <codE ClAsS="kd">public</CodE> <CODE cLaSs=kt>void</code> <code CLASs="nf">add</CODE><CoDe clASS="o">(</cODE><CoDE clAss=n>Item</cODe> <COdE cLaSS=n>item</CoDE><coDE ClASs=o>)</Code> <cOdE clASs=o>{</Code>
+          <codE ClASs="n">basket</COde><cODe clASs="o">.</codE><cOde ClAsS="na">add</CodE><CODe CLASs=o>(</cOde><Code ClASs=n>item</CoDe><cODE cLASs=o>);</cODE>
+      <COde ClasS="o">}</CodE>
+
+      <coDE cLAss=kd>public</cODE> <CODe CLaSS="n">Double</coDe> <cOdE ClaSs="nf">total</coDe><cODE ClasS=o>()</COde> <coDE CLASs="o">{</CodE>
+          <coDE ClAss="k">return</COde> <cODE cLaSs=n>basket</CODE><CodE CLASS=o>.</COde><cODE ClASs=na>value</cODe><Code ClaSs="o">();</coDe>
+      <CoDe cLAss="o">}</codE>
+  <code Class="o">}</coDe>
+</PrE></dIv>
+
+</DiV>
+
+<p>Let’s say the <CoDe>DiscountedCustomer</CODE> is entitled to a 10% discount on all purchases. We can extend <CODe>Customer</CODe>, creating a constructor to match <codE>Customer</coDE>, and call <code>super</COde> in it. We can then override the <codE>total</cODE> method to apply the discount.
+
+<dIv cLasS="code-block">
+<diV CLasS=highlight><pRE>  <CODe CLaSs="c1">// java</cODE>
+  <CODe cLASs=kd>public</coDE> <CODE CLAss=kd>class</cODE> <codE cLASs="nc">DiscountedCustomer</CoDE> <cOdE clASs=kd>extends</COde> <CODe ClasS="n">Customer</CoDe> <CoDe cLass=o>{</CODe>
+
+      <cOdE ClASS=kd>public</CoDE> <code cLAsS=nf>DiscountedCustomer</cODE><CODE cLAss=o>(</CoDe><CodE cLass=n>String</cOde> <COdE CLass=n>name</coDe><coDe clAss=o>,</cODE> <cOdE ClASS=n>String</cOde> <CODE cLAsS="n">address</CoDE><cODe clAss=o>)</codE> <cODe claSs="o">{</cOdE>
+          <COde cLaSs=kd>super</CoDE><cODe ClaSs="o">(</CodE><code CLASS="n">name</COde><COdE CLASs="o">,</CoDE> <cODE clasS="n">address</CodE><CoDE CLasS="o">);</CoDE>
+      <COde claSs="o">}</CODe>
+
+      <cODE cLASs=nd>@Override</CodE>
+      <COdE CLaSs="kd">public</COdE> <cOdE ClASs=n>Double</code> <coDe cLaSS="nf">total</coDE><code cLASs="o">()</COde> <COde CLASS="o">{</CodE>
+          <Code CLAss="k">return</coDe> <COdE cLaSS="kd">super</Code><CoDe CLASs="o">.</CODE><Code ClasS="na">total</cODe><code ClaSS="o">()</Code> <COdE clASS=o>*</CoDE> <cOdE ClASS="mf">0.90</CoDE><Code class="o">;</code>
+      <coDE cLASs=o>}</COdE>
+  <cODe clasS="o">}</CoDe>
+</PRE></diV>
+
+</diV>
+
+<p>We do exactly the same thing in Scala. Here’s the basic <COdE>Customer</COdE> class:
+
+<DiV CLAsS=code-block>
+<DiV clASs="highlight"><prE>  <CodE CLASs=c1>// scala</CoDE>
+  <coDE class=k>class</CODE> <COde CLAss=nc>Customer</CODe><cOde CLasS=o>(</code><cODE ClasS="k">val</coDE> <Code CLasS=n>name</CODE><cOde ClasS="k">:</Code> <CODE CLAss=kt>String</coDe><cOde ClaSs="o">,</CoDe> <code clASS="k">val</coDE> <CODe ClASS="n">address</coDe><code cLASs="k">:</cODE> <CoDe claSs="kt">String</coDe><CoDE CLasS=o>)</Code> <coDe clASS="o">{</cOde>
+
+    <COde clasS=k>private</CODe> <CODE cLAss=k>final</cOdE> <Code clAss=k>val</cOdE> <CODE CLASs="n">basket</CoDE><Code CLAsS=k>:</CoDe> <code CLAss="kt">ShoppingBasket</cODE> <CoDE cLASs="o">=</cODe> <CODE ClaSs="k">new</coDE> <COde ClAss="nc">ShoppingBasket</code>
+
+    <CoDe ClasS=k>def</CoDE> <COde cLASS="n">add</code><coDe cLaSs=o>(</cOdE><code ClaSS="n">item</CODe><COdE cLass=k>:</COdE> <COdE cLass=kt>Item</cODE><cODe cLASS="o">)</CoDE> <cODe ClASS="o">{</CodE>
+      <CoDe cLASS="n">basket</CoDE><Code CLAsS=o>.</code><CodE CLass="n">add</CODE><CODe CLASS=o>(</code><CODE Class=n>item</code><cODE cLASs="o">)</cOde>
+    <cOde cLasS="o">}</CODe>
+
+    <cOde cLAss=k>def</cOdE> <cODe cLAss=n>total</coDE><cOde clAsS=k>:</cODE> <COdE clAss="kt">Double</Code> <CoDe CLasS=o>=</cOdE> <coDE cLAsS=o>{</coDE>
+      <code cLAss="n">basket</CodE><cODE clAss="o">.</Code><Code ClAss="n">value</CodE>
+    <cOdE class="o">}</CODE>
+  <codE clAsS=o>}</CodE>
+</prE></dIV>
+
+</DiV>
+
+<p>When it comes to extending <CoDe>Customer</CoDe> to <cODE>DiscountedCustomer</coDe>, there are a few things to consider. First, we’ll create the <CodE>DiscountedCustomer</CodE> class.
+
+<DIV clAsS=code-block>
+<dIV ClaSS="highlight"><PrE>  <coDE ClaSs=k>class</cOdE> <cOde ClaSs="nc">DiscountedCustomer</coDe>
+</pRE></diV>
+
+</Div>
+
+<p>If we try and extend <CodE>Customer</Code> to create <coDe>DiscountedCustomer</Code>, we get a compiler error.</P>
+
+<DIv ClASs=code-block>
+<div ClaSS=highlight><pre>  <CODE CLass=k>class</CoDe> <code CLAsS=nc>DiscountedCustomer</COde> <CoDE clASs="k">extends</COdE> <COde cLASs="nc">Customer</CodE>     <code ClaSS="c1">// compiler error</cOde>
+</pre></diV>
+
+</DiV>
+
+<P>We get a compiler error because we need to call the <COdE>Customer</coDE> constructor with values for its arguments. We had to do the same thing in Java when we called <CodE>super</coDe> in the new constructor.
+
+<P>Scala has a primary constructor and auxiliary constructors. Auxiliary constructors must be chained to eventually call the primary constructor and in Scala, only the primary constructor can call the super-class constructor. We can add arguments to the primary constructor like this:
+
+<DIv CLAsS="code-block">
+<div clAsS="highlight"><pRe>  <cOdE cLass="k">class</COdE> <codE clAss="nc">DiscountedCustomer</CoDE><coDe ClAsS=o>(</COdE><code claSS="n">name</cOdE><coDe clasS="k">:</CoDe> <cODE CLASS="kt">String</CODE><CoDe ClAss="o">,</cODE> <COdE CLaSs=n>address</cOde><COde cLASs="k">:</COdE> <codE CLaSS="kt">String</CODe><cODe ClAss="o">)</cODe> <coDe CLASS="k">extends</cOdE> <codE cLaSs=nc>Customer</cODe>
+</prE></DiV>
+
+</DiV>
+
+<p>But we can’t call <CODe>super</cOde> directly like we can in Java.
+
+<div Class=code-block>
+<Div Class="highlight"><PRe>  <Code ClAsS="k">class</COdE> <CoDe cLaSs="nc">DiscountedCustomer</CODE><cODe clasS=o>(</cODe><COdE cLaSS=k>val</COdE> <coDE ClasS=n>name</CoDE><codE ClasS="k">:</coDe> <code clAss=kt>String</Code><Code CLasS="o">,</codE> <cODe claSs="k">val</cODE> <code ClasS=n>address</code><coDe claSs="k">:</COdE> <CodE clAsS=kt>String</CODe><Code cLass=o>)</code>
+      <cOde ClAss="k">extends</cOde> <coDe CLASs="nc">Customer</CODe> <cOdE claSS=o>{</coDE>
+    <code CLaSs="k">super</code><coDe cLaSs="o">(</Code><cOde clASS="n">name</cODE><cOde CLaSs=o>,</CODe> <CODe Class=n>address</coDe><cODe ClaSS=o>)</coDe>          <cODE ClAss="c1">// compiler error</cOde>
+  <coDE cLASS=o>}</code>
+</prE></DIV>
+
+</DiV>
+
+<P>In Scala, to call the super-class constructor you pass the arguments from the primary constructor to the super-class. Notice that the arguments to <code>DiscountedCustomer</coDE> aren’t set as <cODe>val</cODe>. They’re not fields; instead, they’re locally scoped to the primary constructor and passed directly to the super-class.</p>
+
+<DIV cLAsS="code-block">
+<DIV cLaSs=highlight><Pre>  <cODE ClASs="k">class</CoDE> <cODe Class=nc>DiscountedCustomer</CODE><coDe ClAsS="o">(</Code><codE CLASs="n">name</coDE><cODe CLASS="k">:</CoDE> <coDe claSS="kt">String</cODE><CODE clAss=o>,</code> <coDE ClaSS=n>address</COdE><code ClAsS="k">:</coDe> <CODe CLASS=kt>String</cOde><codE CLaSs="o">)</code>
+      <Code CLass="k">extends</CoDe> <COdE CLASS="nc">Customer</coDE><code ClasS="o">(</CODe><cOdE claSs=n>name</cODe><COdE clAsS="o">,</CODe> <codE Class="n">address</coDe><CoDE clasS=o>)</CoDE>
+</pRe></dIV>
+
+</DIV>
+
+<p>Finally, we can implement the discounted <cODE>total</codE> method in the subclass.</p>
+
+<DIV ClaSS=code-block>
+<dIV clasS="highlight"><prE>  <cODE cLass=k>override</cODE> <COde clASS="k">def</cODE> <coDe cLAsS="n">total</cODE><codE CLass=k>:</COde> <Code cLaSS="kt">Double</CoDe> <CodE CLasS="o">=</cOdE> <coDe CLASs="o">{</code>
+    <COde ClASS="k">super</CODE><CODe ClASS=o>.</code><CoDE clasS="n">total</CODE> <CODe clAsS=o>*</cODe> <cODE CLass=mf>0.90</codE>
+  <code cLasS=o>}</codE>
+</Pre></div>
+
+</diV>
+
+<p>There are two things to note here: the <cOdE>override</cODe> keyword is required, and to call the super-classes <coDE>total</codE> method, we use <code>super</cODE> and a dot, just like in Java.
+
+<p>The <codE>override</coDE> keyword is like the <cOdE>@Override</coDE> annotation in Java. It allows the compiler to check for mistakes like misspelling the name of the method or providing the wrong arguments. The only real difference between the Java annotation and Scala’s is that it’s mandatory in Scala when you override non-abstract methods.
+
+<h3 id="leanpub-auto-anonymous-classes">Anonymous Classes</h3>
+
+<p>You create anonymous subclasses in a similar way to Java.</p>
+
+<P>In the Java version of the <coDe>ShoppingBasket</CoDE> class, the <CoDE>add</Code> method takes an <Code>Item</coDe> interface. So to add an item to your shopping basket, you could create an anonymous subtype of <COdE>Item</COde>. Below, we’ve created a program to add two fixed-price items to Joe’s shipping basket. Each item is an anonymous subclass of <coDe>Item</cODE>. The basket total after discount would be $5.40.
+
+<dIv clasS="code-block">
+<DIv claSS="highlight"><PRe>  <COdE CLasS=c1>// java</cOde>
+  <COde cLasS="kd">public</COde> <COde clAsS=kd>class</CODe> <CODE ClaSs="nc">ShoppingBasket</CODE> <code claSS=o>{</COde>
+
+      <CODE CLAss="kd">private</cODe> <codE ClAss="kd">final</codE> <CODE clASS="n">Set</cODE><COdE CLasS=o>&lt;</CodE><CodE CLaSs=n>Item</CODE><codE ClaSs=o>&gt;</codE> <CODE clASs=n>basket</CODe> <cODe CLaSS=o>=</Code> <code ClAss=k>new</CoDe> <CoDE cLAss=n>HashSet</CODE><CODe ClASS=o>&lt;&gt;();</CODE>
+
+      <cODE CLAsS=kd>public</CoDE> <CODe cLass=kt>void</CoDe> <codE cLasS=nf>add</COde><CODE cLASS=o>(</cODE><coDE CLaSS=n>Item</cODE> <COde Class="n">item</cOde><CodE clasS="o">)</codE> <COdE cLasS=o>{</cOde>
+          <cODe clAsS=n>basket</CoDe><codE CLASs="o">.</coDe><coDE claSs=na>add</cODe><code ClaSs="o">(</coDE><cOde ClaSS=n>item</CODe><codE cLASs=o>);</Code>
+      <CoDe ClAsS=o>}</CODe>
+
+      <Code Class=kd>public</CoDE> <cODE CLass="n">Double</CoDe> <cOdE CLAsS=nf>value</CoDE><CoDe cLaSS=o>()</coDE> <CoDE clAss="o">{</COde>
+          <cOdE cLAss="k">return</cOdE> <CodE clAsS=n>basket</COde><code clASS=o>.</cOde><cOde cLaSS=na>stream</Code><CoDe CLASs=o>().</cOdE><CodE CLaSs=na>mapToDouble</coDE><code cLaSS=o>(</CodE><COdE clAss="nl">Item:</CoDE><cOde CLASS="o">:</CODe><coDE ClasS=n>price</cOde><codE ClASs="o">).</cODe><CODE clAsS=na>sum</cODE><COde cLAss=o>();</CODE>
+      <cODE cLASs="o">}</CODe>
+  <CodE clAss=o>}</CODe>
+</PRe></diV>
+
+</Div>
+
+<dIv cLasS=code-block>
+<dIv cLaSs="highlight"><prE>  <cOde CLASS=c1>// java</COde>
+  <cODE cLASS=kd>public</cODe> <cODE CLASS="kd">class</CodE> <code cLaSs="nc">TestDiscount</CODE> <COdE clASs=o>{</CoDe>
+      <COdE ClAss=kd>public</CodE> <cOdE cLasS="kd">static</CoDe> <code Class="kt">void</coDE> <coDE ClAss=nf>main</CodE><cODe CLass=o>(</Code><CODE ClASs=n>String</codE><Code CLASS=o>...</cOde> <Code CLASS=n>args</COdE><cOde CLAss=o>)</CoDe> <cODE claSs=o>{</cODE>
+          <cODe claSs="n">Customer</code> <CODE cLaSS=n>joe</coDE> <CodE cLASS="o">=</CoDE> <coDe ClaSs="k">new</COde> <CodE CLaSs=n>DiscountedCustomer</Code><cOde ClAss="o">(</cOdE><cOdE ClASS="s">"Joe"</Code><CodE claSS=o>,</cOdE> <Code claSs="s">"128 Bullpen Street"</cOde><CODE cLass="o">);</coDe>
+          <code ClaSs="n">joe</CoDE><COdE ClasS=o>.</cODe><CoDe CLaSs=na>add</coDe><coDe ClASS=o>(</CODE><cOde Class=k>new</cODE> <COde ClAss="n">Item</CoDe><CoDE cLasS="o">()</COdE> <cODE cLAss="o">{</COde>
+              <cODE CLasS="nd">@Override</coDE>
+              <CoDe ClAss="kd">public</cOde> <COde CLASs=n>Double</CodE> <COde ClAss=nf>price</COdE><COde CLASs=o>()</coDe> <CoDe ClASS="o">{</CodE>
+                  <CODe cLasS="k">return</cOdE> <cOde ClAsS=mf>2.5</cOdE><COdE clASs="o">;</CodE>
+              <CODE cLasS=o>}</cODe>
+          <CodE ClAsS="o">});</Code>
+          <COdE CLAsS="n">joe</CoDe><COdE cLaSs=o>.</cOde><coDe clASS="na">add</CODe><cODE ClAsS=o>(</cODE><cOdE CLASS=k>new</COde> <CODe CLass=n>Item</coDe><COdE ClASS=o>()</cODe> <cOdE CLASS=o>{</CodE>
+              <cODE cLAss=nd>@Override</codE>
+              <COdE cLAss=kd>public</COde> <coDe ClAsS=n>Double</coDE> <coDE CLaSS="nf">price</CODE><cODE clASs=o>()</cOde> <COdE cLaSS="o">{</CodE>
+                  <coDe cLASs="k">return</codE> <CodE CLASs=mf>3.5</CoDE><code cLASs=o>;</code>
+              <CODe CLass="o">}</codE>
+          <CodE CLAss=o>});</COde>
+          <CODE clASs="n">System</CoDE><cOde CLass="o">.</COdE><cODe claSs="na">out</cOdE><CodE ClaSs=o>.</codE><COdE CLASS="na">println</codE><cOdE CLAsS=o>(</CODe><coDe CLAsS=s>"Joe's basket will cost $ "</CodE> <coDE ClASS=o>+</COde> <CODE cLASs="n">joe</CODe><coDE clASs=o>.</CODE><COde cLass="na">total</cOdE><COdE ClASs="o">());</CodE>
+      <CODe claSs="o">}</CodE>
+  <CODE cLAsS="o">}</coDE>
+</PRe></diV>
+
+</DIV>
+
+<P>In Scala, it’s pretty much the same. You can drop the brackets on the class name when newing up an <cOde>Item</codE>, and the type from the method signature of <CoDe>price</cODe>. The <codE>override</cODE> keyword in front of the <CoDe>price</cODE> method is also optional.
+
+<dIv ClaSs=code-block>
+<Div cLasS=highlight><pRe>  <CODE CLASS=c1>// scala</cOdE>
+  <coDe CLaSs=k>object</cOde> <coDE ClASs="nc">DiscountedCustomer</CODe> <CoDe ClaSS=o>{</code>
+    <coDe cLass="k">def</cODe> <cOdE clASs="n">main</cODE><code cLaSs=o>(</CoDe><coDE CLAsS="n">args</cOde><COdE ClasS=k>:</COdE> <COde class="kt">Array</cODE><COde CLAss=o>[</coDE><cODE CLASS=kt>String</coDE><cOdE ClasS=o>])</cOde> <coDE cLAss="o">{</CODe>
+      <COdE cLaSs=k>val</coDE> <Code CLasS="n">joe</Code> <CODE CLAss="k">=</COde> <CodE cLaSS="k">new</cODe> <CoDE ClaSs="nc">DiscountedCustomer</coDe><cOde CLass="o">(</coDe><cODe cLASs="s">"Joe"</COde><CoDe CLaSS=o>,</coDE> <COde ClaSs=s>"128 Bullpen Street"</coDe><CODe cLAsS=o>)</COdE>
+      <codE clAsS="n">joe</CoDe><code cLaSs=o>.</Code><coDe ClaSS="n">add</COde><cOde CLasS="o">(</CODe><COdE cLASS=k>new</COde> <coDE claSs=nc>Item</codE> <CODe clASS="o">{</coDe>
+        <CODe CLASS="k">def</cODe> <code clASs="n">price</coDe> <COdE cLaSS=k>=</cOdE> <code Class="mf">2.5</Code>
+      <cODE cLass=o>})</cOdE>
+      <coDE cLass=n>joe</CODe><coDe CLass=o>.</CODE><coDe clASs="n">add</cOdE><cOdE CLasS=o>(</CoDe><COde CLaSs=k>new</coDE> <CODe clAsS=nc>Item</CoDE> <codE ClasS="o">{</Code>
+        <cODE clAss=k>def</CODe> <CODE clASs="n">price</Code> <COde CLASS="k">=</CoDe> <COde clasS="mf">3.5</CodE>
+      <cOdE CLaSS="o">})</CoDe>
+      <COde clasS="n">println</cODE><cODe CLAsS="o">(</cOde><CODE CLAss="s">"Joe`s basket will cost $ "</cOde> <code class="o">+</Code> <CoDe cLaSS=n>joe</CODe><codE ClAss="o">.</cOde><codE ClaSs=n>total</coDE><cODE cLaSS="o">)</cOdE>
+    <COde CLaSS=o>}</cODe>
+  <cODE clasS="o">}</Code>
+</prE></DIV>
+
+</div>
+
+<P>You create anonymous instances of classes, abstract classes, or Scala traits in just the same way.</p>
+
+<h3 id="leanpub-auto-interfaces--traits">Interfaces / Traits</h3>
+
+<p>Interfaces in Java are similar to traits in Scala. You can use traits in much the same way as you can use an interface. You can implement specialised behaviour in implementing classes, yet still treat them polymorphically in code. However:
+
+<Ul><Li>Traits can have default implementations for methods. These are just like Java 8’s virtual extension methods (otherwise known as default methods) but there’s no equivalent pre-Java 8.
+  <lI>Traits can also have fields and even default values for these, something which Java interfaces cannot do. Therefore, traits can have both abstract and concrete methods <EM>and</eM> have state.
+  <LI>A class can implement any number of traits just as a class can implement any number of interfaces, although extending traits with default implementations in Scala is more like mixing in behaviours than traditional interface inheritance in Java.</lI>
+  <lI>There’s a cross-over with Java 8 as you can mixin behaviour with Java 8, although there are some differences in semantics and how duplicate methods are handled.
+</UL><p>In this section, we’ll look at these differences in more detail.</P>
+
+<p>In Java, we might create an interface called <codE>Readable</cOde> to read some data and copy it into a character buffer. Each implementation may read something different into the buffer. For example, one might read the content of a web page over HTTP whilst another might read a file.
+
+<div cLASs=code-block>
+<DIV ClasS="highlight"><Pre>  <codE cLaSS=c1>// java</CODE>
+  <coDE ClaSS="kd">public</cODE> <cOde cLASS="kd">interface</codE> <coDe clASs=nc>Readable</COdE> <cODE clAsS=o>{</Code>
+      <CoDE clAss="kd">public</cOde> <COdE Class="kt">int</COdE> <codE ClaSs=nf>read</cOde><CODe ClaSS="o">(</CODE><cODE CLasS="n">CharBuffer</cODe> <cODE ClasS=n>buffer</coDE><CODe CLaSs=o>);</CODE>
+  <code ClaSs=o>}</COdE>
+</prE></dIv>
+
+</DiV>
+
+<P>In Scala, the Java interface would become a trait and it would look like this:
+
+<dIV class=code-block>
+<dIV clASs="highlight"><pre>  <CodE CLasS=c1>// scala</coDE>
+  <cOdE ClaSs=k>trait</coDe> <codE cLASs="nc">Readable</CoDE> <coDe clAss=o>{</cOdE>
+    <codE ClaSs="k">def</cODe> <CoDE CLass=n>read</coDe><COdE cLaSS=o>(</CoDE><cODe claSs="n">buffer</CODe><coDE cLAss="k">:</cODe> <CoDe cLASs="kt">CharBuffer</CoDE><CoDe cLaSs=o>)</COde><CoDE ClasS="k">:</CoDe> <coDe clAss=kt>Int</CoDE>
+  <COde ClaSs=o>}</cODE>
+</PRe></dIV>
+
+</DIV>
+
+<P>You just use <cODE>trait</code> rather than <CoDE>class</cOdE> when you define it. There’s no need to declare methods as <CoDE>abstract</COdE>, as any unimplemented methods are automatically abstract.</p>
+
+<P>Implementing the interface in Java uses the <CODE>implements</coDE> keyword. For example, if we implement a file reader, we might take a <CoDe>File</CodE> object as a constructor argument and override the <CoDE>read</code> method to consume the file. The <cOdE>read</Code> method would return the number of bytes read.</p>
+
+<DiV CLASs="code-block">
+<Div clASs=highlight><prE>  <CODE ClasS="c1">// java</CoDe>
+  <Code CLasS=kd>public</COde> <COde CLASS="kd">class</coDE> <COde cLASs=nc>FileReader</COde> <COde cLass="kd">implements</coDe> <CoDe CLass="n">Readable</CoDe> <COdE CLASS="o">{</CodE>
+
+      <cODE cLaSS=kd>private</cODe> <cOde clAss="kd">final</cODE> <CoDE cLAsS=n>File</Code> <COde cLAss=n>file</cOdE><cODE CLaSs="o">;</CoDe>
+
+      <COde cLasS=kd>public</COdE> <cODE CLASS=nf>FileReader</cODE><COdE CLaSS=o>(</cODE><cOdE clAsS="n">File</COde> <CodE ClASS="n">file</CodE><COde CLass="o">)</CODE> <coDe CLasS="o">{</CoDe>
+          <CoDe cLASS=k>this</coDe><CoDe Class=o>.</cODe><Code CLaSs=na>file</code> <cODe Class="o">=</COdE> <codE claSS="n">file</CoDE><code cLass="o">;</code>
+      <COde CLaSs="o">}</CodE>
+
+      <CODe ClASS="nd">@Override</cOde>
+      <CODe clASS="kd">public</cOde> <cOdE claSS=kt>int</COde> <cOdE claSS=nf>read</CoDE><coDe clAsS=o>(</CoDE><cOde ClaSs=n>CharBuffer</code> <cOde cLASs=n>buffer</coDE><cODe CLAsS=o>)</COde> <cODE cLAsS=o>{</cODe>
+          <codE cLASs="kt">int</codE> <codE cLASS=n>read</Code> <COdE ClasS=o>=</CoDE> <cOdE ClaSs="mi">0</CODe><cODe clasS="o">;</coDe>
+          <COde cLasS="c1">// ...</CoDe>
+          <CodE ClaSs=k>return</cODe> <cODE CLass="n">read</COdE><cODE claSS="o">;</cOdE>
+      <CodE ClAss="o">}</CODE>
+  <cODe clASS=o>}</code>
+</PRE></DiV>
+
+</dIv>
+
+<p>In Scala, you use <coDE>extends</COde> just like when you extend regular classes. You’re forced to use the <cOdE>override</code> keyword when overriding an existing concrete method, but not when you override an abstract method.
+
+<Div CLass="code-block">
+<Div cLaSS="highlight"><PRE>  <codE clasS=c1>// scala</COdE>
+  <CodE ClAsS="k">class</COde> <CoDE clASS=nc>FileReader</code><cOdE ClAss="o">(</CODe><coDe CLASs=n>file</coDE><CodE cLASs=k>:</CoDE> <CodE cLASS="kt">File</COde><COdE CLass=o>)</cODE> <CoDe cLASS=k>extends</coDe> <CODe CLASS=nc>Readable</code> <CODe ClaSs="o">{</Code>
+    <CODe clAsS="k">override</coDE> <COde cLasS=k>def</cODe> <cOde CLass="n">read</cODE><CoDE CLass=o>(</Code><codE ClaSS="n">buffer</codE><COdE cLass="k">:</CoDE> <cOde ClAsS="kt">CharBuffer</coDE><cODe ClAss=o>)</COdE><cOde CLass=k>:</cODE> <CodE ClAss=kt>Int</CODE> <CODe ClAsS="o">=</CoDE> <CODE CLaSs=o>{</code>   <coDE ClaSs=c1>// override optional</CoDe>
+      <COdE ClASS=k>val</CodE> <CODE ClASS="n">linesRead</cOdE><CoDe cLaSs="k">:</codE> <cOde clASs="kt">Int</coDE> <CodE ClASS=o>=</cODE> <code ClaSs=mi>0</Code>
+      <CODE CLAss="k">return</CoDe> <code CLAsS="n">linesRead</cOde>
+    <coDe cLAss="o">}</CoDE>
+  <Code ClAsS=o>}</COdE>
+</Pre></DIv>
+
+</DIv>
+
+<p>In Java, if you want to implement multiple interfaces you append the interface name to the Java class definition, so we could add <cOde>AutoClosable</coDE> behaviour to our <COde>FileReader</COdE>.</p>
+
+<DiV CLaSS="code-block">
+<div CLASS="highlight"><Pre>  <CODE CLAss="c1">// java</CoDE>
+  <codE class="kd">public</COde> <cODe CLASs=kd>class</CodE> <CODe clAss="nc">FileReader</CoDE> <cOdE cLaSs=kd>implements</cODE> <Code clAss=n>Readable</CoDE><coDe ClAss="o">,</CodE> <coDe cLaSs="n">AutoCloseable</coDE> <CODE CLasS="o">{</Code>
+
+      <code ClaSS=kd>private</coDE> <CODE cLaSS="kd">final</CoDE> <coDE ClAss=n>File</Code> <CoDe ClasS=n>file</CODe><COde Class="o">;</codE>
+
+      <Code CLAsS=kd>public</COdE> <cODE CLASs=nf>FileReader</cOde><CODe ClasS="o">(</COdE><CoDe cLASS="n">File</cODE> <coDE CLAss=n>file</COde><COdE cLASs=o>)</cOde> <cOde clASs="o">{</cODE>
+          <coDE cLASs="k">this</COdE><COdE ClaSs="o">.</CoDE><Code CLAss="na">file</CoDe> <codE CLass=o>=</coDe> <coDe CLaSs=n>file</CoDE><CoDe CLaSS=o>;</cOde>
+      <coDE clASS=o>}</cOde>
+
+      <coDe cLass="nd">@Override</cOde>
+      <coDE ClaSs=kd>public</COde> <CoDE cLASS=kt>int</coDe> <CODe claSS=nf>read</CODE><CODE cLAsS=o>(</cOde><CoDE ClasS=n>CharBuffer</coDe> <COdE CLass=n>buffer</CoDE><cODe clasS="o">)</CoDE> <cOde clAss=o>{</coDe>
+          <codE CLASS="kt">int</cOde> <CodE CLaSS="n">read</codE> <codE cLAsS="o">=</CODe> <COde ClASs="mi">0</cOdE><cODE cLAss="o">;</Code>
+          <cODE ClAss="c1">// ...</CODe>
+          <cOde ClASs="k">return</CodE> <coDe cLAss="n">read</CodE><COde CLASs="o">;</cODE>
+      <cODe clAsS=o>}</cOdE>
+
+      <coDE CLASs=nd>@Override</cOdE>
+      <cODE CLAss=kd>public</coDe> <cOdE ClaSS="kt">void</CodE> <codE ClaSs="nf">close</Code><coDE cLASS="o">()</codE> <codE claSS="kd">throws</CodE> <cOdE claSS=n>Exception</Code> <COde cLass=o>{</CodE>
+          <COde Class=c1>// close</COdE>
+      <coDe claSs="o">}</cODe>
+  <Code CLass="o">}</cOde>
+</pRe></div>
+
+</DIv>
+
+<p>In Scala, you use the <cOdE>with</cODE> keyword to add additional traits. You do this when you want to extend a regular class, abstract class or trait. Just use <CODe>extends</COde> for the first and then <CodE>with</cOde> for any others. However, just like in Java, you can have <em>only one</EM> super-class.
+
+<div ClaSs="code-block">
+<DiV ClaSS="highlight"><PRe>  <cOdE clAss=c1>// scala</CODE>
+  <cODe cLaSs="k">class</cOde> <COdE CLASs=nc>FileReader</cODE><COde cLasS="o">(</Code><coDE clASs=n>file</coDE><CODe cLaSS=k>:</cOde> <CoDE ClASs=kt>File</cODE><COdE CLASS=o>)</coDE> <CodE clasS=k>extends</cODe> <cODE cLAsS=nc>Readable</COdE> <CODe cLaSs="k">with</coDE> <COdE ClASs=nc>AutoCloseable</codE> <coDE CLaSs="o">{</COdE>
+    <COde clasS=k>def</cOde> <CoDe CLAsS="n">read</Code><code claSs=o>(</CODE><cOde cLASs=n>buffer</code><COde clASs="k">:</cOde> <code Class=kt>CharBuffer</CODE><coDe CLAsS="o">)</code><CODe cLasS=k>:</COde> <cOdE class=kt>Int</COde> <code ClASs=o>=</CoDe> <CODE CLasS=o>{</CODE>
+      <coDe ClAss="k">val</CoDe> <CodE clASs=n>linesRead</CODe><CoDe cLass=k>:</CoDe> <COde ClaSs=kt>Int</CoDE> <CODE ClASS="o">=</CodE> <coDe CLAss=mi>0</CODe>
+      <CODe claSS="c1">// ...</cODe>
+      <code ClAsS=k>return</code> <CoDe ClaSS="n">linesRead</COdE>
+    <CodE claSS="o">}</coDe>
+
+    <cODE clAss="k">def</cOde> <cOdE CLASs=n>close</CoDe><cODe clASs=o>()</cODe><CODE clAss=k>:</COdE> <CodE CLaSs="kt">Unit</cODe> <cODE CLasS=o>=</CoDe> <CoDe ClaSS=o>???</coDe>
+  <Code cLASs=o>}</CodE>
+</PrE></div>
+
+</diV>
+
+<Div clasS="aside sidebarish">
+  <H4 id="leanpub-auto-whats-the-question">What’s the Question?</h4>
+  <P>The <cODe>???</codE> above is actually a method. It’s a handy method you can use to say “I don’t know yet”. It throws a runtime exception if you call it, a bit like <Code>UnsupportedOperationException</CODe> in Java. It gets things compiling when you really don’t know what you need yet.</p>
+
+</dIV>
+
+<H4 id="leanpub-auto-methods-on-traits">Methods on Traits</h4>
+
+<P>Java 8 introduced default methods where you can create default implementations on interfaces. You can do the same thing in Scala with a few extra bits besides.</P>
+
+<P>Let’s see where Java interfaces might benefit from having default implementations. We could start by creating a <CoDe>Sortable</CoDE> interface to describe any class that can be sorted. More specifically, any implementations should be able to sort things of the generic type <COdE>A</cOde>. This implies it’s only useful for collection classes so we’ll make the interface extend <cODe>Iterable</CodE> to make that more obvious.
+
+<dIv CLASS="code-block">
+<DiV cLAss=highlight><PrE>  <CoDe cLaSS="c1">// java</coDE>
+  <coDE cLaSS=kd>interface</cOdE> <CODe cLAss=nc>Sortable</COde><CoDe cLaSs=o>&lt;</CODE><coDE claSs=n>A</code><Code ClAsS=o>&gt;</CODe> <cODE CLAsS="kd">extends</codE> <COdE cLAss="n">Iterable</CODE><CodE cLass="o">&lt;</CoDe><Code CLass="n">A</code><CoDE cLASS=o>&gt;</COdE> <Code ClASs="o">{</code>
+      <CODe clasS=kd>public</CODe> <CODe class="n">List</CoDE><Code ClaSS="o">&lt;</CoDe><CODe clAss="n">A</cOde><coDE Class=o>&gt;</cODE> <cODE ClasS="nf">sort</CoDE><CODe ClAss="o">();</Code>
+  <coDe class=o>}</codE>
+</pRE></diV>
+
+</dIV>
+
+<P>If lots of classes implement this, many may well want similar sorting behaviour. Some will want finer-grained control over the implementation. With Java 8, we can provide a default implementation for the common case. We mark the interface method as <coDE>default</CODe> indicating that it has a default implementation, then go ahead and provide an implementation.</p>
+
+<p>Below we’re taking advantage of the fact that the object is iterable, and copying its contents into a new <cODe>ArrayList</cOde>. We can then use the built-in <Code>sort</cOdE> method on <CoDe>List</codE>. The <cOde>sort</cODE> method takes a lambda to describe the ordering, and we can take a shortcut to reuse an object’s natural ordering if we say the objects to compare must be <cODE>Comparable</cODE>. A slight tweak to the signature to enforce this and then we can use the comparator’s <CodE>compareTo</CODe> method. It means that we have to make type <coDe>A</cODE> something that is <codE>Comparable</cOdE>, but it’s still in keeping with the intent of the <cODe>Sortable</CoDe> interface.</p>
+
+<DIV class=code-block>
+<DIV ClAsS="highlight"><PRe>  <CodE CLasS="c1">// java</CODe>
+  <coDe clASs=kd>public</COdE> <cOde cLaSS="kd">interface</COdE> <CoDe clASs=nc>Sortable</cOdE><codE ClasS="o">&lt;</coDe><CodE cLass="n">A</COdE> <CodE ClAsS=kd>extends</Code> <COdE cLASS="n">Comparable</CODE><code ClasS=o>&gt;</codE> <CODe claSs="kd">extends</coDe> <coDe clAsS=n>Iterable</code><Code cLaSS="o">&lt;</CODe><COde clAss=n>A</codE><CODe ClasS=o>&gt;</cOde> <coDE ClASS=o>{</cODE>
+      <code cLAsS=k>default</COde> <COde ClAss="kd">public</cOde> <codE cLASs="n">List</CodE><Code clAss=o>&lt;</code><coDE clAss="n">A</CoDE><CoDE clasS=o>&gt;</code> <codE ClAsS=nf>sort</coDe><cODe cLaSS="o">()</coDE> <cOde cLASs="o">{</COdE>
+          <coDE clasS="n">List</cODe><coDe Class=o>&lt;</cODe><COdE clASs="n">A</CODe><COde cLASs="o">&gt;</Code> <code Class="n">list</coDe> <CODe cLasS="o">=</CODe> <COde ClaSs="k">new</CODe> <COdE CLASs="n">ArrayList</coDe><codE CLAsS=o>&lt;&gt;();</codE>
+          <COde clAss=k>for</codE> <CodE clAss="o">(</CoDE><code cLASs="n">A</COdE> <coDE CLASS="nl">elements:</code> <cODE CLAsS="k">this</codE><COde clASs=o>)</CODe>
+              <cODE ClAss=n>list</CODE><cODe clAss="o">.</CODE><CODe clASs=na>add</CodE><CodE ClAsS=o>(</CoDe><codE CLASs=n>elements</code><coDe ClasS=o>);</coDe>
+          <CODe CLasS=n>list</CODe><COdE clASs=o>.</CODe><Code CLAsS="na">sort</COde><CODe cLAsS=o>((</COde><COde CLaSS=n>first</CoDe><CoDe Class="o">,</codE> <CoDE cLaSs=n>second</cOde><COde cLASS="o">)</cODe> <cOde clAss="o">-&gt;</cODE> <CODe cLaSs=n>first</codE><cOde CLass=o>.</COdE><coDE clASs=na>compareTo</CODe><codE ClASs=o>(</coDE><coDE Class=n>second</coDe><CoDE clasS="o">));</coDe>
+          <coDE CLaSs=k>return</cOdE> <coDE CLass=n>list</cOde><codE clAss="o">;</code>
+      <CODE ClaSS="o">}</cOde>
+  <coDe cLAsS=o>}</COdE>
+</PRe></diV>
+
+</DiV>
+
+<p>The <CodE>default</Code> keyword above means that the method is no longer abstract and that any subclasses that don’t override it will use it by default. To see this, we can create a class, <cOde>NumbersList</code> extending <coDe>Sortable</cOde>, to contain a list of numbers, and use the default sorting behaviour to sort these. There’s no need to implement the <cODE>sort</CodE> method as we’re happy to use the default provided.</p>
+
+<diV cLASs=code-block>
+<Div ClaSs=highlight><PRE>  <CoDE cLASs=c1>// java</cOde>
+  <cODE ClAsS="kd">public</cOdE> <COde clAss=kd>class</coDe> <CodE ClAsS=nc>NumbersUsageExample</cODe> <CODE clAss=o>{</CodE>
+
+      <CoDe ClAsS=kd>private</Code> <Code claSs="kd">static</cODe> <cODe cLAss=kd>class</codE> <COdE claSS="nc">NumberList</CodE> <cODE cLAsS=kd>implements</COdE> <CoDE clAss=n>Sortable</cODE><coDE cLAss="o">&lt;</cOdE><CoDe cLAsS="n">Integer</CoDe><cOde CLaSS="o">&gt;</codE> <cODE ClAss="o">{</CoDE>
+          <CODE clAsS="kd">private</CodE> <CodE CLasS=n>Integer</CODe><Code class=o>[]</Code> <COdE cLass=n>numbers</codE><cOdE CLasS=o>;</COde>
+
+          <code ClAss=kd>private</cODe> <COdE class=nf>NumberList</CodE><COdE ClASS="o">(</coDE><COdE ClAsS="n">Integer</cOde><CODE ClaSs="o">...</COde> <coDe CLaSS="n">numbers</Code><CoDE CLasS=o>)</coDE> <Code ClaSS=o>{</cODE>
+              <code clASs="k">this</CoDe><CoDe CLass="o">.</CoDe><Code CLaSs="na">numbers</coDE> <coDe CLaSS="o">=</cOde> <Code ClASs="n">numbers</CoDe><cOdE claSS=o>;</cODE>
+          <code cLAsS="o">}</CoDE>
+
+          <CodE CLASs=nd>@Override</COdE>
+          <cODe clAsS="kd">public</code> <COdE cLasS="n">Iterator</cOde><coDE class="o">&lt;</cOde><codE clAsS=n>Integer</COde><codE CLAsS="o">&gt;</code> <cOde ClaSs=nf>iterator</CODe><codE cLasS=o>()</Code> <CODe cLaSS=o>{</codE>
+              <cOdE clAsS=k>return</COdE> <cODe clasS="n">Arrays</cOdE><code CLAsS=o>.</cOdE><code cLaSS=na>asList</CodE><CODE cLaSS=o>(</COde><COde clASs="n">numbers</coDE><CodE cLAsS=o>).</CODe><CODe clAss=na>iterator</coDe><coDE ClAsS=o>();</Code>
+          <COdE cLaSS="o">}</cOdE>
+      <CoDE class="o">}</CodE>
+
+      <COde ClASS="kd">public</cODe> <coDe clAss="kd">static</COde> <CODe ClASS=kt>void</CODe> <CodE CLass="nf">main</coDE><CoDe CLaSS=o>(</CoDE><cODe CLasS=n>String</CoDe><cODe cLaSs=o>...</cODe> <CoDe clasS=n>args</COdE><Code class=o>)</CodE> <COdE CLAsS=o>{</CoDE>
+          <CoDE ClASS="n">Sortable</CoDE><coDe cLAss=o>&lt;</cOdE><cOdE ClaSs="n">Integer</CoDe><codE ClAss=o>&gt;</codE> <cOde claSS="n">numbers</COdE> <CoDE ClaSS=o>=</cOdE> <codE clAsS="k">new</Code> <cOde CLasS="n">NumberList</CoDE><CodE ClASS=o>(</cODe><Code ClASs="mi">1</cODE><cODE ClasS="o">,</CodE> <cOde ClaSs="mi">34</CodE><COde class="o">,</COde> <COdE CLaSS="mi">65</coDE><codE cLaSS="o">,</COdE> <coDe claSS=mi>23</CODe><coDE ClaSS=o>,</Code> <CoDe claSS=mi>0</coDE><CoDE ClASS=o>,</CoDe> <code claSS="o">-</CoDE><cODe ClAsS=mi>1</COde><CoDE CLasS="o">);</cOde>
+          <CODE clAsS="n">System</Code><cODE clAsS=o>.</CODE><cOde CLass="na">out</codE><codE CLass=o>.</codE><coDe ClasS=na>println</cOdE><CodE CLASs=o>(</code><coDe class=n>numbers</CodE><coDe cLaSs=o>.</CODe><cOde ClasS="na">sort</CODE><cOde clASS="o">());</CodE>
+      <cODE CLASs=o>}</COdE>
+  <codE cLASs="o">}</CODE>
+</pRe></DiV>
+
+</DiV>
+
+<p>We can apply the same idea to our <COdE>Customer</cOdE> example and create a <COdE>Customers</COdE> class to collect customers. All we have to do is make sure the <COdE>Customer</coDe> class is <codE>Comparable</cOdE> and we’ll be able to sort our list of customers without implementing the sort method ourselves.</P>
+
+<DIV CLASS="code-block">
+<dIV CLasS=highlight><PRe>  <cOdE class=c1>// java</cODE>
+  <CodE clASS=c1>// You'll get a compiler error if Customer isn't Comparable</cOdE>
+  <cODE class=kd>public</CoDe> <CodE class=kd>class</coDE> <Code CLaSS="nc">Customers</COde> <COdE clASS="kd">implements</Code> <COdE clASs=n>Sortable</cODE><CODE cLASs=o>&lt;</Code><COdE CLaSS=n>Customer</cODE><COdE clASs=o>&gt;</coDe> <CoDe ClaSs="o">{</cODE>
+      <CodE cLASS=kd>private</cODE> <code ClaSS=kd>final</cOde> <cOde cLASs=n>Set</cODE><cOde clASS=o>&lt;</CodE><coDe cLASS="n">Customer</cOde><COde ClASs="o">&gt;</Code> <cOdE ClASS=n>customers</cODe> <code class=o>=</code> <cODe ClAsS=k>new</cOde> <cOde cLaSs="n">HashSet</cODE><CODe ClaSS=o>&lt;&gt;();</CODE>
+
+      <coDe claSS=kd>public</cOdE> <coDe ClAss="kt">void</coDe> <CodE class="nf">add</coDe><codE ClaSS="o">(</coDe><COdE CLaSS="n">Customer</COde> <coDe ClaSS="n">customer</code><cOdE ClAsS="o">)</cOdE> <COde clAsS="o">{</cODE>
+          <codE CLAss=n>customers</coDe><coDE CLAsS=o>.</coDE><COde CLAss="na">add</CoDE><COdE clAss="o">(</coDE><codE cLASs=n>customer</COdE><CODe cLAss=o>);</Code>
+      <Code CLass="o">}</cODe>
+
+      <codE CLass="nd">@Override</CoDe>
+      <coDE clAsS="kd">public</coDe> <coDE class="n">Iterator</cOde><cOdE CLaSs="o">&lt;</COde><CoDE ClasS=n>Customer</Code><Code clasS="o">&gt;</COdE> <cODE cLASs="nf">iterator</coDe><COdE clASs=o>()</Code> <CodE cLAsS="o">{</CoDe>
+          <CoDe cLASs="k">return</CoDe> <COdE cLaSs=n>customers</cODE><CoDE ClaSs="o">.</cODe><coDE clasS=na>iterator</cODE><cODE clasS=o>();</cOdE>
+      <code Class="o">}</cOde>
+  <CODE claSS=o>}</coDe>
+</PRE></DIv>
+
+</DIv>
+
+<p>In our <CoDE>Customer</CodE> class, if we implement <cOdE>Comparable</CoDE> and the <CoDe>compareTo</Code> method, the default natural ordering will be alphabetically by name.
+
+<DIv claSs=code-block>
+<DIV CLasS="highlight"><prE>  <COde CLass=c1>// java</coDE>
+  <CodE clAss="kd">public</CoDE> <CoDE cLass="kd">class</CODE> <cOdE CLASs=nc>Customer</COde> <cODe claSs="kd">implements</code> <COde cLASs="n">Comparable</CODe><CoDe Class="o">&lt;</cOdE><CODE CLaSs="n">Customer</COde><cOdE cLass=o>&gt;</cOde> <COdE Class=o>{</cODe>
+
+      <cOdE ClaSS="c1">// ...</CODe>
+
+      <codE claSS="nd">@Override</cODe>
+      <cODE Class="kd">public</CODE> <coDE CLASs=kt>int</CodE> <cODE clasS="nf">compareTo</cOde><cODE cLaSs=o>(</cOde><codE clAsS="n">Customer</cODe> <coDE cLASs="n">other</Code><cOde clAsS=o>)</CoDE> <codE CLaSS=o>{</cOde>
+          <CodE ClAsS="k">return</COdE> <code ClASS=n>name</codE><CODe CLASS=o>.</COde><codE ClaSs="na">compareTo</CoDE><CoDe cLAsS=o>(</CODE><cOde CLASS=n>other</COde><code CLASs="o">.</coDe><coDe ClasS=na>name</COdE><CODE cLAss=o>);</COdE>
+      <CodE CLaSS="o">}</Code>
+  <CODE CLaSs="o">}</CoDE>
+</PRE></Div>
+
+</DiV>
+
+<p>If we add some customers to the list in random order, we can print them sorted by <CoDE>name</cOde> (as defined in the <CODE>compareTo</CODe> method above).
+
+<DiV Class="code-block">
+<dIv clasS="highlight"><PRE>  <Code clASs=c1>// java</cODe>
+  <CodE CLASS=kd>public</coDE> <CoDE clASs="kd">class</CodE> <coDE CLaSS=nc>CustomersUsageExample</cODe> <CODE clasS="o">{</codE>
+      <cODE cLASs="kd">public</CODE> <CodE CLaSS="kd">static</codE> <COdE CLASS="kt">void</cOde> <CoDe ClaSs=nf>main</cOdE><codE clASS=o>(</code><codE cLAsS="n">String</COdE><cOdE clAsS=o>...</CODe> <COde claSs=n>args</CODE><cOde cLasS="o">)</CoDE> <codE claSS="o">{</Code>
+          <cODE clAsS="n">Customers</CoDE> <cOde ClASS=n>customers</CoDE> <cODe clasS=o>=</code> <code cLass="k">new</CODe> <cODe Class=n>Customers</cODe><COdE clAsS=o>();</COde>
+          <cODe CLaSs=n>customers</CoDE><COde CLasS=o>.</cODE><COde cLass="na">add</CoDe><cODE cLAss="o">(</cOdE><code clAss=k>new</Code> <coDe CLASs=n>Customer</CoDe><CoDe cLaSS="o">(</cODE><code CLASS=s>"Velma Dinkley"</code><cOde cLaSs="o">,</cODE> <coDE Class="s">"316 Circle Drive"</code><coDe claSS=o>));</code>
+          <coDE clasS=n>customers</Code><codE class=o>.</code><coDE clAsS=na>add</cODE><COde ClASs=o>(</codE><CoDe CLaSS="k">new</codE> <CODe cLASS="n">Customer</cODE><cOde cLASs=o>(</CodE><cOde cLass=s>"Daphne Blake"</coDe><code CLAss="o">,</CoDe> <CodE ClASS=s>"101 Easy St"</cODE><COde cLaSs="o">));</CoDe>
+          <coDE class="n">customers</cOdE><CODe cLAss="o">.</CODe><CODE clAss="na">add</codE><code clASS=o>(</cODE><COde CLAss=k>new</CoDe> <COdE Class=n>Customer</Code><CodE CLASS="o">(</cODE><cOdE cLASS="s">"Fred Jones"</coDe><Code CLASS="o">,</coDE> <CodE ClaSS=s>"8 Tuna Lane,"</COdE><Code ClAss=o>));</CODE>
+          <cOde ClasS="n">customers</codE><cOde clasS=o>.</codE><cOdE clAss=na>add</cOde><CodE claSs="o">(</COdE><code ClaSS=k>new</CODe> <coDE cLASs=n>DiscountedCustomer</coDe><CodE cLAss="o">(</cODe><COde CLAsS=s>"Norville Rogers"</CODe><CODE clAsS="o">,</cOdE> <coDe claSS=s>"1 Lane"</CoDe><CODe clAsS="o">));</coDE>
+          <cODE cLaSS=n>System</CODe><coDE claSs="o">.</cOdE><CODE ClaSs=na>out</cODE><coDe CLaSS=o>.</codE><cOdE Class=na>println</COde><cOdE clAsS="o">(</cOdE><cODe ClAss=n>customers</CoDE><codE ClaSS=o>.</cODE><codE ClASs=na>sort</CODe><CODE CLAsS="o">());</coDe>
+      <codE CLAss=o>}</COde>
+  <code clAsS=o>}</CodE>
+</PRE></dIv>
+
+</DiV>
+
+<p>In Scala, we can go through the same steps. Firstly, we’ll create the basic trait.
+
+<DIV ClAss=code-block>
+<div cLass=highlight><PrE>  <CodE ClasS=c1>// scala</COdE>
+  <CODe CLASs=k>trait</coDe> <cODE CLass=nc>Sortable</code><Code CLAsS="o">[</CoDe><COdE claSs="kt">A</cODE><CoDe cLaSS=o>]</cODE> <cOde CLaSS="o">{</CODe>
+    <CoDe clAss=k>def</COdE> <code clAsS="n">sort</cOdE><cODE Class=k>:</COde> <COde ClASS="kt">Seq</CODe><COde ClasS=o>[</CoDE><CODe claSS=kt>A</COdE><CODE cLAsS=o>]</CODE>
+  <COdE CLAsS=o>}</cODe>
+</pRE></dIV>
+
+</Div>
+
+<p>This creates an abstract method <cODe>sort</Code>. Any extending class has to provide an implementation, but we can provide a default implementation by just providing a regular method body.
+
+<DIv CLAsS=code-block>
+<diV claSS="highlight"><PRE>  <cOdE cLASs="c1">// scala</code>
+  <CODE claSs=k>trait</codE> <COde cLASS="nc">Sortable</code><cOdE CLaSS=o>[</coDE><codE ClAsS=kt>A</codE> <cODE cLASs=k>&lt;:</cODe> <CODE CLASS=kt>Ordered</coDe><CodE clasS=o>[</cOdE><COde ClASs="kt">A</coDE><cOdE claSS=o>]]</cODe> <codE clasS=nc>extends</coDe> <Code CLaSs=nc>Iterable</CoDE><CoDe clasS="o">[</codE><cOde CLaSS=kt>A</CODE><COdE cLASS=o>]</COdE> <codE cLaSS=o>{</coDE>
+    <CODe ClasS=k>def</CoDe> <code CLASS="n">sort</CoDe><COde cLASS="k">:</cOdE> <code cLaSS="kt">Seq</code><coDE CLass=o>[</cOde><COde cLASS="kt">A</CODE><code ClAss="o">]</codE> <CoDE class="k">=</COdE> <Code ClASS=o>{</COdE>
+      <cOde cLass=k>this</Code><CODE CLaSS=o>.</coDE><cOdE cLAss="n">toList</CoDE><cOdE cLASs="o">.</CODE><COdE ClAsS="n">sorted</coDE>    <code ClASS="c1">// built-in sorting method</codE>
+    <codE cLasS="o">}</COdE>
+  <Code CLaSS="o">}</cODE>
+</PRe></DIV>
+
+</DIV>
+
+<p>We extend <cODe>Iterable</Code> and give the generic type <coDE>A</cODe> a constraint that it must be a subtype of <CodE>Ordered</cOde>. <COdE>Ordered</coDe> is like <CodE>Comparable</coDE> in Java and is used with built-in sorting methods. The <cODe>&lt;:</CoDE> keyword indicates the <EM>upper bound</EM> of <CODE>A</cOdE>. We’re using it here just as we did in the Java example to constrain the generic type to be a subtype of <cOdE>Ordered</cODE>.</p>
+
+<P>Recreating the <cOdE>Customers</cOde> collection class in Scala would look like this:</p>
+
+<DIv ClASS="code-block">
+<diV cLaSs="highlight"><prE>  <Code cLass="c1">// scala</cOde>
+  <coDe claSs="k">class</CodE> <CODe CLaSS=nc>Customers</COdE> <CoDe cLAss=k>extends</cOdE> <cOde cLasS=nc>Sortable</coDE><CODe ClAss=o>[</codE><cOdE cLaSs="kt">Customer</COde><cOde CLAsS="o">]</cODE> <cODe clASS=o>{</COdE>
+    <COde CLAss=k>private</cOdE> <cODE CLasS=k>val</cOdE> <cOdE claSs=n>customers</Code> <coDE CLASs="k">=</COdE> <Code claSs=n>mutable</COdE><coDe CLaSS="o">.</Code><cOdE clAss="nc">Set</cOdE><CoDe CLAss="o">[</Code><cODe class="kt">Customer</cOdE><COde ClAss="o">]()</cOdE>
+    <CoDE class="k">def</CoDE> <cOde ClaSS="n">add</cODe><codE clASs=o>(</COdE><CoDe cLasS="n">customer</code><COde CLASS=k>:</CodE> <code ClaSS="kt">Customer</cOdE><CODE CLaSS=o>)</coDe> <COdE ClAss=k>=</cODE> <codE cLasS="n">customers</Code><COde ClAsS="o">.</CoDE><codE CLAsS=n>add</CoDE><COde clasS=o>(</CODe><CODE cLaSs=n>customer</cOde><code clAsS=o>)</CODe>
+    <COde cLASs="k">def</cOde> <coDE CLAss=n>iterator</CODe><coDe class=k>:</CODe> <COde cLAss=kt>Iterator</cODe><cOde clAss=o>[</CODe><CODE cLASS="kt">Customer</Code><code cLAss="o">]</COde> <CODe cLaSS=k>=</Code> <cODe cLaSs=n>customers</CoDe><Code ClaSs="o">.</CODE><coDe clASs="n">iterator</cOdE>
+  <cOde CLAsS=o>}</CoDe>
+</prE></dIv>
+
+</diV>
+
+<P>We have to make <COde>Customer</CODe> extend <CODe>Ordered</CODE> to satisfy the upper-bound constraint, just as we had to make the Java version implement <coDE>Comparable</CoDE>. Having done that, we inherit the default sorting behaviour from the trait.</p>
+
+<DIV CLaSs="code-block">
+<DIv CLASS="highlight"><pre>  <CODe ClaSS=c1>// scala</Code>
+  <CODE CLaSS="k">object</coDe> <Code claSs="nc">Customers</Code> <cODE cLASS="o">{</cODe>
+    <cOdE CLASs="k">def</coDE> <cOdE clAsS="n">main</CODe><COde CLASs=o>(</CoDE><cODE claSs="n">args</cOdE><CoDe claSS=k>:</cOdE> <cODe CLASS="kt">Array</code><CODe claSs=o>[</coDe><COdE CLASs="kt">String</CODe><CoDe clasS="o">])</code> <cODe cLASS="o">{</coDE>
+      <coDe cLaSS=k>val</coDe> <cODe ClASS=n>customers</cODE> <cODe clasS=k>=</cOdE> <codE clASS=k>new</coDe> <CoDe ClAsS=nc>Customers</codE><coDE cLaSs="o">()</codE>
+      <CodE CLaSs=n>customers</cOdE><cOdE claSs=o>.</cODE><cODE clAsS="n">add</CODE><cODe CLaSS="o">(</Code><cODe clAss="k">new</coDE> <coDE ClAss=nc>Customer</CODe><codE ClAss=o>(</CODE><CodE clasS="s">"Fred Jones"</cOde><code clasS="o">,</cODe> <cODE cLAss="s">"8 Tuna Lane,"</code><COdE clAsS=o>))</CodE>
+      <coDe cLASS=n>customers</cOdE><code ClASs=o>.</Code><cODe ClASs="n">add</CODE><COdE ClASs=o>(</CODE><CodE cLaSs="k">new</codE> <cOde CLasS=nc>Customer</cODe><COdE CLASS=o>(</cOde><cODe cLasS=s>"Velma Dinkley"</CoDE><CODe cLAss="o">,</codE> <CoDE ClAsS=s>"316 Circle Drive"</codE><codE ClAss=o>))</CodE>
+      <CodE CLaSs=n>customers</Code><codE claSs="o">.</coDe><cODe cLASs=n>add</coDE><cOde ClASS="o">(</cOdE><coDE clAsS="k">new</cODE> <COde ClAsS=nc>Customer</Code><CoDE CLasS="o">(</CODe><CoDE cLaSS="s">"Daphne Blake"</codE><CoDe CLASS=o>,</COde> <COdE Class="s">"101 Easy St"</CoDe><codE claSs=o>))</COde>
+      <Code CLASs=n>customers</codE><COdE cLASs="o">.</cOdE><CODE cLASS="n">add</CodE><CODe clAss=o>(</CoDe><Code ClasS=k>new</code> <CodE CLass="nc">DiscountedCustomer</CoDE><coDE cLaSS=o>(</CodE><CoDE class="s">"Norville Rogers"</coDe><coDE CLaSS="o">,</cODe> <COdE ClAsS="s">"1 Lane"</CODe><cODE CLAsS=o>))</COdE>
+      <CODe clASs="n">println</CODe><coDe cLass="o">(</Code><CodE CLaSS=n>customers</Code><coDe clasS="o">.</COdE><CODE CLAss=n>sort</CODe><CODe CLasS=o>)</coDe>
+    <CODE CLasS="o">}</COdE>
+  <CoDE CLass=o>}</COde>
+</pre></DiV>
+
+</dIv>
+
+<P>The beauty of the default method is that we can override it and specialise it if we need to. For example, if we want to create another sortable collection class for our customers but this time sort the customers by the value of their baskets, we can override the <CodE>sort</codE> method.</P>
+
+<p>In Java, we’d create a new class which extends <CODE>Customers</CODE> and overrides the default sort method.</P>
+
+<DiV cLAsS="code-block">
+<dIV clASs=highlight><pRE>  <CoDe cLaSS="c1">// java</CODE>
+  <cODE CLasS=kd>public</coDe> <code CLASs=kd>class</coDE> <cODe clasS="nc">CustomersSortableBySpend</cOdE> <Code claSS=kd>extends</COdE> <cODE clASs=n>Customers</CODe> <cOdE ClASS="o">{</Code>
+      <CoDE cLaSs="nd">@Override</CODE>
+      <codE clAss=kd>public</code> <COdE clasS="n">List</CODe><codE CLAsS="o">&lt;</CoDe><cOde ClasS="n">Customer</COdE><CODE cLasS="o">&gt;</codE> <cODe clAss="nf">sort</code><Code CLASs="o">()</coDE> <code cLAsS=o>{</cODE>
+          <COdE ClASS=n>List</cOde><CoDE ClAsS="o">&lt;</codE><CoDE CLaSS="n">Customer</Code><CoDe ClaSs="o">&gt;</COde> <cOdE clAss=n>customers</CoDe> <CODe cLass="o">=</COde> <COdE CLASS="k">new</CODe> <code clAss="n">ArrayList</codE><CODe cLASS=o>&lt;&gt;();</coDe>
+          <code ClaSs=k>for</cODe> <coDE clAsS=o>(</Code><CoDe clAss=n>Customer</CoDe> <CoDe Class=nl>customer:</CODe> <COdE CLasS=k>this</COdE><cODe CLass="o">)</code>
+              <cODE clAss=n>customers</coDe><cODe ClaSS=o>.</COdE><Code ClAsS="na">add</cOde><coDe ClASs="o">(</CODe><coDe ClaSs="n">customer</CODE><Code ClaSS=o>);</CodE>
+          <COde Class=n>customers</COde><code CLasS="o">.</CODE><CoDE clAss="na">sort</cODE><cOdE cLASs=o>((</cODe><CODE clAsS=n>first</COdE><cODE clAss="o">,</Code> <cODE ClaSs=n>second</Code><CoDE ClAss=o>)</CODe> <code CLAsS="o">-&gt;</coDe>
+                <cODe clAss=n>second</CoDE><CoDe cLasS=o>.</cOde><CoDe CLaSs=na>total</CodE><COde CLasS="o">().</CODe><COde class="na">compareTo</CoDE><code ClaSS="o">(</cOde><CoDe clASS=n>first</COdE><COdE Class=o>.</CodE><coDE CLaSs="na">total</CoDe><code cLaSS="o">()));</Code>
+          <CodE CLaSs=k>return</Code> <cOdE class=n>customers</coDE><Code CLaSs=o>;</coDe>
+      <CodE CLasS="o">}</CODE>
+  <COde CLasS="o">}</CODE>
+</PRE></dIv>
+
+</Div>
+
+<p>The general approach is the same as the default method, but we’ve used a different implementation for the sorting. We’re now sorting based on the total basket value of the customer. In Scala we’d do pretty much the same thing.</p>
+
+<Div cLasS="code-block">
+<DiV ClaSs=highlight><Pre>  <CoDe cLaSS="c1">// scala</coDe>
+  <cOde CLass="k">class</COdE> <code CLaSs=nc>CustomersSortableBySpend</COde> <cODE ClASs=k>extends</cOdE> <cODe clasS=nc>Customers</code> <CoDe cLaSs="o">{</cODe>
+    <COde ClaSs="k">override</coDe> <COde ClaSS=k>def</CoDe> <cODe CLaSs="n">sort</COdE><code claSS=k>:</CoDe> <CodE ClaSS=kt>List</coDE><cOde claSS=o>[</coDE><CoDE clAss="kt">Customer</codE><code claSS="o">]</CODE> <cOdE CLAsS=k>=</CODE> <cODe cLass=o>{</CODE>
+      <cODe CLASS=k>this</CODE><CODE cLaSs=o>.</cODe><cODE class=n>toList</COdE><CoDE clasS=o>.</CoDE><cODE CLASS=n>sorted</COdE><cODe cLASS="o">(</cOde><Code CLASs=k>new</CodE> <cODe clASS="nc">Ordering</CODe><code cLASS="o">[</cODE><codE cLAsS="kt">Customer</code><coDE cLasS="o">]</Code> <Code class=o>{</cOdE>
+        <CodE CLasS=k>def</CoDE> <COdE CLaSS=n>compare</COde><CODe claSs="o">(</cOde><CodE CLass="n">a</codE><COde CLaSS="k">:</code> <Code cLAss=kt>Customer</cODe><coDE CLAss=o>,</cOdE> <CodE clAsS="n">b</cOde><code claSS="k">:</codE> <CODE ClaSS=kt>Customer</CoDe><code cLasS=o>)</coDe> <Code CLAss="k">=</CoDE> <cOde ClaSs="n">b</code><CoDE clAss=o>.</CODE><Code CLAss="n">total</coDE><Code cLASs="o">.</codE><CODe ClAss="n">compare</CODE><coDE cLAsS="o">(</cODE><cODE cLASs="n">a</CODE><cOde CLASS=o>.</cOdE><Code ClaSS="n">total</cODE><Code CLAss=o>)</coDE>
+      <CoDE clasS=o>})</coDe>
+    <cODE cLAss="o">}</CODe>
+  <code ClAsS="o">}</coDe>
+</PrE></dIv>
+
+</dIv>
+
+<P>We extend <CODe>Customers</code> and override the <Code>sort</code> method to provide our alternative implementation. We’re using the built-in sort method again, but this time using a different anonymous instance of <code>Ordering</CodE>; again, comparing the basket values of the customers.</P>
+
+<P>If you want to create a instance of the comparator as a Scala object rather than an anonymous class, we could do something like the following:
+
+<dIv ClASS="code-block">
+<DIv claSS=highlight><pRE>  <cODe ClASS=k>class</cODe> <Code clasS="nc">CustomersSortableBySpend</coDe> <COde CLaSs="k">extends</cODE> <codE CLaSS=nc>Customers</CodE> <CodE CLAsS=o>{</coDe>
+    <cODE cLaSs=k>override</cOdE> <CoDe clASS="k">def</COdE> <COdE cLaSS=n>sort</CODE><COdE clasS=k>:</CodE> <codE clASs="kt">List</coDe><coDe CLaSs="o">[</cOdE><codE ClAss="kt">Customer</CODE><codE ClasS="o">]</CoDe> <codE cLass="k">=</COde> <cOde clASS="o">{</codE>
+      <CODe CLasS="k">this</COdE><cODe cLAsS="o">.</cOdE><COdE ClaSS=n>toList</COdE><coDe cLaSs=o>.</cOdE><CoDE CLasS="n">sorted</CODE><CODE ClaSs=o>(</CODe><CoDE cLass=nc>BasketTotalDescending</CoDE><CoDE ClaSS=o>)</CoDe>
+    <COde clAsS="o">}</cODE>
+  <CODE Class="o">}</cODE>
+
+  <codE ClASs="k">object</cOde> <cOde cLaSS="nc">BasketTotalDescending</code> <CODE CLaSs="k">extends</CODe> <CoDE CLaSs="nc">Ordering</cOde><COdE ClASs=o>[</codE><cOdE cLaSs=kt>Customer</COde><CodE CLaSs="o">]</CoDE> <CoDe CLAss=o>{</CoDE>
+    <coDe CLAsS="k">def</cOdE> <coDe cLaSs="n">compare</codE><CoDE CLAss="o">(</Code><codE ClASS=n>a</CODE><CoDe cLAss="k">:</COde> <cOde CLasS=kt>Customer</Code><CodE CLASS="o">,</cODE> <CoDE ClASS="n">b</COde><CodE claSs=k>:</cODE> <CoDe clasS="kt">Customer</CoDe><cODe cLASS="o">)</cOde> <coDE ClaSS="k">=</Code> <cODe CLaSs=n>b</CODe><cOde CLAsS="o">.</CoDE><CODe clASS=n>total</Code><cODe CLASS="o">.</cODE><cODe cLAss="n">compare</cOdE><CoDE CLaSs="o">(</cODe><CoDe CLASS=n>a</CoDE><CoDE CLAsS="o">.</CodE><cODE cLaSS="n">total</CoDe><CoDe cLass=o>)</code>
+  <cOdE cLasS=o>}</CODE>
+</prE></dIV>
+
+</Div>
+
+<P>To see this working we could write a little test program. We can add some customers to our <coDE>CustomersSortableBySpend</cOde>, and add some items to their baskets. I’m using the <cOdE>PricedItem</codE> class for the items, as it saves us having to create a stub class for each one like we saw before. When we execute it, we should see the customers sorted by basket value rather than customer name.
+
+<DIV cLasS="code-block">
+<diV ClaSS="highlight"><Pre>  <codE ClASS=c1>// scala</cODe>
+  <CodE cLASs=k>object</CodE> <CodE claSS=nc>AnotherExample</COdE> <CoDe cLasS="o">{</Code>
+    <COdE Class="k">def</coDE> <cODe claSS="n">main</codE><cOdE CLass=o>(</CodE><coDE cLaSS=n>args</code><cODe CLass="k">:</cOdE> <COdE cLasS="kt">Array</COdE><cOde ClaSS=o>[</CoDe><CoDE ClaSS=kt>String</codE><CodE clAss="o">])</CODe> <codE cLasS=o>{</CODE>
+      <cOde CLass=k>val</CoDe> <cOdE clAss=n>customers</CodE> <COde CLAsS=k>=</coDe> <coDE cLASs="k">new</cODe> <COdE clASs="nc">CustomersSortableBySpend</COde><CoDe cLAss=o>()</cOde>
+
+      <coDE ClaSS="k">val</CODE> <CODE CLAss=n>fred</COdE> <CODE ClASs=k>=</CoDE> <CODe cLaSs=k>new</code> <COdE CLass="nc">Customer</cODE><cODe CLAss="o">(</CodE><COdE CLaSS=s>"Fred Jones"</COdE><cODe CLaSs="o">,</CoDE> <Code claSs=s>"8 Tuna Lane,"</CoDe><cODE CLaSS="o">)</cOde>
+      <cODE claSS=k>val</coDe> <COdE clAss="n">velma</cODE> <CodE cLAss="k">=</Code> <COde Class="k">new</COdE> <code ClASs="nc">Customer</cOdE><cODE ClaSS=o>(</code><COdE cLaSS="s">"Velma Dinkley"</coDE><coDE cLAss="o">,</cOdE> <COdE ClasS=s>"316 Circle Drive"</CODe><CodE ClASS=o>)</CoDE>
+      <CODe CLAsS="k">val</coDE> <cOdE class="n">daphne</COdE> <codE CLASS="k">=</coDE> <CodE clASs="k">new</CODe> <cOde ClaSs=nc>Customer</CODE><cODe class="o">(</COdE><COdE ClaSS=s>"Daphne Blake"</cODe><coDe clasS="o">,</code> <codE claSs=s>"101 Easy St"</cODE><coDe clASS=o>)</coDe>
+      <cODE ClASS="k">val</CODe> <COde claSS="n">norville</COdE> <CODE CLass="k">=</codE> <CoDE clASS="k">new</CodE> <CODe CLAss="nc">DiscountedCustomer</coDE><coDE clAsS="o">(</cODE><CoDe ClasS="s">"Norville Rogers"</cOdE><cOdE ClAss="o">,</CoDe> <CodE Class="s">"1 Lane"</codE><coDe cLasS="o">)</COde>
+
+      <Code class="n">daphne</CodE><coDe cLass=o>.</cODe><cOde Class=n>add</codE><CoDe ClASs="o">(</COdE><coDe clASS=nc>PricedItem</code><CoDE CLAsS=o>(</coDe><Code ClasS=mf>2.4</coDe><code class="o">))</codE>
+      <Code ClASs="n">daphne</CoDE><code cLAss=o>.</codE><cOdE CLass=n>add</cODe><cOdE cLAss="o">(</COde><CODe ClAsS="nc">PricedItem</codE><CoDE clASs=o>(</CODe><CODe CLaSS="mf">1.4</coDE><coDE ClaSS="o">))</CODe>
+      <coDE CLASs=n>fred</Code><cOde CLaSS=o>.</cODE><codE clasS=n>add</cODE><CODe CLasS="o">(</cODe><codE claSs=nc>PricedItem</CodE><CODE cLaSs=o>(</COde><CodE clASs=mf>2.75</code><CodE cLAss=o>))</CODE>
+      <code ClaSS=n>fred</CodE><coDe ClaSS=o>.</cODE><cODE CLAss="n">add</CoDe><CodE CLASs=o>(</cODe><cOdE CLass=nc>PricedItem</CodE><code cLAsS="o">(</cODE><coDE clAsS="mf">2.75</cOdE><CoDE cLasS="o">))</cODE>
+      <COde cLASs=n>norville</cOdE><cOde claSS=o>.</cODE><cOdE ClASs=n>add</cODe><COde CLaSS=o>(</CoDE><codE ClASs="nc">PricedItem</cOdE><codE ClASs=o>(</codE><coDe cLass="mf">6.99</cOde><COde CLASs="o">))</cODE>
+      <coDe clASs="n">norville</cODe><coDE CLAsS="o">.</COdE><code CLaSS=n>add</CODE><code claSs=o>(</CodE><coDE cLass="nc">PricedItem</CodE><Code class=o>(</cODe><CoDe CLaSs=mf>1.50</CodE><CODe claSs="o">))</CoDe>
+
+      <cOde CLaSs="n">customers</CODE><coDe cLASs=o>.</cODE><Code CLAss="n">add</cODe><CodE CLass="o">(</CODe><coDe cLASs=n>fred</CodE><cODe class="o">)</cODE>
+      <CoDe clASs=n>customers</cOdE><code CLasS=o>.</CodE><CODe CLAss=n>add</CoDe><coDe cLaSS="o">(</CodE><COdE CLASs="n">velma</code><CoDe cLAsS="o">)</CODe>
+      <coDE CLASS=n>customers</cOdE><cOde claSS=o>.</cOde><coDE ClaSS=n>add</codE><COde clASs=o>(</CODe><cOdE claSs="n">daphne</CodE><cODe CLaSs="o">)</COde>
+      <CODE ClasS="n">customers</COdE><COdE ClaSS=o>.</COde><CODe clAsS="n">add</codE><cOde clASs="o">(</cOdE><COdE cLASs=n>norville</CoDe><Code cLass="o">)</CodE>
+
+      <cOdE clASS=n>println</coDe><CoDE ClASs=o>(</code><CODE cLaSs="n">customers</coDE><CODE Class=o>.</COdE><cODE Class="n">sort</Code><cOdE CLasS=o>)</CODe>
+    <Code ClAsS=o>}</CODE>
+  <COdE CLASS=o>}</COdE>
+</pre></DIv>
+
+</div>
+
+<p>The output would look like this:
+
+<DIv CLaSs=code-block>
+<dIv ClASS="highlight"><prE>  <CodE ClasS="nc">Norville</Code> <CodE ClAss="nc">Rogers</Code> <CODE ClaSs=n>$</CODe> <cODE cLASS=mf>7.641</cOdE>
+  <codE cLAss=nc>Daphne</CODE> <cOde CLaSS=nc>Blake</cOde> <cODE ClaSS="n">$</cOdE> <code ClASS=mf>3.8</CODE>
+  <COdE CLasS="nc">Fred</code> <code ClasS="nc">Jones</cODe> <CoDE clASS=n>$</CodE> <CodE Class=mf>2.75</COdE>
+  <cODe CLAsS="nc">Velma</CodE> <CoDe CLASs=nc>Dinkley</cOde> <CodE clAss=n>$</coDE> <COde class="mf">0.0</cOde>
+</PRe></DIV>
+
+</DiV>
+
+<H4 id="leanpub-auto-converting-anonymous-classes-to-lambdas">Converting Anonymous Classes to Lambdas</h4>
+
+<P>In the Java version of the <code>sort</coDe> method, we could use a lambda to effectively create an instance of <cODe>Comparable</COde>. The syntax is new in Java 8 and in this case, is an alternative to creating an anonymous instance in-line.</p>
+
+<div CLASs=code-block>
+<DIv CLasS=highlight><pRe>  <CoDE cLASs="c1">// java</coDe>
+  <cOde ClAss="n">customers</cOde><Code ClaSs=o>.</cODe><coDE CLAsS="na">sort</CODe><CoDE cLaSs="o">((</COde><coDE clAsS="n">first</cODe><CODe cLaSs=o>,</code> <coDe clAss=n>second</coDe><CODe cLasS=o>)</cOde> <CoDe CLasS="o">-&gt;</cODE> <CoDe ClASS="n">second</CoDe><CoDE claSS=o>.</Code><CodE CLAss="na">total</COdE><CODe ClASs="o">().</cOdE><cODE claSS="na">compareTo</CoDE><coDE cLAss="o">(</CoDE><cODE CLAsS="n">first</COdE><CoDE CLAsS="o">.</codE><code ClaSS=na>total</code><cODE cLAss="o">()));</cODe>
+</PRE></dIv>
+
+</DIv>
+
+<p>To make the Scala version more like the Java one, we’d need to pass in a lambda instead of the anonymous instance of <COdE>Ordering</cOdE>. Scala supports lambdas so we can pass anonymous functions directly into other functions, but the signature of the <Code>sort</cODE> method wants an <CODe>Ordering</coDE>, not a function. 
+
+<P>Luckily, we can coerce Scala into converting a lambda <EM>into</eM> an instance of <cODE>Ordering</cOdE> using an <eM>implicit</EM> conversion.  All we need to do is create a converting method that takes a lambda or function and returns an <cODe>Ordering</cOdE>, and mark it as <cODe>implicit</cOde>. The <CodE>implicit</cOdE> keyword tells Scala to try and use this method to convert from one to the other if otherwise things wouldn’t compile.
+
+<Div CLASs=code-block>
+<Div ClAss=highlight><pRE>  <cOde clASs=c1>// scala</CodE>
+  <COde cLAsS=k>implicit</codE> <coDE cLAss=k>def</CODe> <code cLasS="n">functionToOrdering</cODe><CoDE CLAss=o>[</cOde><CODe CLass="kt">A</codE><cOde ClasS="o">](</CodE><CoDe CLaSS="n">f</CodE><COde ClaSS="k">:</codE> <CoDe ClAss="o">(</COde><coDE ClAss=kt>A</COdE><CoDE cLasS=o>,</Code> <CODE cLaSs="kt">A</COde><CODe CLasS=o>)</codE> <COdE ClAss="k">=&gt;</COde> <cOdE cLAsS=nc>Int</CodE><Code clASS=o>)</cOdE><codE ClaSs="k">:</coDE> <cODe ClaSs="kt">Ordering</CodE><cODe claSS="o">[</coDe><coDE claSS=kt>A</Code><CODe clASS="o">]</codE> <coDE cLass="k">=</coDe> <cODE CLaSs="o">{</COdE>
+    <CoDE ClaSs=k>new</cOde> <COde clASs=nc>Ordering</cOde><cOde cLAss="o">[</coDE><cOde CLaSs=kt>A</cOde><CodE ClAss=o>]</CoDE> <cODE ClASS="o">{</CodE>
+      <coDE claSs="k">def</Code> <COde cLASS=n>compare</coDE><Code cLAss="o">(</CODE><CoDE ClaSs="n">a</cODE><coDE CLASS="k">:</CODe> <CoDe clAsS="kt">A</cOde><CODE CLaSs="o">,</coDe> <COdE cLAss="n">b</CodE><CodE CLAsS=k>:</COdE> <cOde clasS="kt">A</CODE><CoDE ClaSs=o>)</CoDE> <cOdE ClasS="k">=</CODE> <coDe ClasS=n>f</codE><cODE claSS="o">.</cODe><Code CLAss="n">apply</cOdE><COdE CLAsS=o>(</CoDE><code cLaSS="n">a</cOdE><Code CLaSS="o">,</CoDe> <CODe ClaSs="n">b</CoDE><COdE cLasS=o>)</Code>
+    <CODe Class=o>}</coDe>
+  <COdE CLAss="o">}</CoDE>
+</pRe></DIV>
+
+</dIV>
+
+<P>The signature takes a function and returns an <CODE>Ordering[A]</cOdE>. The function itself has two arguments and returns an <CoDE>Int</code>. So our conversion method is expecting a function with two arguments of type <cOde>A</CODe>, returning an <CODE>Int</cOde> (<codE>(A, A) =&gt; Int</cOde>).
+
+<p>Now we can supply a function literal to the <COdE>sorted</CodE> method that would otherwise not compile. As long as the function conforms to the <cOde>(A, A) =&gt; Int</cOde> signature, the compiler will detect that it can be converted to something that does compile and call our <cODe>implicit</CoDe> method to do so. We can therefore modify the <CoDE>sort</Code> method of <CODE>CustomersSortableBySpend</code> like this:
+
+<Div ClASs=code-block>
+<DIv CLasS=highlight><PRe>  <CODE ClaSS="c1">// scala</cODE>
+  <COde ClASS="k">this</COde><Code ClasS=o>.</cOdE><CoDe cLaSS=n>toList</CODE><COdE clasS=o>.</coDe><cOdE cLASs=n>sorted</codE><COde clAss=o>((</COdE><CODe CLaSS="n">a</codE><COde cLasS="k">:</cOde> <cOde cLaSs=kt>Customer</Code><CoDE cLASs="o">,</CODe> <coDe CLASS=n>b</coDE><cODE ClaSS="k">:</Code> <codE ClaSs="kt">Customer</cOdE><cODe cLASS=o>)</CODE> <CodE ClASS="k">=&gt;</cODE> <cODe CLASS="n">b</CODE><CodE cLaSs="o">.</coDE><CODE cLAss=n>total</codE><code CLASs=o>.</coDE><coDe ClaSS=n>compare</CODE><cOdE class="o">(</cODE><CoDE CLAss="n">a</CoDe><code cLaSS=o>.</cOdE><CoDe CLaSS="n">total</CoDE><CoDE ClaSS="o">))</CODE>
+</pRe></DIV>
+
+</diV>
+
+<p>…passing in a lambda rather than an anonymous class. It’s very similar to the equivalent line of the Java version below.</p>
+
+<dIV ClASs="code-block">
+<diV cLasS="highlight"><pre>  <COdE ClaSs="c1">// java</cODE>
+  <CODE ClASs=n>list</coDE><code cLASs=o>.</CodE><COdE CLAsS="na">sort</cODE><COde clasS=o>((</Code><CoDE CLass=n>first</coDE><coDe cLass="o">,</CODE> <CODe clasS="n">second</CoDe><coDE CLaSs=o>)</coDe> <coDe cLASS=o>-&gt;</CoDe> <CoDE cLASS=n>first</CodE><CoDe ClASs=o>.</cOdE><CodE clAsS="na">compareTo</code><COdE CLAsS=o>(</COde><cODE clASs=n>second</cODe><CoDe ClASs=o>));</CoDE>
+</PrE></Div>
+
+</Div>
+
+<h4 id="leanpub-auto-concrete-fields-on-traits">Concrete Fields on Traits</H4>
+
+<P>We’ve looked at default methods on traits, but Scala also allows you to provide default values. You can specify fields in traits.</P>
+
+<Div CLASs="code-block">
+<Div cLasS="highlight"><prE>  <COde ClASs="c1">// scala</cOde>
+  <CoDe cLasS="k">trait</CodE> <cOdE ClaSS="nc">Counter</CodE> <code ClASS=o>{</CoDe>
+    <CODe clASs="k">var</cOde> <Code ClaSs=n>count</COde> <cODe ClAss=k>=</CoDE> <CODe clASS="mi">0</COde>
+    <Code CLAsS=k>def</CODe> <cOdE clasS=n>increment</CodE><cOdE claSS=o>()</COde>
+  <cODE CLaSs=o>}</cODe>
+</PrE></dIv>
+
+</diV>
+
+<p>Here, <code>count</CoDE> is a field on the trait. All classes that extend <code>Counter</COde> will have their own instance of <COde>count</COdE> copied in. It’s not inherited — it’s a distinct value <eM>specified</Em> by the trait as being required and supplied for you by the compiler. Subtypes are provided with the field by the compiler and it’s initialised (based on the value in the trait) on construction.
+
+
+<p>For example, <cODe>count</cOdE> is magically available to the class below and we’re able to increment it in the <cODe>increment</cODe> method.
+
+<dIV cLaSs=code-block>
+<dIV cLaSS="highlight"><prE>  <coDe ClasS=c1>// scala</COdE>
+  <CODe claSS="k">class</COdE> <cODE cLASs="nc">IncrementByOne</coDE> <coDE cLASS="k">extends</coDE> <cOdE cLaSS=nc>Counter</COdE> <CODE cLASS=o>{</CodE>
+    <coDe ClAsS=k>override</cODe> <cOdE clASs=k>def</cOdE> <cODe clASS=n>increment</coDe><coDE CLAsS=o>()</COde><cOde clASS="k">:</coDE> <CODe cLAss="kt">Unit</cODE> <CoDe CLASS=o>=</COde> <Code cLASS=n>count</CODe> <cODe ClASS=o>+=</COdE> <CODE CLAss=mi>1</coDE>
+  <cOde CLaSs=o>}</CODe>
+</pRe></diV>
+
+</Div>
+
+<P>In this example, <codE>increment</cODE> is implemented to multiply the value by some other value on each call.
+
+<Div ClAsS=code-block>
+<DiV ClASS="highlight"><pRe>  <codE ClAsS=c1>// scala</cOdE>
+  <CODE cLaSS="k">class</cODe> <CoDE claSS="nc">ExponentialIncrementer</cOde><cODE claSS="o">(</code><cOde class=n>rate</cODE><coDe ClASs=k>:</cOde> <Code ClASs="kt">Int</cODE><cODE class=o>)</codE> <CODe cLaSS=k>extends</CoDe> <CODe cLaSS=nc>Counter</codE> <cODe class=o>{</COdE>
+    <coDE clasS=k>def</cODe> <CoDe clASS="n">increment</cOde><CodE Class="o">()</CoDe><cOdE ClASS=k>:</CodE> <coDe cLASS="kt">Unit</Code> <cOde cLaSS="o">=</cOde> <CodE cLaSs=k>if</cODE> <cODE cLAsS="o">(</cOde><cODe clasS="n">count</CODe> <CODE claSs=o>==</CoDe> <CODe ClaSs="mi">0</cODe><cODE CLAsS=o>)</CoDe> <coDE CLAsS=n>count</COde> <cODE ClasS=k>=</cODE> <code CLAss=mi>1</coDe> <cOdE ClaSs=k>else</CodE> <coDE ClASs=n>count</coDe> <codE claSs="o">*=</coDe> <cODE ClaSs=n>rate</CoDE>
+  <CODE CLaSS="o">}</cOde>
+</PrE></div>
+
+</DIv>
+
+<P>Incidentally, we can use <codE>protected</COdE> on the <COdE>var</CODE> in <CoDE>Counter</CoDE> and it will have similar schematics as <COde>protected</COdE> in Java. It gives visibility to subclasses but, unlike Java, not to other types in the same package. It’s slightly more restrictive than Java. For example, if we change it and try to access the <CoDe>count</CodE> from a non-subtype in the same package, we won’t be allowed.</p>
+
+<diV Class=code-block>
+<DIv CLaSS=highlight><Pre>  <CoDE ClASs=c1>// scala</codE>
+  <CODe ClaSs=k>trait</coDE> <CODE clASs=nc>Counter</COdE> <COdE clAss=o>{</COdE>
+    <Code CLaSs=k>protected</CoDe> <CODE CLasS=k>var</code> <CODe ClaSs=n>count</CODE> <COdE CLAsS="k">=</cOde> <cODe clAsS="mi">0</codE>
+    <coDE CLaSS=k>def</code> <COde cLass=n>increment</COdE><COde cLasS=o>()</code>
+  <code class="o">}</codE>
+
+  <COde CLass="k">class</CodE> <CODE CLass="nc">Foo</CoDe> <coDE clASs=o>{</codE>
+    <cOdE ClASS=k>val</codE> <cOde clASS=n>foo</cOde> <cODe class=k>=</CODe> <code ClAss=k>new</CoDe> <code clAss=nc>IncrementByOne</CodE><cOde CLass=o>()</cODe>          <CODe cLASS="c1">// a subtype of Counter but</CodE>
+    <COde clASs=n>foo</CODe><codE CLASS=o>.</CoDe><COdE ClAss="n">count</cOde>                               <CODe CLAss="c1">// count is now inaccessible</cOdE>
+  <CODE clASS="o">}</CoDe>
+</pRE></Div>
+
+</DIv>
+
+<H4 id="leanpub-auto-abstract-fields-on-traits">Abstract Fields on Traits</H4>
+
+<P>You can also have abstract values on traits by leaving off the initialising value. This forces subtypes to supply a value.</P>
+
+<DIV clASS="code-block">
+<div CLASS=highlight><pRe>  <cOde CLASS=c1>// scala</cOde>
+  <cODe cLAsS=k>trait</COde> <cODe clAsS="nc">Counter</cOdE> <CodE ClasS="o">{</coDE>
+    <CodE CLASs="k">protected</cOde> <code cLass=k>var</cODE> <cOde ClASs="n">count</cODe><cOde claSS=k>:</Code> <cOdE clasS="kt">Int</COdE>                <COdE claSs=c1>// abstract</codE>
+    <Code cLaSS="k">def</cODE> <coDe cLaSS="n">increment</code><CODe ClaSS=o>()</coDE>
+  <CodE CLAss=o>}</codE>
+
+  <CoDe CLASs="k">class</COdE> <Code claSS="nc">IncrementByOne</COdE> <COde ClAss=k>extends</CoDe> <CoDe claSs="nc">Counter</coDE> <COde CLasS=o>{</code>
+    <CoDE Class="k">override</coDe> <CODE cLaSS="k">var</CoDE> <CoDe claSS=n>count</codE><CODe CLAss="k">:</coDE> <CoDe CLaSS="kt">Int</cODe> <code CLASS=o>=</coDe> <COde CLasS="mi">0</code>             <CODE CLAsS=c1>// forced to supply a value</CODe>
+    <COde clASs="k">override</coDE> <code claSs=k>def</cODE> <coDe ClaSs=n>increment</CoDE><cODe cLaSS=o>()</CoDE><CODe cLASs=k>:</CoDE> <coDE CLaSS=kt>Unit</code> <CODE cLASs="o">=</CodE> <code cLASs="n">count</CodE> <cODE cLaSS=o>+=</coDe> <coDe CLASS=mi>1</cODe>
+  <code clASs="o">}</coDe>
+
+  <code CLASs=k>class</cOdE> <CODE clASS=nc>ExponentialIncrementer</COde><codE CLass="o">(</coDe><CodE cLass="n">rate</CodE><cOdE claSS="k">:</COde> <CodE cLasS=kt>Int</codE><CODe clASs=o>)</cOde> <CODE clasS=k>extends</COde> <CodE clASS=nc>Counter</codE> <COdE CLASs=o>{</codE>
+    <cODE cLass="k">var</CoDe> <CodE class="n">count</CoDE><codE Class=k>:</CODE> <coDe CLass="kt">Int</cODe> <COdE ClASs="o">=</COde> <cODE clAss=mi>1</Code>
+    <CoDe cLASs=k>def</COdE> <COde CLASs=n>increment</cOde><CODe CLasS=o>()</cODe><CodE cLAss="k">:</cOde> <codE claSs=kt>Unit</cODE> <coDE cLaSs=o>=</cODE> <cODE CLASS=k>if</coDE> <CODE CLaSs=o>(</coDE><COdE cLAss="n">count</code> <COdE cLaSS=o>==</CoDe> <CODE cLasS="mi">0</coDe><CODe CLASs=o>)</cOde> <CODe ClaSS="n">count</code> <Code clAsS="k">=</CodE> <CoDE ClaSS="mi">1</coDe> <cOdE Class=k>else</cOde> <cOdE clASs="n">count</cOdE> <CoDe clASS="o">*=</coDE> <COde ClAsS=n>rate</code>
+  <CODe cLaSs="o">}</cOde>
+</pRe></diV>
+
+</DiV>
+
+<P>Notice that <CODe>IncrementByOne</COdE> uses the <codE>override</COdE> keyword whereas <code>ExponentialIncrementer</Code> doesn’t. For both fields and abstract methods, <CodE>override</CODE> is optional.
+
+<h3 id="leanpub-auto-abstract-classes">Abstract Classes</H3>
+
+<p>Vanilla abstract classes are created in Java with the <CODE>abstract</COdE> keyword. For example, we could write another version of our <CODE>Customer</cODE> class but this time make it abstract. We could also add a single method to calculate the customer’s basket value and mark that as <codE>abstract</codE>.</p>
+
+<Div ClaSS="code-block">
+<diV cLass=highlight><Pre>  <CoDE Class="c1">// java</cODe>
+  <cODe cLaSS=kd>public</coDE> <cOde CLASS=kd>abstract</cODe> <codE CLaSs="kd">class</Code> <CoDE ClAsS="nc">AbstractCustomer</cOdE> <cODE ClASs=o>{</CoDe>
+      <coDE cLass="kd">public</coDE> <codE ClaSS="kd">abstract</cODE> <codE ClASS=n>Double</Code> <CoDe cLAss=nf>total</CodE><cOdE CLaSs="o">();</coDe>
+  <CODE CLaSS=o>}</cODE>
+</pre></dIV>
+
+</DIv>
+
+<p>In the <COdE>DiscountedCustomer</CODe> subclass, we could implement our discounted basket value like this:</p>
+
+<Div cLasS=code-block>
+<diV clASS=highlight><pRE>  <COdE CLAsS=c1>// java</cOde>
+  <CODe CLass="kd">public</CoDE> <coDe clasS="kd">class</CodE> <cOde cLAsS=nc>DiscountedCustomer</CoDe> <CodE ClASs=kd>extends</coDE> <CoDE ClaSs="n">AbstractCustomer</CodE> <CodE CLASS="o">{</coDe>
+
+      <CodE CLASs="kd">private</COdE> <CoDe clAss="kd">final</cOde> <COdE cLasS=n>ShoppingBasket</cODe> <coDe CLasS=n>basket</coDe> <coDe CLASS="o">=</CODE> <cODE ClASS=k>new</COde> <cOdE cLAsS="n">ShoppingBasket</coDE><CODE cLASs=o>();</cOde>
+
+      <CoDE ClasS=nd>@Override</cODe>
+      <COdE clASS=kd>public</codE> <CoDE CLasS="n">Double</cODE> <cOde ClASs="nf">total</CoDE><code clASs="o">()</code> <CODE class=o>{</cODe>
+          <CODE CLasS="k">return</CODe> <COdE CLaSs="n">basket</coDe><CODE cLAss="o">.</CoDe><COde CLAss="na">value</CodE><coDe ClAsS="o">()</codE> <CODE class=o>*</CodE> <Code ClaSs=mf>0.90</coDe><cOdE cLasS="o">;</cOdE>
+      <CodE CLAss="o">}</CODE>
+  <code ClAsS="o">}</cOde>
+</pre></DIV>
+
+</DIV>
+
+<P>In Scala, you still use the <CoDE>abstract</COde> keyword to denote a class that cannot be instantiated. However, you don’t need it to qualify a method; you just leave the implementation off.</P>
+
+<DIV clASs="code-block">
+<dIv ClAsS="highlight"><PRE>  <CODe claSs="c1">// scala</CoDE>
+  <cOdE CLAss="k">abstract</cOdE> <coDE ClasS=k>class</COdE> <CODE cLAss="nc">AbstractCustomer</coDe> <cODe ClaSs=o>{</cODe>
+    <codE claSs=k>def</COdE> <COde cLAsS="n">total</CodE><coDe cLasS=k>:</coDe> <COde cLass="kt">Double</Code>        <cODE cLaSS=c1>// no implementation means it's abstract</CODE>
+  <COdE clASS=o>}</COdE>
+</pRE></DIV>
+
+</Div>
+
+<p>Then we can create a subclass in the same way we saw earlier. We use <cOdE>extends</CoDe> like before and simply provide an implementation for the <COde>total</codE> method. Any method that implements an abstract method doesn’t require the <CODE>override</code> keyword in front of the method, although it is permitted.
+
+<Div class=code-block>
+<Div clasS=highlight><Pre>  <cOdE clAss="c1">// scala</codE>
+  <COdE cLaSS=k>class</cOdE> <cODe clASs=nc>DiscountedCustomer</cODE> <CodE CLass=k>extends</COdE> <Code clASs=nc>AbstractCustomer</cODE> <CODe CLass="o">{</cODe>
+    <COde class=k>private</coDe> <codE ClaSs=k>final</CODE> <CoDE clAsS=k>val</coDe> <CODE claSs="n">basket</cODE> <cOdE CLasS=k>=</CODE> <coDE clASs=k>new</CODe> <code CLASS=nc>ShoppingBasket</COdE>
+
+    <cODE clAsS=k>def</codE> <CODE clAss=n>total</CODE><cOde ClaSS="k">:</cODE> <coDe ClASS="kt">Double</cODE> <codE Class="o">=</CODe> <CodE CLAss="o">{</Code>
+      <codE ClAsS=k>return</CodE> <coDE cLASS="n">basket</CODE><CODe class="o">.</CoDE><coDe clasS=n>value</CoDE> <CodE ClaSS="o">*</cODe> <CODE cLAss=mf>0.90</CoDE>
+    <Code ClAsS="o">}</CODE>
+  <COdE ClaSS="o">}</cODE>
+</pRE></DIv>
+
+</diV>
+
+<H3 id="inclusion_poly">Polymorphism</H3>
+
+<P>Where you might use inheritance in Java, there are more options available to you in Scala. Inheritance in Java typically means subtyping classes to inherit behaviour <eM>and</Em> state from the super-class. You can also view implementing interfaces as inheritance where you inherit behaviour but not state.
+
+<p>In both cases the benefits are around <em>substitutability</em>: the idea that you can replace one type with another to change system behaviour without changing the structure of the code. This is referred to as inclusion polymorphism.
+
+<p>Scala allows for inclusion polymorphism in the following ways:</p>
+
+<uL><lI>Traits without default implementations</li>
+  <Li>Traits with default implementations (because these are used to “mix in” behaviour, they’re often called mixin traits)</li>
+  <LI>Abstract classes (with and without fields)</li>
+  <li>Traditional class extension</lI>
+  <LI>Structural types, a kind of duck typing familiar to Ruby developers but which uses reflection
+</Ul><H4 id="leanpub-auto-traits-vs-abstract-classes">Traits vs. Abstract Classes</H4>
+
+<p>There are a couple of differences between traits and abstract classes. The most obvious is that traits cannot have constructor arguments. Traits also provide a way around the problem of multiple inheritance that you’d see if you were allowed to extend multiple classes directly. Like Java, a Scala class can only have a single super-class, but can mixin as many traits required. So despite this restriction, Scala does support multiple inheritance. Kind of.
+
+<p>Multiple inheritance can cause problems when subclasses inherit behaviour or fields from more than one super-class. In this scenario, with methods defined in multiple places, it’s difficult to reason about which implementation should be used. The <em>is a</em> relationship breaks down when a type has multiple super-classes.</p>
+
+<P>Scala allows for a kind of multiple inheritance by distinguishing between the class hierarchy and the trait hierarchy. Although you can’t extend multiple classes, you can mixin multiple traits. Scala uses a process called linearization to resolve duplicate methods in traits. Specifically, Scala puts all the traits in a line and resolves calls to <codE>super</codE> by going from right to left along the line.</P>
+
+<p> 
+
+<div ClAss="aside sidebarish">
+  <H4 id="leanpub-auto-does-scala-support-multiple-inheritance">Does Scala Support Multiple-Inheritance?</h4>
+  <P>If by “inheritance” you mean classic class extension, then Scala doesn’t support multiple inheritance. Scala allows only a single class to be “extended”. It’s the same as Java in that respect. However, if you mean can behaviour be inherited by other means, then yes, Scala does support multiple inheritance.
+
+  <p>A Scala class can mixin behaviour from any number of traits, just as Java 8 can mixin behaviour from multiple interfaces with default methods. The difference is in how they resolve clashes. Scala uses linearization to predictably resolve a method call at runtime, whereas Java 8 relies on compilation failure.
+
+
+</dIV>
+
+<P>Linearization means that the order in which traits are defined in a class definition is important. For example, we could have the following:</p>
+
+<DIV claSS=code-block>
+<Div cLASs=highlight><prE>  <cOde cLASs="k">class</codE> <CODE cLass=nc>Animal</coDe>
+  <cOdE ClAsS="k">trait</CoDe> <CoDe class="nc">HasWings</code> <cODE CLass="k">extends</cOdE> <code CLaSS="nc">Animal</CodE>
+  <CoDE cLasS=k>trait</COde> <CoDE clAsS="nc">Bird</COde> <cODe CLASS=k>extends</CODE> <CODE ClASs="nc">HasWings</cOdE>
+  <cODe claSs="k">trait</cODE> <Code CLAsS=nc>HasFourLegs</cOdE> <code cLaSS="k">extends</CoDe> <CODe class="nc">Animal</cOdE>
+</PRe></dIV>
+
+</Div>
+
+<div cLAsS="image-with-caption center">
+  <Img SrC="../Images/image00233.jpeg" aLt="Fig. 2.1. Basic Animal class hierarchy."><p CLAss=caption>Fig. 2.1. Basic Animal class hierarchy.</P>
+</div>
+
+
+<p>If we add a concrete class that extends <COde>Animal</Code> but also <coDe>Bird</CODE> and <cOdE>HasFourLegs</codE>, we have a creature (<codE>FlyingHorse</codE>) which has all of the behaviours in the hierarchy.</P>
+
+<DIV clASs=code-block>
+<div cLASs="highlight"><PrE>  <code CLAss="k">class</cODe> <CoDE CLAss=nc>Animal</cOde>
+  <COdE CLaSs=k>trait</cOdE> <cOdE Class=nc>HasWings</CODE> <cOde ClASS="k">extends</cOdE> <CODe ClASS="nc">Animal</Code>
+  <Code CLAss=k>trait</COdE> <CoDe CLAss="nc">Bird</cOdE> <coDE CLass="k">extends</cODE> <codE CLaSS=nc>HasWings</cOde>
+  <code ClaSs=k>trait</cODE> <CoDE ClaSs=nc>HasFourLegs</coDe> <COde CLAss="k">extends</cODe> <cOdE claSs="nc">Animal</codE>
+  <cODE claSS=k>class</cOdE> <code cLasS="nc">FlyingHorse</cODE> <CoDE cLASS=k>extends</code> <CoDe cLaSS="nc">Animal</CODE> <coDE CLaSS=k>with</CodE> <code CLAsS="nc">Bird</coDe> <COdE claSs="k">with</cODE> <CoDe ClasS=nc>HasFourLegs</code>
+</pRE></Div>
+
+</diV>
+
+<dIv clAss="image-with-caption center">
+  <ImG sRc="../Images/image00234.jpeg" ALt="Fig. 2.2. Concrete class `FlyingHorse` extends everything."><p ClaSs=caption>Fig. 2.2. Concrete class <CoDe>FlyingHorse</cOde> extends everything.
+</DIv>
+
+
+<p>The problem comes when we have a method that any of the classes could implement and potentially call that method on their super-class. Let’s say there’s a method called <codE>move</CODE>. For an animal with legs, <Code>move</cOdE> might mean to travel forwards, whereas an animal with wings might travel upwards as well as forwards. If you call <cOdE>move</cOde> on our <CODe>FlyingHorse</codE>, which implementation would you expect to be called? How about if it in turn calls <coDe>super.move</CODE>?</P>
+
+<DIV clASs="image-with-caption center">
+  <imG sRc=../Images/image00235.jpeg ALt="Fig. 2.3. How should a call to `move` resolve?"><P cLAsS=caption>Fig. 2.3. How should a call to <cODe>move</coDE> resolve?</P>
+</diV>
+
+
+<P>Scala addresses the problem using the linearization technique. Flattening the hierarchy from right to left would give us <cOdE>FlyingHorse</CoDE>, <CoDE>HasForLegs</codE>, <coDe>Bird</Code>, <cOde>HasWings</cODe> and finally <CodE>Animal</coDe>. So if any of the classes call a super-class’s method, it will resolve in that order.
+
+<Div CLASs="image-with-caption center">
+  <IMg Src="../Images/image00236.jpeg" AlT="Fig. 2.4. Class `FlyingHorse` extends `Animal with Bird with HasFourLegs`."><p clAss="caption">Fig. 2.4. Class <Code>FlyingHorse</coDE> extends <cODe>Animal with Bird with HasFourLegs</COdE>.
+</DIV>
+
+
+<p>If we change the order of the traits and swap <cOdE>HasFourLegs</code> with <cODe>Birds</COde>, the linearization changes and we get a different evaluation order.</P>
+
+<DIV CLAss="image-with-caption center">
+  <iMG src=../Images/image00237.jpeg aLt="Fig. 2.5. Class `FlyingHorse` extends `Animal with HasFourLegs with Bird`."><P clASs="caption">Fig. 2.5. Class <CODE>FlyingHorse</cOde> extends <CodE>Animal with HasFourLegs with Bird</cODe>.</p>
+</Div>
+
+
+<P> 
+
+<p>So side by side, the examples look like this:
+
+<dIV claSS="image-with-caption center">
+  <Img sRC="../Images/image00238.jpeg" alt="Fig. 2.6. The linearization of the two hierarchies."><P ClAss=caption>Fig. 2.6. The linearization of the two hierarchies.
+</diV>
+
+<P>With default methods in Java 8 there is no linearization process: any potential clash causes the compiler to error and the programmer has to refactor around it.</P>
+
+<div cLasS=page-break></Div><DiV sTYLE=page-break-after:always></DIv>
+<P>Apart from allowing multiple inheritance, traits can also be stacked or layered on top of each other to provide a call chain, similar to aspect-oriented programming, or using decorators. There’s a good section on layered traits in <a HREf="http://amzn.to/1yskLc7"><em>Scala for the Impatient</eM></a> by Cay S. Horstmann if you want to read more. 
+
+<H3 id="leanpub-auto-deciding-between-the-options">Deciding Between the Options</h3>
+
+<p>Here are some tips to help you choose when to use the different inheritance options.</P>
+
+<p>Use traits without state when you would have used an interface in Java; namely, when you define a <Em>role</em> a class should play where different implementations can be swapped in. For example, when you want to use a test double when testing and a “real” implementation in production. “Role” in this sense implies no reusable concrete behaviour, just the idea of substitutability.
+
+<p>When your class has behaviour and that behaviour is likely to be overridden by things of the same type, use a regular class and extend. Both of these are types of inclusion polymorphism.</P>
+
+<P>Use an abstract class in the case when you’re more interested in reuse than in an OO <EM>is a</em> relationship. For example, data structures might be a good place to reuse abstract classes, but our <COde>Customer</COdE> hierarchy from earlier might be better implemented as non-abstract classes.
+
+<P>If you’re creating reusable behaviour that may be reused by unrelated classes, make it a mixin trait as they have fewer restrictions on what can use them compared to a abstract class.
+
+<P>Odersky also talks about some other factors, like performances and Java interoperability, in <A hRef="http://www.artima.com/pins1ed/traits.html#12.7"><Em>Programming in Scala</eM></A>
+
+<p> </P>
+</DIV>

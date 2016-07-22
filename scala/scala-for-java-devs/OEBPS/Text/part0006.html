@@ -1,0 +1,390 @@
+﻿<?Xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<TiTLE>Some Basic Syntax</TItLE>
+<LiNk href="../Styles/style0001.css" TYPE=text/css rEl="stylesheet"/>
+
+<div>
+<h2 id="leanpub-auto-some-basic-syntax">Some Basic Syntax</h2>
+
+<H3 id="leanpub-auto-defining-values-and-variables">Defining Values and Variables</h3>
+
+<p>Let’s look at some syntax. We’ll start by creating a variable:
+
+<dIV cLasS=code-block>
+<dIv cLASs=highlight><PRE>  <CoDe cLAsS="k">val</code> <CODE class=n>language</codE><codE clASS="k">:</code> <CoDe claSS="kt">String</cODE> <CoDe cLAss=o>=</Code> <code cLAss="s">"Scala"</code><codE clASS=o>;</CODe>
+</PRE></DIV>
+
+</dIv>
+
+<p>We’ve defined a variable as a <code>String</CODE> and assigned to it the value of “Scala”. I say “variable”, but we’ve actually created an immutable <eM>value</Em> rather than a <eM>variable</Em>. The <CodE>val</coDe> keyword creates a constant, and <COde>language</Code> cannot be modified from this point on. Immutability is a key theme you’ll see again and again in Scala.
+
+<p>If we will want to modify <CoDE>language</CODe> later, we can use <cODE>var</CODe> instead of <COdE>val</cODe>. We can then reassign it if we need to.</P>
+
+<DIv ClaSS="code-block">
+<dIv clAss="highlight"><PrE>  <CoDE CLASS="k">var</COdE> <CODe Class=n>language</CodE><cOdE clAsS="k">:</cOdE> <cODe clasS="kt">String</CODE> <CODe cLasS="o">=</CoDE> <CODe cLASS=s>"Java"</cODE><cODE clAss="o">;</coDE>
+  <coDE clASS=n>language</coDE> <coDe clASS="k">=</cODE> <COdE CLASS="s">"Scala"</coDE><CodE cLAss=o>;</codE>
+</pre></dIv>
+
+</DIV>
+
+<p>So far, this doesn’t look very different from Java. In the variable definition, the type and variable name are the opposite way round compared to Java, but that’s about it. However, Scala uses type inference heavily, so Scala knows that the <cODE>var</coDe> above is a string, even if we don’t tell it.</p>
+
+<DIV class=code-block>
+<Div CLaSs="highlight"><pRe>  <Code ClASs=k>val</cOdE> <codE CLaSs="n">language</COde> <CODe ClaSS="k">=</cOdE> <CODe cLAsS=s>"Scala"</cOde><coDE CLasS="o">;</CODe>
+</PRE></dIv>
+
+</div>
+
+<p>Similarly, it knows that the expression is finished without needing to tell it explicitly with the semicolon. So we can drop that too.
+
+<DIv ClAss="code-block">
+<dIV cLASS="highlight"><Pre>  <COde ClasS="k">val</cODE> <code CLaSs=n>language</Code> <cODE cLasS=k>=</CODe> <cOdE clAss=s>"Scala"</CODE>        <cOdE cLASS=c1>// no semicolon</COde>
+</pre></dIv>
+
+</dIV>
+
+<P>You only need to add semicolons when you use multiple expressions on the same line; otherwise things get too complex for the compiler.
+
+<P>Operator precedence is just as you’d expect in Java. In the example below, the multiplication happens before the subtraction.
+
+<DIV CLasS=code-block>
+<DIv ClaSs="highlight"><pRe>  <CoDe class="n">scala</COdE><CodE clasS="o">&gt;</CoDe> <CoDe cLasS="k">val</coDE> <COde clAsS="n">age</coDE> <CodE claSS="k">=</cOde> <cOdE CLAss="mi">35</cODE>
+  <code CLaSS=n>scala</CoDE><coDE cLass=o>&gt;</CodE> <cODE CLass="k">var</coDe> <CoDE CLASS=n>maxHeartRate</CODE> <code claSS=k>=</CodE> <cOdE CLAsS="mi">210</coDe> <COde CLass=o>-</cOde> <CoDE cLass="n">age</coDE> <CoDe clAss=o>*</CoDe> <coDE claSS=o>.</cOde><cODe CLAsS="mi">5</coDE>
+  <cODe cLaSs=n>res0</COde><cODE cLASS="k">:</codE> <code CLaSS=kt>Double</CoDe> <cODE CLASs=o>=</cOde> <COde CLaSs="mf">191.5</cOde>
+</pRE></dIV>
+
+</div>
+
+<H3 id="leanpub-auto-defining-functions">Defining Functions</h3>
+
+<P>Function and method definitions start with the <cOde>def</CodE> keyword, followed by the signature. The signature looks similar to a Java method signature but with the parameter types the other way round again, and the return type at the end rather than the start.</p>
+
+<p>Let’s create a function to return the minimum of two numbers.</P>
+
+<diV clasS="code-block">
+<dIV cLAss=highlight><PRE>  <code cLAss=k>def</cODE> <CODe clASs="n">min</COde><CODE CLASs=o>(</cODE><Code cLass="n">x</cOdE><CoDE CLASs="k">:</CoDE> <cODe CLaSs=kt>Int</cOdE><cOde cLAsS="o">,</CodE> <Code CLass="n">y</CoDe><cOdE class="k">:</cOde> <CoDe CLASs=kt>Int</cOde><CODe Class="o">)</COdE><COdE cLaSs="k">:</COde> <COdE ClAss="kt">Int</cOdE> <CodE cLASS="o">=</cODe> <cOdE Class=o>{</CoDe>
+     <coDE Class="k">if</CodE> <CODE cLaSs=o>(</COde><CoDE clAss=n>x</codE> <CoDE ClASS=o>&lt;</Code> <CODe ClAsS=n>y</coDE><coDe CLasS="o">)</cOdE>
+       <cODe Class=k>return</CODe> <CoDe ClAss=n>x</Code>
+     <coDE ClASS=k>else</CodE>
+       <CodE claSS="k">return</CoDe> <cOdE clASs="n">y</coDE>
+  <CodE CLASS="o">}</CoDe>
+</pRE></diV>
+
+</diV>
+
+<P>We can test it in the REPL by calling it:
+
+<dIv clAss=code-block>
+<DIV ClaSS="highlight"><PRE>  <codE clASS=n>scala</code><code cLASS="o">&gt;</cODe> <CoDE ClaSS=n>min</CoDE><cOdE claSS="o">(</COdE><Code CLASs="mi">34</CODe><codE ClaSs="o">,</coDE> <code clAss=mi>3</COdE><COde CLAsS="o">)</cODe>
+  <CodE claSS=n>res3</COdE><COde CLAsS=k>:</CoDE> <coDE clASs="kt">Int</CODe> <cODE ClaSs="o">=</CoDe> <codE ClaSS=mi>3</cOdE>
+
+  <COde CLass="n">scala</COde><cODe cLaSS=o>&gt;</coDE> <COdE ClaSS="n">min</coDE><cOde ClasS=o>(</Code><CODe class=mi>10</code><cOde clAss=o>,</COdE> <cOdE cLasS=mi>50</cOdE><code cLASS=o>)</CoDE>
+  <CODE ClASs="n">res4</CODe><CoDE cLAss="k">:</cODe> <CoDe CLASs=kt>Int</coDE> <coDE cLaSs="o">=</coDe> <CodE ClASs="mi">10</coDe>
+</pRE></DIv>
+
+</DIV>
+
+<P>Note that Scala can’t infer the types of function arguments.</P>
+
+<P>Another trick is that you can drop the <CodE>return</COdE> statement. The last statement in a function will implicitly be the return value.
+
+<Div clASS=code-block>
+<DiV cLaSS=highlight><pre>  <CoDE cLasS="k">def</CODe> <cOdE cLAsS=n>min</CODe><CoDe CLass="o">(</CoDE><cOde CLaSS=n>x</cODe><cOde CLAsS=k>:</cOdE> <CoDe cLass="kt">Int</cODE><coDE cLAss=o>,</coDe> <CoDe ClasS=n>y</CODE><CODE CLass=k>:</Code> <coDE cLAss=kt>Int</CodE><coDE CLASS="o">)</coDe><cOde Class=k>:</COde> <code cLaSs="kt">Int</CoDe> <coDE ClASs="o">=</CoDe> <CODE clASS=o>{</cOdE>
+    <coDe CLASs="k">if</cOdE> <COdE CLAsS=o>(</CoDe><CoDe claSs="n">x</cOde> <CODE clASS=o>&lt;</cODE> <Code ClaSs=n>y</cODe><Code clASS="o">)</CODe>
+      <COde ClASs="n">x</CoDE>
+    <CoDe CLASs="k">else</CoDe>
+      <cODE ClaSS="n">y</coDe>
+  <CODE ClasS=o>}</coDe>
+</pRe></dIv>
+
+</Div>
+
+<P>Running it the REPL would show the following:
+
+<DIv cLasS="code-block">
+<dIV CLAss="highlight"><prE>  <COde clASs="n">scala</CODE><CoDe cLass=o>&gt;</CODe> <Code ClaSs="n">min</codE><coDe cLaSs=o>(</CODE><CoDE ClASs=mi>300</CODE><cOdE cLaSs=o>,</codE> <coDe CLAsS="mi">43</CoDe><code cLasS="o">)</CoDe>
+  <coDe cLASs=n>res5</CoDe><CodE CLASs=k>:</coDE> <COdE class=kt>Int</coDE> <cOde CLASs="o">=</CoDe> <cODE ClAss="mi">43</coDe>
+</PRE></DiV>
+
+</Div>
+
+<p>In this example, the <COdE>else</COde> means the last statement is consistent with a <cODE>min</COde> function. If I forgot the <CODe>else</CoDE>, the last statement would be the same regardless and there would be a bug in our implementation:
+
+<DiV clASS="code-block">
+<diV CLAsS=highlight><PRe>  <Code clAss=k>def</CoDE> <CODE clAsS=n>min</code><Code CLAss="o">(</coDE><CodE clASS=n>x</CoDE><coDe CLasS=k>:</coDe> <cODe ClaSS="kt">Int</COde><Code CLASS=o>,</cOdE> <coDe claSs=n>y</codE><cOdE ClASs="k">:</cOde> <CoDe CLASS="kt">Int</COdE><COdE cLASS=o>)</cODE><Code ClASs="k">:</coDE> <coDE cLASs="kt">Int</CoDE> <code class=o>=</cOdE> <CoDe CLAsS="o">{</CoDe>
+    <CoDE CLASs=k>if</cODe> <COdE cLASs="o">(</cOde><COdE cLasS="n">x</cOdE> <CoDe cLAss="o">&lt;</coDe> <CodE clASs=n>y</CodE><CoDE cLass="o">)</CODe>
+      <cOde CLAss=n>x</cOdE>
+    <CODE clASS="n">y</CoDE>         <CoDe ClAsS=c1>// bug! where's the else?</COdE>
+  <Code ClaSS=o>}</Code>
+</Pre></div>
+
+</DIV>
+
+<DIv ClaSS=page-break></DIV><DIV StYLe=page-break-after:always></DIv>
+<p>It always returns <COdE>y</cOde>:</P>
+
+<Div cLASS=code-block>
+<dIv ClaSS="highlight"><prE>  <CoDE cLasS="n">scala</CodE><cOdE class="o">&gt;</Code> <Code cLASs="n">min</CoDE><cOdE clASs="o">(</COde><code clasS=mi>10</coDe><coDE ClASs=o>,</CodE> <cODe clASs=mi>230</CodE><cODE clASs="o">)</COdE>
+  <cOdE clASS="n">res6</cODe><codE cLAsS="k">:</COdE> <cOde cLass="kt">Int</CoDe> <CODe CLaSS="o">=</COdE> <CODE cLAsS="mi">230</COdE>
+</Pre></dIV>
+
+</DiV>
+
+<p>If you don’t use any <CODE>return</Code> statements, the return type can usually be inferred.</P>
+
+<DIV cLasS="code-block">
+<diV claSS="highlight"><pre>  <coDe cLASs=c1>// the return type can be omitted</cOdE>
+  <coDe clASS=k>def</coDe> <coDE CLAss="n">min</COde><code clASS="o">(</cODe><cODe clAsS="n">x</cODE><COde clASs=k>:</CODE> <cOdE CLasS=kt>Int</COdE><CodE CLasS="o">,</cODE> <coDe clASs=n>y</coDE><cOdE CLAsS=k>:</COdE> <coDe ClASS="kt">Int</CoDE><cODE ClAss=o>)</CoDe> <coDe cLaSs="k">=</cODE> <cODE cLASs="o">{</cODE>
+    <cOdE CLAss="k">if</CoDE> <CODe ClasS=o>(</CoDE><Code ClaSs="n">x</coDe> <CodE CLasS=o>&lt;</cOdE> <codE cLAsS=n>y</COde><cODe clASs="o">)</CoDE>
+      <CodE CLaSs="n">x</Code>
+    <codE ClAsS="k">else</CoDe>
+      <coDe clAsS="n">y</COde>
+  <CodE CLASS=o>}</cODE>    
+</PrE></DiV>
+
+</div>
+
+<p>Note that it’s the equals sign that says this function returns something. If I write this function on one line, without the return type and just the equals sign, it starts to look like a real expression rather than a function.
+
+<div cLaSS=code-block>
+<DiV clasS=highlight><pRe>  <cOdE cLass=k>def</CODE> <cODE clasS=n>min</COde><code ClASs="o">(</Code><cOdE CLass=n>x</code><CodE cLAsS="k">:</CodE> <CoDE clAss=kt>Int</Code><code CLaSS="o">,</coDE> <cOde cLass=n>y</cOdE><CoDE cLAsS="k">:</CODE> <code clAss=kt>Int</CODE><cODe Class="o">)</coDe> <Code cLasS=k>=</CoDe> <COde ClAsS="k">if</cODe> <cODE CLASS="o">(</code><coDE claSS="n">x</cOde> <coDe clASS="o">&lt;</COdE> <CodE clASs=n>y</COdE><CODE cLaSS="o">)</code> <CodE clASs=n>x</CODe> <code cLaSs=k>else</Code> <coDE CLasS=n>y</COde>    
+</PRE></DiV>
+
+</dIv>
+
+<P>Be wary, though; if you accidentally drop the equals sign, the function won’t return anything. It’ll be similar to the <cODe>void</COde> in Java.</P>
+
+<Div claSs="code-block">
+<DiV clASS="highlight"><pre>  <cOde cLass=k>def</codE> <CODE cLASs=n>min</cOdE><cODe clASS=o>(</COde><CodE cLaSS="n">x</coDE><cODE ClaSs="k">:</cOde> <cOdE ClAsS=kt>Int</COde><cODE cLASS="o">,</CodE> <cOde cLaSs=n>y</CODe><CodE Class="k">:</COdE> <CODE CLAsS="kt">Int</Code><Code cLaSS=o>)</code> <code CLAss="o">{</Code>
+    <CODE CLASS="k">if</Code> <cOde ClASs="o">(</CoDE><cODE class="n">x</code> <cODe CLaSs="o">&lt;</cODe> <cODE CLASs=n>y</CoDe><CODE ClaSS=o>)</coDE> <COde cLaSs="n">x</CoDE> <cOdE ClASs=k>else</COde> <COde clASS="n">y</code>
+  <coDE CLass=o>}</codE>
+  <CoDE clASs=o>&lt;</coDE><CoDe ClaSs=n>console</cOde><code clAss=k>&gt;:</cOde><CoDe CLAsS="mi">8</CoDE><COde ClaSs=k>:</cOde> <COdE CLasS=kt>warning:</cOdE> <CoDE CLAsS="kt">a</CoDE> <cOde CLAsS="kt">pure</coDe> <CODe cLASS=kt>expression</coDE> <CoDE cLaSS=kt>does</COdE> <CodE ClASS="kt">nothing</cOdE> <Code ClasS="kt">in</coDe> <cODE ClAsS="kt">statement</Code> <Code clASs=kt>position</COde><coDe clAss="o">;</CodE>
+                        <cOdE CLASS="n">you</CoDE> <CoDE ClASs=n>may</cODe> <cOde clAss="n">be</COdE> <CoDE clasS="n">omitting</COde> <coDE ClAss=n>necessary</CODe> <code ClAss=n>parentheses</COde>
+               <CODE CLass="k">if</CoDe> <COdE cLAss=o>(</codE><cOdE cLASs=n>x</cODe> <COdE ClaSs=o>&lt;</CoDE> <codE claSS=n>y</CODE><cODE claSS=o>)</code> <coDE clAsS="n">x</CodE> <COdE cLASS=k>else</cOde> <cODE claSS=n>y</cOdE>
+                          <code ClaSS="o">^</cODe>
+  <cODe cLasS=o>&lt;</cOdE><codE clAsS="n">console</cOde><codE class=k>&gt;:</CODe><codE Class="mi">8</coDE><cODE CLass="k">:</COdE> <cODE CLaSS=kt>warning:</CoDE> <coDe Class="kt">a</CODe> <cOdE ClASS=kt>pure</CoDE> <CoDe ClaSs=kt>expression</cODe> <CODe Class=kt>does</CoDe> <cODE clASs="kt">nothing</CoDE> <CodE clAsS=kt>in</cODe> <CodE clASs="kt">statement</CODE> <CODe ClAsS="kt">position</cOde><cODe CLAsS="o">;</cODe>
+                        <CodE ClaSS="n">you</code> <CODe claSS="n">may</cODe> <cOde cLaSS="n">be</CODE> <coDe cLASs=n>omitting</CoDe> <cOdE cLAss=n>necessary</CoDE> <coDE cLASS="n">parentheses</codE>
+               <Code CLasS="k">if</COde> <CODe cLasS=o>(</coDE><COdE ClaSS="n">x</COdE> <COde cLAss=o>&lt;</CoDE> <Code clASS="n">y</coDE><CoDE CLASS=o>)</coDE> <cOde clASs="n">x</COdE> <codE claSs="k">else</CODe> <CoDE cLASS="n">y</CODE>
+                                 <cODE CLASS=o>^</COdE>
+  <codE CLaSS="n">min</code><code cLass=k>:</CoDe> <CODE cLaSs=o>(</COde><cOdE clAss=kt>x:</COde> <CoDe CLass="kt">Int</cODE><cODe cLaSs="o">,</coDe> <coDe class=kt>y:</codE> <cODE cLAsS=kt>Int</codE><codE cLass=o>)</cOde><CODE cLASs=nc>Unit</cODE>
+</pRe></dIV>
+
+</DiV>
+
+<P>Although this compiles okay, the compiler warns that you may have missed off the equals sign.</p>
+
+<h3 id="leanpub-auto-operator-overloading-and-infix-notation">Operator Overloading and Infix Notation</H3>
+
+<p>One interesting thing to note in Scala is that you can override operators. Arithmetic operators are, in fact, just methods in Scala. As such, you can create your own. Earlier, we saw the integer <CodE>age</coDe> used with a multiplier.
+
+<dIV CLasS=code-block>
+<DIv cLass=highlight><pre>  <CODe ClASS="k">val</COdE> <CODE cLASS="n">age</Code><CodE ClASS="k">:</cOdE> <CoDE ClaSs="kt">Int</code>
+  <CodE CLASS="n">age</cODe> <cOde cLASs="o">*</cODe> <CoDe clAss=o>.</cODe><Code cLass=mi>5</COde>
+</pRE></DiV>
+
+</dIV>
+
+<p>The value <codE>age</COdE> is an integer and there is a method called <CODe>*</CodE> on the integer class. It has the following signature:</P>
+
+<DIV clASS=code-block>
+<diV cLASs=highlight><PRe>  <CodE cLASS="k">def</Code> <CoDe CLaSs=o>*(</Code><COde clAss="n">x</CodE><code clAsS="k">:</Code> <CoDe ClAss=kt>Double</Code><CODe CLASs=o>)</cODe><coDE claSS=k>:</cOdE> <coDE cLaSS=kt>Double</cODE>
+</pre></DiV>
+
+</Div>
+
+<p>Numbers are objects in Scala, as are literals. So you can call <code>*</CODe> directly on a variable or a number.</p>
+
+<diV clAsS=code-block>
+<Div clASs=highlight><PRe>  <cODe cLASs=n>age</cODE><coDE CLass="o">.*(.</cODe><codE Class="mi">5</cODE><code clASs=o>)</codE>
+  <codE cLASS=mf>5.</COde><CODe CLaSs="o">*(</CoDE><COde cLaSS=mi>10</cODe><cODE clAsS=o>)</coDE>
+</pRE></diV>
+
+</DiV>
+
+<p>Using the <Em>infix notation</em>, you’re able to drop the dot notation for variables and literals and call:
+
+<div cLASS=code-block>
+<dIv ClaSs="highlight"><pre>  <CodE claSs=n>age</cOde> <coDe CLasS=o>*</CoDe> <COde ClAsS="o">.</Code><cOdE CLaSS="mi">5</CODe>
+</pRe></DIV>
+
+</diV>
+
+<P>or, as another example:</P>
+
+<div ClaSs="code-block">
+<div CLAss=highlight><Pre>  <coDe cLASS=mi>35</CoDE> <cOdE CLasS=n>toString</CoDE>
+</pRE></dIV>
+
+</DIV>
+
+<p>Remember, <cODE>35</cOde> is an instance of <CodE>Int</codE>.</P>
+
+<p>Specifically, Scala support for infix notation means that when a method takes zero or one arguments you can drop the dot and parentheses, and if there is more than one argument you can drop the dot. 
+
+<diV ClAsS=page-break></DiV><Div stYlE="page-break-after:always"></div>
+<p>For example:
+
+<dIV cLASS="code-block">
+<DiV Class="highlight"><pre>  <cOde cLASs=mi>35</coDe> <cODE CLAss=o>+</coDE> <Code cLASS=mi>10</cODe>
+  <cODE clASs="s">"aBCDEFG"</cODe> <cODE CLass=n>replace</CoDe><CODe ClAsS="o">(</coDE><coDE Class="s">"a"</coDe><CodE ClasS="o">,</Code> <CODe ClaSS=s>"A"</CODe><Code cLaSS=o>)</coDE>
+</prE></dIV>
+
+</DIV>
+
+<P>It’s optional though; you can use the dot notation if you prefer.
+
+<p>What this means is that you can define your own plus or minus method on your own classes and use it naturally with infix notation. For example, you might have a <CODE>Passenger</coDe> join a <cODe>Train</cOde>.</p>
+
+<dIV cLASS="code-block">
+<dIv ClAsS="highlight"><PrE>  <CODe ClAsS="n">train</CoDe> <codE cLasS=o>+</COde> <cODe cLaSs="n">passenger</cOde>
+</Pre></DIV>
+
+</dIV>
+
+<P>There are not many restrictions on what you can call your functions and methods; you can use any symbol that makes sense to your domain.
+
+<h3 id="leanpub-auto-collections">Collections</H3>
+
+<p>Scala comes with its own immutable collection types as well as mutable versions. By default immutability is preferred, so we can create a list with the following:</p>
+
+<div claSs="code-block">
+<Div Class="highlight"><pRE>  <codE class="k">val</CODE> <Code cLass=n>list</COde> <COdE CLasS=k>=</cODE> <coDe clASS=nc>List</coDe><coDe cLaSs="o">(</Code><cOdE CLAsS="s">"a"</COde><cODe CLaSs="o">,</COdE> <CoDE clAsS=s>"b"</COde><cOdE clasS="o">,</CODe> <CODe ClASs="s">"c"</Code><CoDE Class="o">)</coDe>
+</PrE></dIV>
+
+</Div>
+
+<p>And create a map with:</P>
+
+<DIv CLass=code-block>
+<DIv cLaSs=highlight><PRE>  <cODe cLaSs="k">val</code> <coDe CLASS=n>map</codE> <COdE ClasS="k">=</coDE> <codE clAss=nc>Map</CODE><cOdE clAsS=o>(</CoDe><codE CLaSs="mi">1</CODe> <cODe ClASs="o">-&gt;</coDe> <coDe ClaSS=s>"a"</coDE><CODE ClasS=o>,</CoDE> <cOde clASs=mi>2</CoDE> <coDE CLaSS=o>-&gt;</cOdE> <CODe CLass=s>"b"</cODE><CODe CLAsS="o">)</COde>
+</prE></Div>
+
+</diV>
+
+<p>where the arrow goes from the key to the value. These will be immutable; you won’t be able to add or remove elements.</P>
+
+<div CLaSs="page-break"></DIV><dIV stylE="page-break-after:always"></dIv>
+<p>You can process them in a similar way to Java 8’s <cODe>forEach</cODe> and lambda syntax:
+
+<DIV CLAsS="code-block">
+<DiV ClASS=highlight><pRe>  <CoDe cLASs=n>list</code><COde ClaSS="o">.</CoDe><coDE CLasS=n>foreach</CODE><COde CLASs="o">(</COdE><cODe cLASs="n">value</COdE> <cODe cLAsS=k>=&gt;</Code> <cOdE claSS=n>println</cOdE><cOde ClASs=o>(</codE><coDE CLASS="n">value</code><CoDe cLAsS=o>))</cOdE>               <CODE ClasS="c1">// scala</coDE>
+</PrE></div>
+
+</diV>
+
+<p>which is equivalent to the following in Java:
+
+<div cLAsS="code-block">
+<diV Class=highlight><pre>  <CODe claSS=n>list</Code><CoDE CLASS="o">.</CoDE><Code cLasS=na>forEach</CODe><cOde CLASS=o>(</COdE><Code CLASS=n>value</CodE> <CoDe cLAss=o>-&gt;</COde> <cOdE cLAss="n">System</coDE><CodE cLASS="o">.</CODe><COdE CLASS=na>out</COde><codE cLasS="o">.</code><cOde cLasS=na>println</CODE><code class="o">(</coDE><CodE CLASs=n>value</CoDE><Code claSs="o">));</cODE>   <COdE class="c1">// java</cOdE>
+</PrE></Div>
+
+</diV>
+
+<P>Like Java 8’s method reference syntax, you can auto-connect the lambda argument to the method call.
+
+<diV CLaSs=code-block>
+<DIv clASs="highlight"><pre>  <code ClasS="n">list</Code><CodE clAsS=o>.</code><code cLaSs=n>foreach</cODe><CODe ClAss=o>(</CoDe><COdE ClaSs=n>println</cOde><cODE CLASS=o>)</coDe>                               <CodE CLaSs="c1">// scala</codE>
+</pre></dIv>
+
+</DiV>
+
+<p>which is roughly equivalent to this Java:
+
+<DIV cLass="code-block">
+<Div cLasS=highlight><Pre>  <cODe clASs="n">list</CODE><cODE cLASS=o>.</cODe><CodE cLASS="na">forEach</CODe><codE CLASs=o>(</cOdE><CodE CLass=n>System</cOde><CodE ClAss="o">.</codE><CodE cLass=na>out</Code><CODe CLAss=o>::</CodE><Code CLaSS="n">println</cODe><code CLASs="o">);</COdE>                  <codE CLaSs="c1">// java</coDe>
+</pRe></DiV>
+
+</diV>
+
+<P>There are lots of other Scala-esque ways to process collections. We’ll look at these later, but the most common way to iterate is a <COdE>for</CoDE> loop written like this:
+
+<dIV cLAsS=code-block>
+<diV CLAss="highlight"><PRE>  <CODe CLasS=k>for</coDE> <COde clASS="o">(</Code><coDE CLaSs="n">value</CodE> <CodE clAsS="k">&lt;-</cOde> <codE class=n>list</coDe><cOdE ClASS=o>)</CODe> <COde CLASS="n">println</COdE><CODe cLASS=o>(</CoDE><CODE ClasS=n>value</CODE><CodE clASs="o">)</cODe>
+</pRe></Div>
+
+</div>
+
+<p>which reads, “for every value in list, print the value”. You can also do it in reverse:
+
+<DIV claSs=code-block>
+<DIV cLASS="highlight"><PrE>  <cODe class="k">for</cODE> <cOde ClAss=o>(</CoDe><cOdE ClaSS="n">value</CODE> <cODe cLASS="k">&lt;-</codE> <CoDe Class=n>list</CoDE><CoDe cLASS="o">.</cOde><cOdE cLASS=n>reverse</CODE><CODE CLAss="o">)</CODe> <cODe clASs="n">println</COdE><CODe CLass=o>(</CODE><COde cLAss=n>value</Code><CODE cLaSS="o">)</CODe>
+</prE></dIv>
+
+</DIV>
+
+<P>or you might like to break it across multiple lines:
+
+<DiV Class="code-block">
+<dIV clAsS=highlight><prE>  <cOde clASS=k>for</cOdE> <cODE ClaSs="o">(</COdE><codE ClasS=n>value</COde> <cODe cLASS="k">&lt;-</cODE> <Code cLASS=n>list</code><cODE CLaSs=o>)</cOde> <cOde ClAss=o>{</CODe>
+    <cODE cLAss="n">println</COde><codE CLass="o">(</cOdE><coDE cLASs="n">value</Code><cODe cLasS="o">)</CodE>
+  <coDe class=o>}</CoDe>
+</Pre></DIV>
+
+</DIV>
+
+<h3 id="leanpub-auto-java-interoperability">Java Interoperability</h3>
+
+<p>I mentioned that you can use any Java class from Scala. For example, let’s say we want to create a Java <CodE>List</cODE> rather than the usual Scala immutable <CODE>List</codE>.
+
+<DIV ClaSs=code-block>
+<dIv clASs=highlight><pre>  <Code CLasS="k">val</CODe> <cODE ClAss="n">list</CoDe> <CodE claSs=k>=</coDe> <cOde claSS=k>new</COdE> <cOde CLASS="n">java</CoDE><CoDe cLaSS=o>.</CODE><Code claSS="n">util</cOdE><codE CLass=o>.</cODe><CODe ClAss="nc">ArrayList</CODe><CODE claSs=o>[</CodE><cOde clAss=kt>String</coDe><coDe CLass="o">]</cODe>
+</PRE></diV>
+
+</DIv>
+
+<P>All we did was fully qualify the class name (<code>java.util.ArrayList</CODe>) and use <CODe>new</COde> to instantiate it. Notice the square brackets? Scala denotes generics using <CoDe>[]</cODE> rather than <COdE>&lt;&gt;</cODE>. We also didn’t have to use the parentheses on the constructor, as we had no arguments to pass in.
+
+<p>We can make method calls — for example, adding an element — just as you’d expect:
+
+<DIV ClAss=code-block>
+<DIv ClASS="highlight"><prE>  <CodE cLASS="n">list</cOde><CODE clAsS="o">.</CoDe><CodE CLaSS="n">add</CODe><cODE CLASs="o">(</CodE><codE cLass="s">"Hello"</CoDE><cODe ClAsS="o">)</COde>
+</Pre></Div>
+
+</div>
+
+<p>or, using infix:</P>
+
+<div cLaSS=code-block>
+<dIV ClaSS=highlight><prE>  <coDe class="n">list</Code> <coDE ClAss=n>add</code> <COdE clAsS="s">"World!"</cODE>
+</pRE></DIV>
+
+</dIv>
+
+<H3 id="leanpub-auto-primitive-types">Primitive Types</H3>
+
+<p>In Java there are two integer types: the primitive (non-object) <CodE>int</CoDe> and the <CoDE>Integer</CODe> class. Scala has no concept of primitives — everything is an object — so, for example, Scala’s integer type is an <cODE>Int</COde>. Similarly, you’ll be familiar with the other basic types:
+
+<div cLASS=code-block>
+<DIv CLasS="highlight"><pRE>  <CODe CLASs=nc>Byte</CoDE>
+  <cOdE CLASS=nc>Short</cODE>
+  <CoDE ClAss=nc>Int</CODe>
+  <CoDe CLASS="nc">Long</cOdE>
+  <CODE CLASS="nc">Char</CoDe>
+  <CoDe ClasS=nc>String</CoDE>
+  <cODE cLAss="nc">Float</CodE>
+  <CoDe CLasS="nc">Double</CodE>
+  <cODe cLaSS=nc>Boolean</codE>
+</Pre></DIV>
+
+</DIV>
+
+<P>Although Scala has its own richer types, typically they just wrap the Java types. When working with these basic types, nine times out of ten you won’t need to worry if you’re using Scala or Java types. Things are pretty seamless. For example, Scala has a <cOdE>BigDecimal</code> type with a <coDE>+</cODe> method which means you can add two big decimals with much less code than in Java.
+
+<DIV cLAss="page-break"></Div><dIv StYle=page-break-after:always></DiV>
+<p>Compare the following Scala to Java:</P>
+
+<dIV cLAss=code-block>
+<DiV clasS=highlight><PrE>  <CODe CLasS=c1>// scala</CodE>
+  <coDe ClAsS=k>val</cOde> <COde Class=n>total</CODE> <CODE cLAss=k>=</COde> <CODE class=nc>BigDecimal</code><CoDE claSs=o>(</CodE><cODE cLaSS="mi">10000</coDe><cODe claSs="o">)</CODe> <CODe clASS="o">+</code> <CoDE CLaSs=nc>BigDecimal</coDe><CodE claSS="o">(</cODe><code ClaSS="mi">200</CODE><cOdE clASS="o">)</COdE>
+</PrE></DiV>
+
+</Div>
+
+<dIV claSS="code-block">
+<diV cLASs="highlight"><pRe>  <CODE ClAsS=c1>// java</CODE>
+  <COdE class="n">BigDecimal</CodE> <cODE ClasS="n">total</code> <CoDe cLASs=o>=</CODE> <CODE CLAss=k>new</coDe> <CODe cLASS="n">BigDecimal</Code><cOdE ClAss=o>(</cODe><CodE clASS="mi">10000</cODE><coDE CLass=o>).</CODE><cODE clASS="na">add</cOdE><CodE class="o">(</coDe><CODe cLAsS="k">new</coDe> <code ClasS="n">BigDecimal</cOdE><COde cLASs="o">(</CODe><cOdE cLASs=mi>200</coDE><cOde cLASS="o">));</cODe>
+</pre></DiV>
+
+</Div>
+
+<p>Scala hasn’t reimplemented Java’s <Code>BigDecimal</COdE>; it just delegates to it and saves you having to type all that boilerplate.
+</DIv>

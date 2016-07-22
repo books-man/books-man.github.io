@@ -1,0 +1,38 @@
+﻿<?XML version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<tITlE>ScalaDoc</TitLE>
+<LinK hreF="../Styles/style0001.css" Type="text/css" reL=stylesheet/>
+
+<DiV>
+<h2 id="leanpub-auto-scaladoc">ScalaDoc</h2>
+
+<P>Scala has ported the idea of JavaDoc and creatively called it ScalaDoc. Adding ScalaDoc to your Scala source works similarly to adding JavaDoc, and is done with markup in comments. For example, the following fragment in source code:</p>
+
+<Div clasS=code-block>
+<DIV ClaSs=highlight><pre>  <cOde cLass=cm>/** Returns `true` if this value is equal to x, `false` otherwise. **/</CODE>
+  <CoDE ClASS="k">def</CoDE> <CODe cLASS=o>==(</Code><cOde CLASs=n>x</CoDE><coDE Class=k>:</COde> <codE cLAsS=kt>Byte</COdE><codE ClASs=o>)</cODe><COde cLasS=k>:</coDE> <coDE cLAsS="kt">Boolean</coDe>
+</PRE></dIv>
+
+</dIV>
+
+<P>…can be turned into the following fragment in HTML:
+
+<DiV clAsS="image-with-caption center">
+  <imG sRc=../Images/image00229.jpeg ALT="Fig. 1.8. Embedded ScalaDoc markup gets rendered in HTML."><P cLaSs=caption>Fig. 1.8. Embedded ScalaDoc markup gets rendered in HTML.</P>
+</dIV>
+
+<p>To see the documentation for the Scala API, head over to http://scala-lang.org/documentation. You’ll notice it is broadly similar to JavaDoc. You can see the classes along the left; they’re not grouped by package like in JavaDoc but they’re clickable to get more information.</P>
+
+<p> </P>
+
+<div cLass="image-with-caption center">
+  <Img src=../Images/image00230.jpeg alt="Fig. 1.9. The basic ScalaDoc for `Char`."><p CLASs=caption>Fig. 1.9. The basic ScalaDoc for <coDe>Char</cODE>.
+</DIV>
+
+<P>A neat feature of ScalaDoc is that you can also filter the content. For example, you can show only methods inherited from <CODe>Any</cOde>.</P>
+
+<p>If you’re interested in the hierarchy of a class, you can look at its super- and subtypes. You can even see a navigable diagram of the type hierarchy. For example, the type hierarchy diagram for <COde>Byte</coDE> shows it is a subtype of <Code>AnyVal</coDe>, and you can navigate up through the hierarchy by clicking on the diagram.</P>
+
+<div ClASS="image-with-caption center">
+  <iMg SRc=../Images/image00231.jpeg ALt="Fig. 1.10. ScalaDoc showing the type hierarchy diagram."><p claSs="caption">Fig. 1.10. ScalaDoc showing the type hierarchy diagram.
+</DIV>
+</div>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Map and FlatMap</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-map-and-flatmap">Map and FlatMap</h2>
+
+<p>In this chapter, we’ll look at some of the functional programming features of Scala, specifically the ubiquitous <code>map</code> and <code>flatMap</code> functions. We’re interested in these because they’re closely related to the idea of monads, a key feature of functional programming.</p>
+
+<h3 id="leanpub-auto-mapping-functions">Mapping Functions</h3>
+
+<p>You’ll see the <code>map</code> function on countless classes in Scala. It’s often described in the context of collections. Classes like <code>List</code>, <code>Set</code>, and <code>Map</code> all have it. For these, it applies a given function to each element in the collection, giving back a new collection based on the result of that function. You “map” some function over each element of your collection.</p>
+
+<p>For example, you could create a function that works out how old a person is given the year of their birth.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">import</code> <code class="nn">java.util.Calendar</code>
+  <code class="k">def</code> <code class="n">age</code><code class="o">(</code><code class="n">birthYear</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">currentYear</code> <code class="k">=</code> <code class="nc">Calendar</code><code class="o">.</code><code class="n">getInstance</code><code class="o">.</code><code class="n">get</code><code class="o">(</code><code class="nc">Calendar</code><code class="o">.</code><code class="nc">YEAR</code><code class="o">)</code>
+    <code class="n">currentYear</code> <code class="o">-</code> <code class="n">birthYear</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>We could call the <code>map</code> function on a list of birth years, passing in the function to create a new list of ages.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">birthdays</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">1990</code><code class="o">,</code> <code class="mi">1977</code><code class="o">,</code> <code class="mi">1984</code><code class="o">,</code> <code class="mi">1961</code><code class="o">,</code> <code class="mi">1973</code><code class="o">)</code>
+  <code class="n">birthdays</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">age</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>The result would be a list of ages. We’ve transformed the year 1990 into an age of 25, for example.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">res0</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">25</code><code class="o">,</code> <code class="mi">38</code><code class="o">,</code> <code class="mi">31</code><code class="o">,</code> <code class="mi">54</code><code class="o">,</code> <code class="mi">42</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>Being a higher-order function, you could have written the function inline as a lambda like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">birthdays</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">year</code> <code class="k">=&gt;</code> <code class="nc">Calendar</code><code class="o">.</code><code class="n">getInstance</code><code class="o">.</code><code class="n">get</code><code class="o">(</code><code class="nc">Calendar</code><code class="o">.</code><code class="nc">YEAR</code><code class="o">)</code> <code class="o">-</code> <code class="n">year</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>Using the underscore as a shorthand for the lambda’s parameter, it would look like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">birthdays</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="nc">Calendar</code><code class="o">.</code><code class="n">getInstance</code><code class="o">.</code><code class="n">get</code><code class="o">(</code><code class="nc">Calendar</code><code class="o">.</code><code class="nc">YEAR</code><code class="o">)</code> <code class="o">-</code> <code class="k">_</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-its-like-foreach">It’s Like <code>foreach</code></h4>
+
+<p>So <code>map</code> is a transforming function. For collections, it iterates over the collection applying some function, just like <code>foreach</code> does. The difference is that unlike <code>foreach</code>, <code>map</code> will collect the return values from the function into a new collection and then return that collection.</p>
+
+<p>It’s trivial to implement a mapping function by hand. For example, we could create a class <code>Mappable</code> that takes a number of elements of type <code>A</code> and creates a <code>map</code> function.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">Mappable</code><code class="o">[</code><code class="kt">A</code><code class="o">](</code><code class="k">val</code> <code class="n">elements</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">A</code><code class="o">])</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">map</code><code class="o">[</code><code class="kt">B</code><code class="o">](</code><code class="n">f</code><code class="k">:</code> <code class="kt">Function1</code><code class="o">[</code><code class="kt">A</code>, <code class="kt">B</code><code class="o">])</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">B</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+      <code class="o">???</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The parameter to <code>map</code> is a function that transforms from type <code>A</code> to type <code>B</code>; it takes an <code>A</code> and returns a <code>B</code>. I’ve written it longhand as a type of <code>Function1</code> which is equivalent to Java 8’s <code>java.util.function.Function</code> class. We can also write it using Scala’s shorthand syntax and the compiler will do the conversion for us.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">map</code><code class="o">[</code><code class="kt">B</code><code class="o">](</code><code class="n">f</code><code class="k">:</code> <code class="kt">A</code> <code class="o">=&gt;</code> <code class="n">B</code><code class="o">)</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">B</code><code class="o">]</code> <code class="k">=</code> <code class="o">...</code>
+</pre></div>
+
+</div>
+
+<p>Then it’s just a question of creating a new collection, calling the function (using <code>apply</code>) with each element as the argument. We’d store the result to the new collection and finally return it.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">Mappable</code><code class="o">[</code><code class="kt">A</code><code class="o">](</code><code class="k">val</code> <code class="n">elements</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">A</code><code class="o">])</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">map</code><code class="o">[</code><code class="kt">B</code><code class="o">](</code><code class="n">f</code><code class="k">:</code> <code class="kt">A</code> <code class="o">=&gt;</code> <code class="n">B</code><code class="o">)</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">B</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+      <code class="k">val</code> <code class="n">result</code> <code class="k">=</code> <code class="n">collection</code><code class="o">.</code><code class="n">mutable</code><code class="o">.</code><code class="nc">MutableList</code><code class="o">[</code><code class="kt">B</code><code class="o">]()</code>
+      <code class="n">elements</code><code class="o">.</code><code class="n">foreach</code> <code class="o">{</code>
+        <code class="n">result</code> <code class="o">+=</code> <code class="n">f</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="k">_</code><code class="o">)</code>
+      <code class="o">}</code>
+      <code class="n">result</code><code class="o">.</code><code class="n">toList</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>We can test it by creating a list of numbers, making them “mappable” by creating a new instance of <code>Mappable</code> and calling map with an anonymous function that simply doubles the input.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Example</code> <code class="k">extends</code> <code class="nc">App</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">numbers</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">2</code><code class="o">,</code> <code class="mi">54</code><code class="o">,</code> <code class="mi">4</code><code class="o">,</code> <code class="mi">12</code><code class="o">,</code> <code class="mi">43</code><code class="o">,</code> <code class="mi">54</code><code class="o">,</code> <code class="mi">23</code><code class="o">,</code> <code class="mi">34</code><code class="o">)</code>
+    <code class="k">val</code> <code class="n">mappable</code><code class="k">:</code> <code class="kt">Mappable</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Mappable</code><code class="o">(</code><code class="n">numbers</code><code class="o">)</code>
+    <code class="k">val</code> <code class="n">result</code> <code class="k">=</code> <code class="n">mappable</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="k">_</code> <code class="o">*</code> <code class="mi">2</code><code class="o">)</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">result</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The output would look like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="nc">List</code><code class="o">(</code><code class="mi">2</code><code class="o">,</code> <code class="mi">4</code><code class="o">,</code> <code class="mi">108</code><code class="o">,</code> <code class="mi">8</code><code class="o">,</code> <code class="mi">24</code><code class="o">,</code> <code class="mi">86</code><code class="o">,</code> <code class="mi">108</code><code class="o">,</code> <code class="mi">46</code><code class="o">,</code> <code class="mi">68</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<div class="page-break"></div><div style="page-break-after:always"></div>
+<div class="aside sidebarish">
+  <h4 id="leanpub-auto-recursion">Recursion</h4>
+  <p>This is a fairly typical iterative implementation; a more Scala-esq implementation would use recursion.</p>
+
+</div>
+
+<h3 id="flatmap">FlatMap</h3>
+
+<p>You’ll often see the <code>flatMap</code> function where you see the <code>map</code> function. For collections, it’s very similar in that it maps a function over the collection, storing the result in a new collection, but with a couple of differences:</p>
+
+<ul><li>It still transforms but this time the function applies a one-to-many transformation. It takes a single argument as before but returns multiple values.</li>
+  <li>The result would therefore end up being a collection of collections, so <code>flatMap</code> also flattens the result to give a single collection.</li>
+</ul><p>So,</p>
+
+<ul><li>For a given collection of <code>A</code>, the <code>map</code> function applies a function to each element transforming an <code>A</code> to <code>B</code>. The result is a collection of <code>B</code> (i.e. <code>List[B]</code>).</li>
+  <li>For a given collection of <code>A</code>, the <code>flatMap</code> function applies a function to each element transforming an <code>A</code> to a collection of <code>B</code>. This results in a collection of collection of <code>B</code> (i.e. <code>List[List[B]]</code>) which is the flattened to a single collection of <code>B</code> (i.e. <code>List[B]</code>). </li>
+</ul><p>Let’s say we want a mapping function to return a person’s age plus or minus a year. So if we think a person is 38, we’d return a list of 37, 38, 39.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">import</code> <code class="nn">java.util.Calendar</code>
+  <code class="k">def</code> <code class="n">ages</code><code class="o">(</code><code class="n">birthYear</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">today</code> <code class="k">=</code> <code class="nc">Calendar</code><code class="o">.</code><code class="n">getInstance</code><code class="o">.</code><code class="n">get</code><code class="o">(</code><code class="nc">Calendar</code><code class="o">.</code><code class="nc">YEAR</code><code class="o">)</code>
+    <code class="nc">List</code><code class="o">(</code><code class="n">today</code> <code class="o">-</code> <code class="mi">1</code> <code class="o">-</code> <code class="n">birthYear</code><code class="o">,</code> <code class="n">today</code> <code class="o">-</code> <code class="n">birthYear</code><code class="o">,</code> <code class="n">today</code> <code class="o">+</code> <code class="mi">1</code> <code class="o">-</code> <code class="n">birthYear</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The signature has changed from the previous example to return a <code>List[Int]</code> rather than just an <code>Int</code>. If we pass the list of birthday years into the <code>map</code> function, we get a list of lists back (<code>res0</code> below).</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">birthdays</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">1990</code><code class="o">,</code> <code class="mi">1977</code><code class="o">,</code> <code class="mi">1984</code><code class="o">)</code>
+
+  <code class="k">val</code> <code class="n">ages</code> <code class="k">=</code> <code class="n">birthdays</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">ages</code><code class="o">)</code>
+  <code class="n">println</code><code class="o">(</code><code class="n">ages</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="n">birthdays</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">age</code><code class="o">)</code>
+  <code class="n">res0</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]]</code> <code class="k">=</code>
+    <code class="nc">List</code><code class="o">(</code><code class="nc">List</code><code class="o">(</code><code class="mi">24</code><code class="o">,</code> <code class="mi">25</code><code class="o">,</code> <code class="mi">26</code><code class="o">),</code> <code class="nc">List</code><code class="o">(</code><code class="mi">37</code><code class="o">,</code> <code class="mi">38</code><code class="o">,</code> <code class="mi">39</code><code class="o">),</code> <code class="nc">List</code><code class="o">(</code><code class="mi">30</code><code class="o">,</code> <code class="mi">31</code><code class="o">,</code> <code class="mi">32</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>If, however, we pass it into the <code>flatMap</code> function, we get a flattened list back. It maps, then flattens.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="n">birthdays</code><code class="o">.</code><code class="n">flatMap</code><code class="o">(</code><code class="n">age</code><code class="o">)</code>
+  <code class="n">res1</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">24</code><code class="o">,</code> <code class="mi">25</code><code class="o">,</code> <code class="mi">26</code><code class="o">,</code> <code class="mi">37</code><code class="o">,</code> <code class="mi">38</code><code class="o">,</code> <code class="mi">39</code><code class="o">,</code> <code class="mi">30</code><code class="o">,</code> <code class="mi">31</code><code class="o">,</code> <code class="mi">32</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>If you wanted to write your own version of <code>flatMap</code>, it might look something like this (notice the return type of the function).</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">FlatMappable</code><code class="o">[</code><code class="kt">A</code><code class="o">](</code><code class="n">elements</code><code class="k">:</code> <code class="kt">A*</code><code class="o">)</code> <code class="o">{</code>
+
+    <code class="k">def</code> <code class="n">flatMap</code><code class="o">[</code><code class="kt">B</code><code class="o">](</code><code class="n">f</code><code class="k">:</code> <code class="kt">A</code> <code class="o">=&gt;</code> <code class="nc">List</code><code class="o">[</code><code class="kt">B</code><code class="o">])</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">B</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+      <code class="k">val</code> <code class="n">result</code> <code class="k">=</code> <code class="n">collection</code><code class="o">.</code><code class="n">mutable</code><code class="o">.</code><code class="nc">MutableList</code><code class="o">[</code><code class="kt">B</code><code class="o">]()</code>
+      <code class="n">elements</code><code class="o">.</code><code class="n">foreach</code> <code class="o">{</code>
+        <code class="n">f</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="k">_</code><code class="o">).</code><code class="n">foreach</code> <code class="o">{</code>
+          <code class="n">result</code> <code class="o">+=</code> <code class="k">_</code>
+        <code class="o">}</code>
+      <code class="o">}</code>
+      <code class="n">result</code><code class="o">.</code><code class="n">toList</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The first loop will enumerate the elements of the collection and apply the function to each. Because this function itself returns a list, another loop is needed to enumerate each of <em>these</em>, adding them into the result collection. This is the bit that flattens the function’s result.</p>
+
+<p>To test it, let’s start by creating a function that goes from an <code>Int</code> to a collection of <code>Int</code>. It gives back all the odd numbers between zero and the argument.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">oddNumbersTo</code><code class="o">(</code><code class="n">end</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">odds</code> <code class="k">=</code> <code class="n">collection</code><code class="o">.</code><code class="n">mutable</code><code class="o">.</code><code class="nc">MutableList</code><code class="o">[</code><code class="kt">Int</code><code class="o">]()</code>
+    <code class="k">for</code> <code class="o">(</code><code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="n">end</code><code class="o">)</code> <code class="o">{</code>
+      <code class="k">if</code> <code class="o">(</code><code class="n">i</code> <code class="o">%</code> <code class="mi">2</code> <code class="o">!=</code> <code class="mi">0</code><code class="o">)</code> <code class="n">odds</code> <code class="o">+=</code> <code class="n">i</code>
+    <code class="o">}</code>
+    <code class="n">odds</code><code class="o">.</code><code class="n">toList</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>We then just create an instance of our class with a few numbers in. Call <code>flatMap</code> and you’ll see that all odd numbers from 0 to 1, 0 to 2, and 0 to 10 are collected into a list.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Example</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">main</code><code class="o">(</code><code class="n">args</code><code class="k">:</code> <code class="kt">Array</code><code class="o">[</code><code class="kt">String</code><code class="o">])</code> <code class="o">{</code>
+      <code class="k">val</code> <code class="n">mappable</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">FlatMappable</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">2</code><code class="o">,</code> <code class="mi">10</code><code class="o">)</code>
+      <code class="k">val</code> <code class="n">result</code> <code class="k">=</code> <code class="n">mappable</code><code class="o">.</code><code class="n">flatMap</code><code class="o">(</code><code class="n">oddNumbersTo</code><code class="o">)</code>
+      <code class="n">println</code><code class="o">(</code><code class="n">result</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The output would be the following:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="nc">List</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">1</code><code class="o">,</code> <code class="mi">1</code><code class="o">,</code> <code class="mi">3</code><code class="o">,</code> <code class="mi">5</code><code class="o">,</code> <code class="mi">7</code><code class="o">,</code> <code class="mi">9</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<h3 id="leanpub-auto-not-just-for-collections">Not Just for Collections</h3>
+
+<p>We’ve seen how <code>map</code> and <code>flatMap</code> work for collections, but they also exist on many other classes. More generally, <code>map</code> and <code>flatMap</code> operate on what’s called <em>monads</em>. In fact, having <code>map</code> and <code>flatMap</code> behaviour is one of the defining features of monads.</p>
+
+<p>So just what are monads? We’ll look at that next.</p>
+</div>
+</body></html>

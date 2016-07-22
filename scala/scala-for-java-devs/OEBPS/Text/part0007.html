@@ -1,0 +1,162 @@
+﻿<?Xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<TitLe>Scala’s Class Hierarchy</TiTLE>
+<LINk hREf="../Styles/style0001.css" tYpe=text/css reL="stylesheet"/>
+
+<dIv>
+<H2 id="leanpub-auto-scalas-class-hierarchy">Scala’s Class Hierarchy</h2>
+
+<p>Scala’s class hierarchy starts with the <coDE>Any</codE> class in the <COdE>scala</cODe> package. It contains methods like <CodE>==</CODe>, <cODE>!=</CoDE>, <CODE>equals</CodE>, <COde>##</CoDE>, <cOdE>hashCode</codE>, and <cOdE>toString</coDE>.</P>
+
+<dIv cLAsS="code-block">
+<DIV claSs="highlight"><pRE>  <COde CLASs="k">abstract</cOdE> <CODE CLaSs="k">class</CoDe> <CodE clAss="nc">Any</CoDE> <codE cLaSS="o">{</coDE>
+    <coDE cLass="k">final</COde> <coDE clAss="k">def</cODE> <CodE cLASS=o>==(</cOde><CoDE cLAss="n">that</cOdE><cODe CLAss="k">:</CODe> <codE cLasS=kt>Any</cODe><CODe cLaSS=o>)</cODe><Code ClasS="k">:</Code> <code CLAsS=kt>Boolean</CODe>
+    <CoDe CLass=k>final</cODe> <CoDE CLass=k>def</code> <CODe cLasS="o">!=(</code><CODE Class="n">that</CODE><cOde clasS="k">:</CodE> <cODe CLaSS="kt">Any</Code><cODE clAss=o>)</CoDE><cODE CLaSs="k">:</COde> <cOde CLass="kt">Boolean</CODE>
+    <Code cLASS=k>def</cOde> <Code CLASs=n>equals</CoDE><code CLaSs="o">(</CodE><CoDe claSs=n>that</cOdE><cOde ClaSS=k>:</CodE> <Code ClaSS="kt">Any</coDE><CODe Class=o>)</CodE><cODe clasS="k">:</cODE> <coDe ClasS="kt">Boolean</CodE>
+    <code ClASS="k">def</cODe> <CODe CLAsS="o">##</CoDE><CODe CLaSs="k">:</cOde> <CoDe CLaSS=kt>Int</CODE>
+    <cOde clAsS=k>def</cODe> <code CLaSS="n">hashCode</COdE><Code Class="k">:</codE> <cOde claSs="kt">Int</code>
+    <code CLAsS=k>def</code> <Code cLaSs="n">toString</code><COde ClasS="k">:</COde> <COde cLASS=kt>String</codE>
+    <cOde class="c1">// ...</codE>
+  <COdE cLaSS=o>}</coDe>
+</pRe></diV>
+
+</dIV>
+
+<P>Every class in Scala inherits from the abstract class <cOde>Any</CODe>. It has two immediate subclasses, <CoDe>AnyVal</COde> and <coDE>AnyRef</cODe>.</P>
+
+<p> </P>
+
+<dIv cLAsS="image-with-caption center">
+  <Img SRC=../Images/image00222.jpeg AlT="Fig. 1.1. Every class extends the `Any` class."><p cLAss="caption">Fig. 1.1. Every class extends the <CoDe>Any</CODe> class.</P>
+</diV>
+
+
+<dIV claSS="page-break"></div><Div styLe="page-break-after:always"></DiV>
+<h3 id="leanpub-auto-anyval">
+  <cOde>AnyVal</cODe>
+</h3>
+
+<P><CoDE>AnyVal</CODe> is the super-type to all <eM>value types</eM>, and <CoDe>AnyRef</coDE> the super-type of all <EM>reference types</EM>.
+
+<p>Basic types such as <cOdE>Byte</cOde>, <CODE>Int</coDe>, <COde>Char</cODe>, etc. are known as value types. In Java value types correspond to the primitive types, but in Scala they are objects. Value types are all predefined and can be referred to by literals. They are usually allocated on the stack but are allocated on the heap in Scala.
+
+<P>All other types in Scala are known as reference types. Reference types are objects in memory (the heap), as opposed to pointer types in C-like languages, which are addresses in memory that point to something useful and need to be dereferenced using special syntax (for example, <COde>*age = 64</coDE> in C). Reference objects are effectively dereferenced automatically.</P>
+
+<p>There are nine value types in Scala:</P>
+
+<diV CLaSS="image-with-caption center">
+  <iMG src="../Images/image00223.jpeg" alT="Fig. 1.2. Scala's value types."><p CLasS="caption">Fig. 1.2. Scala’s value types.</p>
+</Div>
+
+
+<P>These classes are fairly straightforward; they mostly  wrap an underlying Java type and provide implementations for the <codE>==</coDe> method that are consistent with Java’s <CODE>equals</cOde> method.
+
+<DiV CLAss="page-break"></dIv><div sTYlE=page-break-after:always></dIV>
+<P>This means, for example, that you can compare two number objects using <CoDE>==</code> and get a sensible result, even though they may be distinct instances.</p>
+
+<P>So, <CodE>42 == 42</cODe> in Scala is equivalent to creating two <CoDe>Integer</Code> objects in Java and comparing them with the <CodE>equals</cOdE> method: <COdE>new Integer(42).equals(new Integer(42))</cOdE>. You’re not comparing object references, like in Java with <coDE>==</coDE>, but natural equality. Remember that <coDE>42</CoDE> in Scala is an instance of <CoDe>Int</cOde> which in turn delegates to <CodE>Integer</COde>.
+
+<h3 id="leanpub-auto-unit">
+  <CodE>Unit</CODe>
+</H3>
+
+<P>The <COdE>Unit</Code> value type is a special type used in Scala to represent an uninteresting result. It’s similar to Java’s <COdE>Void</cOdE> object or <coDe>void</codE> keyword when used as a return type. It has only one value, which is written as an empty pair of brackets:</p>
+
+<dIv clasS=code-block>
+<DiV CLAsS=highlight><PRE>  <Code cLass=n>scala</COdE><CODE CLASs="o">&gt;</CoDE> <cOdE ClasS=k>val</COde> <CODE cLaSS="n">example</CoDE><COde clASs="k">:</COdE> <cODe clasS=kt>Unit</Code> <cODE cLass=o>=</codE> <cOde CLASS="o">()</cOde>
+  <cOde cLASs=n>example</COde><cOdE cLAsS="k">:</coDe> <CODe clASs=kt>Unit</CodE> <CODE cLASs="o">=</CODe> <COdE cLAsS=o>()</CODe>
+</pre></Div>
+
+</div>
+
+<p>A Java class implementing <CODE>Callable</coDE> with a <CodE>Void</COde> object as a return would look like this:</p>
+
+<div cLass="code-block">
+<DiV cLaSS=highlight><pRe>  <cOdE ClaSS=c1>// java</CodE>
+  <cODE cLASs="kd">public</Code> <code cLaSs=kd>class</coDE> <cODe ClaSs="nc">DoNothing</CoDe> <CodE clAsS="kd">implements</code> <cOdE claSs=n>Callable</cODe><CoDe cLASS="o">&lt;</CoDE><cOde CLass="n">Void</code><CoDe CLAss="o">&gt;</CODe> <cOde ClaSS=o>{</coDe>
+      <CoDe CLASs=nd>@Override</cODe>
+      <CoDE cLaSS=kd>public</cODe> <coDE CLasS="n">Void</CODE> <Code Class="nf">call</COde><cOde CLasS=o>()</coDe> <cODe class="kd">throws</CoDe> <code cLASS=n>Exception</CoDE> <codE class=o>{</CoDE>
+          <CoDe CLaSs="k">return</COde> <CODE CLasS=kc>null</cOde><coDE clASS="o">;</CodE>
+      <COde clAss="o">}</coDe>
+  <coDE Class="o">}</coDe>
+</PrE></DiV>
+
+</Div>
+
+<dIv cLaSS="page-break"></div><DIv STylE="page-break-after:always"></DIv>
+<P>It is identical to this Scala class returning <cOdE>Unit</CODE>:</P>
+
+<dIV clASS="code-block">
+<dIV Class="highlight"><pre>  <COde ClaSS=c1>// scala</COdE>
+  <CodE claSs="k">class</code> <cODE claSS="nc">DoNothing</COdE> <CoDe CLass="k">extends</coDE> <cOde cLaSS="nc">Callable</COde><coDe ClAss="o">[</code><COde ClAsS=kt>Unit</CodE><coDe cLAsS=o>]</CoDe> <codE Class=o>{</cOdE>
+    <COdE cLAss="k">def</coDE> <CodE ClAss="n">call</cODE><COdE cLASS=k>:</coDe> <cODe cLASS="kt">Unit</COde> <cODe cLasS="o">=</codE> <COdE CLASs="o">()</coDe>
+  <codE clasS=o>}</cODE>
+</prE></diV>
+
+</DIV>
+
+<p>Remember that the last line of a Scala method is the return value, and <cODE>()</CoDE> represents the one and only value of <COde>Unit</CoDE>.</P>
+
+<h3 id="leanpub-auto-anyref">
+  <cOdE>AnyRef</coDe>
+</H3>
+
+<P><cOde>AnyRef</codE> is an actually an alias for Java’s <code>java.lang.Object</COdE> class. The two are interchangeable. It supplies default implementations for <CODE>toString</cODE>, <cOde>equals</Code> and <cODE>hashcode</CODe> for all reference types.</P>
+
+<p>There used to be a subclass of <COde>AnyRef</CODE> called <code>ScalaObject</cOdE> that all Scala reference types extended. However, it was only there for optimisation purposes and has been removed in Scala 2.11. (I mention it as a lot of documentation still refers to it.)
+
+<div cLAss="image-with-caption center">
+  <IMG src="../Images/image00224.jpeg" ALT="Fig. 1.3. Scala `Any`. The `ScalaObject` class no longer exists."><p CLASS="caption">Fig. 1.3. Scala <code>Any</cOde>. The <cOde>ScalaObject</cODE> class no longer exists.</p>
+</dIV>
+
+<P>The Java <cOdE>String</cODe> class and other Java classes used from Scala all extend <codE>AnyRef</cOde>. (Remember it’s a synonym for <CODe>java.lang.Object</codE>.) Any Scala-specific classes, like Scala’s implementation of a list, <coDE>scala.List</cOde>, also extend <CodE>AnyRef</COde>.
+
+<DiV class="image-with-caption center">
+  <iMg SrC="../Images/image00225.jpeg" aLT="Fig. 1.4. Scala's reference types."><p clASS=caption>Fig. 1.4. Scala’s reference types.</p>
+</dIv>
+
+
+<p>For reference types like these, <COdE>==</CoDE> will delegate to the <CODE>equals</CoDe> method like before. For pre-existing classes like <code>String</CODe>, <cODe>equals</cODE> is already overridden to provide a natural notion of equality. For your own classes, you can override the <codE>equals</cOde> just as you would in Java, but still be able to use <code>==</COde> in code.
+
+<P>For example, you can compare two strings using <codE>==</codE> in Scala and it would behave just as it would in Java if you used the <cOdE>equals</codE> method:</P>
+
+<dIV ClasS="code-block">
+<diV cLasS="highlight"><Pre>  <cOde cLaSS=k>new</CoDe> <cODE clAsS=nc>String</cOde><cOde cLAss=o>(</CoDe><COde clAsS=s>"A"</COde><code cLASS="o">)</coDE> <cOdE CLASS="o">==</Code> <cOdE ClaSs="k">new</Code> <CoDE clASs="nc">String</COdE><CODE ClASs=o>(</CoDE><CoDE CLass="s">"A"</cOdE><cODE cLAsS=o>)</COdE>        <codE clAsS=c1>// true in scala, false in java</CodE>
+  <code cLAsS="k">new</CODe> <coDe class=nc>String</Code><codE ClASS="o">(</CODE><code clASS="s">"B"</coDe><CodE Class=o>).</code><CodE CLASs="n">equals</cOdE><COde cLASS=o>(</code><COdE cLASs=k>new</CodE> <COdE CLaSS=nc>String</Code><CoDe claSs=o>(</codE><COde CLasS=s>"B"</cODe><code CLaSs="o">))</code>   <coDe clAsS="c1">// true in scala and java</CodE>
+</pRe></diV>
+
+</dIv>
+
+<p>If, however, you want to revert back to Java’s semantics for <codE>==</cODe> and perform reference equality in Scala, you can call the <cOdE>eq</CoDe> method defined in <cOdE>AnyRef</coDE>:</p>
+
+<dIV CLaSs="code-block">
+<dIv CLass=highlight><pRE>  <cODe class="k">new</coDE> <CODE CLass="nc">String</cODe><COdE cLass="o">(</CODe><COde CLass=s>"A"</coDe><COdE cLasS="o">)</COde> <codE cLass=n>eq</cODe> <cODe Class="k">new</Code> <code ClasS="nc">String</coDe><coDE cLaSS="o">(</codE><coDE ClaSS="s">"A"</CODe><coDe cLaSS="o">)</cOde>        <Code clasS="c1">// false in scala</CODE>
+  <cODe Class="k">new</cODE> <COde CLaSS=nc>String</CODE><cODE CLasS="o">(</CoDe><coDE ClASs="s">"B"</coDe><CodE cLAsS="o">)</coDE> <CodE CLaSs=o>==</code> <CoDE cLAss=k>new</cOdE> <CODe ClASs="nc">String</CodE><COdE CLAss="o">(</code><CODE class="s">"B"</CODE><CoDE cLAss="o">)</cODE>        <COde ClASS="c1">// false in java</cODE>
+</prE></dIv>
+
+</DIV>
+
+<dIV cLaSS="page-break"></dIV><div styLe="page-break-after:always"></div>
+<H3 id="leanpub-auto-bottom-types">Bottom Types</H3>
+
+<p>A new notion to many Java developers will be the idea that a class hierarchy can have common <Em>bottom types</eM>. These are types that are subtypes of <Em>all</EM> types. Scala’s types <cODe>Null</cODE> and <CODe>Nothing</CODE> are both bottom types.</p>
+
+<p>All reference types in Scala are super-types of <coDE>Null</cODE>. <Code>Null</CoDE> is also an <codE>AnyRef</cOde> object; it’s a subclass of every reference type.</p>
+
+<Div cLASS="image-with-caption center">
+  <Img src="../Images/image00226.jpeg" Alt="Fig. 1.5. The `Null` extends `AnyRef`."><P ClASS=caption>Fig. 1.5. The <CoDe>Null</cOde> extends <CODe>AnyRef</cOdE>.</P>
+</DIv>
+
+
+<P>Both value and reference types are super-types of <cOde>Nothing</CoDE>. It’s at the bottom of the class hierarchy and is a subtype of all types. 
+
+<div CLass="image-with-caption center">
+  <IMg srC="../Images/image00227.jpeg" AlT="Fig. 1.6. `Nothing` extends `Null`."><p ClAss=caption>Fig. 1.6. <CoDE>Nothing</CoDE> extends <CODe>Null</CodE>.</P>
+</dIv>
+
+
+<p>The entire hierarchy is shown in the diagram below. I’ve left off <CoDe>scala.Any</Code> to save space. Notice that <cODe>Null</codE> extends all reference types and that <cOde>Nothing</CoDE> extends all types.</P>
+
+<dIV ClasS="image-with-caption center">
+  <Img SRc="../Images/image00228.jpeg" AlT="Fig. 1.7. Full hierarchy with the bottom types `Null` and `Nothing`."><P cLass=caption>Fig. 1.7. Full hierarchy with the bottom types <COde>Null</codE> and <codE>Nothing</codE>.</p>
+</div>
+</div>

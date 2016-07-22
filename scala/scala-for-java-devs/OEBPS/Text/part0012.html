@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<Title>Classes and Fields</tiTLe>
+<LINK HRef=../Styles/style0001.css tYPE="text/css" REL="stylesheet"/>
+
+<div>
+<h2 id="leanpub-auto-classes-and-fields">Classes and Fields</H2>
+
+<P>In this chapter, we’ll have a look at:
+
+<Ol clAss=numeric><lI>Creating classes</lI>
+  <LI>How Scala makes things easier when defining fields
+  <li>What happens behind the scenes when Scala creates methods for you</li>
+</ol><h3 id="leanpub-auto-creating-classes">Creating Classes</H3>
+
+<P>Creating a class in Java means writing something like this:</p>
+
+<div cLAsS=code-block>
+<dIV cLaSs="highlight"><pRe>  <CoDE CLaSS="c1">// java</codE>
+  <codE CLass="kd">public</CoDe> <CODE cLAsS="kd">class</COdE> <cODe Class=nc>Customer</coDE> <CoDE cLAss="o">{</coDe>
+  <COde cLAsS=o>}</CODE>
+</pRe></DIv>
+
+</diV>
+
+<P>It makes sense for us to have a name and address for a customer. So adding these as fields and initialising via the constructor would give us something like this:
+
+<Div claSs=code-block>
+<DIv class=highlight><PRe>  <CoDe CLASs=c1>// java</coDe>
+  <codE claSS=kd>public</codE> <coDE ClaSs=kd>class</codE> <CODe CLaSS=nc>Customer</cOde> <CoDE cLasS="o">{</COdE>
+      <CoDe ClASS="kd">private</CodE> <cODe cLASS=kd>final</COde> <COde ClASS=n>String</CoDe> <Code CLASS="n">name</COde><CoDe CLaSs=o>;</cODe>
+      <CoDE ClAss=kd>private</CodE> <cOde ClasS=kd>final</CODe> <CoDE clASs=n>String</COdE> <COde cLaSs="n">address</cODe><coDE cLASS="o">;</CoDe>
+
+      <COdE clASs=kd>public</coDe> <Code CLAsS=nf>Customer</CodE><coDE cLAss=o>(</codE><code ClaSs="n">String</CODe> <CodE cLaSs="n">name</coDe><cOdE CLAss=o>,</CoDe> <cOdE clAss=n>String</COdE> <coDE cLASS=n>address</codE><COdE cLasS="o">)</cODE> <Code ClAss=o>{</codE>
+          <code claSS=k>this</code><COde ClAsS=o>.</CODe><CodE cLASs="na">name</cODE> <cOde cLASs=o>=</COdE> <CoDE clAss=n>name</codE><Code clAss=o>;</COdE>
+          <CODe CLaSs=k>this</Code><coDE ClASS="o">.</cOde><COdE CLASS=na>address</codE> <cODE ClAsS="o">=</cOdE> <CodE cLasS="n">address</CodE><CodE claSs=o>;</cOdE>
+      <coDe clASs=o>}</codE>
+  <CODe class=o>}</CODe>
+</Pre></DiV>
+
+</DIv>
+
+<DIV claSs=page-break></DiV><DIv Style="page-break-after:always"></div>
+<p>We can instantiate an instance with the <CodE>new</codE> keyword and create a new customer called Eric like this:</p>
+
+<diV CLASs=code-block>
+<dIV claSS=highlight><PrE>  <code claSS=n>Customer</coDe> <code ClASS="n">eric</codE> <CodE clAss=o>=</cODE> <code Class=k>new</coDE> <COde clAsS=n>Customer</CoDe><COde cLasS="o">(</CodE><CoDE CLASs="s">"Eric"</CodE><CoDE cLaSS="o">,</CODe> <CODe class=s>"29 Acacia Road"</CodE><Code ClASs="o">);</CodE>   <CoDe clASS=c1>// java</CODE>
+</prE></dIv>
+
+</div>
+
+<p>In Scala, the syntax is much briefer; we can combine the class and constructor on a single line.</P>
+
+<DIV cLaSs="code-block">
+<Div CLaSs=highlight><PrE>  <CODE clASS="k">class</CODE> <COdE cLASs=nc>Customer</CODE><COdE clAsS=o>(</cODE><cODE ClaSs="k">val</CodE> <cOde cLASs="n">name</COdE><coDe clAss=k>:</CodE> <COdE ClaSs="kt">String</codE><Code cLaSS="o">,</cODe> <code cLasS=k>val</COdE> <COde clAss="n">address</cODE><CODe CLasS=k>:</CODe> <cODe Class=kt>String</cODE><code ClASs="o">)</coDE>     <cOdE claSs="c1">// scala</COdE>
+</PRe></dIv>
+
+</diV>
+
+<p>We new it up in the same way, like this:</p>
+
+<DIv cLAss="code-block">
+<dIV ClaSs="highlight"><PRE>  <CODe CLASs=k>val</cODe> <cOde CLaSs=n>eric</CoDE> <codE CLAss="k">=</CODe> <CodE CLaSs=k>new</coDE> <cOde cLASs=nc>Customer</cODe><CoDe ClAss=o>(</cODE><CODe CLAsS="s">"Eric"</Code><CODE class="o">,</codE> <Code CLASs="s">"29 Acacia Road"</coDe><code CLaSS="o">)</CoDE>         <COde ClasS="c1">// scala</cODE>
+</pRE></diV>
+
+</DIV>
+
+<P>Rather than define the fields as members within the class, the Scala version declares the variables as part of the class definition in what’s known as the <EM>primary constructor</em>. In one line, we’ve declared the class <COde>Customer</cOde> and, in effect, declared a constructor with two arguments.
+
+<h3 id="leanpub-auto-derived-setters-and-getters">Derived Setters and Getters</h3>
+
+<P>The <Code>val</COde> keyword on the class definition tells the compiler to treat the arguments as fields. It will create the fields and accessor methods for them.
+
+<p>We can prove this by taking the generated class file and decompiling it into Java. Round-tripping like this is a great way to explore what Scala actually produces behind the scenes. I’ve used the excellent <A href="http://www.benf.org/other/cfr/">CFR decompiler</a> by Lee Benfield here, but you could also use the <coDE>javap</coDe> program that ships with Java to get the basic information.
+
+<dIv clasS="page-break"></DIv><DIv STYlE="page-break-after:always"></dIV>
+<P>To run the decompiler on the Scala generated class file for <COde>Customer</CODE>, you do something like the following:</p>
+
+<DIv ClASs="code-block">
+<diV CLASs="highlight"><PrE>  <cOdE ClaSs="n">java</code> <code cLasS="o">-</cODE><CODE cLAsS="n">jar</CODE> <coDE cLass=n>cfr_0_99</COde><coDe CLasS=o>.</CODe><cOdE cLAss="n">jar</CODe> <CODE ClAsS="n">target</code><CodE cLass="o">/</cODE><CODe cLaSS="n">scala</code><CODE ClASs=o>-</cODe><Code clAss="mf">2.11</code><codE cLAsS=o>/</CodE><code claSS="n">classes</CODe><coDe claSS=o>/</Code><CoDe ClasS=n>scala</codE><cOdE clasS="o">/</codE><CODE cLAsS=n>demo</COdE><codE cLAss=o>/</cOdE><codE clasS=nc>Customer</CODe><code cLasS=o>.</COde><coDe CLASS=k>class</cOde>
+</PRe></diV>
+
+</DiV>
+
+<P>It produces the following:
+
+<DiV cLAss=code-block>
+<div CLaSS="highlight"><Pre><cOde ClASS="lineno"> 1</CODe>   <coDe cLasS="c1">// decompiled from scala to java</cODe>
+<CODe ClasS=lineno> 2</CoDe>   <cODe CLASS=kd>public</cODE> <cOde ClAss=kd>class</CodE> <CoDE claSs="nc">Customer</COde> <COde cLaSs="o">{</COdE>
+<COde clAsS="lineno"> 3</Code>       <cOde CLASs=kd>private</CODe> <coDe ClaSs=kd>final</CODe> <code Class="n">String</coDE> <CoDe cLaSs="n">name</codE><cODe CLASs="o">;</coDE>
+<COde CLAss="lineno"> 4</CoDe>       <cOdE cLasS=kd>private</Code> <CODe CLAsS="kd">final</COde> <cODE CLasS="n">String</codE> <cOde clASs="n">address</codE><Code cLass="o">;</coDe>
+<CoDe ClASS=lineno> 5</COdE> 
+<CodE CLaSs=lineno> 6</CoDe>       <coDe ClASS="kd">public</CodE> <cOdE ClaSS=n>String</CoDe> <CODE cLAsS=nf>name</cOdE><CODe ClASs=o>()</CODE> <COde CLAss=o>{</coDe>
+<CodE clasS="lineno"> 7</cOdE>           <coDE cLAsS="k">return</code> <cOdE clASS="k">this</cOdE><cOdE CLaSs=o>.</coDE><CODe clAsS=na>name</COde><cODe CLass=o>;</CODE>
+<coDE clASS=lineno> 8</CodE>       <CODe ClaSS="o">}</code>
+<CodE cLAss=lineno> 9</cOdE> 
+<cOdE clASs=lineno>10</CodE>       <Code clAsS="kd">public</COdE> <cODE ClASs="n">String</coDE> <CODe claSS="nf">address</COdE><cOde CLAss="o">()</cOdE> <CodE cLasS=o>{</code>
+<CODE claSs=lineno>11</CODE>           <CODe clASs=k>return</code> <CODE ClAss="k">this</CODE><COde CLAsS=o>.</coDe><cODE claSs="na">address</cOde><CODe clASs=o>;</cODe>
+<cOde ClAss="lineno">12</CoDe>       <Code cLaSS=o>}</cODE>
+<cODE CLass=lineno>13</CoDE> 
+<cOde clAss="lineno">14</CoDe>       <COde cLASs=kd>public</COde> <CoDE Class=nf>Customer</codE><COde ClAss=o>(</coDe><cODE clAsS=n>String</codE> <Code clASS="n">name</COde><cODe clASs="o">,</coDe> <cOdE clAsS=n>String</Code> <COde clasS="n">address</coDe><cOdE CLASS=o>)</cOde> <codE CLaSS="o">{</cOdE>
+<cODe CLASS=lineno>15</Code>           <CoDE ClaSs="k">this</cOdE><COde ClASS="o">.</cOde><CoDe cLAsS=na>name</coDe> <codE CLASs="o">=</coDe> <CoDE CLAss="n">name</COde><coDE CLaSs="o">;</coDE>
+<CoDe ClasS=lineno>16</CODe>           <coDE ClasS="k">this</COdE><codE ClasS="o">.</CODe><codE cLASs=na>address</CoDE> <COdE ClaSS=o>=</cOdE> <COde clAsS=n>address</code><cOdE CLaSs="o">;</codE>
+<code CLass=lineno>17</code>       <COde CLass=o>}</CODE>
+<CoDe cLASs=lineno>18</cOde>   <COdE clASS="o">}</cOde>
+</pre></div>
+
+</DiV>
+
+<p>What’s important to notice is that Scala has generated accessor methods at lines 6 and 10, and a constructor at line 14. The accessors aren’t using the Java getter convention, but we’ve got the equivalent of <CoDE>getName</COde> and <COde>getAddress</CODe>.
+
+<p>You might also want to define fields but not have them set via the constructor. For example, in Java, we might want to add an <code>id</Code> to the customer to be set later with a setter method. This is a common pattern for tools like Hibernate when populating an object from the database.</P>
+
+<div CLasS="code-block">
+<DIV ClaSs="highlight"><PrE>  <coDE clAss=c1>// java</cOdE>
+  <CODe CLASs="kd">public</Code> <Code CLASs="kd">class</CodE> <cOdE cLASs=nc>Customer</cODE> <CoDe Class="o">{</cODe>
+      <CoDe ClASS="kd">private</coDe> <COdE CLaSS=kd>final</COde> <CoDE clAss=n>String</CoDe> <CoDe cLaSs="n">name</cOde><COdE clASS=o>;</codE>
+      <cODe CLass="kd">private</coDe> <CoDE cLass="kd">final</cODE> <cOde ClaSS="n">String</CODE> <CoDE claSs="n">address</cODe><cODE CLaSS=o>;</CODe>
+
+      <cODE clasS="kd">private</CoDE> <COde cLaSS="n">String</codE> <CoDE cLAsS=n>id</CodE><CODE ClAsS=o>;</cODe>
+
+      <CODE cLASS="kd">public</COde> <cODE cLAsS="nf">Customer</coDE><coDE clasS="o">(</CodE><cOde cLaSS=n>String</code> <CodE cLaSS="n">name</CoDe><COdE ClAss=o>,</COde> <cODE class=n>String</cOdE> <cOdE cLAsS=n>address</cOdE><COdE CLasS="o">)</CODE> <coDe clasS=o>{</CODe>
+          <COdE clASs=k>this</COdE><CoDe CLaSs=o>.</CoDe><CODE clAss="na">name</Code> <cOde clAss="o">=</Code> <CODE cLaSs=n>name</CodE><COdE ClaSs=o>;</CoDe>
+          <cOdE CLASS=k>this</cOdE><COdE cLass=o>.</cODE><coDe claSS=na>address</code> <code cLAsS="o">=</cODe> <cODE CLass=n>address</cODE><cODE cLaSS=o>;</cOdE>
+      <CoDe clAsS=o>}</CODe>
+
+      <cOde ClAsS=kd>public</CoDe> <coDe cLAsS="kt">void</cODE> <COdE ClasS="nf">setId</coDE><code CLASs=o>(</cODE><COde CLAsS=n>String</cODE> <COde CLASs=n>id</code><cOde CLaSS="o">)</CODE> <CodE CLasS=o>{</coDE>
+          <codE ClASs="k">this</CoDe><CodE clasS="o">.</CoDE><CoDE clAsS="na">id</COde> <cODe CLass="o">=</Code> <CODe CLASs="n">id</Code><codE cLASs=o>;</code>
+      <cOde clasS=o>}</CoDE>
+  <Code cLASs="o">}</coDe>
+</PrE></dIV>
+
+</DiV>
+
+<p>Is Scala, you do pretty much the same thing.
+
+<dIV CLaSS="code-block">
+<dIV ClaSs=highlight><PRe>  <Code ClaSS="c1">// scala</cOdE>
+  <cOde claSs=k>class</cOde> <cOdE claSS=nc>Customer</COde><CodE cLAss="o">(</codE><CoDE clAss="k">val</cODe> <code cLaSs="n">name</CODE><Code clAsS=k>:</coDE> <COde CLass="kt">String</CodE><COde CLAsS="o">,</Code> <COde ClaSs=k>val</coDE> <CoDE claSs=n>address</CodE><COdE ClaSs="k">:</code> <cODe CLasS=kt>String</CoDE><coDe class=o>)</codE> <coDe CLASS="o">{</CoDe>
+    <cOdE ClASs=k>var</CODE> <code ClasS=n>id</cODE> <codE clAsS=k>=</code> <cOdE CLASs=s>""</CoDE>
+  <Code cLasS="o">}</CoDE>
+</Pre></diV>
+
+</Div>
+
+<p>You define a field, in this case a <code>var</cODE>, and magically Scala will create a setter method for you. The setter method it creates is called <coDE>id_=</CoDE> rather than the usual <cOdE>setId</coDe>. If we round-trip this through the decompiler, we see the following:</p>
+
+<diV clASS="code-block">
+<Div CLAsS="highlight"><prE><coDE CLASS=lineno> 1</COdE>   <CoDe clASs="c1">// decompiled from scala to java</Code>
+<CoDE cLaSs="lineno"> 2</code>   <COdE cLaSs="kd">public</cOde> <CodE cLAss="kd">class</coDe> <COde ClAsS=nc>Customer</cOdE> <cODe Class="o">{</cODe>
+<CodE cLAsS=lineno> 3</CoDE>       <Code cLAsS="kd">private</CodE> <COde cLAsS="kd">final</CodE> <CoDe cLASs=n>String</CodE> <cOde cLaSS=n>name</cOde><cODE ClasS=o>;</cODe>
+<CoDE clASs=lineno> 4</cODe>       <coDe ClASS="kd">private</Code> <CoDE cLaSs=kd>final</CoDE> <Code ClAsS="n">String</cODe> <COde clasS="n">address</Code><coDE ClasS="o">;</cOde>
+<cOde ClasS=lineno> 5</cOdE>       <CoDE clASS="kd">private</Code> <cODe cLass="n">String</COde> <CoDE CLaSS="n">id</cOdE><cODE CLAss=o>;</COde>
+<CodE CLASs=lineno> 6</cODE> 
+<CoDE ClaSs="lineno"> 7</COdE>       <CoDe clAsS="kd">public</cOdE> <COde ClAsS="kd">static</COde> <cODE CLaSs="n">Customer</cOde> <CoDE clASS="nf">apply</COdE><COdE ClaSs="o">()</code> <CoDe cLaSs=o>{</CODe>
+<CODE CLASs="lineno"> 8</COdE>           <CODe cLass=k>return</CODe> <Code cLass="n">Customer$</cODe><CODe ClasS=o>.</cOdE><CODE claSs="na">MODULE</coDe><CodE cLaSs=n>$</COde><coDe CLASs=o>.</coDe><cOdE CLASs="na">apply</cODe><CodE CLaSS="o">();</CoDe>
+<Code ClASS="lineno"> 9</CODE>       <cODe class=o>}</cOde>
+<CODe CLAsS=lineno>10</cODe>       <CODE ClASS="kd">public</CODe> <codE ClASS="n">String</code> <CODE clASs=nf>name</COde><CodE cLass="o">()</COde> <cOde Class=o>{</CODE>
+<cODe cLASs=lineno>11</CodE>           <cODE claSs="k">return</COdE> <cOdE ClaSs=k>this</code><cOde CLasS=o>.</CodE><CodE clASS=na>name</CODe><cOde clAss="o">;</coDe>
+<cODe ClasS="lineno">12</cODe>       <cOde CLAss="o">}</cOde>
+<coDe cLAsS="lineno">13</CoDE>       <code cLasS=kd>public</CoDe> <CoDE cLass="n">String</CODE> <COdE claSs="nf">address</COde><cOdE ClasS=o>()</coDE> <cOdE clASs="o">{</cODe>
+<code CLasS="lineno">14</cODE>           <CodE CLAss=k>return</CODE> <coDe CLASs="k">this</CODE><code CLASS=o>.</code><cODe cLAss=na>address</CODE><coDe claSs=o>;</codE>
+<codE class=lineno>15</Code>       <Code clASs=o>}</cOdE>
+<COde cLAss=lineno>16</Code>       <CODE ClAss=kd>public</CoDE> <cOde ClAss="n">String</cOde> <code clasS=nf>id</cODE><CODE cLASs=o>()</coDe> <coDE cLass=o>{</Code>                  <CODe ClaSs="c1">// notice it's public</CodE>
+<coDE claSs=lineno>17</cOdE>           <CODE claSS="k">return</COde> <CODe CLasS="k">this</CODE><cODE ClAsS=o>.</cODe><Code claSs=na>id</cOde><cOde CLASs=o>;</cODE>
+<CodE CLASS=lineno>18</CoDE>       <CodE clASs="o">}</cODE>
+<cODE cLasS="lineno">19</CoDE>       <coDE CLaSS="kd">public</cODE> <CODE CLAss="kt">void</COde> <cOdE cLASS="n">id_$eq</coDe><COde CLAsS="o">(</coDE><coDe class=n>String</Code> <Code CLAsS="n">x$1</CodE><CodE Class=o>)</COdE> <cODE clasS=o>{</coDe>      <code claSS="c1">// notice it's public</CodE>
+<cOdE clASS="lineno">20</COdE>           <COdE ClaSS="k">this</coDE><coDE cLaSs=o>.</coDe><codE cLasS=na>id</codE> <CodE ClaSs="o">=</COde> <cODE ClAsS="n">x$1</code><coDe cLasS=o>;</COde>
+<coDE CLAsS="lineno">21</Code>       <code ClASs="o">}</coDe>
+<coDE clASs="lineno">22</coDE>       <CODE CLasS=kd>public</COde> <COdE ClASs="nf">Customer</CODe><cOde ClasS=o>(</cODe><Code ClASS=n>String</CoDE> <CoDE cLAss=n>name</COde><cOde clASs=o>,</cODE> <CoDE clAsS="n">String</cODe> <coDE clasS=n>address</cODE><CODe claSS=o>)</cOde> <CoDE CLasS="o">{</COdE>
+<cODe CLAss=lineno>23</cOde>           <COde clAsS="k">this</codE><cODe ClAsS=o>.</cODe><Code CLASS=na>name</cOde> <coDE CLASS="o">=</COdE> <CoDE CLaSS=n>name</Code><CodE cLaSS="o">;</CodE>
+<CODe cLASS="lineno">24</cOde>           <COde cLASS="k">this</code><coDe cLaSs="o">.</cOde><CoDE clASS=na>address</CodE> <coDE cLaSS=o>=</cODe> <CoDe cLAsS="n">address</CoDe><coDE cLass="o">;</cODe>
+<coDE CLaSS=lineno>25</CODE>           <coDe cLAsS=k>this</Code><code cLASs="o">.</codE><CODE ClaSS=na>id</code> <code ClaSS="o">=</CoDE> <coDe clASS="kc">null</cOde><CodE clASs="o">;</CODe>
+<Code clASS=lineno>26</code>       <CODE CLAss="o">}</code>
+<codE CLaSS=lineno>27</code>   <coDe ClAss="o">}</coDe>
+</pRe></div>
+
+</dIv>
+
+<p>Notice it has created a method called <coDe>id_$eq</coDE> on line 19 rather than <CoDe>id_=</CODe>; that’s because the equals symbol isn’t allowed in a method name on the JVM, so Scala has escaped it and will translate it as required. You can call the setter method directly like this:
+
+<Div ClasS="code-block">
+<DIv Class=highlight><PRE>  <CODE claSS="k">new</CodE> <cOde ClaSS=nc>Customer</CODe><coDe cLaSS="o">(</CODe><cODE cLASS="s">"Bob"</CoDE><CoDE cLASS="o">,</CODE> <coDe claSS="s">"10 Downing Street"</coDE><CODe cLASS=o>).</code><cODE CLasS="n">id_=</cOdE><Code clAss=o>(</codE><Code Class=s>"000001"</cODE><CoDE clASs="o">)</CoDE>
+</pre></dIv>
+
+</Div>
+
+<p>Scala offers a shorthand, however; you can just use regular assignment and Scala will call the auto-generated <cOdE>id_$eq</codE> setter method under the covers:</p>
+
+<DIv ClASS="code-block">
+<DiV CLAsS="highlight"><pRE>  <coDE claSS="k">new</Code> <COde ClASS=nc>Customer</codE><COdE CLaSs=o>(</CoDE><coDe ClASS=s>"Bob"</code><coDE cLASs=o>,</CoDe> <CodE claSs=s>"10 Downing Street"</CodE><cOdE cLass=o>).</coDE><codE cLaSs="n">id</cODe> <codE claSS=k>=</cOde> <coDE ClaSS="s">"000001"</CODE>
+</Pre></div>
+
+</dIv>
+
+<P>If there are no modifiers in front of a field, it means it’s public. So as well as being able to call the auto-generated setter, clients could also work directly on the field, potentially breaking encapsulation. We’d like to be able to make the field private and allow updates only from within the <CoDe>Customer</cOdE> class.
+
+<P>To do this, just use the <CODe>private</cODe> keyword with the field.
+
+<DIV cLaSs="code-block">
+<DiV cLAss="highlight"><Pre>  <CoDE ClasS=k>class</COde> <cODe claSS=nc>Customer</cOdE><codE CLaSs=o>(</CODe><cOde CLAsS=k>val</CoDE> <CodE clASs="n">name</cOdE><cOdE ClaSs="k">:</CODE> <cODE cLAss=kt>String</codE><COde Class=o>,</COdE> <coDe CLaSS="k">val</coDE> <CodE cLaSs="n">address</COdE><coDE CLaSs=k>:</Code> <code clasS="kt">String</Code><CodE cLAsS=o>)</coDE> <CoDE claSs="o">{</COdE>
+    <coDE ClAss="k">private</coDe> <COdE ClAss=k>var</cODE> <coDE CLaSs=n>id</COdE> <coDE ClAss=k>=</cOdE> <CoDE cLasS=s>""</CoDE>
+  <CodE clASS="o">}</coDe>
+</Pre></DIV>
+
+</Div>
+
+<P>The decompiler shows that the setter and getter methods are now private.</p>
+
+<DiV cLASS="code-block">
+<DiV clAsS=highlight><pRE><CoDE clAsS=lineno> 1</cODE>   <COde CLasS="c1">// decompiled from scala to java</codE>
+<Code CLass=lineno> 2</code>   <CoDe clasS=kd>public</COde> <cODE clASS="kd">class</codE> <codE CLAsS="nc">Customer</COde> <CODE clAss=o>{</coDE>
+<Code cLASS="lineno"> 3</cODE>       <cOde clAss="kd">private</COde> <cOde cLass=kd>final</coDE> <Code clAss="n">String</codE> <cODe cLAsS=n>name</cODE><coDE cLaSS=o>;</CodE>
+<cODE CLAsS="lineno"> 4</COde>       <cODe ClaSs="kd">private</cOde> <codE cLAss="kd">final</COde> <cODe CLaSs="n">String</coDE> <CodE CLaSs=n>address</coDe><COde clASS=o>;</Code>
+<codE CLaSs="lineno"> 5</cOdE>       <cODe clASs=kd>private</cOdE> <coDe ClaSs=n>String</COdE> <COdE CLaSS="n">id</cOdE><COdE CLAsS="o">;</Code>
+<cODe clASS=lineno> 6</CoDE> 
+<CoDe cLASS=lineno> 7</CodE>       <CODE cLasS=kd>public</CODe> <CodE clASS=n>String</cOde> <CodE clAss="nf">name</coDe><codE ClASs=o>()</coDe> <cODe cLaSS="o">{</cODE>
+<CodE clAss="lineno"> 8</CoDE>           <Code CLASs="k">return</coDe> <codE clASs="k">this</CODE><CoDE cLAss="o">.</cOde><cOde clAss=na>name</coDE><CoDe ClaSS=o>;</cOdE>
+<COde claSs=lineno> 9</coDE>       <CODe cLAss=o>}</CoDE>
+<cODE ClasS="lineno">10</cOde> 
+<CoDE ClAss="lineno">11</CODe>       <coDE claSS=kd>public</CoDe> <cODe CLAss=n>String</cOde> <cOdE ClasS=nf>address</cODe><CODE CLaSS="o">()</coDE> <coDe cLAsS=o>{</codE>
+<cOde cLasS=lineno>12</cOde>           <codE ClaSs=k>return</CodE> <cOde ClAsS=k>this</cOde><CODE clasS=o>.</COde><cOdE CLaSS=na>address</COdE><CoDE cLasS=o>;</code>
+<COdE cLasS="lineno">13</CoDE>       <codE CLasS="o">}</coDe>
+<codE CLASs=lineno>14</CODe> 
+<cODe clAss=lineno>15</coDE>       <COde cLAss=kd>private</cODE> <CoDe cLaSs=n>String</COde> <CoDe Class=nf>id</CoDE><COdE cLaSs="o">()</coDE> <CoDE CLASs=o>{</cODE>                 <codE ClASS=c1>// now it's private</COde>
+<cOde ClASs=lineno>16</CodE>           <Code CLASS=k>return</CODe> <cOdE cLASs=k>this</CoDE><CoDe ClAsS="o">.</code><cOde clASS="na">id</CoDe><CoDE cLAss=o>;</CoDE>
+<code claSS=lineno>17</Code>       <COdE cLAss="o">}</codE>
+<cODe ClasS=lineno>18</COde> 
+<cODe claSS="lineno">19</cODe>       <CodE clAsS=kd>private</codE> <COde cLasS="kt">void</CODE> <cOdE cLASS=n>id_$eq</CoDe><COde clASS="o">(</codE><CODe clAss="n">String</CoDE> <COdE cLASs="n">x$1</CoDE><cODe cLAss="o">)</cOdE> <CodE cLasS=o>{</code>     <coDE ClASs="c1">// now it's private</cOdE>
+<COde CLasS=lineno>20</Code>           <cOdE cLass="k">this</cOdE><codE ClaSs="o">.</coDe><Code class="na">id</cOde> <coDE CLAsS=o>=</coDE> <coDE claSs="n">x$1</Code><cODe ClaSs=o>;</CoDe>
+<coDE clAsS="lineno">21</CODe>       <CODE cLAss=o>}</cODe>
+<CoDE clasS=lineno>22</CoDE> 
+<Code ClASS=lineno>23</code>       <cODe ClASs="kd">public</cODE> <COdE clASs="nf">Customer</CoDE><cOdE CLass=o>(</cODE><Code CLasS=n>String</CODe> <cOde CLasS=n>name</CoDE><COde CLAss="o">,</CODe> <cOde CLaSS="n">String</codE> <cOdE ClAss="n">address</cOdE><Code CLASs="o">)</coDe> <CodE CLasS="o">{</cODe>
+<COde ClaSS="lineno">24</code>           <CODe ClasS="k">this</COdE><codE cLaSs="o">.</CoDe><codE cLasS=na>name</codE> <COdE cLAss="o">=</Code> <cOde cLAss=n>name</CODE><cOdE clASS=o>;</CodE>
+<CoDE CLASs=lineno>25</cOde>           <COde cLasS=k>this</COdE><COde CLasS=o>.</cODe><COdE CLAsS="na">address</cOde> <COde cLaSS="o">=</coDe> <cOde ClASs=n>address</CodE><codE CLAss="o">;</coDE>
+<Code class=lineno>26</coDE>           <COde cLASS="k">this</cOdE><coDE cLaSS="o">.</CoDe><cOdE ClAss=na>id</coDe> <CoDE cLass="o">=</cOdE> <codE cLASs=s>""</CodE><Code CLAsS=o>;</CODe>
+<coDe claSs="lineno">27</CodE>       <CodE ClAss="o">}</cOde>
+<Code CLAsS=lineno>28</COdE>   <cOdE class="o">}</cODE>
+</PRe></DIV>
+
+</div>
+
+<H3 id="leanpub-auto-redefining-setters-and-getters">Redefining Setters and Getters</H3>
+
+<P>The advantage of using setters to set values is that we can use the method to preserve invariants or perform special processing. In Java, it’s straightforward: you create the setter method in the first place. It’s more laborious for Scala, as the compiler is generating the methods.
+
+<p>For example, once the <cOde>id</coDE> has been set, we might want to prevent it from being updated. In Java, we could do something like this:
+
+<dIv cLASS="code-block">
+<dIv clAss="highlight"><PRE>  <cOde ClAsS=c1>// java</Code>
+  <COde ClAss=kd>public</CODE> <CODE Class="kt">void</COdE> <CodE cLass=nf>setId</coDE><cOdE clASs=o>(</code><cOde ClasS=n>String</COde> <COdE cLasS="n">id</COdE><coDE Class="o">)</code> <Code CLaSS=o>{</CoDE>
+      <CoDe cLAss="k">if</cODE> <CODe claSs="o">(</codE><coDe CLASS="n">id</code><CODE claSS=o>.</code><cOde clASS="na">isEmpty</COde><COdE ClASs="o">())</code>
+          <CodE ClAsS="k">this</COde><CoDE ClaSS="o">.</COde><COdE ClaSs=na>id</cOdE> <coDE clASS="o">=</COde> <coDE cLASs=n>id</code><cODE cLaSs=o>;</CoDE>
+  <CODE cLAss="o">}</cODe>
+</pre></DIv>
+
+</dIv>
+
+<p>Scala, on the other hand, creates the setter method automatically, so how do we redefine it? If we try to just replace the setter directly in the Scala code, we’d get a compiler error:</p>
+
+<diV ClASs=code-block>
+<dIv cLasS=highlight><PRE>  <CODE ClAsS=c1>// scala doesn't compile</COde>
+  <COdE CLaSs="k">class</COde> <cODe CLASS=nc>Customer</cOdE><coDe cLass=o>(</CoDe><cODE claSS=k>val</code> <cODE CLAsS="n">name</CodE><cOdE Class="k">:</CoDE> <cOde cLAss="kt">String</code><coDe ClASS="o">,</CodE> <CoDe claSs=k>val</CodE> <CoDE cLAss="n">address</coDe><COdE ClASs=k>:</COde> <cODE clasS=kt>String</CODE><cOde clASS="o">)</COde> <codE ClAsS=o>{</COde>
+    <CoDE claSs=k>private</coDe> <Code ClASS=k>var</CODE> <CoDe ClAsS="n">id</CODE> <cOdE clAsS="k">=</code> <CoDE cLaSS=s>""</cOde>
+
+    <CodE CLaSS="k">def</Code> <CODE CLAss="n">id_=</CODe><COde cLass=o>(</CODe><CodE CLaSs=n>value</COdE><code ClAss="k">:</COde> <code CLaSs="kt">String</code><codE CLASS=o>)</CODe> <cOde CLaSS="o">{</coDe>
+      <code CLAss="k">if</CoDE> <code CLAss="o">(</Code><CoDE cLasS="n">id</cODe><cODE CLasS=o>.</cODE><cOdE ClASs="n">isEmpty</CODe><coDE CLass="o">)</COdE>
+        <cOde CLASS=k>this</COde><CODE cLasS=o>.</cOde><cOdE claSs="n">id</CODe> <CodE clAsS=k>=</cODe> <code ClASs=n>value</COde>
+    <CODE CLASs=o>}</cODe>
+  <coDe CLaSs=o>}</CoDe>
+</pRe></dIV>
+
+</diV>
+
+<P>Scala can’t know to replace the method so it creates a <em>second method</Em> of the same name, and the compiler fails when it sees the duplicate:
+
+<diV CLaSs="code-block">
+<dIv CLass="highlight"><prE>  <code cLAss="n">ambiguous</CODe> <coDe clasS=n>reference</cOdE> <COde cLASs=n>to</code> <coDe ClaSS=n>overloaded</cODE> <COde ClASs="n">definition</COdE><code ClaSS="o">,</Code>
+  <CodE cLAsS="n">both</coDE> <CODE Class=n>method</cODE> <codE ClasS="n">id_=</cODE> <code cLaSs="n">in</CoDE> <CoDe claSs=k>class</codE> <COde ClaSS="nc">Customer</code> <coDe claSS=n>of</coDE> <CodE claSS="k">type</coDE> <CoDe ClAsS="o">(</cODE><coDE cLaSs="kt">value:</Code> <codE cLASs="kt">String</CoDE><CODe cLAsS=o>)</cOdE><cOdE cLaSs=kt>Unit</cOdE>
+  <coDE CLASs=n>and</CoDe>  <CoDe clASS="n">method</COde> <code cLASS="n">id_=</cODE> <CODe class="n">in</cODE> <CoDe CLasS=k>class</cODE> <COde CLaSs=nc>Customer</cODe> <cODe cLAss=n>of</CoDe> <COdE ClasS=k>type</CODe> <CoDe cLAss=o>(</coDe><COde CLAss="kt">x$1:</CODe> <COde CLASS="kt">String</CODE><CODE CLASs=o>)</CODE><coDe ClASs=kt>Unit</COde>
+  <CoDE ClaSs="k">match</CodE> <code cLass="n">argument</coDE> <cOdE CLaSS=n>types</cODe> <coDe cLAsS="o">(</Code><cODe ClasS=nc>String</CODE><cODe class=o>)</COde>
+   <cOdE CLaSs=k>this</cODE><code ClAss="o">.</cOdE><COdE cLaSS=n>id</codE> <cODe cLAsS=k>=</CoDe> <COde CLaSS=n>value</cOde>
+
+  <CodE cLaSS="n">method</CoDe> <CodE CLAss="n">id_=</cODE> <COdE CLasS="n">is</codE> <Code CLASs=n>defined</CoDE> <cODE cLaSs=n>twice</code>
+    <code cLAss="n">conflicting</COdE> <cODe cLASS="n">symbols</cOdE> <coDe clAss=n>both</codE> <CodE cLasS=n>originated</cOdE> <CODE ClasS="n">in</COdE> <cOde clASS=n>file</cOdE> <cOde cLAsS="-Symbol">'Customer</CODe><CODe CLaSS=o>.</Code><CODe ClAsS=n>scala</CODE><code clAss="err">'</cODE>
+    <coDe cLaSS="k">def</code> <Code ClaSS=n>id_=</coDE><COde ClaSS=o>(</cOde><CodE clASS="n">value</COdE><codE cLAss=k>:</coDe> <codE ClASs="kt">String</cOdE><CODE cLaSS="o">)</coDE> <CODE CLAss=o>{</Code>
+        <CODE CLASs="o">^</cOde>      <cOdE CLAss=o>^</COdE>
+</pRe></DIV>
+
+</dIv>
+
+<P>To redefine the method, we have to jump through some hoops. Firstly, we have to rename the field (say to <Code>_id</COde>), making it private so as to make the getter and setters private. Then we create a new getter method called <cODE>id</coDe> and setter method called <CodE>id_=</CODE> that are public and are used to access the renamed private field.</p>
+
+<div CLasS=code-block>
+<dIv claSS=highlight><prE>  <CodE CLasS=k>class</CoDe> <coDe CLass="nc">Customer</cODe><cOde CLAss=o>(</coDE><Code cLASS=k>val</CODe> <CODe cLAsS="n">name</code><cOdE ClASS=k>:</cOdE> <CODE ClAsS="kt">String</CODE><COdE cLass="o">,</COde> <COdE claSS=k>val</coDE> <code CLASs=n>address</code><COdE cLasS=k>:</CoDe> <CODE class="kt">String</coDe><cODE claSS=o>)</CoDE> <Code ClAss="o">{</CoDe>
+    <cODe clASs=k>private</COde> <CoDE cLAss="k">var</COde> <Code ClaSS="nc">_id</COde><cOdE claSs=k>:</COde> <COdE cLASs="kt">String</COdE> <cODE CLASS=o>=</code> <coDe claSs="s">""</COde>
+
+    <coDE class=k>def</CodE> <CODe claSs="n">id</code> <coDe cLASs="k">=</CoDE> <coDe ClasS="nc">_id</CoDE>
+
+    <cOdE clASS=k>def</cODE> <codE CLAsS="n">id_=</CodE><CODE CLaSS=o>(</cOdE><cODE cLASS=n>value</cODE><cOdE cLAss="k">:</CODe> <CODE Class=kt>String</codE><cODE CLasS=o>)</CoDe> <CODE CLASs="o">{</cODE>
+      <CoDe ClASs="k">if</coDe> <cODe CLAss="o">(</cODe><CoDE ClAsS=nc>_id</Code><code ClASS="o">.</CoDE><Code ClaSS="n">isEmpty</codE><CoDE clASs="o">)</CODe>
+        <CoDe CLaSs="nc">_id</coDE> <cOdE ClAsS="k">=</code> <coDE claSS="n">value</cOdE>
+    <coDe claSs=o>}</cODE>
+  <Code clAss="o">}</coDe>
+</Pre></Div>
+
+</Div>
+
+<p>We’ve hidden the real field <cOdE>_id</Code> behind the <CODE>private</cOde> modifier and exposed a method called <COdE>id_=</code> to act as a setter. As there is no field called <CoDe>id</cOde> any more, Scala won’t try to generate the duplicate method, and things compile.
+
+<dIv CLass=code-block>
+<dIV CLaSS=highlight><PRE>  <cOde CLASS=c1>// REPL session</cODe>
+  <CodE clAss=n>scala</cOde><cODe CLAsS=o>&gt;</CoDE> <CodE cLASS=k>val</cOdE> <code clAss=n>bob</CodE> <cODe ClaSs="k">=</COdE> <cOde ClAsS="k">new</CodE> <CoDE ClAss=nc>Customer</CoDe><cODE clAss=o>(</codE><cOdE cLAss=s>"Bob"</Code><COdE cLAss="o">,</CoDe> <cOde cLASS=s>"32 Bread Street"</COde><CODe class="o">)</CODe>
+  <cOde claSs="n">bob</code><cOdE CLaSS="k">:</CodE> <Code CLASs="kt">Customer</coDe> <cOde CLass="o">=</coDe> <CODE ClAsS=nc>Customer</CODE><cOdE ClasS=nd>@e955027</code>
+
+  <CODE claSS=n>scala</code><COde clAss="o">&gt;</coDE> <CODE ClAsS=n>bob</CodE><cOde class="o">.</CoDe><codE claSs=n>id</cODe> <CodE CLasS=k>=</CODE> <cOde Class=s>"001"</CODE>
+  <code clAsS=n>bob</CODE><cODe cLaSS=o>.</CodE><CoDe cLaSs="n">id</CODe><cOdE CLasS=k>:</COdE> <Code cLAss="kt">String</CODe> <cODe cLAss=o>=</coDE> <coDe claSS=mi>001</coDe>
+
+  <CODE cLAsS=n>scala</cODe><coDE Class=o>&gt;</CODe> <cOde claSs="n">println</CODe><CoDe cLaSS="o">(</cOdE><cOdE CLasS="n">bob</cOdE><COde cLASs=o>.</cOde><cODe CLass=n>id</CODe><CODe clasS=o>)</cODE>
+  <cODE CLaSS="mi">001</cOde>
+
+  <CODe ClasS="n">scala</CoDE><CODe ClaSS="o">&gt;</COde> <cOde cLASS=n>bob</CodE><Code clASs=o>.</COdE><CodE cLasS=n>id</codE> <CodE cLasS=k>=</cODe> <coDe class=s>"002"</cOdE>
+  <CodE cLasS=n>bob</CoDE><CoDe class="o">.</cOdE><cODe CLAsS=n>id</cODe><cOdE CLaSS="k">:</COde> <CODe cLaSs=kt>String</CODe> <cOdE CLASs="o">=</codE> <cOdE ClasS="mi">001</cOde>
+  <Code clASs=n>scala</codE><cODe cLASS=o>&gt;</COde> <codE cLaSs="n">println</CODe><coDe clAss="o">(</COde><cODe ClasS=n>bob</codE><coDE clAss=o>.</Code><coDe ClaSS="n">id</coDE><cOde CLAss="o">)</Code>
+  <cODe cLAsS=mi>001</cOdE>
+</Pre></div>
+
+</dIv>
+
+<p>Looking at the decompiled version, you can see how to redefine the method. We’ve hidden the real field and exposed public methods to synthesize access to it under the guise of the field name.</p>
+
+<div CLAss=code-block>
+<DIV ClASs=highlight><PrE><CodE claSs=lineno> 1</code>   <cODE cLass=c1>// decompiled from scala to java</code>
+<CODE cLaSs="lineno"> 2</cODE>   <CodE cLAss=kd>public</Code> <CoDe clASS=kd>class</codE> <Code cLAss=nc>Customer</COdE> <Code CLaSS="o">{</COde>
+<CODe ClaSS="lineno"> 3</cOdE>       <CodE cLass=kd>private</cODE> <cODE cLAss="kd">final</COdE> <cODe clASs="n">String</cODe> <code CLAss="n">name</code><CODE cLass=o>;</cOde>
+<coDE ClaSS="lineno"> 4</CoDE>       <CODe ClAsS=kd>private</CoDe> <codE cLASS=kd>final</CODE> <COdE ClAss=n>String</cODE> <cODE clasS="n">address</CoDE><CODE cLASs="o">;</cODe>
+<cOde CLASS="lineno"> 5</cODE>       <CODE cLAss="kd">private</Code> <CoDE cLAss="n">String</CoDe> <coDE CLASs="n">_id</coDe><CoDe ClAss=o>;</code>
+<code cLaSs=lineno> 6</code> 
+<coDE ClASS=lineno> 7</COdE>       <Code CLAss=kd>public</coDE> <CoDe CLasS="n">String</cODe> <codE clASs=nf>name</Code><CODE CLASs=o>()</Code> <CoDE cLAsS="o">{</coDe>
+<cOde class="lineno"> 8</CoDE>           <cOdE clAss=k>return</code> <CoDe cLasS="k">this</cOdE><CODe cLAsS=o>.</cODE><codE CLAsS=na>name</CoDE><CODE class=o>;</cODE>
+<cOdE clAss=lineno> 9</COdE>       <Code cLASs=o>}</COde>
+<coDE CLAsS="lineno">10</cOde> 
+<CODE claSs=lineno>11</COde>       <codE ClAss="kd">public</cODe> <COde CLAsS="n">String</CODE> <COde claSS=nf>address</CodE><CoDe cLAsS=o>()</cOdE> <CodE ClaSS="o">{</Code>
+<Code cLAss=lineno>12</CoDE>           <cOde CLASS="k">return</codE> <cOde clasS=k>this</COde><codE cLasS="o">.</coDE><Code ClAss="na">address</COdE><coDE clASS=o>;</CodE>
+<CodE cLasS="lineno">13</CodE>       <COde clASs=o>}</CoDe>
+<CODe CLASs="lineno">14</cOde> 
+<cOde CLASs=lineno>15</coDe>       <COdE claSs="kd">private</cOde> <cOde CLAss=n>String</coDE> <coDe CLASS="nf">_id</CoDE><codE cLASS=o>()</CodE> <coDe CLAsS="o">{</cODE>                <cODE claSs=c1>// private</codE>
+<cOde CLaSS="lineno">16</COdE>           <CodE CLaSS=k>return</CoDE> <CoDe cLaSs=k>this</cOde><cODE cLaSS=o>.</CODe><CODe ClASS=na>_id</cOde><CodE cLAss=o>;</CODE>
+<coDe cLAsS="lineno">17</CodE>       <CODe clasS="o">}</CODe>
+<cODe ClaSS="lineno">18</Code> 
+<CODe cLaSs="lineno">19</CoDe>       <CodE clAss=kd>private</coDE> <cODE ClasS="kt">void</COdE> <CODe ClaSs="n">_id_$eq</COde><coDe ClaSS=o>(</coDe><COde cLAss=n>String</CoDe> <cODe CLAss="n">x$1</cODe><COde ClasS="o">)</codE> <cOdE ClaSS=o>{</codE>    <cOde cLASs="c1">// private</COde>
+<CODe cLaSs=lineno>20</code>           <coDE Class="k">this</COdE><coDe Class="o">.</CODE><COde clASs=na>_id</COde> <CoDe cLasS="o">=</CoDE> <Code clASS="n">x$1</CoDe><coDe clAsS="o">;</CODE>
+<COde CLass="lineno">21</coDe>       <COdE class="o">}</cODe>
+<cOdE ClasS=lineno>22</codE> 
+<cODe cLaSS=lineno>23</CODE>       <code clASS="kd">public</codE> <code cLaSs="n">String</CoDE> <COde cLass="nf">id</CodE><cODe cLass="o">()</COdE> <coDE clAss=o>{</CodE>                  <cODE ClAss="c1">// public</cODe>
+<COde ClAsS="lineno">24</cODE>           <Code ClAss=k>return</CodE> <COdE class="k">this</cOdE><CoDE cLASS=o>.</coDe><cOde ClasS=na>_id</coDE><CODe clASs="o">();</COdE>
+<CODE cLaSs=lineno>25</CoDE>       <Code ClasS=o>}</COde>
+<cOde cLaSS=lineno>26</cOde> 
+<codE claSS=lineno>27</COde>       <coDE CLaSS="kd">public</code> <CoDE clAsS=kt>void</code> <Code clASS="n">id_$eq</COde><cODE ClaSs=o>(</CoDe><CODE ClasS=n>String</COdE> <Code cLASS=n>value</CODe><CoDE clasS=o>)</code> <COde CLaSS="o">{</cOde>    <COde CLAsS="c1">// public</CoDe>
+<cODe clAss="lineno">28</COdE>           <CODe ClASs="k">if</CODe> <CODE CLass="o">(!</cODE><COde ClaSS=k>this</coDe><CoDe cLasS="o">.</cODE><coDE cLass=na>_id</coDE><codE cLaSs=o>().</CODE><cODe ClaSs=na>isEmpty</cODE><CoDe cLass=o>())</COdE> <coDe cLAsS="k">return</CodE><CoDE CLASs=o>;</CoDE>
+<CODe claSs=lineno>29</CoDE>           <Code CLAss="k">this</coDE><cOde CLASS="o">.</Code><code Class=na>_id_</COde><CODe CLaSS=n>$eq</CoDe><code ClASs=o>(</cOdE><CoDe cLass="n">value</cODE><cODE CLASs=o>);</COdE>
+<CODe clASS="lineno">30</CodE>       <code ClASS=o>}</Code>
+<CoDE CLASs="lineno">31</CoDE> 
+<CoDe clASS="lineno">32</COdE>       <cOdE CLAsS=kd>public</cODE> <CODE cLAss=nf>Customer</codE><codE cLAss=o>(</COdE><coDE ClAsS="n">String</cOdE> <CoDE CLASS="n">name</Code><CODe cLaSS="o">,</CodE> <cODe cLAss=n>String</coDe> <coDE ClaSs=n>address</CODe><Code ClAsS=o>)</CODE> <CoDE cLASS=o>{</CODE>
+<CodE cLass="lineno">33</Code>           <code CLAss=k>this</CoDE><CoDe clasS="o">.</CoDe><coDe cLass=na>name</CoDe> <COdE ClAss=o>=</Code> <codE cLaSS="n">name</cOde><CODe cLaSS="o">;</CODE>
+<code CLASs=lineno>34</CoDE>           <cOdE claSs=k>this</CODE><CodE clAsS=o>.</COdE><CoDe ClasS="na">address</COde> <CodE ClAsS="o">=</codE> <code ClASs="n">address</CODE><cOde CLaSS="o">;</cOdE>
+<CODe cLasS=lineno>35</codE>           <CodE CLaSS=k>this</code><CoDE clasS=o>.</codE><CODE CLass=na>_id</Code> <CODE CLAss="o">=</codE> <CODE CLAss="s">""</cODE><Code class=o>;</cOde>
+<COdE CLAss="lineno">36</cODE>       <CodE cLASS=o>}</coDE>
+<coDe clAss="lineno">37</cOdE>   <code CLAsS="o">}</cODe>
+</PRe></DIV>
+
+</dIv>
+
+<diV cLAsS="aside sidebarish">
+  <H4 id="leanpub-auto-why-the-getter">Why the Getter?</H4>
+  <p>You might be wondering why we created the getter method <coDe>def id()</coDe>. Scala won’t allow us to use the shorthand assignment syntax to set a value unless the class has both the setter (<cODe>id_=</CODE>) and getter methods defined.</P>
+
+
+</Div>
+
+<h3 id="leanpub-auto-summary-1">Summary</H3>
+
+<P>Creating classes is straightforward with Scala. You can add fields to the class simply by adding parameters to the class definition, and the equivalent Java constructor, getters and setters are generated for you by the compiler.
+
+<P>All fields in the class file are generated as private but have associated accessor methods generated. These generated methods are affected by the presence of <cOdE>val</coDe> or <CoDE>var</coDe> in the class definition.
+
+<uL><lI>If <CODe>val</CODE> is used, a public getter is created but no setter is created. The value can only be set by the constructor.</Li>
+  <lI>If <coDe>var</cOdE> is used, a public getter and setter is created. The value can be set via the setter or the constructor.</lI>
+  <li>If neither <cODe>val</cODe> or <CodE>var</COdE> is used, no methods are generated and the value can only be used within the scope of the primary constructor; it’s not really a field in this case.
+  <LI>Prefixing the class definition with <CODE>private</cODe> won’t change these rules, but will make any generated methods private.
+</UL><dIV ClAss=page-break></dIv><DIv sTYLe=page-break-after:always></Div>
+<p>This is summarised in the following table:</p>
+
+<tabLe STyLe="width: 100%;">
+  <THEAD>
+    <tr><tH><code>class Foo(? x)</coDE></Th>
+      <th><CodE>val x</COde>
+      <Th><COdE>var x</cOdE>
+      <Th><cODe>x</CODE></Th>
+      <TH><CODe>private val x</code></tH>
+      <Th><cOde>private var x</cODE></Th>
+    
+  </TheAd>
+  <TBODY>
+    <TR><td>Getter created (<CoDe>x()</CODE>)</td>
+      <TD>Y (<CoDe>public</cODe>)
+      <tD>Y (<code>public</cOde>)</Td>
+      <td>N</tD>
+      <TD>Y (<code>private</CODe>)
+      <td>Y (<coDE>private</Code>)</td>
+    
+    <tr><td>Setter created (<coDE>x_=(y)</COdE>)
+      <tD>N</td>
+      <tD>Y (<coDE>public</CodE>)
+      <TD>N
+      <Td>N
+      <TD>Y (<CodE>private</CODe>)
+    
+    <tr><td>Generated constructor includes <codE>x</codE>
+      <Td>Y
+      <td>Y
+      <tD>N</tD>
+      <TD>Y</td>
+      <tD>Y
+    
+  </Tbody>
+</tAblE><p>If you need to override the generated methods, you have to rename the field and mark it as private. You then recreate the getter and setter methods with the original name. In practice, it’s not something you’ll have to do very often.</P>
+</dIv>

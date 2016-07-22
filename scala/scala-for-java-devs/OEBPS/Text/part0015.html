@@ -1,0 +1,626 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<TitlE>Control Structures</TiTle>
+<lINk HreF="../Styles/style0001.css" tYPE="text/css" reL="stylesheet"/>
+
+<DiV>
+<h2 id="leanpub-auto-control-structures">Control Structures</h2>
+
+<p>This chapter is all about control structures, like <code>if</cODe> statements, switch blocks, loops and breaks. Specifically, we’ll look at:
+
+<Ul><lI>Conditionals like <cOdE>if</cODE> statements, ternary expressions and switches</LI>
+  <li>Looping structures; <CODe>do</CODe>, <COdE>while</coDe> and <CodE>for</COdE></Li>
+  <lI>Breaking control flow
+  <LI>Exceptions, briefly
+</uL><H3 id="leanpub-auto-conditionals">Conditionals</H3>
+
+<h4 id="leanpub-auto-ifs-and-ternaries">Ifs and Ternaries</H4>
+
+<p>Conditionals are straightforward.</P>
+
+<DIV CLasS=code-block>
+<Div ClAsS="highlight"><PRe>  <cODE ClasS="c1">// java</coDe>
+  <CODe ClAss=k>if</code> <CODE cLaSs=o>(</COde><CoDe Class="n">age</cODE> <CODE cLASs="o">&gt;</code> <coDe clAss="mi">55</code><CoDe cLAss="o">)</codE> <CodE CLAss=o>{</CoDe>
+      <CodE CLASS=n>retire</CoDe><codE ClaSs=o>();</cODE>
+  <CoDE CLASs="o">}</code> <cOde CLAss=k>else</coDe> <CoDE cLaSs=o>{</code>
+      <CODE Class="n">carryOnWorking</Code><CODE CLASS=o>();</cOde>
+  <COdE cLASS="o">}</coDE>
+</pRe></div>
+
+</DIV>
+
+<P>An <CoDe>if</CODe> in Java looks exactly the same in Scala.</p>
+
+<dIV clAss="code-block">
+<dIv cLass="highlight"><pRe>  <cODe cLAsS=c1>// scala</COde>
+  <COde cLASS="k">if</CoDE> <CODe cLASS=o>(</CoDe><code ClaSs="n">age</cOdE> <CoDe clAsS=o>&gt;</CodE> <Code ClaSs=mi>55</COdE><CODE CLasS=o>)</CodE> <coDe Class="o">{</CODE>
+    <COdE clAsS="n">retire</COde><coDE CLaSS=o>()</CoDe>
+  <codE claSs="o">}</code> <CodE Class="k">else</COdE> <coDE cLasS="o">{</cODe>
+    <cOdE ClASS=n>carryOnWorking</COde><coDe Class="o">()</cOdE>
+  <CodE clAsS="o">}</CoDE>
+</pre></DIv>
+
+</dIv>
+
+<p>You’ll often find Scala developers dropping the braces for simple <CodE>if</COde> blocks. For example:</p>
+
+<diV cLass=code-block>
+<div cLAsS=highlight><Pre>  <cOde clASs="k">if</cOde> <codE cLaSs="o">(</codE><COdE cLAss="n">age</cODE> <code cLass=o>&gt;</cOde> <cOde clAss=mi>55</cOdE><CodE cLAsS="o">)</CoDE>
+    <cODE cLAss="n">retire</code><coDE clAss="o">()</CODE>
+  <coDE cLasS="k">else</COdE>
+    <COde class="n">carryOnWorking</cODe><COdE ClaSs=o>()</coDe>
+</PRe></DIV>
+
+</dIv>
+
+<P>or even pulling it all onto one line.
+
+<DIv CLASS=code-block>
+<div CLASS="highlight"><pRe>  <code cLaSs="k">if</coDE> <CODe CLasS="o">(</cODe><COdE CLASS=n>age</cOdE> <code cLASs=o>&gt;</CoDE> <cODE clAss=mi>55</CoDe><CODE ClAss="o">)</CODE> <cODE ClASS=n>retire</cODe><cODe CLAss="o">()</codE> <CODe clAss=k>else</COde> <CODE cLAss=n>carryOnWorking</CoDe><code CLasS="o">()</codE>
+</pre></DIv>
+
+</DiV>
+
+<p>This style is favoured because if/else is actually an expression in Scala and not a statement, and the more concise syntax makes it look more like an expression. What’s the difference? Well, an expression <em>returns</Em> a value whereas a statement <Em>carries out</EM> an action.</P>
+
+<p> </P>
+
+<dIv clAss="aside sidebarish">
+  <h4 id="leanpub-auto-expressions-vs-statements">Expressions vs. Statements</h4>
+  <P>An <Em>expression</Em> returns a value whereas a <eM>statement</eM> carries out an action. Statements by their nature often have side effects whereas expressions are less likely to.</P>
+
+
+</div>
+
+<P>For example, let’s add a creation method to our <COde>Customer</cOde> class that will create either a <coDe>DiscountedCustomer</CodE> or a regular <CoDE>Customer</coDe> based on how long they’ve been a customer.
+
+<dIv Class=code-block>
+<dIV claSS=highlight><PRE>  <cODE cLAsS=c1>// java</COdE>
+  <cOdE ClASS="kd">public</CoDE> <COde cLASs=kd>static</coDE> <CODE clAsS="n">Customer</Code> <COdE CLASS=nf>create</coDE><cODE Class=o>(</CodE><CODe CLaSs="n">String</codE> <COde CLAss="n">name</Code><codE clasS="o">,</code> <cODE claSs="n">String</code> <cODE CLasS=n>address</coDe><CODE claSs=o>,</CoDe>
+          <code CLaSs="n">Integer</codE> <cODe ClAsS="n">yearsOfCustom</coDE><CoDE ClASs="o">)</CodE> <coDe CLasS=o>{</CoDE>
+      <COdE CLass="k">if</coDe> <CODe CLaSs="o">(</code><coDE CLasS="n">yearsOfCustom</cOdE> <codE Class=o>&gt;</CoDE> <coDE ClAss=mi>2</cOdE><cODE CLASS=o>)</cOdE> <CODe ClASs=o>{</coDe>
+          <CoDE Class=k>return</coDE> <cOdE ClASS=k>new</CodE> <cODE CLASs=nf>DiscountedCustomer</Code><coDE ClaSS=o>(</cOdE><CodE ClaSs="n">name</CODE><CodE clASs=o>,</CoDE> <CoDE ClaSS=n>address</COde><CoDe cLAss=o>);</Code>
+      <coDE CLASS=o>}</CodE> <Code claSS=k>else</COde> <COde Class=o>{</CoDe>
+          <COde cLaSs="k">return</CoDe> <CODE ClaSS="k">new</cODe> <CODE cLASs=nf>Customer</code><coDe ClASs=o>(</cODe><coDe clasS="n">name</Code><cODE class="o">,</CoDe> <CODE ClaSs="n">address</cODE><CoDE cLASs=o>);</coDE>
+      <cOdE ClAss="o">}</CODe>
+  <cODe CLAsS="o">}</code>
+</pre></Div>
+
+</dIv>
+
+<P>In Java, we’re forced to return the new <cOdE>Customer</CODe> from the method. The conditions are statements, things that execute, not expressions which return values. We could do it longhand and create a variable, set then return it, but the point is the same; the statements here have to cause a side effect.
+
+<Div cLASs="code-block">
+<diV claSs="highlight"><PrE>  <cODe cLASS=kd>public</cOdE> <coDE claSS=kd>static</CoDe> <coDe CLasS=n>Customer</codE> <CODe CLAsS="nf">create</cODe><cOdE cLAss="o">(</CoDE><cOde CLAss=n>String</coDe> <cODE ClAss=n>name</COde><COdE clasS="o">,</CODE> <COde cLASs="n">String</cODE> <codE cLasS=n>address</CODE><CodE CLasS="o">,</cODe>
+          <Code CLAsS="n">Integer</cODe> <coDE claSS="n">yearsOfCustom</Code><code cLASS=o>)</cODe> <CodE clasS=o>{</coDe>
+      <cODE clASs="n">Customer</cODE> <codE claSS=n>customer</cODE> <cOde ClAss=o>=</cODE> <Code CLaSs=kc>null</cODe><cOde Class=o>;</coDE>
+      <cOde clAsS="k">if</cODE> <coDe ClasS=o>(</coDe><coDE cLAsS="n">yearsOfCustom</COdE> <cODE CLASs=o>&gt;</CodE> <CodE CLaSS="mi">2</CODE><CODe clASs="o">)</cOdE> <COdE CLASS=o>{</coDe>
+          <CODE cLass="n">customer</CODE> <CODE class=o>=</cOde> <cODE CLASS="k">new</cODE> <COde ClasS="n">DiscountedCustomer</cODe><COde cLASs="o">(</CODe><COdE CLass=n>name</COde><CODE CLASs="o">,</CodE> <codE CLaSs="n">address</coDE><code CLASs="o">);</cOde>
+      <Code CLAsS=o>}</COdE> <CODe cLASs="k">else</cODE> <coDe ClasS=o>{</CODE>
+          <COde cLaSS=n>customer</cOde> <CoDE ClaSs="o">=</CodE> <cODE clAss=k>new</CODe> <cOdE clASs="n">Customer</codE><codE cLaSS=o>(</coDE><coDE cLass="n">name</Code><Code ClasS="o">,</COdE> <cODe clAsS="n">address</CODe><cODE ClASs="o">);</COdE>
+      <Code ClAss="o">}</Code>
+      <cOde ClASs=k>return</CoDe> <cODE ClAss="n">customer</Code><CodE CLASs=o>;</cOde>
+  <CoDE cLass="o">}</Code>
+</pRe></div>
+
+</DIv>
+
+<p>Because conditionals in Scala <eM>are</Em> expressions, you don’t need to jump through these hoops. In the Scala equivalent, we can just create the <cOdE>if</cODE> and both branches will return a customer. As the entire expression is the last statement in the method, it is what will be returned from the method.</P>
+
+<Div clAsS="code-block">
+<DiV CLASs=highlight><prE>  <COde ClAss="c1">// scala</COdE>
+  <Code clASs="k">object</coDe> <coDE cLASS=nc>Customer</COde> <cODE ClAss=o>{</Code>
+    <CoDe clASs=k>def</COdE> <CODE CLasS=n>create</code><COdE clAss=o>(</cOde><CodE CLasS="n">name</CodE><CoDE cLasS=k>:</CoDE> <CODe CLAss=kt>String</CODE><codE ClAsS=o>,</coDe> <CodE claSS="n">address</CoDe><code ClasS="k">:</CODe> <code claSs=kt>String</CodE><cOdE ClaSs="o">,</CoDE> <code ClASs="n">yearsOfCustom</cODE><cOde CLass="k">:</cODE> <coDe ClAsS=kt>Int</coDe><COdE cLASS=o>)</CODe> <CoDE ClASs=k>=</codE> <cOdE clASs="o">{</coDE>
+      <cOdE ClasS=k>if</code> <coDE cLAss="o">(</CODe><codE CLASS="n">yearsOfCustom</cOdE> <cOde class="o">&gt;</cOde> <COdE ClASS="mi">2</Code><coDe cLAss="o">)</COde>
+        <COdE CLaSs="k">new</codE> <cODE CLAsS="nc">DiscountedCustomer</CodE><CoDE ClaSS="o">(</cOdE><CODe cLASS=n>name</cOdE><cODE Class=o>,</cODe> <CoDe ClasS=n>address</Code><COde CLAsS=o>)</COde>
+      <CoDe cLaSs=k>else</cOdE>
+        <CoDe ClASS="k">new</COdE> <cOde clAsS="nc">Customer</CoDe><cOde Class=o>(</coDe><cODE class=n>name</coDE><cOde cLasS="o">,</cODe> <Code CLASS="n">address</CodE><CoDe CLaSs=o>)</CodE>
+    <CoDe claSs="o">}</coDe>
+  <code claSs=o>}</code>
+</PRE></div>
+
+</div>
+
+<P>Longhand, we can assign the result of the <cOdE>if</cOde> (remember it’s an expression not a statement) to a <CodE>val</COde> and then return the value on the last line.
+
+<div ClAsS=code-block>
+<dIV cLAss="highlight"><PRE>  <CodE CLass=k>object</COde> <codE CLAss="nc">Customer</coDe> <codE CLass="o">{</cODe>
+    <cODE ClAsS=k>def</cODe> <coDe CLasS=n>create</CoDE><COdE cLaSs=o>(</CODe><coDe CLass=n>name</COdE><Code ClaSS=k>:</cOdE> <CoDE clasS="kt">String</codE><CoDe CLASs="o">,</coDE> <codE CLASs=n>address</cOdE><Code cLaSs="k">:</coDE> <cOde class=kt>String</cOdE><codE CLaSS="o">,</CoDE> <COdE cLaSS="n">yearsOfCustom</CODe><coDe cLaSs=k>:</CODe> <Code CLasS=kt>Int</coDe><CODe clAsS=o>)</coDE> <cODE cLAsS="k">=</code> <COde cLASS=o>{</coDe>
+      <coDe ClAss=k>val</cODE> <cOdE cLASS=n>customer</CodE> <CODE ClASs="k">=</cOde> <cOde Class="k">if</coDe> <CODe cLasS=o>(</COde><cODE ClASS="n">yearsOfCustom</CoDe> <cODe clasS=o>&gt;</coDE> <cODe cLass="mi">2</CodE><CODE cLasS="o">)</coDE>
+        <CODE ClASS="k">new</COde> <Code clASs="nc">DiscountedCustomer</Code><COdE CLAsS="o">(</COde><CODe Class="n">name</CoDe><COde cLasS="o">,</CoDE> <CoDe clAss=n>address</COdE><cODe cLAss=o>)</codE>
+      <CoDe clASS="k">else</CoDE>
+        <code ClAsS=k>new</codE> <CodE class="nc">Customer</codE><CoDE clasS=o>(</CodE><COdE ClaSs=n>name</COdE><coDE CLAsS=o>,</Code> <cODE cLasS="n">address</COdE><COdE cLAsS=o>)</CODE>
+      <CoDe CLaSs=n>customer</coDe>
+    <cOde clasS="o">}</cOdE>
+  <codE CLAsS=o>}</CoDe>
+</PrE></DIv>
+
+</DiV>
+
+<p>Another trivial example might be something like this:</P>
+
+<dIv CLass=code-block>
+<dIV Class=highlight><Pre>  <CoDE cLASs="k">val</CODE> <CoDe CLAss=n>tall</COde> <coDE class="k">=</CODE> <cOdE ClAsS="k">if</cOde> <cODe clasS=o>(</cOde><COdE ClaSs=n>height</CoDE> <code CLass="o">&gt;</cODE> <Code ClAss="mi">190</CoDE><coDE cLaSs=o>)</cOde> <cODE CLASS="s">"tall"</COdE> <code cLass="k">else</codE> <CODE ClasS="s">"not tall"</Code>   <cOdE CLASs="c1">// scala</CODe>
+</prE></DiV>
+
+</div>
+
+<p>You may have noticed this behaves like a ternary expression in Java.
+
+<dIv cLaSs=code-block>
+<DIV ClaSs="highlight"><prE>  <coDe cLASS=n>String</code> <codE clASS="n">tall</coDe> <code cLaSS=o>=</CoDe> <code ClaSS=n>height</CodE> <CODE Class="o">&gt;</coDe> <coDe CLASs="mi">190</codE> <cODE ClaSs="o">?</COdE> <cODE CLASS=s>"tall"</COde> <code clasS=o>:</CODE> <CoDE claSs="s">"not tall"</CoDE><cODE Class="o">;</COde>     <CodE clASS=c1>// java</coDE>
+</PrE></div>
+
+</Div>
+
+<P>So, ternaries <em>are</eM> expressions in Java but <CoDe>if</COdE> statements are not. Scala has no conditional operator (<cODe>?:</coDe>) because a regular Scala <CODe>if</codE> is an expression; it’s equivalent to Java’s conditional operator. In fact, the bytecode generated for an <Code>if</CoDe> uses a ternary.
+
+<P>You don’t have to use an <CodE>if</coDE> in Scala like a ternary and assign it to anything, but it’s important to realise that it is an expression and has a value. In fact, everything in Scala is an expression. Even a simple block (denoted with curly braces) will return something.</P>
+
+<H4 id="leanpub-auto-switch-statements">Switch Statements</H4>
+
+<p>There are no switch statements as such in Scala. Scala uses <Em>match expressions</em> instead. These look like they’re switching but differ, in that the whole thing is an expression and not a statement. So as we saw with the <COdE>if</CoDE>, Scala’s switch-like construct <EM>has a value</EM>. It also uses something called <em>pattern matching</EM> which is a lot more powerful, as it allows you to select on more than just equality.</p>
+
+<P>In Java, you might write a switch to work out which quarter a particular month falls in. So, January, February, March are in the first quarter, April, May, June in the second, and so on.</P>
+
+<dIv clASs="code-block">
+<DIv CLAss=highlight><pRE>  <CoDE claSS=c1>// java</CoDe>
+  <COdE cLASs=kd>public</cODE> <coDe CLasS=kd>class</coDe> <cOdE ClaSs=nc>Switch</coDe> <CodE Class="o">{</CoDe>
+      <coDe cLaSs=kd>public</COde> <code cLaSS=kd>static</Code> <cOdE cLaSs="kt">void</coDe> <codE CLass=nf>main</CoDE><cOde ClAss="o">(</coDe><codE cLAss="n">String</CoDE><COdE ClaSs=o>...</cOdE> <coDE ClaSs="n">args</CODe><CODe cLAsS=o>)</cODe> <cODe CLAsS=o>{</COde>
+          <cOdE ClAsS=n>String</codE> <cOdE ClASs=n>month</coDe> <COde ClasS="o">=</codE> <coDe CLaSs="s">"August"</CODe><cOdE CLASs="o">;</CodE>
+          <code CLaSS=n>String</CoDe> <CODE cLAsS="n">quarter</CoDe><cOdE ClAss="o">;</codE>
+          <cOdE ClaSS=k>switch</cOde> <cODe cLASs=o>(</cOdE><cODe claSs="n">month</cODE><cOdE clasS=o>)</cODe> <cOdE ClAsS="o">{</CODE>
+              <CODe clAss="k">case</CODE> <codE cLAss="s">"January"</cODe><CoDe cLaSS="o">:</cODE>
+              <cODe cLasS=k>case</coDe> <cOde clAss="s">"February"</CODe><Code clAsS="o">:</coDE>
+              <cODE ClAss=k>case</cOdE> <cOdE cLAss=s>"March"</cODe><CoDE claSS=o>:</cOde>
+                  <CODE CLaSs=n>quarter</CodE> <cOde clAsS="o">=</CoDE> <COde cLAss=s>"1st quarter"</code><code clAsS="o">;</codE>
+                  <cODE Class=k>break</CodE><cOde CLaSs=o>;</Code>
+              <codE clASS="k">case</coDe> <CoDe CLaSs=s>"April"</CoDE><CodE Class="o">:</codE>
+              <CODE CLASS=k>case</Code> <coDe ClaSS=s>"May"</CoDE><cODe ClasS=o>:</COdE>
+              <cOdE clASS=k>case</CODE> <CODE Class=s>"June"</COde><COde CLASs=o>:</cODE>
+                  <CoDE clASs=n>quarter</CoDe> <CoDe CLASS=o>=</coDe> <code cLass=s>"2nd quarter"</coDe><CoDE CLaSS="o">;</codE>
+                  <CoDe ClAsS="k">break</codE><cODE CLAsS="o">;</coDE>
+              <cODE cLASs=k>case</coDE> <CoDe cLaSS=s>"July"</CODe><COde cLASS=o>:</cODE>
+              <coDE cLAsS="k">case</cOde> <coDe CLASs=s>"August"</CoDE><CODE class="o">:</coDE>
+              <Code clasS="k">case</CODe> <CoDe cLAsS="s">"September"</code><COde CLASs=o>:</CoDE>
+                  <COdE CLaSS="n">quarter</coDe> <coDE ClaSS=o>=</CodE> <coDE CLass=s>"3rd quarter"</COdE><CODe cLaSS="o">;</cOdE>
+                  <cOde ClAsS="k">break</cOde><CODE claSS=o>;</CodE>
+              <COde CLAss="k">case</Code> <coDe cLASs=s>"October"</CODE><CoDe ClASS="o">:</CODe>
+              <cOdE clAsS="k">case</codE> <cOde ClasS=s>"November"</CoDE><cOdE cLasS=o>:</COdE>
+              <COde cLASS="k">case</CoDE> <CODe cLasS=s>"December"</code><coDe CLasS="o">:</COdE>
+                  <COdE CLAss="n">quarter</codE> <cODE CLass=o>=</cOdE> <Code cLasS=s>"4th quarter"</CODE><coDe clASs=o>;</COdE>
+                  <Code class=k>break</code><cOde clasS=o>;</Code>
+              <CODe cLASs="k">default</COdE><Code clAss=o>:</CoDE>
+                  <cOdE CLASS="n">quarter</cOde> <coDe CLasS=o>=</code> <cOdE CLAss=s>"unknown quarter"</code><cOdE ClaSS=o>;</codE>
+                  <CoDe cLASs=k>break</cODe><COde cLaSS="o">;</CoDe>
+          <coDE CLASS=o>}</cODE>
+          <cODe ClaSs=n>System</cOdE><coDe clAsS=o>.</cODe><CODe ClAsS="na">out</cODe><cODe CLAsS=o>.</code><coDE clASS="na">println</code><codE clasS=o>(</COde><codE clASS="n">quarter</CODE><code ClAss="o">);</CODE>
+      <cOdE class=o>}</coDE>
+  <cODe claSS="o">}</COde>
+</prE></diV>
+
+</DIV>
+
+<P>The <CoDe>break</COdE> is required to stop the statement execution falling through. When Java selects a case, it has to have a side effect to be useful. In this case, it assigns a value to a variable.</P>
+
+<P>In Scala, we’d start with something like this:
+
+<div ClASs="code-block">
+<DIv ClAsS="highlight"><pRE>  <cODe class=c1>// scala</CODE>
+  <code CLasS=k>object</CoDe> <CoDE cLAss=nc>BrokenSwitch</CoDe> <cOdE ClASs="k">extends</cOde> <codE CLasS=nc>App</COde> <COde CLass="o">{</CoDe>
+    <cODE clASs="k">val</CODE> <CodE CLasS=n>month</cODe> <cODE claSS=k>=</COde> <Code cLasS="s">"August"</cODe>
+    <cOde cLASs=k>var</cODE> <codE cLASS=n>quarter</cOdE> <code cLAsS="k">=</codE> <CODe cLaSs="s">"???"</CODe>
+    <cOde Class="n">month</COdE> <cOde clAsS=k>match</CODE> <COde class=o>{</coDE>
+      <CODe ClAss=k>case</CODe> <CODe ClasS="s">"January"</codE> <CODe class="k">=&gt;</CoDE>
+      <coDE cLAss=k>case</code> <CODe clasS="s">"February"</cODe> <coDE clAsS=k>=&gt;</Code>
+      <coDe ClAsS=k>case</cODe> <Code cLaSs="s">"March"</cOde> <code CLASS="k">=&gt;</CodE> <codE ClaSs="n">quarter</CoDE> <cOde CLaSs=k>=</CODe> <CODe cLASS="s">"1st quarter"</cOde>
+      <cODe CLAsS="k">case</CodE> <cOdE Class="s">"April"</CodE> <CoDE CLAss="k">=&gt;</coDe>
+      <codE ClAss="k">case</codE> <COde CLass=s>"May"</COdE> <code cLAsS=k>=&gt;</cODe>
+      <CoDE CLASS=k>case</code> <coDe clAsS=s>"June"</cODe> <cOde CLASS=k>=&gt;</CoDE> <CoDE ClAsS="n">quarter</cOde> <CoDe cLASS=k>=</CodE> <cODe clAss=s>"2nd quarter"</CoDE>
+      <Code CLASs="k">case</CoDE> <cODE class=s>"July"</COdE> <coDE clAsS=k>=&gt;</coDe>
+      <CODE CLASs=k>case</Code> <CodE ClASS=s>"August"</Code> <COde clasS=k>=&gt;</COdE>
+      <CodE cLaSS=k>case</cODe> <cODE CLASs="s">"September"</coDE> <code CLass="k">=&gt;</CodE> <CODe ClASs=n>quarter</code> <coDE ClAsS=k>=</cODE> <codE ClaSs="s">"3rd quarter"</cODE>
+      <CODE cLASs="k">case</code> <COdE cLaSS="s">"October"</CODe> <Code clAsS=k>=&gt;</CoDE>
+      <CoDE clAss=k>case</COdE> <cOdE CLaSS=s>"November"</codE> <CODe cLASS="k">=&gt;</cODE>
+      <CodE ClaSS=k>case</cOdE> <CoDe clasS="s">"December"</coDE> <CoDE class=k>=&gt;</code> <CODE ClAsS=n>quarter</COde> <coDe CLAsS="k">=</CoDE> <code cLasS=s>"4th quarter"</coDe>
+      <CodE clAsS="k">case</coDe> <code ClasS="k">_</CODe> <COde cLAsS=k>=&gt;</COdE> <COde CLASS=n>quarter</code> <coDe CLAsS=k>=</coDE> <COde clasS=s>"unknown quarter"</code>
+    <CODe Class=o>}</CoDE>
+    <COde ClASs=n>println</COde><coDe CLasS=o>(</coDe><CODe cLAss="n">month</COde> <cOde clASS=o>+</cODE> <Code cLass=s>" is "</CODE> <COde cLaSs="o">+</CodE> <CODE ClaSS=n>quarter</COde><COde cLASs="o">)</Code>
+  <CODE CLaSs=o>}</coDE>
+</pRE></DIv>
+
+</DIv>
+
+<P>The above is a direct syntactic translation. However, Scala doesn’t support the <cODe>break</cODe> keyword so we have to leave that out. Rather than <code>switch</CODE> we use <CODE>match</cOdE> and we’re saying “does the <cOde>month</CODe> <EM>match</Em> any of these case clauses?”
+
+<P>Rather than the colon, we use <CodE>=&gt;</CoDE> and the underscore at the bottom is the catch-all, the same as <cOde>default</codE> in Java. Underscore is often used in Scala to mean an unknown value.
+
+<P>So although this is a direct translation, when we run it, something has gone wrong. The result hasn’t been set.
+
+<P>The output says:
+
+<DiV cLAsS="code-block">
+<Div ClAsS="highlight"><PrE>  <CODE CLASs=nc>August</cODE> <codE cLAsS=n>is</Code> <code ClASs=o>???</CoDe>
+</PRE></dIV>
+
+</DIV>
+
+<p>Unlike Java, if a case matches, the break is implicit — there is no fall-through to the next case. So we’ll have to add some code to the empty blocks.</P>
+
+<dIV cLAss="code-block">
+<DIv ClAss=highlight><PRe>  <codE ClAsS=c1>// scala</cODE>
+  <CodE cLAss=k>object</codE> <cOde cLAss=nc>Switch</coDe> <COdE CLAss="k">extends</CodE> <CoDe ClASs=nc>App</cOdE> <cOde ClAsS="o">{</COde>
+    <COde ClAss=k>val</cOde> <CODe clASs=n>month</coDE> <CoDE clAsS="k">=</code> <CODe cLASs=s>"August"</Code>
+    <COde ClasS=k>var</cOdE> <cODe CLass="n">quarter</CODE> <coDe cLasS="k">=</cODe> <coDe claSs="s">"???"</CoDE>
+    <Code cLASs=n>month</CoDE> <COde cLasS=k>match</cODe> <coDE cLASs=o>{</coDe>
+      <CodE cLaSs=k>case</CODE> <CODe ClaSS=s>"January"</cOdE> <CoDe CLAss=k>=&gt;</cODE> <CodE Class=n>quarter</code> <coDE clAss=k>=</codE> <Code cLAss="s">"1st quarter"</CODE>
+      <codE clAsS="k">case</code> <COdE CLaSS="s">"February"</code> <COde claSs="k">=&gt;</CoDe> <CodE CLASs=n>quarter</CodE> <coDE CLASs=k>=</Code> <coDE clASs="s">"1st quarter"</CodE>
+      <cOdE ClASs=k>case</cODE> <Code claSS="s">"March"</cOdE> <coDe cLaSs=k>=&gt;</CODE> <cODE ClASS="n">quarter</CODe> <COdE cLass="k">=</CoDe> <CodE clAsS="s">"1st quarter"</code>
+      <cOdE cLaSs="k">case</cODE> <Code clASs="s">"April"</CoDe> <CoDe CLaSS=k>=&gt;</CoDe> <CODE class="n">quarter</coDe> <cODE ClASs="k">=</CoDE> <COde cLaSS="s">"2nd quarter"</Code>
+      <CoDe cLaSS="k">case</cODE> <codE ClasS="s">"May"</code> <COdE ClasS="k">=&gt;</coDe> <CoDE clASs=n>quarter</cOde> <COde cLAsS=k>=</COde> <CoDE cLaSS="s">"2nd quarter"</cOdE>
+      <codE ClaSS=k>case</cODe> <CodE claSs=s>"June"</COde> <CodE CLaSs="k">=&gt;</Code> <CODE cLASS=n>quarter</cOdE> <coDE cLasS="k">=</CodE> <codE clAsS=s>"2nd quarter"</Code>
+      <CODE ClaSs=k>case</COdE> <cOdE ClaSS=s>"July"</CoDE> <code ClAss=k>=&gt;</coDE> <CodE claSS=n>quarter</cOdE> <cODe CLaSs="k">=</cOde> <CODe ClAsS="s">"3nd quarter"</cOde>
+      <CoDe clASS="k">case</COdE> <CODE ClaSs="s">"August"</COdE> <cODe CLasS="k">=&gt;</cOde> <coDE ClAss=n>quarter</cOde> <cODE CLASS=k>=</CODe> <codE CLASS=s>"3rd quarter"</CODE>
+      <CoDe CLaSs=k>case</CodE> <CoDe ClASs="s">"September"</Code> <coDE ClAsS="k">=&gt;</CoDe> <Code ClASs=n>quarter</cOdE> <Code cLAsS="k">=</CoDE> <cODE cLass="s">"3rd quarter"</COdE>
+      <cODE CLAsS=k>case</coDE> <Code cLaSS="s">"October"</cODe> <code cLaSs=k>=&gt;</CODe> <coDE cLAsS=n>quarter</codE> <Code cLAss=k>=</cODE> <cODE class="s">"4th quarter"</Code>
+      <CODe CLaSS=k>case</CODe> <CoDE CLasS="s">"November"</COde> <cODe clASs="k">=&gt;</CoDe> <cODE CLass="n">quarter</cODE> <COdE CLASs="k">=</coDE> <codE CLaSs="s">"4th quarter"</COde>
+      <CodE clASs="k">case</Code> <CoDe cLaSS=s>"December"</COdE> <CODE CLAss="k">=&gt;</CODE> <cOdE class=n>quarter</cOde> <coDe clASs=k>=</CoDE> <CODe clASS=s>"4th quarter"</codE>
+      <CoDe CLAsS=k>case</COde> <CODe claSS=k>_</cODe> <coDe CLasS="k">=&gt;</cODe> <cODe CLAsS="n">quarter</cOde> <CODe cLASs=k>=</CODE> <CodE class=s>"unknown quarter"</cOde>
+    <coDE ClasS="o">}</cOde>
+    <Code cLAsS="n">println</CoDe><COde cLasS="o">(</CoDe><cOde claSs="n">month</code> <CODe cLAsS=o>+</CodE> <cOde cLAss=s>" is "</CoDE> <codE clAsS="o">+</code> <CoDe clasS=n>quarter</COdE><CoDe cLAss=o>)</cODE>
+  <coDe clasS=o>}</cOde>
+</Pre></DiV>
+
+</dIv>
+
+<p>This time it works but we’ve duplicated a fair bit.</p>
+
+<P>To remove some of the duplication, we can combine January, February, and March onto one line, separating them with an <codE>or</cODe>. This means that the month can match either January, February, <Em>or</EM> March. In all of these cases, what follows the <cODe>=&gt;</coDE> will be executed.</p>
+
+<diV claSs=code-block>
+<div Class="highlight"><pre>  <COdE cLasS=k>case</cODe> <code cLaSS="s">"January"</cOde> <CODE cLASs=o>|</code> <cODE cLaSs=s>"February"</CoDE> <code cLaSs=o>|</code> <cOde cLasS=s>"March"</Code>  <CODe ClaSS=k>=&gt;</CodE> <CODe claSS=n>quarter</Code> <cODe clasS=k>=</coDE> <COde cLasS=s>"1st quarter"</COde>
+</PrE></div>
+
+</DiV>
+
+<p>Doing this for the rest of the cases would give us the following:
+
+<div clASS=code-block>
+<DIV ClAss="highlight"><PRE>  <coDe cLASS="c1">// scala</codE>
+  <coDE clAsS="k">object</cOde> <CoDe cLASs=nc>SwitchWithLessDuplication</COde> <codE clASS=k>extends</cODE> <CODE Class=nc>App</cOdE> <cODe ClAss="o">{</cOdE>
+    <code CLAss="k">val</cOdE> <cODe clAss="n">month</Code> <COdE ClasS="k">=</CodE> <code CLaSs="s">"August"</CodE>
+    <codE claSS="k">var</Code> <CODe clASs="n">quarter</code> <codE clASs="k">=</coDe> <code clASs="s">"???"</CodE>
+    <cOdE claSS="n">month</coDe> <CODe CLaSS=k>match</codE> <COdE CLAss="o">{</Code>
+      <cOdE CLAsS="k">case</cODE> <Code cLasS=s>"January"</coDE> <Code ClaSS=o>|</CoDe> <CoDe cLASs="s">"February"</coDE> <CodE CLaSs="o">|</coDe> <coDe ClASS=s>"March"</cOde>  <cODE ClAsS="k">=&gt;</codE> <codE CLaSS=n>quarter</CODE> <CoDe cLAss=k>=</CODE> <CodE claSS="s">"1st quarter"</CoDe>
+      <CODe CLAsS=k>case</cODe> <CodE cLaSS="s">"April"</cOde> <CODE CLaSs=o>|</COde> <codE cLAss="s">"May"</code> <CODe CLAsS=o>|</codE> <codE CLass="s">"June"</CODe> <CODe cLaSS="k">=&gt;</cODE> <cOde CLAss=n>quarter</CoDe> <Code CLaSs="k">=</CoDE> <CodE ClasS="s">"2nd quarter"</Code>
+      <COde cLass="k">case</cOdE> <COde ClAss=s>"July"</COde> <COde clASs="o">|</cOdE> <code cLass=s>"August"</CodE> <cODe CLASS=o>|</cOde> <CoDe claSs="s">"September"</cOdE> <cODe claSs=k>=&gt;</cOde> <CODe class="n">quarter</cOde> <codE cLass=k>=</cOdE> <CoDe ClasS="s">"3rd quarter"</coDe>
+      <Code clAsS="k">case</CodE> <CODE CLass="s">"October"</Code> <cOdE cLaSs="o">|</CoDe> <coDe cLasS="s">"November"</Code> <CODE cLaSS=o>|</COdE> <CoDE cLaSs=s>"December"</code> <coDE CLAsS=k>=&gt;</cOde> <CodE clAsS=n>quarter</CodE> <codE ClasS="k">=</code> <COde cLAss="s">"4th quarter"</cODE>
+      <CoDe cLasS="k">case</cODE> <Code CLAsS="k">_</coDE> <Code cLAsS="k">=&gt;</coDe> <COdE CLasS=n>quarter</cOdE> <cOdE cLass="k">=</CODE> <cODe ClAsS="s">"unknown quarter"</CoDe>
+    <Code cLAss="o">}</coDE>
+    <CODe clASs=n>println</COde><CoDE CLASs="o">(</COde><CODe CLaSs="n">month</CoDe> <CODe ClASS=o>+</coDE> <CODE cLASs=s>" is "</CodE> <CoDE ClASS=o>+</cODe> <Code CLAsS=n>quarter</CoDe><code ClASs=o>)</CoDe>
+  <cOde ClasS="o">}</code>
+</pRe></Div>
+
+</diV>
+
+<P>We’ve condensed the code above by writing expressions within the case clauses themselves. This becomes more powerful when we think of these case clauses as <Em>patterns</eM> that we can use to build up more and more expressive conditions for the match.
+
+<P>Java can only switch on primitives, enums and from Java 7, string values. Thanks to pattern matching, Scala can match on almost anything, including objects. We’ll look more at pattern matching in Part III.
+
+<p>The other thing to note is that Scala’s version of the switch <em>is an</eM> expression. We’re not forced to work with side effects and can drop the temporary variable and return a <CoDE>String</cODE> to represent the quarter the month falls into. We can then change the <COde>quarter</coDe> variable from being a <COdE>var</cOde> to a <CodE>val</cODe>.</p>
+
+<DIv ClAss=code-block>
+<dIV claSS="highlight"><pRE>  <CoDE ClasS="c1">// scala</cODe>
+  <coDE cLAss="k">object</CoDe> <CoDE CLAsS="nc">SwitchExpression</CODE> <codE cLaSs="k">extends</coDE> <COde Class="nc">App</cOde> <code cLAss=o>{</CODE>
+    <COde CLaSs=k>val</COdE> <CoDE cLASS="n">month</code> <cODe cLAss=k>=</coDe> <cODe cLaSs="s">"August"</CODe>
+    <CODE Class=k>val</CoDe> <coDE ClASS=n>quarter</coDE> <coDE cLASs=k>=</CoDE> <cOdE cLaSs="n">month</CoDE> <CoDe cLASS=k>match</codE> <cODE clAss=o>{</COdE>
+      <codE cLAss=k>case</cODe> <Code CLass="s">"January"</COdE> <codE CLASs=o>|</cODe> <cODe CLAsS=s>"February"</CodE> <cOdE CLASs="o">|</CoDE> <cOde cLasS=s>"March"</CODE>  <Code claSS="k">=&gt;</CODe> <Code cLass="s">"1st quarter"</cOdE>
+      <cODe cLASs="k">case</coDe> <CODe ClaSS="s">"April"</codE> <COde CLass="o">|</coDE> <codE ClaSS=s>"May"</CoDe> <CoDE CLASs="o">|</CODe> <codE ClASS=s>"June"</code> <COdE ClAsS="k">=&gt;</coDE> <CODe cLaSs=s>"2nd quarter"</cODe>
+      <cODE cLASS=k>case</CoDe> <COde CLASS=s>"July"</CODE> <COdE ClaSs=o>|</code> <cOdE ClAss=s>"August"</CODe> <CODE cLaSs="o">|</cODe> <cOdE clASS="s">"September"</CoDE> <CoDe ClaSs="k">=&gt;</CoDe> <CODe cLaSs=s>"3rd quarter"</cOdE>
+      <code cLaSs=k>case</coDE> <codE cLAsS="s">"October"</cODe> <CODE CLASS="o">|</CODE> <COde cLAss=s>"November"</coDE> <cOdE CLaSS=o>|</CODE> <CODE CLaSS=s>"December"</coDE> <CODE CLasS="k">=&gt;</cODE> <COdE ClaSs="s">"4th quarter"</cODe>
+      <coDe CLass="k">case</Code> <Code ClaSs="k">_</CoDe> <Code ClAsS="k">=&gt;</Code> <CoDE cLAsS="s">"unknown quarter"</cODe>
+    <CODe CLASs=o>}</Code>
+    <Code CLASS="n">println</cOdE><CODe CLAsS=o>(</cOde><COde ClaSS=n>month</cOde> <codE ClASS=o>+</cOde> <coDe CLaSS="s">" is "</coDe> <Code cLASs="o">+</code> <COdE CLass="n">quarter</CODe><codE ClAsS=o>)</COdE>
+  <cODE CLASs=o>}</codE>
+</Pre></DIv>
+
+</div>
+
+<p>We could even do it in-line. We just need to add some parentheses around the match, like this:</P>
+
+<diV clAsS=code-block>
+<diV ClasS="highlight"><pRe>  <cOdE CLasS=c1>// scala</CoDE>
+  <cOdE Class="k">object</coDe> <codE ClaSS=nc>SwitchExpression</CoDE> <CodE ClaSs=k>extends</codE> <CodE cLAsS=nc>App</CoDE> <CODe clAss=o>{</CODe>
+    <Code CLASs="k">val</cOde> <COde class=n>month</code> <CodE clASs="k">=</CoDe> <CoDE clASS=s>"August"</code>
+    <code CLAss="n">println</COde><cODe cLaSS="o">(</coDE><CoDe ClASS=n>month</code> <coDe ClaSS=o>+</code> <CODe clASs=s>" is "</cODE> <CoDe cLasS="o">+</CoDe> <Code clAsS="o">(</Code><coDE CLaSs="n">month</Code> <codE cLaSs="k">match</cOde> <COdE ClAsS="o">{</Code>
+      <cOdE cLass="k">case</COde> <cOde clASS="s">"January"</CodE> <Code class="o">|</CoDe> <codE ClaSs="s">"February"</CODe> <cODE cLaSs="o">|</cODe> <CoDe CLASs=s>"March"</CodE> <COde claSs="k">=&gt;</CodE> <cOde clasS=s>"1st quarter"</coDE>
+      <COde clasS="k">case</Code> <cODe clAss="s">"April"</CodE> <cOdE CLaSs="o">|</cOde> <coDe clAsS=s>"May"</cODE> <CodE CLaSs=o>|</coDe> <cOde ClASS=s>"June"</cOdE> <coDE ClAss=k>=&gt;</CODE> <cODe cLaSS="s">"2nd quarter"</CoDE>
+      <CodE ClaSs="k">case</CoDe> <coDE CLAss="s">"July"</cOde> <code clasS=o>|</coDE> <cODe Class=s>"August"</COdE> <CoDe clasS="o">|</CodE> <CODE clAss="s">"September"</CodE> <cOdE ClAss="k">=&gt;</coDE> <cOdE cLaSs="s">"3rd quarter"</cODE>
+      <CoDe clasS="k">case</Code> <CODE CLAsS="s">"October"</code> <coDe Class=o>|</CODe> <code ClasS=s>"November"</CODe> <code CLaSS="o">|</COdE> <CODE ClAss="s">"December"</coDE> <cODE claSS=k>=&gt;</coDe> <cODE cLaSs="s">"4th quarter"</COdE>
+      <CodE CLaSS="k">case</cODe> <cOde clASs="k">_</CODe> <code CLaSs="k">=&gt;</CoDe> <code clAsS="s">"unknown quarter"</coDe>
+    <cODe ClasS="o">}))</cODe>
+  <coDe ClAss=o>}</CODE>
+</PRE></DIV>
+
+</div>
+
+<h3 id="leanpub-auto-looping-structures-do-while-and-for">Looping Structures; <cOdE>do</COde>, <cOdE>while</Code> and <coDe>for</cODE></H3>
+
+<P>Scala and Java share the same syntax for do and while loops. For example, this code uses a <code>do</CODE> and a <cODe>while</cODe> to print the numbers zero to nine.
+
+<div cLAsS="code-block">
+<dIv class=highlight><prE>  <Code clASs="c1">// java</coDe>
+  <cODe cLAss=kt>int</cOdE> <coDe clASs="n">i</Code> <cOde cLASs="o">=</COde> <coDe clasS="mi">0</codE><cOdE cLass=o>;</cOdE>
+  <CODe claSS=k>do</CoDe> <cOde clASs=o>{</coDe>
+      <COde cLAsS="n">System</CodE><cOdE ClaSs=o>.</code><cOde CLaSS=na>out</cODE><codE clAss="o">.</CodE><code ClASs="na">println</Code><cODe clasS=o>(</code><code cLAsS="n">i</cOde><cOdE claSs="o">);</CODE>
+      <CodE cLASS=n>i</cOde><COdE claSs=o>++;</coDe>
+  <coDe CLaSs="o">}</code> <CoDe CLaSs="k">while</COde> <codE cLASS="o">(</codE><coDe clAsS=n>i</code> <cODe ClASS="o">&lt;</codE> <coDe claSS="mi">10</cODE><coDe ClasS="o">);</code>
+</PRE></div>
+
+</DIv>
+
+<P>The Scala version would look like this. (There is no <coDE>++</Code> incrementer so we use <COde>+=</Code> instead.)</p>
+
+<dIV CLass=code-block>
+<diV ClAss="highlight"><pre>  <cODe CLaSS=c1>// scala</COdE>
+  <COde ClaSS=k>var</Code> <cODE cLaSS="n">i</CODE><CoDE clASs=k>:</code> <cODe class="kt">Int</cODE> <CODe class="o">=</coDe> <Code CLAsS="mi">0</CODe>
+  <code clASs="k">do</CodE> <coDe clasS=o>{</CodE>
+    <COde CLaSS=n>println</code><cODe clAsS="o">(</cOdE><CoDe Class=n>i</COdE><Code clASs="o">)</CoDE>
+    <cODE ClASS="n">i</Code> <COdE CLASs=o>+=</COdE> <COdE cLasS=mi>1</code>
+  <COdE claSS="o">}</cOdE> <CoDE clAsS=k>while</CodE> <cOde ClasS="o">(</coDe><coDe cLAss=n>i</coDe> <code clASs="o">&lt;</cOde> <Code cLaSS="mi">10</Code><CODe CLaSS="o">)</cODe>
+</PRe></dIv>
+
+</dIv>
+
+<p>And while loops are the same.
+
+<DIv cLasS=code-block>
+<Div cLASs=highlight><PrE>  <COde CLass=c1>// java</CODE>
+  <CODe clAsS=kt>int</CODE> <cOdE cLASS="n">i</cOdE> <cOde ClASS="o">=</codE> <CoDe cLaSS=mi>0</cOde><cODe claSS=o>;</cODe>
+  <cOdE cLAsS=k>while</cOdE> <coDe CLASS=o>(</COdE><Code class="n">i</cOde> <CodE claSS="o">&lt;</code> <COdE ClaSs="mi">10</cOdE><coDE ClaSS=o>)</Code> <Code CLasS=o>{</CoDe>
+      <Code clASs=n>System</CODe><COdE claSS=o>.</codE><code ClASs=na>out</code><coDE clAss="o">.</COde><CODe CLass="na">println</coDe><cODe ClaSS="o">(</CoDe><code class="n">i</CoDE><CoDe CLASs=o>);</CodE>
+      <cODe CLass=n>i</CoDe><coDE cLaSs=o>++;</cODE>
+  <COdE cLASs="o">}</codE>
+</pRe></DIv>
+
+</DIv>
+
+<div cLaSS=code-block>
+<dIv cLaSs="highlight"><Pre>  <COdE cLAsS="c1">// scala</CODE>
+  <coDE CLaSs="k">var</codE> <codE ClASs=n>i</cODe><codE class="k">:</CodE> <cODE Class=kt>Int</cODE> <cODE clAsS="o">=</coDE> <COdE CLasS="mi">0</coDE>
+  <CODe claSs=k>while</CODE> <coDE ClASs=o>(</CODE><COde CLASS=n>i</COde> <CODe ClasS="o">&lt;</cOde> <cOde CLASs="mi">10</CODe><coDe clAss="o">)</CoDE> <cOde ClasS="o">{</coDE>
+    <cODe CLass="n">println</COde><cOde cLaSS=o>(</coDe><Code cLasS=n>i</cODe><CoDE CLasS="o">)</COdE>
+    <cODe ClaSS="n">i</cODE> <Code CLAss="o">+=</code> <Code CLasS="mi">1</COdE>
+  <CodE ClASs=o>}</CodE>
+</PRe></Div>
+
+</diV>
+
+<P>Things get more interesting when we look at for loops. Scala doesn’t have for loops like Java does; it has what’s referred to as the “generator-based for loop” and the related “for comprehension” instead. To all intents and purposes, these can be used like Java’s for loop construct, so for the most part you won’t have to worry about the technical differences.
+
+<p>Java’s for loop controls the iteration in three stages: initialise, check and update.</P>
+
+<diV ClASs="image-with-caption center">
+  <Img Src="../Images/image00239.jpeg" ALt="Fig. 2.7. The typical for loop iteration stages."><p clasS="caption">Fig. 2.7. The typical for loop iteration stages.</P>
+</diV>
+
+<p>There is no direct analog in Scala. You’ve seen an alternative — using the while loop to initialise a variable, check a condition, then update the variable — but you can also use a generator-based for loop in Scala. So the following <COde>for</CodE> in Java:
+
+<diV Class="code-block">
+<diV CLASs="highlight"><PRe>  <cOde ClaSS=c1>// java</codE>
+  <cOdE clASS="k">for</coDE> <Code ClAsS="o">(</Code><Code ClASS=kt>int</cODe> <code CLass="n">i</COdE> <CoDE clAss="o">=</coDE> <CoDE Class="mi">0</codE><CODE CLAsS=o>;</codE> <CodE cLAss=n>i</cODE> <coDE clasS=o>&lt;</coDe> <coDE clasS="mi">10</coDE><codE clASS=o>;</cODE> <coDE ClASs="n">i</Code><COde clAss=o>++)</COdE> <cODe cLAsS="o">{</coDe>
+      <code clasS="n">System</CoDe><Code CLaSs=o>.</cOdE><CodE cLAsS="na">out</coDE><cODe CLASs=o>.</CODE><CoDE cLasS=na>println</coDE><coDE CLASS=o>(</CODE><Code cLAss=n>i</CodE><COdE ClAsS="o">);</cODE>
+  <CODe CLasS=o>}</Code>
+</pRE></dIV>
+
+</Div>
+
+<P>…would look like this using a generator-based for loop in Scala:</p>
+
+<Div ClAsS="code-block">
+<Div cLasS="highlight"><Pre>  <COde ClASs=c1>// scala</cODe>
+  <codE clASS="k">for</CODe> <cOdE CLAsS=o>(</coDe><code cLaSs=n>i</CODE> <COdE cLAss="k">&lt;-</CoDe> <coDE cLaSs="mi">0</CoDe> <cOdE CLaSS="n">to</CoDE> <CodE CLASS=mi>9</codE><CodE cLAss=o>)</codE> <cODe ClASS="o">{</CODe>
+    <CoDE clAsS="n">println</CoDe><coDE clASs=o>(</CODE><CodE CLaSs="n">i</cOdE><CoDE clASs="o">)</coDe>
+  <cOdE ClASS="o">}</CODe>
+</PRE></diV>
+
+</div>
+
+<p>The <coDE>i</COdE> variable has been created for us and is assigned a value on each iteration. The arrow indicates that what follows is a <EM>generator</em>. A generator is something that can feed values into the loop. The whole thing is a lot like Java’s enhanced for loops where anything that is <Code>Iterable</COdE> can be used. In the same way, anything that can generate a iteration in Scala can be used as a generator.
+
+<p>In this case, <cOde>0 to 9</COde> is the generator. Zero is an <coDE>Int</cOdE> literal and the class <codE>Int</CoDe> has a method called <coDE>to</coDe> that takes an <Code>Int</COde> and returns a range of numbers which can be enumerated. The example uses the infix shorthand, but we could have written it longhand like this:
+
+<diV clAsS=code-block>
+<div cLASS="highlight"><PRE>  <COde ClAsS=k>for</CODE> <code CLaSs=o>(</COde><cOde claSS="n">i</COde> <code class=k>&lt;-</CoDe> <coDe CLAsS="mf">0.</coDe><cOdE cLAsS=n>to</codE><cOdE CLAss=o>(</cOdE><CoDe CLAss=mi>9</code><codE CLAsS=o>))</codE> <code ClasS="o">{</CODE>
+    <coDe ClAss="n">println</CoDE><codE cLaSS="o">(</COde><Code class=n>i</coDE><CodE claSs="o">)</cODe>
+  <codE ClAss=o>}</cOde>
+</Pre></Div>
+
+</diV>
+
+<p>It’s very similar to the following enhanced for loop in Java, using a list of numbers:</P>
+
+<dIv cLAsS=code-block>
+<dIv cLAss="highlight"><PRE>  <cOdE ClASs=c1>// java</coDE>
+  <CODe Class="n">List</cODe><CODE cLAss=o>&lt;</CoDE><COdE cLAsS=n>Integer</CoDe><COdE cLAss=o>&gt;</CODE> <coDe cLASs="n">numbers</cOde> <codE cLASS="o">=</CODE> <cODe clASS=n>Arrays</Code><CODE clASs=o>.</COde><CoDe cLAss=na>asList</cODe><cOdE clAsS="o">(</coDE><cODE ClASS=mi>0</cODE><CODe CLasS=o>,</codE> <Code ClaSS="mi">1</CoDe><CODE cLASs="o">,</CODe> <CoDE ClASs="mi">2</cODe><cODe ClASs=o>,</COde> <codE CLaSs="mi">3</coDE><CodE CLASS=o>,</CODe> <COdE CLAsS=mi>4</CoDE><coDe clAsS="o">,</coDE> <codE ClAss="mi">5</cOdE><CodE ClasS=o>,</code> <cOdE cLass="mi">6</coDe><codE clAsS=o>,</COde> <COdE cLass=mi>7</CodE><CoDe cLaSS=o>,</coDe> <CodE clAss="mi">8</CoDe><Code CLAss=o>,</CoDE> <CoDe clasS="mi">9</coDE><CoDe ClaSS=o>);</coDE>
+  <CODe cLaSs=k>for</CodE> <cODE clasS=o>(</code><cOde claSs="n">Integer</Code> <cOde cLAss=n>i</COdE> <coDE cLASs="o">:</cOdE> <COde CLaSs="n">numbers</CODE><CODe ClaSs="o">)</cODe> <CodE ClaSs=o>{</Code>
+      <codE CLasS="n">System</CODE><cODE clASs=o>.</CoDe><Code CLass=na>out</cOde><cOdE ClaSs="o">.</CoDe><coDE ClaSs=na>println</codE><cODe ClASS="o">(</CODe><Code cLasS="n">i</Code><cOde clAsS=o>);</cOde>
+  <cOde ClASs=o>}</cODE>
+</PRE></diV>
+
+</DiV>
+
+<p>…which itself could be rewritten in Java as the following:</P>
+
+<DIv cLAss="code-block">
+<DiV clASS=highlight><Pre>  <CoDE ClasS=n>numbers</cOde><CoDE CLasS=o>.</codE><CodE ClaSs=na>forEach</cOde><cOde ClaSs=o>(</cODe><CODE cLASs=n>i</CoDE> <cODe clasS="o">-&gt;</Code> <CODe CLAsS="n">System</cODE><CODE clasS="o">.</COde><COde cLASS=na>out</Code><CoDE CLass=o>.</cOdE><cOdE cLass="na">println</CODe><CODe ClASS="o">(</codE><cODe cLAsS=n>i</CoDe><cOdE Class=o>));</CoDe>      <coDe clASS=c1>// java</CoDE>
+</pre></DIv>
+
+</DIv>
+
+<P>or as a method reference.
+
+<dIv ClasS="code-block">
+<Div ClasS="highlight"><pRe>  <CoDe cLAss=n>numbers</cOdE><COdE cLass=o>.</CoDE><COdE ClaSs=na>forEach</Code><coDe clAsS=o>(</coDe><cODe cLass="n">System</cOde><CoDE ClaSs="o">.</CoDE><CODE clAss="na">out</coDe><COdE Class="o">::</Code><cOdE claSS=n>println</CoDE><code clAss=o>);</COdE>             <cODe Class=c1>// java</COdE>
+</Pre></DIv>
+
+</diV>
+
+<p>Unsurprisingly, Scala has a <cODE>foreach</coDe> method of its own.</P>
+
+<dIV CLaSs=code-block>
+<dIv CLAss=highlight><pRe>  <cODE cLAss=o>(</cODe><CoDE cLAsS=mi>0</cODE> <cOdE cLass="n">to</CodE> <COdE ClaSs="mi">9</CoDe><coDE ClASS="o">).</CODE><codE CLASs=n>foreach</CoDe><CODe CLaSs="o">(</CoDe><CodE class="n">i</codE> <coDe cLasS=k>=&gt;</Code> <CodE cLASs=n>println</CODE><Code ClASS="o">(</cODE><codE ClasS=n>i</COde><CODe ClAss=o>))</CoDE>                 <code ClASs=c1>// scala</Code>
+</pRe></div>
+
+</div>
+
+<P>We use the <coDe>to</COdE> method again to create a sequence of numbers. This sequence has the <Code>foreach</COde> method, which we call, passing in a lambda. The lambda function takes an <CODE>Int</cOdE> and returns <cODE>Unit</Code>.
+
+<P>We can even use Scala’s shorthand like we did with Java’s method reference:</p>
+
+<dIv ClaSS=code-block>
+<dIv cLAss="highlight"><pRe>  <CoDE cLaSs="o">(</cOdE><CODE CLasS=mi>0</coDe> <coDe claSs=n>to</COde> <code clASs="mi">10</cODe><cODE CLass=o>).</cODE><code CLASS=n>foreach</CoDE><CoDe CLass=o>(</cODe><CodE ClAsS="n">println</coDe><coDe clASS="o">(</CodE><CODe ClaSs="k">_</CODE><CodE CLASs="o">))</CoDE>                     <CODE cLasS="c1">// scala</cOde>
+</PRE></DIv>
+
+</DIv>
+
+<dIv cLAsS="aside sidebarish">
+  <h4 id="leanpub-auto-for-loop-vs-for-comprehension">For-Loop vs For Comprehension</h4>
+  <P>What’s the difference between the generator-based for loop and the for comprehension?</P>
+
+  <P>The generator-based for loop will be converted by the compiler into a call to <cODE>foreach</cOde> against the collection. A for comprehension will be converted to a call to <CODE>map</CODe> on the collection. The for comprehension adds the keyword <code>yield</code> to the syntax: 
+
+  <DiV class=code-block>
+<DIV claSS="highlight"><PRE><cODe clAss=k>for</code> <codE Class="o">(</code><CODe cLAsS="n">i</COde> <cODE clASs="k">&lt;-</cODE> <CodE CLaSS="mi">0</cODE> <CoDE CLAsS="n">to</code> <COde CLaSs=mi>5</cODE><cODE CLASS=o>)</cODe> <COdE Class="k">yield</CoDE> <CODe clAsS="n">i</coDE> <code ClASS=o>*</coDe> <coDE cLass="mi">2</CoDe>      <CodE claSS="c1">// results in (0, 2, 4, 6, 8, 10)</CoDe>
+</PRe></DIv>
+  
+</Div>
+
+  <P>See the <A hrEF="part0023.xhtml#for_comprehension">For Comprehensions</A> chapter for more details.</P>
+
+</DiV>
+
+<h3 id="leanpub-auto-breaking-control-flow-break-and-continue">Breaking Control Flow (<CoDE>break</COdE> and <Code>continue</cOdE>)</H3>
+
+<p>Scala has no <COde>break</cOde> or <cOde>continue</coDE> statements, and generally discourages you from breaking out of loops. However, you can use a library method to achieve the same thing. In Java, you might write something like this to break out of a loop early:
+
+<dIv cLAss="code-block">
+<DiV cLaSs="highlight"><pre>  <CODE clASs=c1>// java</COde>
+  <CODe cLASs="k">for</Code> <cOde clASS=o>(</cOde><cODE CLASs="kt">int</CoDE> <cOdE claSs=n>i</CoDe> <codE CLasS=o>=</cODE> <coDe cLaSs=mi>0</cOdE><Code ClasS=o>;</COde> <cODE ClAss=n>i</code> <CODe CLasS=o>&lt;</cODe> <coDE CLass="mi">100</coDe><cOde cLaSs=o>;</cODe> <cODE ClAsS="n">i</CODE><CODe ClAsS=o>++)</codE> <COde clAsS=o>{</CODE>
+      <Code ClAss=n>System</Code><cOdE claSS=o>.</cODe><codE CLaSs=na>out</coDe><Code cLASS=o>.</cODE><COdE ClaSS=na>println</Code><coDe class="o">(</coDE><coDe ClASs="n">i</coDe><Code cLAsS="o">);</CoDE>
+      <cOdE CLASS="k">if</cOdE> <CodE CLaSs=o>(</cOdE><CodE CLAsS=n>i</coDE> <codE cLaSs=o>==</coDE> <Code cLaSs=mi>10</coDe><coDE CLaSs=o>)</COde>
+          <COdE CLAss="k">break</COdE><CodE cLASs="o">;</cODe>
+  <cODE CLASS="o">}</CODe>
+</pre></DIv>
+
+</Div>
+
+<p>In Scala, you need to import a Scala library class called <COde>Breaks</COdE>. You can then enclose the code to break out from in a “breakable” block and call the <cODe>break</CoDE> method to break out. It’s implemented by throwing an exception and catching it.</P>
+
+<DIV cLASs=code-block>
+<DIv cLASS="highlight"><PRE>  <COde ClasS=c1>// scala</CoDE>
+  <CODE cLaSs=k>import</cOde> <cOde cLasS=nn>scala.util.control.Breaks._</coDE>
+  <CODE CLasS="n">breakable</CODe> <code ClasS="o">{</CoDe>                           <CodE cLASS="c1">// breakable block</CODE>
+    <cODE ClASs=k>for</COdE> <Code cLAss=o>(</COdE><COde clasS="n">i</cODE> <Code Class=k>&lt;-</COdE> <cOdE class="mi">0</CodE> <cODe ClaSs="n">to</cOde> <codE class="mi">100</Code><coDe clASS="o">)</codE> <cOde cLASS=o>{</cOde>
+      <CODe cLaSs=n>println</CodE><code cLAsS="o">(</CoDE><COdE cLaSs="n">i</CODE><cODE CLASS="o">)</coDe>
+      <cODe clASs="k">if</cOde> <coDE CLASS=o>(</COdE><COdE ClAss="n">i</coDE> <CODE ClASs="o">==</Code> <COdE ClASs="mi">10</CODE><CODe cLass=o>)</CoDE>
+        <CoDE cLAss="n">break</COde><cOde ClasS="o">()</cOdE>                         <CoDe Class=c1>// break out of the loop</cODE>
+    <COde CLASs=o>}</cOde>
+  <cODe CLASs=o>}</cODe>
+</pre></dIv>
+
+</DIv>
+
+<h3 id="leanpub-auto-exceptions">Exceptions</h3>
+
+<p>Exceptions in Scala are handled in the same way as Java. They have all the same schematics in terms of interrupting control flow and aborting the program if not dealt with.
+
+<P>Exceptions in Scala extend <cODE>java.lang.Throwable</CoDE> like their Java counterparts but Scala has no concept of checked exceptions. All checked exceptions thrown from existing Java libraries get converted to <coDe>RuntimeExceptions</CODE>. Any exceptions you throw don’t need to be dealt with to keep the compiler happy; all exceptions in Scala are runtime exceptions.
+
+<Div ClASS="image-with-caption center">
+  <img src="../Images/image00240.jpeg" aLT="Fig. 2.8. The Java exception hierarchy. Scala doesn't use checked exceptions."><P class=caption>Fig. 2.8. The Java exception hierarchy. Scala doesn’t use checked exceptions.
+</dIv>
+
+
+<P>Catching exceptions uses pattern matching like we saw earlier with match expressions. In Java you might do something like this to get the contents of a web page:</P>
+
+<dIv ClAsS=code-block>
+<DIv ClASS=highlight><Pre>  <CODE cLAss="c1">// java</COde>
+  <coDE CLASS=k>try</cODe> <cODE cLASS=o>{</CODE>
+      <CoDe CLAsS=n>URL</code> <CoDE Class=n>url</cODe> <cODE ClaSS="o">=</coDE> <code Class=k>new</codE> <cOdE cLASs="n">URL</COde><coDE cLAsS=o>(</CodE><CoDE clasS="s">"http://baddotrobot.com"</Code><CODe cLass="o">);</cOdE>
+      <code cLasS="n">BufferedReader</COdE> <cOde ClAss=n>reader</coDe> <CODE clAsS=o>=</Code> <cODe ClASs=k>new</CoDE> <CoDe cLAss="n">BufferedReader</coDe><CODE cLAss=o>(</cODE>
+          <COde cLAsS="k">new</cODe> <COdE cLass="nf">InputStreamReader</codE><coDe CLass=o>(</cODe><code cLaSS=n>url</coDe><CoDE cLAss=o>.</CODE><CODE CLASs="na">openStream</COdE><COde cLass=o>()));</codE>
+      <COdE CLaSS="k">try</cOdE> <cOdE CLASs="o">{</cOde>
+          <Code cLaSS=n>String</coDE> <codE ClASs=n>line</code><code clAsS="o">;</coDe>
+          <cODe cLASs="k">while</coDE> <cOdE ClaSS="o">((</cOdE><Code clAss=n>line</code> <cOde claSs="o">=</CODE> <coDe clAss=n>reader</cODE><CodE CLAsS="o">.</cOde><coDE CLaSs=na>readLine</COdE><coDE ClAss="o">())</CoDE> <cODE CLaSS=o>!=</CodE> <COde ClaSS=kc>null</CODe><cOde ClASs="o">)</cOde>
+              <codE cLAsS="n">System</CODe><COdE clAss="o">.</CODE><CoDE CLaSs="na">out</code><CODe ClASs=o>.</cODe><Code clASS="na">println</cOdE><Code cLaSS=o>(</cOde><cOdE ClaSs=n>line</codE><coDe CLasS=o>);</coDe>
+      <codE cLass=o>}</cODe> <cODE claSs=k>finally</coDe> <coDE ClasS="o">{</CoDe>
+          <CODE cLASs="n">reader</CODe><CodE ClASS="o">.</CODe><CoDe cLaSS="na">close</CODe><code cLASs="o">();</CODe>
+      <code cLass=o>}</CodE>
+  <CodE clAsS=o>}</COde> <Code CLASs=k>catch</cOdE> <CodE CLass=o>(</COdE><codE Class="n">MalformedURLException</cODE> <code cLAsS="n">e</CODe><coDE cLAss="o">)</COdE> <cOdE ClasS=o>{</CODE>
+      <COdE ClASs=n>System</code><CoDe ClaSS=o>.</coDE><cOdE clAsS=na>out</cOde><coDE ClasS=o>.</COde><codE CLasS=na>println</codE><code CLaSs="o">(</cOde><COde Class=s>"Bad URL"</Code><coDe cLass=o>);</Code>
+  <CoDE class="o">}</COde> <cOdE CLAsS="k">catch</cOdE> <COde cLAss=o>(</cODE><cODE CLAsS=n>IOException</cODe> <coDe CLaSs="n">e</CoDe><CoDE CLASS="o">)</Code> <cOdE CLASS="o">{</Code>
+      <CoDe claSs=n>System</CODE><CoDe ClASs="o">.</CoDe><CodE clasS=na>out</CoDe><CoDE class="o">.</code><coDe ClASS=na>println</cOdE><cODE ClasS=o>(</CoDE><cOde CLAss="s">"Problem reading data: "</COde> <Code ClASs="o">+</CoDe> <CodE clAss=n>e</cODE><coDe clASS="o">.</codE><CodE claSS="na">getMessage</CodE><coDE ClAss="o">());</CodE>
+  <cOde cLasS=o>}</codE>
+</pRE></div>
+
+</div>
+
+<P>We start with a URL to curl. This can throw a <cOde>MalformedURLException</CoDE>. As it’s a checked exception, we’re forced to deal with it. We then create a <code>Reader</Code> and open a stream from the URL ready for reading. This can throw another exception, so we’re forced to deal with that too. When we start reading, the <CodE>readLine</CodE> method can also throw an exception but that’s handled by the existing catch. To make sure we clean up properly in the event of an exception here, we close the reader in a <cOde>finally</Code> block.
+
+<p>If we want to use Java 7’s try-with-resources construct, we can avoid the <COde>finally</CODE> clause. The try-with-resources syntax will automatically call <code>close</cOdE> on the reader.</P>
+
+<DiV CLaSs="code-block">
+<diV CLASs=highlight><PRe>  <CodE cLAsS=c1>// java</CODE>
+  <CODe CLasS=k>try</coDE> <CODe CLass="o">{</code>
+      <COdE CLaSs=n>URL</coDe> <cODe ClasS=n>url</cOdE> <cODe clASs="o">=</coDE> <cOde cLASs="k">new</coDE> <CoDe cLasS=n>URL</coDe><Code cLASs=o>(</coDe><coDE CLaSs=s>"http://baddotrobot.com"</CODE><cOdE clAss=o>);</Code>
+      <cOdE CLAss=k>try</coDE> <CodE CLasS="o">(</coDE><CODE ClAss=n>BufferedReader</coDE> <coDe cLasS=n>reader</Code> <CODE CLAsS=o>=</Code> <COdE CLaSs="k">new</CoDE> <CODe clASs=n>BufferedReader</CoDe><CoDE clAss=o>(</CODe>
+            <CodE cLASS="k">new</cODe> <COde cLAsS="nf">InputStreamReader</cOde><CODe ClAsS="o">(</cODe><CodE clasS="n">url</cODe><COdE CLASS="o">.</cODe><CoDE clasS=na>openStream</CodE><COdE CLaSs="o">())))</cOde> <code CLaSS="o">{</coDe>
+          <coDE clASS="n">String</CoDE> <cOde cLAss=n>line</CODE><cOde clAsS=o>;</CodE>
+          <codE clASs=k>while</cOde> <cODe CLaSS="o">((</CODE><COdE claSs=n>line</cOde> <COde cLAsS=o>=</codE> <cODe claSS="n">reader</coDE><cODe ClASs=o>.</CoDE><COdE clAsS="na">readLine</COde><codE CLAsS="o">())</COdE> <CodE CLaSs=o>!=</Code> <COde cLaSs="kc">null</CoDe><Code cLaSS="o">)</CoDe>
+              <COde clASs=n>System</coDE><code ClaSS="o">.</CODe><CoDe cLASS=na>out</CODE><CodE clasS="o">.</CoDe><cOdE ClAss="na">println</CODe><COdE CLASS=o>(</cODe><CoDE CLAss="n">line</coDe><CodE ClASs=o>);</CoDE>
+      <code ClasS="o">}</code>
+  <CODE ClAss="o">}</cOde> <cOde CLAss="k">catch</coDE> <cODe cLAss="o">(</COdE><Code clAss="n">MalformedURLException</Code> <cODe claSS=n>e</COdE><cODE CLasS=o>)</coDe> <cOdE ClaSS="o">{</cOde>
+      <code cLAss=n>System</COdE><COdE clasS=o>.</CodE><cOde ClASs=na>out</CODe><CODE ClasS="o">.</CODe><COde Class="na">println</COdE><codE CLasS="o">(</coDE><cOdE clasS="s">"Bad URL"</cODE><cODE cLass=o>);</code>
+  <CODe CLASs=o>}</coDE> <COdE CLass="k">catch</coDE> <code CLAss="o">(</cOdE><COdE claSS="n">IOException</code> <codE cLASs=n>e</CodE><code CLASS=o>)</coDE> <CodE cLAss="o">{</coDe>
+      <cODE cLass=n>System</coDE><Code clASs=o>.</cODe><codE cLAss="na">out</cODe><COdE clASs="o">.</cOdE><Code claSs=na>println</CoDE><COdE ClaSS="o">(</CODe><Code CLaSs="s">"Problem reading data: "</COdE> <CodE ClASs="o">+</coDE> <cOdE Class=n>e</cODE><Code ClasS=o>.</cODe><CODe ClaSs=na>getMessage</CoDE><COdE cLaSs=o>());</cODE>
+  <code cLASS=o>}</code>
+</Pre></DiV>
+
+</DIv>
+
+<P>In Scala things look pretty much the same.
+
+<DIV class="code-block">
+<div cLass=highlight><pRE>  <CODe CLasS="c1">// scala</COde>
+  <cOdE clAss="k">try</Code> <COde CLaSS=o>{</CoDE>
+    <cODE CLAss=k>val</CoDE> <Code clAsS="n">url</cODE> <COdE CLAss=k>=</cODE> <CoDE cLaSS=k>new</coDe> <coDE ClasS="nc">URL</CoDe><CodE ClaSS=o>(</code><coDe ClASs="s">"http://baddotrobot.com"</CodE><cODE CLASs="o">)</CodE>
+    <CODe claSS="k">val</cOde> <CODE ClaSS="n">reader</CODE> <CoDE CLASs="k">=</cODE> <cODe clAss=k>new</coDE> <cODE CLAsS="nc">BufferedReader</code><codE ClaSs="o">(</CODe><CodE claSs=k>new</COdE> <coDe cLAss="nc">InputStreamReader</CODE><CodE clASS="o">(</CoDe><CoDe ClaSS="n">url</cODE><coDe ClaSS=o>.</CoDe><CoDE ClAsS="n">openStream</COde><codE CLAss=o>))</cODe>
+    <CodE CLAsS="k">try</COde> <cODE cLAss="o">{</cODe>
+      <Code class=k>var</CODE> <cOde cLass="n">line</code> <cODE cLaSs="k">=</CoDE> <CODE clAsS="n">reader</coDe><CODe CLASs="o">.</CoDE><code CLass=n>readLine</coDe>
+      <cOde ClasS="k">while</CoDe> <coDE clASs=o>(</coDe><Code cLAss=n>line</COdE> <coDe CLaSS="o">!=</CodE> <cODE cLASs="kc">null</CodE><CODE CLasS="o">)</CODe> <cODe ClAss=o>{</CODe>
+        <coDE cLaSs=n>line</cODe> <Code cLasS="k">=</CoDE> <COde CLaSs="n">reader</coDe><CODE CLAss="o">.</CoDE><CoDe cLasS=n>readLine</CODE>
+        <cOdE claSS="n">println</COdE><cODe cLasS=o>(</cOde><CoDE ClaSS="n">line</COdE><code claSS=o>)</CodE>
+      <Code CLAss="o">}</COde>
+    <cOdE cLaSS="o">}</COde> <CoDe clAss=k>finally</cOdE> <cOde cLASS=o>{</CODe>
+      <cODE ClaSs="n">reader</cOde><cODE cLAss="o">.</CodE><codE cLASs=n>close</CODE><cODe cLASs=o>()</cODe>
+    <cOdE clASS="o">}</COde>
+  <code clAsS="o">}</cOde> <cODe Class=k>catch</CODE> <codE class="o">{</cOdE>
+    <CODe CLASs="k">case</coDe> <codE ClaSs=n>e</cODE><CODE CLAss=k>:</CODe> <cOdE CLAsS=kt>MalformedURLException</code> <Code ClASS="o">=&gt;</coDE> <CoDe cLAss=n>println</Code><codE CLASS="o">(</coDE><cODE cLaSs="s">"Bad URL"</CoDe><cOdE CLass=o>)</cOdE>
+    <cODE CLAsS=k>case</COde> <cOde cLaSs=n>e</coDE><CODE ClasS=k>:</cODE> <COdE CLasS="kt">IOException</code> <cOde ClaSS="o">=&gt;</cOdE> <coDE cLaSs="n">println</cODe><coDe CLAsS="o">(</COdE><CODe CLasS=n>e</codE><CodE CLasS="o">.</CODe><coDe ClASS="n">getMessage</cODE><cODE cLAsS=o>)</coDE>
+  <cOde ClAss=o>}</COdE>
+</PRe></diV>
+
+</dIV>
+
+<p>We create the URL as before. Although it can throw an exception, we’re not forced to catch it. It’s a Java checked exception but Scala is converting it to a runtime exception.</p>
+
+<p>Although we’re not forced to, we do actually want to deal with the exceptions. So we use the familiar <code>try</COdE> and <CODe>catch</COde> statements. In the catch, the exceptions are dealt with using match expressions. We can tweak the pattern if we don’t actually need the exception in the code block by replacing the variable name with an underscore. That means we don’t care about the variable, only the class.
+
+<DiV ClaSS=code-block>
+<DIv ClAss=highlight><PrE>  <codE clAsS=k>case</code> <CoDE ClaSS="k">_:</codE> <cODe ClAss=kt>MalformedURLException</COdE> <CODE clasS=o>=&gt;</Code> <CODE ClASS="n">println</cODE><CODE claSs="o">(</CoDe><cODE CLass=s>"Bad URL"</cODe><code clASS=o>)</COde>
+</pre></dIV>
+
+</DIV>
+
+<P>We just need to add the <CodE>finally</code> block back in. <codE>finally</coDE> is just as it is in Java. There is no try-with-resources equivalent in Scala, although you can write your own method to achieve the same thing. (Hint: With something like the Loan pattern.)
+</Div>

@@ -1,0 +1,131 @@
+﻿<?XMl version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<tiTle>Installing Scala</titlE>
+<LiNk hRef="../Styles/style0001.css" Type="text/css" reL="stylesheet"/>
+
+<DiV>
+<H2 id="leanpub-auto-installing-scala">Installing Scala</H2>
+
+<P>There are a couple of ways to get started with Scala.
+
+<OL cLaSs="numeric"><li>You can run Scala interactively with the interpreter,
+  <Li>run shorter programs as shell scripts, or
+  <Li>compile programs with the <CODE>scalac</Code> compiler.
+</Ol><h3 id="leanpub-auto-the-scala-interpreter">The Scala Interpreter</H3>
+
+<p>Before working with an IDE, it’s probably worth getting familiar with the Scala interpreter, or REPL.</P>
+
+<p>Download the latest Scala binaries (from http://scala-lang.org/downloads) and extract the archive. Assuming you have Java installed, you can start using the interpreter from a command prompt or terminal window straight away. To start up the interpreter, navigate to the exploded folder and type<suP id=fnref-path><a rEL="footnote" HrEf="part0005.xhtml#fn-path">1</A></SuP>:</p>
+
+<diV cLASS=code-block>
+<DiV cLASs="highlight"><pRe>  <CoDe ClASS=n>bin</CoDE><coDe ClaSs=o>/</CodE><CODE ClAss=n>scala</Code>
+</pRe></Div>
+
+</dIV>
+
+<p>You’ll be faced with the Scala prompt.</P>
+
+<diV cLaSs="code-block">
+<DIV cLass=highlight><PrE>  <coDe CLASs=n>scala</CodE><COdE cLASS=o>&gt;</codE> <coDE ClASS="k">_</COde>
+</prE></DiV>
+
+</div>
+
+<P>You can type commands followed by <cODE>enter</cOde>, and the interpreter will evaluate the expression and print the result. It reads, evaluates and prints in a loop so it’s known as a REPL.
+
+<diV CLAsS=page-break></DiV><DiV sTyLE=page-break-after:always></DIV>
+<p>If you type <codE>42*4</cODE> and hit <CODe>enter</cODE>, the REPL evaluates the input and displays the result.</P>
+
+<DIV ClaSS=code-block>
+<DiV cLASs="highlight"><PRE>  <COde ClaSS="n">scala</CoDE><CodE cLasS=o>&gt;</codE> <Code clAsS=mi>42</CoDe><COdE cLASs="o">*</COde><COde clASs="mi">4</CODe>
+  <coDe CLass=n>res0</cODe><cODE ClasS=k>:</cOdE> <CodE cLaSs=kt>Int</coDe> <CodE clAsS="o">=</code> <CoDe CLAsS="mi">168</COdE>
+</pRe></DIv>
+
+</dIv>
+
+<p>In this case, the result is assigned to a variable called <COdE>res0</codE>. You can go on to use this, for example to get half of <cOdE>res0</coDe>.</p>
+
+<DIv claSs=code-block>
+<DIv CLasS=highlight><prE>  <CODe Class=n>scala</Code><CODE cLasS=o>&gt;</COde> <CODe cLasS="n">res0</CoDE> <CodE clasS="o">/</COdE> <CoDe CLaSS="mi">2</COdE>
+  <CODE cLAss=n>res1</CodE><cOde ClAsS=k>:</Code> <cODe cLass=kt>Int</COdE> <CODe CLASS="o">=</cOde> <code clASs="mi">84</cODE>
+</pRe></diV>
+
+</DIV>
+
+<p>The new result is assigned to <cOdE>res1</COdE>.</p>
+
+<p>Notice the REPL also displays the type of the result: <cODE>res0</codE> and <coDe>res1</CODE> are both integers (<CoDE>Int</codE>). Scala has inferred the types based on the values. </p>
+
+<P>If you add <coDE>res1</CoDE> to the end of a string, no problem; the new result object is a string.
+
+<dIV ClasS="code-block">
+<diV clASS=highlight><PRE>  <cODE ClaSs=n>scala</CodE><Code cLasS="o">&gt;</codE> <coDE ClASS=s>"Hello Prisoner "</cOde> <code CLaSS=o>+</CoDE> <CoDE CLass="n">res1</CoDe>
+  <CoDe CLASS=n>res2</CODe><CoDE clASs="k">:</CoDe> <CoDe cLass="kt">String</cODe> <COdE CLaSS=o>=</cOdE> <CODe cLASS="nc">Hello</code> <coDE claSS=nc>Prisoner</cODe> <codE cLaSS=mi>84</CoDE>
+</pRE></DIv>
+
+</diV>
+
+<p>To quit the REPL, type:
+
+<dIv cLAss=code-block>
+<dIV cLAsS=highlight><Pre>  <COde Class="k">:</Code><CODE ClaSs=kt>quit</CoDE>
+</Pre></diV>
+
+</Div>
+
+<h3 id="leanpub-auto-scala-scripts">Scala Scripts</H3>
+
+<P>The creators of Scala originally tried to promote the use of Scala from Unix shell scripts. As competition to Perl, Groovy or bash scripts on Unix environments it didn’t really take off, but if you want to, you can create a shell script to wrap Scala:</P>
+
+<Div claSs=code-block>
+<dIV class="highlight"><prE><CODE cLAsS=lineno>1</COde>   <cODE cLASS=o>#!/</CoDe><coDE cLASs="n">bin</codE><cOdE cLAsS="o">/</cODe><coDe claSs=n>sh</CoDE>
+<CodE clasS="lineno">2</Code>   <CODE ClASs=n>exec</Code> <CODE CLasS=n>scala</coDe> <code Class=s>"$0"</COdE> <COde CLaSs="s">"$@"</CoDE>
+<cOdE ClaSS="lineno">3</CoDE>   <cODE class=o>!</COdE><cODe ClaSS=k>#</CODe>
+<CoDe cLAsS="lineno">4</CoDe>   <Code clASs=k>object</coDE> <cOde cLass="nc">HelloWorld</COdE> <CoDe CLASS=o>{</cOde>
+<CoDE ClASs="lineno">5</code>     <COdE CLaSs="k">def</cODE> <CoDE CLASs=n>main</coDe><cOde CLAss=o>(</codE><cOde ClASs="n">args</cODe><cOde cLass=k>:</COde> <CodE cLass="kt">Array</codE><coDE cLASs="o">[</codE><code ClasS="kt">String</cOde><COde CLaSs="o">])</COde> <CODe ClasS=o>{</CodE>
+<cODE CLASS="lineno">6</cODE>       <cODe CLASS=n>println</cOde><cODe CLASS=o>(</coDe><code ClasS=s>"Hello, "</code> <CODE clAss="o">+</COde> <cODe cLAss="n">args</CoDE><CoDe CLASS="o">.</CodE><COdE clASS=n>toList</code><cOdE clAsS=o>)</CODE>
+<COdE ClaSS=lineno>7</CoDE>     <codE claSS=o>}</CoDE>
+<CoDe claSS="lineno">8</CoDE>   <Code cLasS="o">}</CoDe>
+<CODE CLAss="lineno">9</COde>   <coDE ClaSS=nc>HelloWorld</COdE><COdE ClaSS="o">.</CodE><coDE cLASS=n>main</cODe><cOde ClAsS=o>(</CoDE><code ClaSS="n">args</CoDe><coDe claSS="o">)</CodE>
+</Pre></div>
+
+</DIv>
+
+<p>Don’t worry about the syntax or what the script does (although I’m sure you’ve got a pretty good idea already). The important thing to note is that some Scala code has been embedded in a shell script and that the last line is the command to run.
+
+<P>You’d save it as a <CODe>.sh</COde> file, for example <coDe>hello.sh</CoDE>, and execute it like this:</p>
+
+<DIV ClasS="code-block">
+<DIV CLAss="highlight"><pre>  <CodE cLaSs="o">./</Code><CODE Class="n">hello</CoDE><Code clASS=o>.</cOde><coDE CLass=n>sh</cOdE> <codE cLAsS="nc">World</code><CODE cLaSS=o>!</CODe>
+</PrE></DIV>
+
+</DIV>
+
+<p>The <code>exec</CODe> command on line 2 spawns a process to call <CODE>scala</CODE> with arguments; the first is the script filename itself (<CoDe>hello.sh</Code>) and the second is the arguments to pass to the script. The whole thing is equivalent to running Scala like this, passing in a shell script as an argument:
+
+<Div ClasS="code-block">
+<dIV cLAsS=highlight><pRE>  <CoDE cLASS="n">scala</coDe> <COdE cLASs="n">hello</coDe><Code clASS="o">.</codE><codE ClaSS=n>sh</cOde> <cOde Class=nc>World</CoDE><cODE clASS="o">!</COdE>
+</pRE></DIv>
+
+</dIv>
+
+<H3 id="leanpub-auto-scalac">
+  <coDE>scalac</CODe>
+</H3>
+
+<p>If you’d prefer, you can compile <coDe>.scala</CoDE> files using the Scala compiler.
+
+<P>The <CODe>scalac</cOde> compiler works just like <cODe>javac</coDE>. It produces Java bytecode that can be executed directly on the JVM. You run the generated bytecode with the <codE>scala</code> command. Just like Java though, it’s unlikely you’ll want to build your applications from the command line.
+
+<P>All the major IDEs support Scala projects, so you’re more likely to continue using your favorite IDE. We’re not going to go into the details of how to set up a Scala project in each of the major IDEs; if you’re familiar with creating Java projects in your IDE, the process will be very similar.</p>
+
+<p>For reference though, here are a few starting points.
+
+<UL><lI>You can create bootstrap projects with Maven and the <CODe>maven-scala-plugin</cODe>.</Li>
+  <lI>You can create a new Scala project directly within IntelliJ IDEA once you’ve installed the <code>scala</cODe> plugin (available in the JetBrains repository).</LI>
+  <Li>Similarly, you can create a new Scala project directly within Eclipse once you have the Scala IDE plugin. Typesafe created this and it’s available from the usual update sites. You can also download a bundle directly from the scala-lang or scala-ide.org sites.</Li>
+  <Li>You can use SBT and create a build file to compile and run your project. SBT stands for Simple Build Tool and it’s akin to Ant or Maven, but for the Scala world.
+  <lI>SBT also has plugins for Eclipse and IDEA, so you can use it directly from within the IDE to create and manage the IDE project files.
+</uL><dIv ClaSS="footnotes">
+  <ol><li id="fn-path">If you don’t want to change into the install folder to run the REPL, set the <coDE>bin</COde> folder on your path.<A reV="footnote" Href="part0005.xhtml#fnref-path">↩</a>
+  </oL></Div>
+</DiV>

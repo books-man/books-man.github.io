@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Faking Function Calls</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-faking-function-calls">Faking Function Calls</h2>
+
+<p>Scala provides mechanisms to make method calls look like regular function calls. It uses special case <code>apply</code> and <code>update</code> methods to allow a kind of shorthand call notation that can reduce the clutter of your code.</p>
+
+<h3 id="leanpub-auto-the-apply-method">The <code>apply</code> Method</h3>
+
+<p>The <code>apply</code> method provides a shorthand way of calling a method on a class. So, as we saw, you can use them as factory-style creation methods, where given some class such as our old friend <code>Customer</code>:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">address</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>…you can add an <code>apply</code> method to its companion object.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Customer</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">apply</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">address</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="o">,</code> <code class="n">address</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>You can then either call the method directly, or drop the <code>apply</code> part, at which point Scala will look for an apply method that matches your argument list and call it.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="nc">Customer</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="s">"Bob Fossil"</code><code class="o">,</code> <code class="s">"1 London Road"</code><code class="o">)</code>
+  <code class="nc">Customer</code><code class="o">(</code><code class="s">"Rob Randal"</code><code class="o">,</code> <code class="s">"14 The Arches"</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>You can also have multiple apply methods. For example, we could create another method to default the address field of our customer.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">apply</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="o">,</code> <code class="s">"No known address"</code><code class="o">)</code>
+
+  <code class="nc">Customer</code><code class="o">(</code><code class="s">"Cuthbert Colbert"</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>You don’t have to use <code>apply</code> methods as factory methods though. Most people end up using them to make their class APIs more succinct. This is key to how Scala can help make APIs more expressive. If it makes sense that a default behaviour of your class is to create an instance, fine, but you can also make other methods look like function calls using <code>apply</code>.</p>
+
+<p>So far, we’ve been using an <code>apply</code> method on a singleton object (<code>object Customer</code>) and dropping the <code>apply</code>, but you can have <code>apply</code> methods on a class and call them on a instance variable.</p>
+
+<p>For example, we could create a class called <code>Adder</code> and call the <code>apply</code> method on an instance to add two numbers together.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">add</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Adder</code><code class="o">()</code>
+  <code class="n">add</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">3</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>But we can just as easily drop it and it’ll look like we’re calling a function even though we’re actually calling a method on an instance variable.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// scala</code>
+  <code class="k">val</code> <code class="n">add</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Adder</code><code class="o">()</code>
+  <code class="n">add</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">3</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>Another example is accessing array values. Suppose we have an array of Roman numerals.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">numerals</code> <code class="k">=</code> <code class="nc">Array</code><code class="o">(</code><code class="s">"I"</code><code class="o">,</code> <code class="s">"II"</code><code class="o">,</code> <code class="s">"III"</code><code class="o">,</code> <code class="s">"IV"</code><code class="o">,</code> <code class="s">"V"</code><code class="o">,</code> <code class="s">"VI"</code><code class="o">,</code> <code class="s">"VII"</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>To access the array using an index, the syntax is to use parentheses rather than square brackets.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">numerals</code><code class="o">(</code><code class="mi">5</code><code class="o">)</code>           <code class="c1">// yields "VI'</code>
+</pre></div>
+
+</div>
+
+<p>So using the index in a loop, we could do something like this to print the entire array:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">for</code> <code class="o">(</code><code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="n">numerals</code><code class="o">.</code><code class="n">length</code> <code class="o">-</code> <code class="mi">1</code><code class="o">)</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">i</code> <code class="o">+</code> <code class="s">" = "</code> <code class="o">+</code> <code class="n">numerals</code><code class="o">(</code><code class="n">i</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>What’s interesting here is that there is an <code>apply</code> method on array that takes an <code>Int</code>. So we could have written it like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">numerals</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="mi">5</code><code class="o">)</code> <code class="c1">// yields "VI'</code>
+
+  <code class="k">for</code> <code class="o">(</code><code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="n">numerals</code><code class="o">.</code><code class="n">length</code> <code class="o">-</code> <code class="mi">1</code><code class="o">)</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">i</code> <code class="o">+</code> <code class="s">" = "</code> <code class="o">+</code> <code class="n">numerals</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="n">i</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>What looks like language syntax to access an array is actually just a regular method call. Scala fakes it.</p>
+
+<h3 id="leanpub-auto-the-update-method">The <code>update</code> Method</h3>
+
+<p>Assignment works in just the same way. For example, <code>numerals(2) = "ii"</code> actually calls a special method called <code>update</code> on the <code>Array</code> class (<code>def update(i: Int, x: T)</code>).</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">numerals</code><code class="o">(</code><code class="mi">2</code><code class="o">)</code> <code class="k">=</code> <code class="s">"ii"</code>
+</pre></div>
+
+</div>
+
+<p>If Scala sees the assignment operator and can find an <code>update</code> method with appropriate arguments, it translates the assignment to a method call.</p>
+
+<p>We can apply this idea to our own classes to make an API feel more like language syntax. Let’s say we’re in the business of telephony and part of that business is to maintain a directory of customer telephone numbers.</p>
+
+<p>We can create a collection class to contain our directory, and initialise it to hold the telephone numbers of the four musketeers, like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">Directory</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">numbers</code> <code class="k">=</code> <code class="n">scala</code><code class="o">.</code><code class="n">collection</code><code class="o">.</code><code class="n">mutable</code><code class="o">.</code><code class="nc">Map</code><code class="o">(</code>
+      <code class="s">"Athos"</code>      <code class="o">-&gt;</code> <code class="s">"7781 456782"</code><code class="o">,</code>
+      <code class="s">"Aramis"</code>     <code class="o">-&gt;</code> <code class="s">"7781 823422"</code><code class="o">,</code>
+      <code class="s">"Porthos"</code>    <code class="o">-&gt;</code> <code class="s">"1471 342383"</code><code class="o">,</code>
+      <code class="s">"D`Artagnan"</code> <code class="o">-&gt;</code> <code class="s">"7715 632982"</code>
+    <code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>If we decide that the shorthand or default behaviour of the directory should be to return the telephone number of a customer, we can implement the <code>apply</code> method as follows:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">apply</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="n">numbers</code><code class="o">.</code><code class="n">get</code><code class="o">(</code><code class="n">name</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>That way, after creating a instance of our directory, we can print Athos’s number like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">yellowPages</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Directory</code><code class="o">()</code>
+  <code class="n">println</code><code class="o">(</code><code class="s">"Athos's telephone number : "</code> <code class="o">+</code> <code class="n">yellowPages</code><code class="o">(</code><code class="s">"Athos"</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>Then if we want to update a number, we could implement an updating method and call it directly. Scala’s assignment shorthand means that if we actually name our method <code>update</code>, we can use the assignment operator and it will call the <code>update</code> method for us.</p>
+
+<p>So, we add an update method:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">update</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">number</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="n">numbers</code><code class="o">.</code><code class="n">update</code><code class="o">(</code><code class="n">name</code><code class="o">,</code> <code class="n">number</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Then we can call it to update a number like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">yellowPages</code><code class="o">.</code><code class="n">update</code><code class="o">(</code><code class="s">"Athos"</code><code class="o">,</code> <code class="s">"Unlisted"</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>Taking advantage of the shorthand notation, you can also use assignment.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">yellowPages</code><code class="o">(</code><code class="s">"Athos"</code><code class="o">)</code> <code class="k">=</code> <code class="s">"Unlisted"</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-multiple-update-methods">Multiple <code>update</code> Methods</h4>
+
+<p>We could also add a second update method, this time with an <code>Int</code> as the first argument.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">update</code><code class="o">(</code><code class="n">areaCode</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">newAreaCode</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="o">???</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Let’s say we want it to update an area code across all entries. We could enumerate each entry to work out which numbers start with the area code from the first argument. For any that match, we go back to the original map and update the entry.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">update</code><code class="o">(</code><code class="n">areaCode</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">newAreaCode</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="n">numbers</code><code class="o">.</code><code class="n">foreach</code><code class="o">(</code><code class="n">entry</code> <code class="k">=&gt;</code> <code class="o">{</code>
+      <code class="k">if</code> <code class="o">(</code><code class="n">entry</code><code class="o">.</code><code class="n">_2</code><code class="o">.</code><code class="n">startsWith</code><code class="o">(</code><code class="n">areaCode</code><code class="o">.</code><code class="n">toString</code><code class="o">))</code>
+        <code class="n">numbers</code><code class="o">(</code><code class="n">entry</code><code class="o">.</code><code class="n">_1</code><code class="o">)</code> <code class="k">=</code> <code class="n">entry</code><code class="o">.</code><code class="n">_2</code><code class="o">.</code><code class="n">replace</code><code class="o">(</code><code class="n">areaCode</code><code class="o">.</code><code class="n">toString</code><code class="o">,</code> <code class="n">newAreaCode</code><code class="o">)</code>
+    <code class="o">})</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The <code>_1</code> and <code>_2</code> are Scala notation for accessing what’s called a <em>tuple</em>. It’s a simple data structure that we’re using to treat what, in our case, would be a <code>Map.Entry</code> in Java as a single variable. The <code>_1</code> and <code>_2</code> are method calls that let us access the <em>key</em> and <em>value</em> respectively. Tuples are actually more general purpose than this and not just used for maps. We’re using a tuple of two elements (a <code>Tuple2</code>) but you can have tuples with up to twenty-two elements (<code>Tuple22</code>).</p>
+
+<p>We can call the new <code>update</code> method using the shorthand assignment syntax like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">DirectoryExampleAlternativeUpdateMethod</code> <code class="k">extends</code> <code class="nc">App</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">yellowPages</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Directory</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">yellowPages</code><code class="o">)</code>
+
+    <code class="n">yellowPages</code><code class="o">(</code><code class="mi">7781</code><code class="o">)</code> <code class="k">=</code> <code class="s">"7555"</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">yellowPages</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The outcome of this is that both Athos and Aramis will have their area codes updated.</p>
+
+<h4 id="leanpub-auto-multiple-arguments-to-update">Multiple Arguments to <code>update</code></h4>
+
+<p>You can have as many arguments in the <code>update</code> method as you like but only the last will be used as the updated value. This makes sense, as you can only have one value to the right of an assignment operator.</p>
+
+<p>The rest of the argument list is used to select the appropriate update methods. So if you had another method with three arguments (<code>areaCode</code>, <code>anotherArgument</code> and <code>newAreaCode</code>):</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">update</code><code class="o">(</code><code class="n">areaCode</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">another</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">newAreaCode</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">???</code>
+</pre></div>
+
+</div>
+
+<p>…the types would be used to work out which <code>update</code> method should be called on assignment.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">yellowPages</code><code class="o">(</code><code class="mi">7998</code><code class="o">)</code> <code class="k">=</code> <code class="s">"7668"</code>
+  <code class="n">yellowPages</code><code class="o">(</code><code class="mi">7998</code><code class="o">,</code> <code class="s">"another argument"</code><code class="o">)</code> <code class="k">=</code> <code class="s">"???"</code>
+</pre></div>
+
+</div>
+
+<h3 id="leanpub-auto-summary-2">Summary</h3>
+
+<p>We’ve seen more about the <code>apply</code> method in this chapter; how you don’t just use it for factory-style creation methods but for building rich APIs. You can make client code more concise by making method calls look like function calls.</p>
+
+<p>We also saw how the related <code>update</code> method works and in the same way how we can write APIs that take advantage of the assignment operator and implement custom update behaviour.</p>
+</div>
+</body></html>

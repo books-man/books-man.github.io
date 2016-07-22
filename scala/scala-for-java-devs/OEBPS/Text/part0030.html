@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Syntax Cheat Sheet</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-syntax-cheat-sheet">Syntax Cheat Sheet</h2>
+
+
+<h4 id="leanpub-auto-values">Values</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="mi">42</code>
+  <code class="k">var</code> <code class="n">y</code><code class="k">:</code> <code class="kt">String</code> <code class="o">=</code> <code class="s">"mutable"</code>
+  <code class="k">val</code> <code class="n">z</code> <code class="k">=</code> <code class="s">"Scala FTW!"</code>                        <code class="c1">// using type inference</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-functions">Functions</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>        <code class="c1">// single expression</code>
+  <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code> <code class="o">{</code>                   <code class="c1">// without =, Unit is returned</code>
+    <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>
+  <code class="o">}</code>
+  <code class="k">def</code> <code class="n">min</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="o">{</code>            <code class="c1">// last line = return value</code>
+    <code class="k">if</code> <code class="o">(</code><code class="n">x</code> <code class="o">&lt;</code> <code class="n">y</code><code class="o">)</code>
+      <code class="n">x</code>
+    <code class="k">else</code>
+      <code class="n">y</code>
+  <code class="k">def</code> <code class="n">min</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="k">if</code> <code class="o">(</code><code class="n">x</code> <code class="o">&lt;</code> <code class="n">y</code><code class="o">)</code> <code class="n">x</code> <code class="k">else</code> <code class="n">y</code>
+  <code class="k">def</code> <code class="n">min</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="o">{</code>            <code class="c1">// but don't forget the else</code>
+    <code class="k">if</code> <code class="o">(</code><code class="n">x</code> <code class="o">&lt;</code> <code class="n">y</code><code class="o">)</code>
+      <code class="n">x</code>
+    <code class="n">y</code>                                         <code class="c1">// bug!</code>
+  <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code> <code class="k">=</code> <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>             <code class="c1">// return types can be inferred</code>
+  <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="mi">2</code><code class="o">)</code> <code class="k">=</code> <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>         <code class="c1">// default y to 2 if omitted</code>
+  <code class="k">val</code> <code class="n">add</code> <code class="k">=</code> <code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">,</code> <code class="n">y</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">x</code> <code class="o">+</code> <code class="n">y</code>         <code class="c1">// anonymous function</code>
+  <code class="n">add</code><code class="o">(</code><code class="mi">4</code><code class="o">,</code> <code class="mi">2</code><code class="o">)</code>                                   <code class="c1">// call as usual</code>
+  
+  <code class="c1">// convert an anonymous class (Ordering in this case) to a lambda </code>
+  <code class="k">implicit</code> <code class="k">def</code> <code class="n">functionToOrdering</code><code class="o">[</code><code class="kt">A</code><code class="o">](</code><code class="n">f</code><code class="k">:</code> <code class="o">(</code><code class="kt">A</code><code class="o">,</code> <code class="kt">A</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="nc">Int</code><code class="o">)</code><code class="k">:</code> <code class="kt">Ordering</code><code class="o">[</code><code class="kt">A</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code> 
+    <code class="k">new</code> <code class="nc">Ordering</code><code class="o">[</code><code class="kt">A</code><code class="o">]</code> <code class="o">{</code>
+      <code class="k">def</code> <code class="n">compare</code><code class="o">(</code><code class="n">a</code><code class="k">:</code> <code class="kt">A</code><code class="o">,</code> <code class="n">b</code><code class="k">:</code> <code class="kt">A</code><code class="o">)</code> <code class="k">=</code> <code class="n">f</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="n">a</code><code class="o">,</code> <code class="n">b</code><code class="o">)</code> 
+    <code class="o">}</code>
+  <code class="o">}</code>  
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-call-by-name-1">Call-by-Name</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">runInThread</code><code class="o">(</code><code class="n">task</code><code class="k">:</code> <code class="o">=&gt;</code> <code class="nc">Int</code><code class="o">)</code> <code class="o">{</code>
+    <code class="k">new</code> <code class="nc">Thread</code><code class="o">()</code> <code class="o">{</code>
+      <code class="k">override</code> <code class="k">def</code> <code class="n">run</code><code class="o">()</code><code class="k">:</code> <code class="kt">Unit</code> <code class="o">=</code> <code class="n">task</code>
+    <code class="o">}.</code><code class="n">start</code><code class="o">()</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-operator-overloading-and-infix">Operator Overloading and Infix</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="mi">5</code> <code class="o">*</code> <code class="mi">10</code>                                           <code class="c1">// same as 5.*(10)</code>
+  <code class="s">"Scala"</code> <code class="n">replace</code><code class="o">(</code><code class="s">"a"</code><code class="o">,</code> <code class="s">"*"</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-classes">Classes</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">Customer</code>                                   <code class="c1">// create a public class</code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>                     <code class="c1">// with primary ctor</code>
+  <code class="k">class</code> <code class="nc">Customer</code> <code class="k">private</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>             <code class="c1">// private constructor</code>
+  <code class="k">private</code> <code class="k">class</code> <code class="nc">Customer</code>                           <code class="c1">// a private class</code>
+  <code class="k">private</code> <code class="k">class</code> <code class="nc">Customer</code> <code class="k">private</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>     <code class="c1">// with private ctor</code>
+  
+  <code class="k">val</code> <code class="n">c</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code>                      <code class="c1">// create an instance</code>
+  
+  <code class="c1">// class with primary constructor and auxiliary constructor</code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">forename</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">surname</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="o">{</code>     
+    <code class="k">def</code> <code class="k">this</code><code class="o">(</code><code class="n">surname</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="o">{</code> 
+      <code class="k">this</code><code class="o">(</code><code class="s">"Unknown"</code><code class="o">,</code> <code class="n">surname</code><code class="o">)</code>
+    <code class="o">}</code> 
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<div class="page-break"></div><div style="page-break-after:always"></div>
+<h4 id="leanpub-auto-case-classes">Case Classes</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">case</code> <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>               <code class="c1">// a case class</code>
+  <code class="k">case</code> <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="k">val</code> <code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>           <code class="c1">// val is redundant here</code>
+  
+  <code class="c1">// no need to use "new" to create a new instance with case classes</code>
+  <code class="nc">Customer</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code>
+                                   
+  <code class="c1">// equality and hash code are free with case classes:</code>
+  <code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code> <code class="o">==</code> <code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code>      <code class="c1">// returns true           \</code>
+                        
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-singleton-object">Singleton Object</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// a singleton instance</code>
+  <code class="c1">// when paired with a class, the object becomes a "companion" object</code>
+  <code class="k">object</code> <code class="nc">Customer</code>           
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-inheritance">Inheritance</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">B</code> <code class="k">extends</code> <code class="n">A</code>                     <code class="c1">// subtype inheritance</code>
+  <code class="k">class</code> <code class="nc">C</code><code class="o">(</code><code class="n">x</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code>
+  <code class="k">class</code> <code class="nc">D</code><code class="o">(</code><code class="n">value</code><code class="k">:</code> <code class="kt">Int</code><code class="o">)</code> <code class="k">extends</code> <code class="n">A</code><code class="o">(</code><code class="n">value</code><code class="o">)</code>  <code class="c1">// calling the super constructor</code>
+
+  <code class="c1">// overriding methods ("override" needed overriding non-abstract methods)</code>
+  <code class="k">class</code> <code class="nc">E</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">position</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="mi">5</code>
+  <code class="o">}</code>
+  <code class="k">class</code> <code class="nc">F</code> <code class="k">extends</code> <code class="n">E</code> <code class="o">{</code>
+    <code class="k">override</code> <code class="n">position</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=</code> <code class="k">super</code><code class="o">.</code><code class="n">position</code> <code class="o">+</code> <code class="mi">1</code>
+  <code class="o">}</code>
+  
+  <code class="c1">// you can mixin in multiple traits but only one class (A)</code>
+  <code class="k">trait</code> <code class="nc">SelfDescribing</code>
+  <code class="k">trait</code> <code class="nc">Writable</code>
+  <code class="k">class</code> <code class="nc">B</code> <code class="k">extends</code> <code class="n">A</code> <code class="k">with</code> <code class="nc">SelfDescribing</code> <code class="k">with</code> <code class="nc">Writable</code> 
+  <code class="k">class</code> <code class="nc">B</code> <code class="k">extends</code> <code class="nc">SelfDescribing</code> <code class="k">with</code> <code class="n">A</code> <code class="k">with</code> <code class="nc">Writable</code>    <code class="c1">// compiler failure </code>
+</pre></div>
+
+</div>
+
+<div class="page-break"></div><div style="page-break-after:always"></div>
+<h4 id="leanpub-auto-fields">Fields</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// name is not a field, it's available to the primary constructor only</code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>                     
+  <code class="c1">// name is a public field (getter, no setter created)</code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="k">val</code> <code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>                     
+  <code class="c1">// name is a public field (getter and setter created)</code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="k">var</code> <code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>                     
+  <code class="c1">// name is a private field (a private getter is generated but no setter)   </code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="k">private</code> <code class="k">val</code> <code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>                     
+  <code class="c1">// name is private (a private getter and setter is generated)</code>
+  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="k">private</code> <code class="k">var</code> <code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>                     
+    
+  <code class="n">customer</code><code class="o">.</code><code class="n">name_=</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code>      <code class="c1">// you can call the setter method directly</code>
+  <code class="n">customer</code><code class="o">.</code><code class="n">name</code> <code class="k">=</code> <code class="s">"Bob"</code>       <code class="c1">// or use infix notation</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-collections-1">Collections</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">list</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">4</code><code class="o">,</code> <code class="mi">234</code><code class="o">,</code> <code class="mi">12</code><code class="o">)</code>                    <code class="c1">// create a list</code>
+  <code class="k">val</code> <code class="n">map</code> <code class="k">=</code> <code class="nc">Map</code><code class="o">(</code><code class="mi">1</code> <code class="o">-&gt;</code> <code class="s">"a"</code><code class="o">,</code> <code class="mi">2</code> <code class="o">-&gt;</code> <code class="s">"b"</code><code class="o">)</code>                 <code class="c1">// create a map</code>
+  <code class="n">list</code><code class="o">.</code><code class="n">foreach</code><code class="o">(</code><code class="n">value</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="n">value</code><code class="o">))</code>
+  <code class="n">list</code><code class="o">.</code><code class="n">foreach</code><code class="o">(</code><code class="n">println</code><code class="o">)</code>
+  <code class="k">for</code> <code class="o">(</code><code class="n">value</code> <code class="k">&lt;-</code> <code class="n">list</code><code class="o">)</code> <code class="n">println</code><code class="o">(</code><code class="n">value</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-string-formatting">String Formatting</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// String interpolation replaces '$' tokens with values</code>
+  <code class="n">s</code><code class="s">"Customer name: $name USD"</code>                   <code class="c1">// Customer name: Bob</code>
+  <code class="c1">// Expression require additional parentheses</code>
+  <code class="n">s</code><code class="s">"Customer basket value is $(customer.basket.value) USD"</code>
+  <code class="c1">// The 'f' prefix is like String.format</code>
+  <code class="n">f</code><code class="s">"Square of 42 is ${math.sqrt(42)}%1.2f"</code>      <code class="c1">// Square of 42 is 6.48</code>
+  <code class="s">"Escaping \"quotes\" is the same as in Java"</code>
+  <code class="c1">// triple quotes let you span rows and include quotes unescaped</code>
+  <code class="s">""""vCard": {</code>
+<code class="s">         "id" : "007",</code>
+<code class="s">         "name" : "bond",</code>
+<code class="s">         "address" : "MI5"</code>
+<code class="s">      }"""</code>
+  <code class="c1">// The 'raw' string interpolator doesn't escape the usual escape chars </code>
+  <code class="n">raw</code><code class="s">"a\nb"</code>                                     <code class="c1">// a\nb</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-apply-method">Apply Method</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">bob</code> <code class="k">=</code> <code class="nc">Customer</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code>           <code class="c1">// use as factory methods</code>
+  <code class="k">val</code> <code class="n">bob</code> <code class="k">=</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">)</code>                 <code class="c1">// no need to call explicitly</code>
+
+  <code class="k">val</code> <code class="n">array</code> <code class="k">=</code> <code class="nc">Array</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">54</code><code class="o">,</code> <code class="mi">23</code><code class="o">,</code> <code class="mi">545</code><code class="o">,</code> <code class="mi">23</code><code class="o">)</code>
+  <code class="n">array</code><code class="o">.</code><code class="n">apply</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code>                            <code class="c1">// apply on array is a "getter"</code>
+  <code class="n">array</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code>                                  <code class="c1">// result is "1"</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-update-method">Update Method</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">array</code> <code class="k">=</code> <code class="nc">Array</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">54</code><code class="o">,</code> <code class="mi">23</code><code class="o">,</code> <code class="mi">545</code><code class="o">,</code> <code class="mi">23</code><code class="o">)</code>
+  <code class="n">array</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code>                                  <code class="c1">// result is "1"</code>
+  <code class="n">array</code><code class="o">.</code><code class="n">update</code><code class="o">(</code><code class="mi">0</code><code class="o">,</code> <code class="mi">34</code><code class="o">)</code>
+  <code class="n">array</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code>                                  <code class="c1">// result is "34"</code>
+  <code class="n">array</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code> <code class="k">=</code> <code class="mi">55</code>                             <code class="c1">// = is a shortcut to update</code>
+  <code class="n">array</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code>                                  <code class="c1">// result is "55"</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-pattern-matching-1">Pattern Matching</h4>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">value</code> <code class="k">match</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="-Symbol">'R</code><code class="err">'</code> <code class="k">=&gt;</code> <code class="o">...</code>               <code class="c1">// literal match</code>
+    <code class="k">case</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="o">...</code>    <code class="c1">// constructor match (case classes)</code>
+    <code class="k">case</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Int</code> <code class="o">=&gt;</code> <code class="o">...</code>            <code class="c1">// type query match (ie instance of)</code>
+    <code class="k">case</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Int</code> <code class="kt">if</code> <code class="kt">x</code> <code class="kt">&gt;</code> <code class="err">5</code> <code class="o">=&gt;</code> <code class="o">...</code>   <code class="c1">// with guard condition</code>
+    <code class="k">case</code> <code class="o">(</code><code class="n">x</code><code class="o">,</code> <code class="n">y</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="o">...</code>            <code class="c1">// deconstruction using unapply</code>
+    <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="o">...</code>                 <code class="c1">// default case</code>
+  <code class="o">}</code>
+  
+  <code class="c1">// same syntax is used with try/catch and exceptions</code>
+  <code class="k">try</code> <code class="o">{</code>
+    <code class="c1">// ...</code>
+  <code class="o">}</code> <code class="k">catch</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="n">e</code><code class="k">:</code> <code class="kt">MalformedURLException</code> <code class="o">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Bad URL"</code><code class="o">)</code>
+    <code class="k">case</code> <code class="n">e</code><code class="k">:</code> <code class="kt">IOException</code> <code class="o">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="n">e</code><code class="o">.</code><code class="n">getMessage</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+</div>
+</body></html>

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>For Comprehensions</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="for_comprehension">For Comprehensions</h2>
+
+<p>The last chapter focused on monads and the <code>map</code> and <code>flatMap</code> functions. In this chapter we’re going to focus on just <code>flatMap</code> behaviour. Specifically, we’ll look at how to chain <code>flatMap</code> function calls before finally yielding results. For comprehensions actually use <code>flatMap</code> under the hood, so we’ll look at the relationship in detail and explain how for comprehensions work.</p>
+
+<h3 id="leanpub-auto-where-we-left-off">Where We Left Off</h3>
+
+<p>Hopefully you’re now comfortable with the idea of <code>flatMap</code>. We looked at it for the collection classes and for <code>Option</code>. Recall that we used <code>flatMap</code> to map over customer names that may or may not exist in our database. By doing so, we could sum customer basket values.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">customers</code>
+    <code class="o">.</code><code class="n">flatMap</code><code class="o">(</code><code class="n">name</code> <code class="k">=&gt;</code> <code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">))</code>
+    <code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">total</code><code class="o">)</code>
+    <code class="o">.</code><code class="n">sum</code>
+</pre></div>
+
+</div>
+
+<p>Now let’s say that we’d like to generate a shipping label for a customer. We can look up a customer in our repository and if they have a street address and a postcode, we can generate a shipping label.</p>
+
+<p>The caveats are:</p>
+
+<ol class="numeric"><li>A customer may or may not exist in the repository.</li>
+  <li>A given customer may or may not have an address object.</li>
+  <li>An address object must contain a <code>street</code> but may or may not contain a <code>postcode</code>.</li>
+</ol><p>So, to generate a label, we need to:</p>
+
+<ol class="numeric"><li>Find a customer (who may or may not exist) by name.</li>
+  <li>Get the customer’s address (which also may or may not exist).</li>
+  <li>Given the address, get the shipping information from it. (We can expect an <code>Address</code> object to contain a street address, but it may or may not have a postcode.)</li>
+</ol><h3 id="leanpub-auto-using-null-checks">Using Null Checks</h3>
+
+<p>If we were to implement this where the optionality was expressed by returning nulls, we’d be forced to do a bunch of null checks. We have four customers: Albert, Beatriz, Carol, and Sherlock. Albert has an address but no postcode, Beatriz hasn’t given us her address, and the last two have full address information.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">customers</code> <code class="k">=</code> <code class="nc">Customers</code><code class="o">()</code>
+
+  <code class="k">val</code> <code class="n">address1</code> <code class="k">=</code> <code class="nc">Some</code><code class="o">(</code><code class="nc">Address</code><code class="o">(</code><code class="s">"1a Bridge St"</code><code class="o">,</code> <code class="nc">None</code><code class="o">))</code>
+  <code class="k">val</code> <code class="n">address2</code> <code class="k">=</code> <code class="nc">Some</code><code class="o">(</code><code class="k">new</code> <code class="nc">Address</code><code class="o">(</code><code class="s">"2 Short Road"</code><code class="o">,</code> <code class="nc">Some</code><code class="o">(</code><code class="s">"AL1 2PY"</code><code class="o">)))</code>
+  <code class="k">val</code> <code class="n">address3</code> <code class="k">=</code> <code class="nc">Some</code><code class="o">(</code><code class="k">new</code> <code class="nc">Address</code><code class="o">(</code><code class="s">"221b Baker St"</code><code class="o">,</code> <code class="nc">Some</code><code class="o">(</code><code class="s">"NW1"</code><code class="o">)))</code>
+
+  <code class="n">customers</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Albert"</code><code class="o">,</code> <code class="n">address1</code><code class="o">))</code>
+  <code class="n">customers</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Beatriz"</code><code class="o">,</code> <code class="nc">None</code><code class="o">))</code>
+  <code class="n">customers</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Carol"</code><code class="o">,</code> <code class="n">address2</code><code class="o">))</code>
+  <code class="n">customers</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Sherlock"</code><code class="o">,</code> <code class="n">address3</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>Given a list of customers, we can attempt to create shipping labels. As you can see, the list below includes people that don’t exist in the database.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">all</code> <code class="k">=</code> <code class="nc">Set</code><code class="o">(</code><code class="s">"Albert"</code><code class="o">,</code> <code class="s">"Beatriz"</code><code class="o">,</code> <code class="s">"Carol"</code><code class="o">,</code> <code class="s">"Dave"</code><code class="o">,</code> <code class="s">"Erin"</code><code class="o">,</code> <code class="s">"Sherlock"</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>Next, we create a function to return the list of shipping labels, collecting them in a mutable set. For every name in our list, we attempt to find the customer in the database (using <code>customers.find</code>). As this could return <code>null</code>, we have to check the returned value isn’t <code>null</code> before we can get their address.</p>
+
+<p>Getting the address can return <code>null</code>, so we have to check for <code>null</code> again before getting their postcode. Once we’ve checked the postcode isn’t null, we can finally call a method (<code>shippingLabel</code>) to create a label and add it to the collection. Were we to run it, only Carol and Sherlock would get through all the null checks.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">generateShippingLabels</code><code class="o">()</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">labels</code> <code class="k">=</code> <code class="n">mutable</code><code class="o">.</code><code class="nc">Set</code><code class="o">[</code><code class="kt">String</code><code class="o">]()</code>
+    <code class="n">all</code><code class="o">.</code><code class="n">foreach</code> <code class="o">{</code> <code class="n">name</code> <code class="k">=&gt;</code>
+      <code class="k">val</code> <code class="n">customer</code><code class="k">:</code> <code class="kt">Customer</code> <code class="o">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">)</code>
+      <code class="k">if</code> <code class="o">(</code><code class="n">customer</code> <code class="o">!=</code> <code class="kc">null</code><code class="o">)</code> <code class="o">{</code>
+        <code class="k">val</code> <code class="n">address</code><code class="k">:</code> <code class="kt">Address</code> <code class="o">=</code> <code class="n">customer</code><code class="o">.</code><code class="n">address</code>
+        <code class="k">if</code> <code class="o">(</code><code class="n">address</code> <code class="o">!=</code> <code class="kc">null</code><code class="o">)</code> <code class="o">{</code>
+          <code class="k">val</code> <code class="n">postcode</code><code class="k">:</code> <code class="kt">String</code> <code class="o">=</code> <code class="n">address</code><code class="o">.</code><code class="n">postcode</code>
+          <code class="k">if</code> <code class="o">(</code><code class="n">postcode</code> <code class="o">!=</code> <code class="kc">null</code><code class="o">)</code> <code class="o">{</code>
+            <code class="n">labels</code><code class="o">.</code><code class="n">add</code><code class="o">(</code>
+                <code class="n">shippingLabel</code><code class="o">(</code><code class="n">customer</code><code class="o">.</code><code class="n">name</code><code class="o">,</code> <code class="n">address</code><code class="o">.</code><code class="n">street</code><code class="o">,</code> <code class="n">postcode</code><code class="o">))</code>
+          <code class="o">}</code>
+        <code class="o">}</code>
+      <code class="o">}</code>
+    <code class="o">}</code>
+    <code class="n">labels</code>
+  <code class="o">}</code>
+  
+  <code class="k">def</code> <code class="n">shippingLabel</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">street</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">postcode</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="s">"Ship to:\n"</code> <code class="o">+</code> <code class="s">"========\n"</code> <code class="o">+</code> <code class="n">name</code> <code class="o">+</code> <code class="s">"\n"</code> <code class="o">+</code> <code class="n">street</code> <code class="o">+</code> <code class="s">"\n"</code> <code class="o">+</code> <code class="n">postcode</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<h3 id="leanpub-auto-using-flatmap-with-option">Using <code>flatMap</code> with <code>Option</code></h3>
+
+<p>If, instead of returning <code>null</code> for no customer, we were to use <code>Option</code> as the return type, we could reduce the code using <code>flatMap</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre><code class="lineno"> 1</code>   <code class="k">def</code> <code class="n">generateShippingLabel</code><code class="o">()</code><code class="k">:</code> <code class="kt">Set</code><code class="o">[</code><code class="kt">String</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+<code class="lineno"> 2</code>     <code class="n">all</code><code class="o">.</code><code class="n">flatMap</code> <code class="o">{</code>
+<code class="lineno"> 3</code>       <code class="n">name</code> <code class="k">=&gt;</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">).</code><code class="n">flatMap</code> <code class="o">{</code>
+<code class="lineno"> 4</code>         <code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">address</code><code class="o">.</code><code class="n">flatMap</code> <code class="o">{</code>
+<code class="lineno"> 5</code>           <code class="n">address</code> <code class="k">=&gt;</code> <code class="n">address</code><code class="o">.</code><code class="n">postcode</code><code class="o">.</code><code class="n">map</code> <code class="o">{</code>
+<code class="lineno"> 6</code>             <code class="n">postcode</code> <code class="k">=&gt;</code> <code class="o">{</code>
+<code class="lineno"> 7</code>               <code class="n">shippingLabel</code><code class="o">(</code><code class="n">customer</code><code class="o">.</code><code class="n">name</code><code class="o">,</code> <code class="n">address</code><code class="o">.</code><code class="n">street</code><code class="o">,</code> <code class="n">postcode</code><code class="o">)</code>
+<code class="lineno"> 8</code>             <code class="o">}</code>
+<code class="lineno"> 9</code>           <code class="o">}</code>
+<code class="lineno">10</code>         <code class="o">}</code>
+<code class="lineno">11</code>       <code class="o">}</code>
+<code class="lineno">12</code>     <code class="o">}</code>
+<code class="lineno">13</code>   <code class="o">}</code>
+<code class="lineno">14</code> 
+<code class="lineno">15</code>   <code class="k">def</code> <code class="n">shippingLabel</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">street</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">postcode</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+<code class="lineno">16</code>     <code class="s">"Ship to:\n"</code> <code class="o">+</code> <code class="s">"========\n"</code> <code class="o">+</code> <code class="n">name</code> <code class="o">+</code> <code class="s">"\n"</code> <code class="o">+</code> <code class="n">street</code> <code class="o">+</code> <code class="s">"\n"</code> <code class="o">+</code> <code class="n">postcode</code>
+<code class="lineno">17</code>   <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>We start in the same way as before, by enumerating each of the names in our list, calling <code>find</code> on the database for each. We use <code>flatMap</code> to do this as we’re transforming from a single customer name (<code>String</code>) to a monad (<code>Option</code>).</p>
+
+<p>You can think of the option as being like a list with one element in it (either a <code>Some</code> or a <code>None</code>), so we’re doing a “one-to-many”-like transformation. As we saw in the <a href="part0021.xhtml#flatmap">flatMap section</a>, this implies we’ll need to flatten the “many” back down into “one” later, hence the <code>flatMap</code>.</p>
+
+<p>After the initial <code>flatMap</code> where we find a customer in the database, we <code>flatMap</code> the result. If no customer was found, it wouldn’t continue any further. So on line 4, we can be sure a customer actually exists and can go ahead and get their address. As address is optional, we can <code>flatMap</code> again, dropping out if a customer doesn’t have an address.</p>
+
+<p>On line 5, we can request a customer’s postcode. Postcode is optional, so only if we have one do we transform it (and the address details) into a shipping label. The <code>map</code> call takes care of that for us; remember that map here only applies the function (<code>shippingLabel</code>) when we have a value (i.e., postcode is an instance of <code>Some</code>).</p>
+
+<p>Notice that we didn’t need to create a mutable collection to store the shipping label. Any transformation function like <code>map</code> or <code>flatMap</code> will produce a new collection with the transformed results. So the final call to map on line 7 will put the shipping label into a newly created collection for us. One final comment: the resulting collection is of type <code>String</code> because the <code>generateShippingLabel</code> method returns a <code>String</code>.</p>
+
+<h3 id="leanpub-auto-how-for-comprehensions-work">How For Comprehensions Work</h3>
+
+<p>When you do a regular for loop, the compiler converts (or de-sugars) it into a method call to <code>foreach</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">for</code> <code class="o">(</code><code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">)</code> <code class="o">{</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">i</code><code class="o">)</code>
+  <code class="o">}</code>
+
+  <code class="c1">// is de-sugared as</code>
+
+  <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">).</code><code class="n">foreach</code><code class="o">(</code><code class="n">println</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>A nested loop is de-sugared like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">for</code> <code class="o">(</code><code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">;</code> <code class="n">j</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">)</code> <code class="o">{</code>
+    <code class="n">println</code><code class="o">(</code><code class="n">i</code> <code class="o">+</code> <code class="s">" "</code> <code class="o">+</code> <code class="n">j</code><code class="o">)</code>
+  <code class="o">}</code>
+
+  <code class="c1">// is de-sugared as</code>
+
+  <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">).</code><code class="n">foreach</code> <code class="o">{</code> <code class="n">i</code> <code class="k">=&gt;</code>
+    <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">).</code><code class="n">foreach</code> <code class="o">{</code> <code class="n">j</code> <code class="k">=&gt;</code> <code class="o">{</code>
+        <code class="n">println</code><code class="o">(</code><code class="n">i</code> <code class="o">+</code> <code class="s">" "</code> <code class="o">+</code> <code class="n">j</code><code class="o">)</code>
+      <code class="o">}</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>If you do a <code>for</code> with a <code>yield</code> (a for comprehension) the compiler does something different:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">for</code> <code class="o">(</code><code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">)</code> <code class="k">yield</code> <code class="o">{</code>
+    <code class="n">i</code> <code class="o">+</code> <code class="mi">2</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The <code>yield</code> is about returning a value. A <code>for</code> without a <code>yield</code>, although an expression, will return <code>Unit</code>. This is because the <code>foreach</code> method returns <code>Unit</code>. A <code>for</code> with a <code>yield</code> will return whatever is in the <code>yield</code> block. It’s converted into a call to <code>map</code> rather than <code>foreach</code>. So, the de-sugared form of the above would look like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// de-sugared form of "for (i &lt;- 0 to 5) yield i + 2"</code>
+  <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="n">i</code> <code class="k">=&gt;</code> <code class="n">i</code> <code class="o">+</code> <code class="mi">2</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>It’s mapping a sequence of numbers (0 to 5) into another sequence of numbers (2 to 7).</p>
+
+<p>It’s important to realise that whatever is in the <code>yield</code> block represents the function that’s passed into <code>map</code>. The <code>map</code> itself operates on whatever is in the <code>for</code> part (i.e., <code>for (i &lt;- 0 to 5)</code>). It may be easier to recognise when we reformat the example above like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">for</code> <code class="o">{</code>
+    <code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code>           <code class="c1">// map operates on this collection</code>
+  <code class="o">}</code> <code class="k">yield</code> <code class="o">{</code>
+    <code class="n">i</code> <code class="o">+</code> <code class="mi">2</code>                 <code class="c1">// the function to pass into map</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>It gets more interesting when we have nesting between the parentheses and the <code>yield</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Seq</code><code class="o">[(</code><code class="kt">Int</code>, <code class="kt">Int</code><code class="o">)]</code> <code class="k">=</code> <code class="k">for</code> <code class="o">{</code>
+    <code class="n">i</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code>
+    <code class="n">j</code> <code class="k">&lt;-</code> <code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code>
+  <code class="o">}</code> <code class="k">yield</code> <code class="o">{</code>
+    <code class="o">(</code><code class="n">i</code><code class="o">,</code> <code class="n">j</code><code class="o">)</code>
+  <code class="o">}</code>
+  <code class="n">println</code><code class="o">(</code><code class="n">x</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<div class="aside sidebarish">
+  <h4 id="leanpub-auto-curly-braces-or-parenthesis">Curly Braces or Parenthesis?</h4>
+  <p>Notice how I’ve used curly braces instead of parentheses in some examples? It’s a more common style to use curly braces for nested for loops or loops with a <code>yield</code> block. </p>
+
+</div>
+
+<p>This will perform the nested loop like before but rather than translate to nested <code>foreach</code> calls, it translates to <code>flatMap</code> calls followed by a <code>map</code>. Again, the final <code>map</code> is used to transform the result using whatever is in the <code>yield</code> block.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// de-sugared</code>
+  <code class="k">val</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Seq</code><code class="o">[(</code><code class="kt">Int</code>, <code class="kt">Int</code><code class="o">)]</code> <code class="k">=</code> <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">).</code><code class="n">flatMap</code> <code class="o">{</code>
+    <code class="n">i</code> <code class="k">=&gt;</code> <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">).</code><code class="n">map</code> <code class="o">{</code>
+      <code class="n">j</code> <code class="k">=&gt;</code> <code class="o">(</code><code class="n">i</code><code class="o">,</code> <code class="n">j</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>It’s exactly the same as before; the <code>yield</code> block has provided the function to apply to the mapping function and what it maps over is determined by the <code>for</code> expression. In this example, we’re mapping two lists of 0 to 5 to a collection of tuples, representing their Cartesian product.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="nc">Seq</code><code class="o">((</code><code class="mi">0</code><code class="o">,</code><code class="mi">0</code><code class="o">),</code> <code class="o">(</code><code class="mi">0</code><code class="o">,</code><code class="mi">1</code><code class="o">),</code> <code class="o">(</code><code class="mi">0</code><code class="o">,</code><code class="mi">2</code><code class="o">),</code> <code class="o">(</code><code class="mi">0</code><code class="o">,</code><code class="mi">3</code><code class="o">),</code> <code class="o">(</code><code class="mi">0</code><code class="o">,</code><code class="mi">4</code><code class="o">),</code> <code class="o">(</code><code class="mi">0</code><code class="o">,</code><code class="mi">5</code><code class="o">),</code>
+      <code class="o">(</code><code class="mi">1</code><code class="o">,</code><code class="mi">0</code><code class="o">),</code> <code class="o">(</code><code class="mi">1</code><code class="o">,</code><code class="mi">1</code><code class="o">),</code> <code class="o">(</code><code class="mi">1</code><code class="o">,</code><code class="mi">2</code><code class="o">),</code> <code class="o">(</code><code class="mi">1</code><code class="o">,</code><code class="mi">3</code><code class="o">),</code> <code class="o">(</code><code class="mi">1</code><code class="o">,</code><code class="mi">4</code><code class="o">),</code> <code class="o">(</code><code class="mi">1</code><code class="o">,</code><code class="mi">5</code><code class="o">),</code>
+      <code class="o">(</code><code class="mi">2</code><code class="o">,</code><code class="mi">0</code><code class="o">),</code> <code class="o">(</code><code class="mi">2</code><code class="o">,</code><code class="mi">1</code><code class="o">),</code> <code class="o">(</code><code class="mi">2</code><code class="o">,</code><code class="mi">2</code><code class="o">),</code> <code class="o">(</code><code class="mi">2</code><code class="o">,</code><code class="mi">3</code><code class="o">),</code> <code class="o">(</code><code class="mi">2</code><code class="o">,</code><code class="mi">4</code><code class="o">),</code> <code class="o">(</code><code class="mi">2</code><code class="o">,</code><code class="mi">5</code><code class="o">),</code>
+      <code class="o">(</code><code class="mi">3</code><code class="o">,</code><code class="mi">0</code><code class="o">),</code> <code class="o">(</code><code class="mi">3</code><code class="o">,</code><code class="mi">1</code><code class="o">),</code> <code class="o">(</code><code class="mi">3</code><code class="o">,</code><code class="mi">2</code><code class="o">),</code> <code class="o">(</code><code class="mi">3</code><code class="o">,</code><code class="mi">3</code><code class="o">),</code> <code class="o">(</code><code class="mi">3</code><code class="o">,</code><code class="mi">4</code><code class="o">),</code> <code class="o">(</code><code class="mi">3</code><code class="o">,</code><code class="mi">5</code><code class="o">),</code>
+      <code class="o">(</code><code class="mi">4</code><code class="o">,</code><code class="mi">0</code><code class="o">),</code> <code class="o">(</code><code class="mi">4</code><code class="o">,</code><code class="mi">1</code><code class="o">),</code> <code class="o">(</code><code class="mi">4</code><code class="o">,</code><code class="mi">2</code><code class="o">),</code> <code class="o">(</code><code class="mi">4</code><code class="o">,</code><code class="mi">3</code><code class="o">),</code> <code class="o">(</code><code class="mi">4</code><code class="o">,</code><code class="mi">4</code><code class="o">),</code> <code class="o">(</code><code class="mi">4</code><code class="o">,</code><code class="mi">5</code><code class="o">),</code>
+      <code class="o">(</code><code class="mi">5</code><code class="o">,</code><code class="mi">0</code><code class="o">),</code> <code class="o">(</code><code class="mi">5</code><code class="o">,</code><code class="mi">1</code><code class="o">),</code> <code class="o">(</code><code class="mi">5</code><code class="o">,</code><code class="mi">2</code><code class="o">),</code> <code class="o">(</code><code class="mi">5</code><code class="o">,</code><code class="mi">3</code><code class="o">),</code> <code class="o">(</code><code class="mi">5</code><code class="o">,</code><code class="mi">4</code><code class="o">),</code> <code class="o">(</code><code class="mi">5</code><code class="o">,</code><code class="mi">5</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>If we break this down and go through the steps, we can see how we arrived at the de-sugared form. We start with two sequences of numbers; <code>a</code> and <code>b</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">a</code> <code class="k">=</code> <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">)</code>
+  <code class="k">val</code> <code class="n">b</code> <code class="k">=</code> <code class="o">(</code><code class="mi">0</code> <code class="n">to</code> <code class="mi">5</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>When we map the collections, we get a collection of collections. The final <code>map</code> returns a tuple, so the return type is a sequence of sequences of tuples.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Seq</code><code class="o">[</code><code class="kt">Seq</code><code class="o">[(</code><code class="kt">Int</code>, <code class="kt">Int</code><code class="o">)]]</code> <code class="k">=</code> <code class="n">a</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">i</code> <code class="k">=&gt;</code> <code class="n">b</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">j</code> <code class="k">=&gt;</code> <code class="o">(</code><code class="n">i</code><code class="o">,</code> <code class="n">j</code><code class="o">)))</code>
+</pre></div>
+
+</div>
+
+<p>To flatten these to a collection of tuples, we have to flatten the two collections, which is what <code>flatMap</code> does. So although we could do the following, it’s much more straightforward to call <code>flatMap</code> directly.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Seq</code><code class="o">[(</code><code class="kt">Int</code>, <code class="kt">Int</code><code class="o">)]</code> <code class="k">=</code> <code class="n">a</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">i</code> <code class="k">=&gt;</code> <code class="n">b</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">j</code> <code class="k">=&gt;</code> <code class="o">(</code><code class="n">i</code><code class="o">,</code> <code class="n">j</code><code class="o">))).</code><code class="n">flatten</code>
+
+  <code class="c1">// is equivalent to</code>
+
+  <code class="k">val</code> <code class="n">x</code><code class="k">:</code> <code class="kt">Seq</code><code class="o">[(</code><code class="kt">Int</code>, <code class="kt">Int</code><code class="o">)]</code> <code class="k">=</code> <code class="n">a</code><code class="o">.</code><code class="n">flatMap</code><code class="o">(</code><code class="n">i</code> <code class="k">=&gt;</code> <code class="n">b</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">j</code> <code class="k">=&gt;</code> <code class="o">(</code><code class="n">i</code><code class="o">,</code> <code class="n">j</code><code class="o">)))</code>
+</pre></div>
+
+</div>
+
+<h3 id="leanpub-auto-finally-using-a-for-comprehension-for-shipping-labels">Finally, Using a For Comprehension for Shipping Labels</h3>
+
+<p>What does all that mean for our shipping label example? We can convert our chained <code>flatMap</code> calls to use a for comprehension and neaten the whole thing up. We started with a sequence of chained calls to <code>flatMap</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">generateShippingLabel_FlatMapClosingOverVariables</code><code class="o">()</code><code class="k">:</code> <code class="kt">Set</code><code class="o">[</code><code class="kt">String</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="n">all</code><code class="o">.</code><code class="n">flatMap</code> <code class="o">{</code>
+      <code class="n">name</code> <code class="k">=&gt;</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">).</code><code class="n">flatMap</code> <code class="o">{</code>
+        <code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">address</code><code class="o">.</code><code class="n">flatMap</code> <code class="o">{</code>
+          <code class="n">address</code> <code class="k">=&gt;</code> <code class="n">address</code><code class="o">.</code><code class="n">postcode</code><code class="o">.</code><code class="n">map</code> <code class="o">{</code>
+            <code class="n">postcode</code> <code class="k">=&gt;</code> <code class="n">shippingLabel</code><code class="o">(</code><code class="n">name</code><code class="o">,</code> <code class="n">address</code><code class="o">.</code><code class="n">street</code><code class="o">,</code> <code class="n">postcode</code><code class="o">)</code>
+          <code class="o">}</code>
+        <code class="o">}</code>
+      <code class="o">}</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>After converting to the for comprehension, each call to <code>flatMap</code> is placed in the <code>for</code> as a nested expression. The final one represents the <code>map</code> call. Its argument (the mapping function) is what’s in the <code>yield</code> block.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">generateShippingLabel_ForComprehension</code><code class="o">()</code><code class="k">:</code> <code class="kt">Set</code><code class="o">[</code><code class="kt">String</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="k">for</code> <code class="o">{</code>
+      <code class="n">name</code> <code class="k">&lt;-</code> <code class="n">all</code>                                    <code class="c1">// &lt;- flatMap</code>
+      <code class="n">customer</code> <code class="k">&lt;-</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">)</code>               <code class="c1">// &lt;- flatMap</code>
+      <code class="n">address</code> <code class="k">&lt;-</code> <code class="n">customer</code><code class="o">.</code><code class="n">address</code>                    <code class="c1">// &lt;- flatMap</code>
+      <code class="n">postcode</code> <code class="k">&lt;-</code> <code class="n">address</code><code class="o">.</code><code class="n">postcode</code>                   <code class="c1">// &lt;- map</code>
+    <code class="o">}</code> <code class="k">yield</code> <code class="o">{</code>
+      <code class="n">shippingLabel</code><code class="o">(</code><code class="n">name</code><code class="o">,</code> <code class="n">address</code><code class="o">.</code><code class="n">street</code><code class="o">,</code> <code class="n">postcode</code><code class="o">)</code>  <code class="c1">// &lt;- map argument</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>This is much more succinct. It’s easier to reason about the conditional semantics when it’s presented like this; if there’s no <code>customer</code> found, it won’t continue to the next line. If you want to extend the nesting, you can just add another line and not be bogged down by noise or indentation.</p>
+
+<p>The syntax is declarative but mimics an imperative style. It doesn’t force a particular implementation on you. That’s to say, with imperative <code>for</code> loops, you don’t have a choice about how the loop is executed. If you wanted to do it in parallel, for example, you’d have to implement the concurrency yourself.</p>
+
+<p>Using a declarative approach like this means that the underlying objects are responsible for how they execute, which gives you more flexibility. Remember, this just calls <code>flatMap</code> and classes are free to implement <code>flatMap</code> however they like.</p>
+
+<p>For comprehensions work with any monad and you can use your own classes if you implement the monadic methods.</p>
+
+<h3 id="leanpub-auto-summary-5">Summary</h3>
+
+<p>In this chapter we looked at chaining calls to <code>flatMap</code> in the context of printing shipping labels. We looked at how for comprehensions work and how they’re syntactic sugar over regular Scala method calls. Specifically, we looked at loops and nested loops, how they’re equivalent to calling <code>foreach</code>, how <code>for</code> loops with a <code>yield</code> block translate to mapping functions, and how nested loops with <code>yield</code> blocks translate to <code>flatMap</code> then <code>map</code> functions.</p>
+
+<p>This last point is what allowed us to convert our lengthy shipping label example into a succinct for comprehension.</p>
+</div>
+</body></html>

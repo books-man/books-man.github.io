@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<tItle>Language Features</TITlE>
+<LinK HrEf=../Styles/style0001.css tyPE="text/css" Rel=stylesheet/>
+
+<dIV>
+<h2 id="leanpub-auto-language-features">Language Features</H2>
+
+<P>On our tour we’ve seen some example syntax, walked through the class hierarchy, and briefly looked at ScalaDoc, but Scala offers heaps of other interesting language features.</P>
+
+<P>In this chapter, we won’t really talk about syntax but we’ll discuss some of the things that make Scala an interesting and powerful language when working with source code, working with methods, and using its functional programming features.
+
+<h3 id="leanpub-auto-working-with-source-code">Working with Source Code</h3>
+
+<p><sTRonG>Source Files</STrOng>. What you put in source files is much more flexible in Scala than in Java. There’s no restriction on what a <CODE>.scala</cODe> file contains. A file called <coDe>Customer.scala</cOde> might contain a class called <CoDE>Customer</coDe>, but it doesn’t have to. Similarly, it might contain four classes, none of which are called <COde>Customer</CODe>.</p>
+
+<p><STRONg>Packages</StRoNG>. Packages are similar. Although they are essentially the same thing as in Java, classes in packages don’t have to live in folders of the same name like they do in Java. There are some differences in scoping; for example, there’s no <cOde>protected</cOde> keyword in Scala but you can use special syntax (<cOdE>variable[package]</Code>) to achieve the same thing.
+
+<P><strONG>Package Objects</sTRONg>. Scala also has the idea of <em>package objects</em>. These are objects that you can put useful chunks of code in, for re-use within the package scope. They’re available to other classes in the package, and if someone imports that package, everything within the package object is available to them too. Libraries often use these to allow you to import all their classes in one go.
+
+<p><StroNg>Import Alias</Strong>. Imports are about the same as in Java but once you’ve imported a class in Scala, you can rename it within your class. In other words, you can create an alias for a class within your class. This can be useful when you’ve got a name clash, for example between libraries.</P>
+
+<p><STrOng>Type Aliases</StRonG>. Scala also supports type aliases. You can give an alias to a complex type definition to help clarify the intent. It’s similar to a structureless <CodE>typedef</code> or <coDE>#define</coDe> macro in C, or what’s called <eM>type synonyms</eM> in Haskell.
+
+<p><STRoNG>Traits</Strong>. Although Scala has classes and objects, there is no “interface” keyword. Instead, there is the idea of a <CoDe>trait</cODE> which is similar to an interface but can have methods. It’s somewhere between Java 8’s default methods and Ruby’s mixins.
+
+<h3 id="leanpub-auto-working-with-methods">Working with Methods</h3>
+
+<P><stRONG>Generics</sTroNg>. There’s better support for generic covariance and contravariance in Scala than Java. This means that you can be more general and more flexible in your method signatures when generic types are used as arguments.</p>
+
+<dIV ClASs=code-block>
+<DIv clasS="highlight"><pRe>  <CoDE clAss=k>class</coDE> <code CLAsS="nc">Stack</coDE><cODe ClAsS=o>[</COde><codE ClAsS="kt">+A</Code><COde ClASs=o>]</CoDE> <CoDe clASS="o">{</CODE>
+    <cODe cLasS="k">def</cOde> <COdE clasS=n>push</coDE><COde CLAsS=o>[</CoDe><COde cLass=kt>B</coDE> <codE Class="k">&gt;:</Code> <cODE CLASS="kt">A</Code><code ClAss="o">](</cOdE><Code ClAsS="n">b</CodE><Code CLAsS=k>:</COde> <cOdE CLAsS="kt">B</cOde><cOdE clASs=o>)</coDE><Code clAsS=k>:</CODE> <CODE cLaSs=kt>Stack</cODe><COde ClASs="o">[</coDe><codE ClaSs="kt">B</coDE><Code cLasS="o">]</COdE> <cOde CLaSS=k>=</CodE> <CoDe CLaSS="o">...</COdE>
+  <CODE cLAss="o">}</COde>
+</Pre></div>
+
+</dIv>
+
+<p><StronG>Variable Arguments</STrONG>. When working with methods, Scala supports variable arguments or <coDE>varargs</code> just like Java. They look different (<COde>def sum(numbers: Int*)</cODE>), but behave as you’d expect.
+
+<DIV CLass=code-block>
+<dIV CLaSs="highlight"><prE>  <CODe clAsS=n>public</coDe> <coDE CLASS="n">add</CoDe><CodE clASS="o">(</CODE><code cLASs=nc>String</CODE><cOde ClASs="o">...</Code> <coDe Class="n">names</cODE><CoDe clASS=o>)</CoDe>  <CoDe CLaSS="c1">// java</CoDe>
+</Pre></dIV>
+
+</diV>
+<DIv cLass=code-block>
+<DiV cLASs="highlight"><PRe>  <Code ClASs=k>def</CODe> <CODE CLASS=n>add</CoDE><CODE cLaSs=o>(</cODE><cOdE cLass="n">names</CODe><cODe clAss=k>:</CoDe> <coDe cLASs="kt">String*</code><COde cLaSS="o">)</CoDE>      <cODe clAsS="c1">// scala</codE>
+</PRE></dIV>
+
+</dIv>
+
+<P><STRoNg>Named Method Arguments</StrONg>. Something Java doesn’t offer is named method arguments and default values. In Scala, you can call a method with its arguments out of order, as long as you name them. So, given the function <cODe>def swap(first: Int, second: Int)</cOde>, you can call it explicitly, naming its arguments. Because they’re named, the compiler can work out which is which regardless of their position. So the following is fine:
+
+<Div cLAss="code-block">
+<div clAsS="highlight"><pre>  <cOde clasS=n>swap</CoDe><COde CLAsS=o>(</coDE><cODE CLass=n>first</CODE> <CoDE cLasS="k">=</coDe> <cOdE cLass="mi">3</code><Code CLAsS="o">,</CODe> <coDE claSs=n>second</cOde> <COdE ClAsS="k">=</cOdE> <CodE ClasS=mi>1</CODE><code ClAsS=o>)</code>
+  <cOde CLAss="n">swap</CodE><coDE ClasS=o>(</cOdE><coDE CLASS=n>second</COdE> <CoDE ClAss="k">=</CODe> <CodE ClAsS="mi">1</coDE><CodE ClaSS=o>,</cOdE> <COde clasS="n">first</codE> <CodE CLASs="k">=</CODE> <CoDE cLaSS=mi>3</COdE><cODe ClAsS=o>)</CODe>
+</pRE></dIV>
+
+</DIV>
+
+<p><STroNg>Default Values</sTROnG>. You can add a default value by using <cODe>=</cODE> after the parameter declaration. For example, <codE>def swap(first: Int, second: Int = 1)</CoDe>. The second value will default to <Code>1</cOde> if you leave it off when you call the function. You can still supply a value to override the default, and still use named parameters.
+
+<DIv cLAss=code-block>
+<DIv ClAss="highlight"><prE>  <CoDe cLasS=n>swap</CODe><codE CLASs="o">(</COdE><codE ClaSs="mi">3</CODe><Code clasS="o">)</code>
+  <code cLAss="n">swap</CODe><COde cLaSS=o>(</codE><cOdE clASs="mi">3</codE><coDE class=o>,</CodE> <code cLASS="mi">2</CoDe><CoDE cLass=o>)</cODe>
+  <CoDe CLAss="n">swap</CodE><cODe ClAsS=o>(</COdE><COde ClaSs="n">first</cODE> <COde claSS=k>=</COde> <Code CLAss=mi>3</cOde><cODE ClasS=o>)</cODE>
+  <CoDe CLASS=n>swap</CoDe><coDe cLaSS=o>(</COdE><codE cLAss=n>first</CODE> <coDe cLASS="k">=</COdE> <CodE ClAsS="mi">3</CODe><cOde CLAsS="o">,</CODe> <cOdE cLaSs="n">second</coDE> <coDe CLass="k">=</coDe> <CoDE CLAsS=mi>1</CodE><cODe ClAss="o">)</CoDe>
+</PRE></DIV>
+
+</div>
+
+<P><StRONg>Lambdas</StRONG>. Scala supports lambdas or anonymous functions. You can pass function literals as arguments to methods and use a function signature as an argument in a method signature. So the <CODE>test</cODE> method below takes a function with no arguments which returns a <cOde>Boolean</codE>.</P>
+
+<DiV cLaSS=code-block>
+<div clAss="highlight"><pRE>  <coDe cLass=k>def</CoDe> <CodE CLass="n">test</CoDE><Code CLass=o>(</CoDE><codE claSs="n">f</code><cOde clAsS="k">:</CODe> <Code ClaSs=o>()</code> <Code claSS="o">=&gt;</CODe> <CodE cLass="nc">Boolean</cODe><coDE clAss="o">)</cOdE> <CODE Class="k">=</cOde> <CodE ClAsS=o>...</COde>
+</PRE></diV>
+
+</DIV>
+
+<P>When you call it, you can pass in a function literal as a parameter.</p>
+
+<dIv claSs="code-block">
+<div ClaSS=highlight><Pre>  <CoDe cLasS="n">test</cOde><coDe ClasS=o>(()</cODE> <cOdE cLasS="k">=&gt;</CoDe> <CODE cLAss=k>if</COde> <COde ClASs=o>(!</CoDE><cOde clASs="n">tuesday</CODE><cODE CLASs=o>)</CodE> <codE cLass="kc">true</CODE> <COde cLASS="k">else</COde> <cODE cLaSS=kc>false</CODE><CoDe ClAsS=o>)</CoDe>
+</PrE></DIv>
+
+</Div>
+
+<p>As another example, you can create a function signature to represent a function from a <cOdE>String</CoDe> value to a <CODe>Boolean</CoDE> like this:
+
+<DiV ClAss=code-block>
+<DIv CLASs=highlight><pRe>  <CoDe CLaSs=k>def</CodE> <cODe CLasS="n">test</cODE><coDE CLass=o>(</CoDe><cOdE CLAsS=n>f</COdE><COdE CLASS=k>:</cODE> <cOde clAsS=kt>String</cOde> <coDe clASS=o>=&gt;</code> <code Class=nc>Boolean</code><CODE CLass="o">)</cODe><code CLAss=k>:</cOdE> <coDe cLASS=kt>Boolean</coDE> <code CLAss=o>=</CoDe> <coDE CLASS=o>...</CoDe>
+</PRE></DIv>
+
+</DIV>
+
+<p>and call it with a function literal like this:
+
+<Div CLAss="code-block">
+<DiV cLaSs="highlight"><PRE>  <CodE cLAss=n>test</cOde><CODE ClAsS=o>(</codE><CODe clAss=n>value</CODE> <CodE CLAss="k">=&gt;</cODe> <cODe cLasS="k">if</cODE> <codE cLasS=o>(</Code><cODE cLaSs=n>value</codE> <cOde cLasS="o">==</cOdE> <CoDe clAsS=s>"tuesday"</cODE><CoDe cLASS="o">)</CODe> <CoDe CLASs="kc">true</cOdE> <cOdE cLAss="k">else</cODe> <CoDe cLASS="kc">false</coDe><CODe ClAss=o>)</coDE>
+</Pre></DIV>
+
+</div>
+
+<H3 id="leanpub-auto-functional-programming">Functional Programming</h3>
+
+<p>Some other Scala features aimed more at functional programming include:</p>
+
+<P><strOng>Pattern matching</sTROnG>. This is a hugely powerful feature which at first blush looks similar to switches but can be used for much more.
+
+<P><stRong>For comprehensions</STrONg>. For comprehensions are subtly different than regular for loops, and are useful when working with functional constructs. When you first encounter them, they’ll look like an alternative syntax to Java’s <cODe>for</coDE> loop.</P>
+
+<p><STRoNG>Currying</STRonG>. Although you can write your own currying functions in any language, Scala supports currying as a language feature. If you’re unsure what currying is, you probably don’t need to worry about it right now. See the <a HREF=part0019.xhtml#currying>currying chapter</a> for more details.
+
+<p><stRoNg>Functional Literals</StRong>. The language supports literals to represent some useful types like tuples. Popular Java functional libraries like <a HReF="http://totallylazy.com/">totally-lazy</A> or <a HrEf=http://www.functionaljava.org/>functional-java</A> have these kinds of things; Scala just makes them easier to work with.</p>
+
+<p><sTroNG>Recursion</STRoNG>. Most languages support recursion, but Scala has compiler support for tail call optimisation, which means it can support recursive calls that would result in a stack overflow in languages like Java. The compiler can even perform some checks for you if you use the <coDe>@tailrec</coDe> annotation.
+
+<P> 
+</dIV>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Monads</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-monads">Monads</h2>
+
+<p>Monads are one of those things that people love to talk about but which remain elusive and mysterious. If you’ve done any reading on functional programming, you will have come across the term.</p>
+
+<p>Despite all the literature, the subject is often not well understood, partly because monads come from the abstract mathematics field of <em>category theory</em> and partly because, in programming languages, Haskell dominates the literature. Neither Haskell nor category theory are particularly relevant to the mainstream developer and both bring with them concepts and terminology that can be challenging to get your head around.</p>
+
+<p>The good news is that you don’t have to worry about any of that stuff. You don’t need to understand category theory for functional programming. You don’t need to understand Haskell to program with Scala.</p>
+
+<h3 id="leanpub-auto-basic-definition">Basic Definition</h3>
+
+<p>A layman’s definition of a monad might be:</p>
+
+<blockquote>
+  <p>Something that has <code>map</code> and <code>flatMap</code> functions.</p>
+</blockquote>
+
+<p>This isn’t the full story, but it will serve us as a starting point.</p>
+
+<p>We’ve already seen that collections in Scala are all monads. It’s useful to transform these with <code>map</code> and flatten one-to-many transformations with <code>flatMap</code>. But <code>map</code> and <code>flatMap</code> do different things on different types of monads.</p>
+
+<h3 id="leanpub-auto-option">Option</h3>
+
+<p>Let’s take the <code>Option</code> class. You can use <code>Option</code> as a way of avoiding nulls, but just how does it avoid nulls and what has it got to do with monads? There are two parts to the answer:</p>
+
+<ol class="numeric"><li>You avoid returning <code>null</code> by returning a subtype of <code>Option</code> to represent no value (<code>None</code>) or a wrapper around a value (<code>Some</code>). As both “no value” and “some value” are of type <code>Option</code>, you can treat them consistently. You should never need to say “if not null”.</li>
+  <li>How you actually go about treating <code>Option</code> consistently is to use the monadic methods <code>map</code> and <code>flatMap</code>. So <code>Option</code> <em>is a monad</em>.</li>
+</ol><div class="aside sidebarish">
+  <h4 id="leanpub-auto-null-object-pattern">Null Object Pattern</h4>
+
+  <p>If you’ve ever seen the <em>Null Object pattern</em>, you’ll notice it’s a similar idea. The Null Object pattern allows you to replace a type with a subtype to represent no value. You can call methods on the instance as if it were a real value but it essentially does nothing. It’s substitutable for a real value but usually has no side effects.</p>
+
+  <p>The main difference is that the methods you can call, defined by the instance’s super-type, are usually business methods. The common methods of a monad are <code>map</code> and <code>flatMap</code> and are lower level, functional programming abstractions.</p>
+
+
+</div>
+
+<p>We know what <code>map</code> and <code>flatMap</code> do for collections, but what do they do for an <code>Option</code>?</p>
+
+<h4 id="leanpub-auto-the-map-function">The <code>map</code> Function</h4>
+
+<p>The <code>map</code> function still transforms an object, but it’s an optional transformation. It will apply the mapping function to the value of an option, <em>if</em> it has a value. The value and no value options are implemented as subclasses of <code>Option</code>: <code>Some</code> and <code>None</code> respectively.</p>
+
+<div class="image-with-caption center">
+  <img src="../Images/image00271.jpeg" alt="Fig. 3.3. The `Option` classes."/><p class="caption">Fig. 3.3. The <code>Option</code> classes.</p>
+</div>
+
+
+<p>A mapping only applies if the option is an instance of <code>Some</code>. If it has no value (i.e., it’s an instance of <code>None</code>), it will simply return another <code>None</code>.</p>
+
+<p>This is useful when you want to transform something but not worry about checking if it’s null. For example, we might have a <code>Customers</code> trait with repository methods <code>add</code> and <code>find</code>. What should we do in implementations of <code>find</code> when a customer doesn’t exist?</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">trait</code> <code class="nc">Customers</code> <code class="k">extends</code> <code class="nc">Iterable</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="nc">Customer</code><code class="k">:</code> <code class="kt">Customer</code><code class="o">)</code>
+    <code class="k">def</code> <code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code><code class="k">:</code> <code class="kt">Customer</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>A typical Java implementation would likely return <code>null</code> or throw some kind of <code>NotFoundException</code>. For example, the following <code>Set</code>-based implementation returns a <code>null</code> if the customer cannot be found:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">CustomerSet</code> <code class="k">extends</code> <code class="nc">Customers</code> <code class="o">{</code>
+    <code class="k">private</code> <code class="k">val</code> <code class="n">customers</code> <code class="k">=</code> <code class="n">mutable</code><code class="o">.</code><code class="nc">Set</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]()</code>
+
+    <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="n">customer</code><code class="k">:</code> <code class="kt">Customer</code><code class="o">)</code> <code class="k">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+
+    <code class="k">def</code> <code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code><code class="k">:</code> <code class="kt">Customer</code> <code class="o">=</code> <code class="o">{</code>
+      <code class="k">for</code> <code class="o">(</code><code class="n">customer</code> <code class="k">&lt;-</code> <code class="n">customers</code><code class="o">)</code> <code class="o">{</code>
+        <code class="k">if</code> <code class="o">(</code><code class="n">customer</code><code class="o">.</code><code class="n">name</code> <code class="o">==</code> <code class="n">name</code><code class="o">)</code>
+          <code class="k">return</code> <code class="n">customer</code>
+      <code class="o">}</code>
+      <code class="kc">null</code>
+    <code class="o">}</code>
+
+    <code class="k">def</code> <code class="n">iterator</code><code class="k">:</code> <code class="kt">Iterator</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]</code> <code class="k">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">iterator</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Returning <code>null</code> and throwing exceptions both have similar drawbacks.</p>
+
+<p>Neither communicate intent very well. If you return <code>null</code>, clients need to know that’s a possibility so they can avoid a <code>NullPointerException</code>. But what’s the best way to communicate that to clients? ScalaDoc? Ask them to look at the source? Both are easy for clients to miss. Exceptions may be somewhat clearer but as Scala exceptions are unchecked, they’re just as easy for clients to miss.</p>
+
+<p>You also force unhappy path handling to your clients. Assuming that consumers do know to check for a null, you’re asking multiple clients to implement defensive strategies for the unhappy path. You’re forcing null checks on people and can’t ensure consistency, or even that people will bother.</p>
+
+<p>Defining the <code>find</code> method to return an <code>Option</code> improves the situation. Below, if we find a match, we return <code>Some</code> customer or <code>None</code> otherwise. This communicates at an API level that the return type is optional. The type system forces a consistent way of dealing with the unhappy path.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">trait</code> <code class="nc">Customers</code> <code class="k">extends</code> <code class="nc">Iterable</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">add</code><code class="o">(</code><code class="nc">Customer</code><code class="k">:</code> <code class="kt">Customer</code><code class="o">)</code>
+    <code class="k">def</code> <code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code><code class="k">:</code> <code class="kt">Option</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Our implementation of <code>find</code> can then return either a <code>Some</code> or a <code>None</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">def</code> <code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code><code class="k">:</code> <code class="kt">Option</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]</code> <code class="k">=</code> <code class="o">{</code>
+    <code class="k">for</code> <code class="o">(</code><code class="n">customer</code> <code class="k">&lt;-</code> <code class="n">customers</code><code class="o">)</code> <code class="o">{</code>
+      <code class="k">if</code> <code class="o">(</code><code class="n">customer</code><code class="o">.</code><code class="n">name</code> <code class="o">==</code> <code class="n">name</code><code class="o">)</code>
+        <code class="k">return</code> <code class="nc">Some</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code>
+    <code class="o">}</code>
+    <code class="nc">None</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Let’s say that we’d like to find a customer and get their total shopping basket value. Using a method that can return <code>null</code>, clients would have to do something like the following, as Albert may not be in the repository.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">albert</code> <code class="k">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="s">"Albert"</code><code class="o">)</code>                 <code class="c1">// can return null</code>
+  <code class="k">val</code> <code class="n">basket</code> <code class="k">=</code> <code class="k">if</code> <code class="o">(</code><code class="n">albert</code> <code class="o">!=</code> <code class="kc">null</code><code class="o">)</code> <code class="n">albert</code><code class="o">.</code><code class="n">total</code> <code class="k">else</code> <code class="mi">0</code><code class="n">D</code>
+</pre></div>
+
+</div>
+
+<p>If we use <code>Option</code>, we can use <code>map</code> to transform from an option of a <code>Customer</code> to an option of their basket value.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">basketValue</code><code class="k">:</code> <code class="kt">Option</code><code class="o">[</code><code class="kt">Double</code><code class="o">]</code> <code class="k">=</code>
+    <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="s">"A"</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">total</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>Notice that the return type here is an <code>Option[Double]</code>. If Albert isn’t found, <code>map</code> will return a <code>None</code> to represent no basket value. Remember that the <code>map</code> on <code>Option</code> is a optional transformation.</p>
+
+<p>When you want to actually get hold of the value, you need to get it out of the <code>Option</code> wrapper. The API of <code>Option</code> will only allow you call <code>get</code>, <code>getOrElse</code> or continue processing monadically using <code>map</code> and <code>flatMap</code>.</p>
+
+<h4 id="leanpub-auto-optionget">
+  <code>Option.get</code>
+</h4>
+
+<p>To get the raw value, you can use the <code>get</code> method but it will throw an exception if you call it against no value. Calling it is a bit of a smell as it’s roughly equivalent to ignoring the possibility of a <code>NullPointerException</code>. You should only call it when you know the option is a <code>Some</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="c1">// could throw an exception</code>
+  <code class="k">val</code> <code class="n">basketValue</code> <code class="k">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="s">"A"</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">total</code><code class="o">).</code><code class="n">get</code>
+</pre></div>
+
+</div>
+
+<p>To ensure the value is a <code>Some</code>, you could pattern match like the following, but again, it’s really just an elaborate null check.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">basketValue</code><code class="k">:</code> <code class="kt">Double</code> <code class="o">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="s">"Missing"</code><code class="o">)</code> <code class="k">match</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="nc">Some</code><code class="o">(</code><code class="n">customer</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">total</code>     <code class="c1">// avoids the exception</code>
+    <code class="k">case</code> <code class="nc">None</code> <code class="k">=&gt;</code> <code class="mi">0</code><code class="n">D</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-optiongetorelse">
+  <code>Option.getOrElse</code>
+</h4>
+
+<p>Calling <code>getOrElse</code> is often a better choice as it forces you to provide a default value. It has the same effect as the pattern match version, but with less code.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">basketValue</code> <code class="k">=</code>
+    <code class="n">customers</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="s">"A"</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">total</code><code class="o">).</code><code class="n">getOrElse</code><code class="o">(</code><code class="mi">0</code><code class="n">D</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<h4 id="leanpub-auto-monadically-processing-option">Monadically Processing <code>Option</code></h4>
+
+<p>If you want to avoid using <code>get</code> or <code>getOrElse</code>, you can use the monadic methods on <code>Option</code>. To demonstrate this, we need a slightly more elaborate example. Let’s say we want to sum the basket value of a subset of customers. We could create the list of names of customers we’re interested in and find each of these by transforming (mapping) the customer names into a collection of <code>Customer</code> objects.</p>
+
+<p>In the example below, we create a customer database, adding some sample data before mapping.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">database</code> <code class="k">=</code> <code class="nc">Customers</code><code class="o">()</code>
+
+  <code class="k">val</code> <code class="n">address1</code> <code class="k">=</code> <code class="nc">Some</code><code class="o">(</code><code class="nc">Address</code><code class="o">(</code><code class="s">"1a Bridge St"</code><code class="o">,</code> <code class="nc">None</code><code class="o">))</code>
+  <code class="k">val</code> <code class="n">address2</code> <code class="k">=</code> <code class="nc">Some</code><code class="o">(</code><code class="k">new</code> <code class="nc">Address</code><code class="o">(</code><code class="s">"2 Short Road"</code><code class="o">,</code> <code class="nc">Some</code><code class="o">(</code><code class="s">"AL1 2PY"</code><code class="o">)))</code>
+  <code class="k">val</code> <code class="n">address3</code> <code class="k">=</code> <code class="nc">Some</code><code class="o">(</code><code class="k">new</code> <code class="nc">Address</code><code class="o">(</code><code class="s">"221b Baker St"</code><code class="o">,</code> <code class="nc">Some</code><code class="o">(</code><code class="s">"NW1"</code><code class="o">)))</code>
+
+  <code class="n">database</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Albert"</code><code class="o">,</code> <code class="n">address1</code><code class="o">))</code>
+  <code class="n">database</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Beatriz"</code><code class="o">,</code> <code class="nc">None</code><code class="o">))</code>
+  <code class="n">database</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Carol"</code><code class="o">,</code> <code class="n">address2</code><code class="o">))</code>
+  <code class="n">database</code><code class="o">.</code><code class="n">add</code><code class="o">(</code><code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Sherlock"</code><code class="o">,</code> <code class="n">address3</code><code class="o">))</code>
+
+  <code class="k">val</code> <code class="n">customers</code> <code class="k">=</code> <code class="nc">Set</code><code class="o">(</code><code class="s">"Albert"</code><code class="o">,</code> <code class="s">"Beatriz"</code><code class="o">,</code> <code class="s">"Carol"</code><code class="o">,</code> <code class="s">"Dave"</code><code class="o">,</code> <code class="s">"Erin"</code><code class="o">)</code>
+
+  <code class="n">customers</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="k">_</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>We can then transform the customers again to a collection of their basket totals.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">customers</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="k">_</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="k">_</code><code class="o">.</code><code class="n">total</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>Now here’s the interesting bit. If this transformation were against a value that could be null, and not an <code>Option</code>, we’d have to do a null check before carrying on. However, as it is an option, if the customer wasn’t found, the map would just not do the transformation and return another “no value” <code>Option</code>.</p>
+
+<p>When finally we want to sum all the basket values and get a grand total, we can use the built-in function <code>sum</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">customers</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="k">_</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="k">_</code><code class="o">.</code><code class="n">total</code><code class="o">)).</code><code class="n">sum</code>     <code class="c1">// wrong!</code>
+</pre></div>
+
+</div>
+
+<p>However, this isn’t quite right. Chaining the two map functions returns a <code>Set[Option[Double]]</code>, and we can’t sum that. We need to flatten this down to a sequence of doubles before summing.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">customers</code><code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="k">_</code><code class="o">).</code><code class="n">map</code><code class="o">(</code><code class="k">_</code><code class="o">.</code><code class="n">total</code><code class="o">)).</code><code class="n">flatten</code><code class="o">.</code><code class="n">sum</code>
+                                  <code class="o">^</code>
+              <code class="n">notice</code> <code class="n">the</code> <code class="n">position</code> <code class="n">here</code><code class="o">,</code> <code class="n">we</code> <code class="n">map</code> <code class="n">immediately</code> <code class="n">on</code> <code class="nc">Option</code>
+</pre></div>
+
+</div>
+
+<p>The flattening will discard any <code>None</code>s, so afterwards the collection size will be 3. Only Albert, Carol, and Beatriz’s baskets get summed.</p>
+
+<h4 id="leanpub-auto-the-optionflatmap-function">The <code>Option.flatMap</code> Function</h4>
+
+<p>Above, we replicated <code>flatMap</code> behaviour by mapping and then flattening, but we could have used <code>flatMap</code> on <code>Option</code> directly.</p>
+
+<p>The first step is to call <code>flatMap</code> on the names instead of <code>map</code>. As <code>flatMap</code> does the mapping and then flattens, we immediately get a collection of <code>Customer</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">r</code><code class="k">:</code> <code class="kt">Set</code><code class="o">[</code><code class="kt">Customer</code><code class="o">]</code> <code class="k">=</code> <code class="n">customers</code><code class="o">.</code><code class="n">flatMap</code><code class="o">(</code><code class="n">name</code> <code class="k">=&gt;</code> <code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>The flatten part drops all the <code>None</code>s, so the result is guaranteed to contain only customers that exist in our repository. We can then simply transform those customers to their basket total, before summing.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">customers</code>
+    <code class="o">.</code><code class="n">flatMap</code><code class="o">(</code><code class="n">name</code> <code class="k">=&gt;</code> <code class="n">database</code><code class="o">.</code><code class="n">find</code><code class="o">(</code><code class="n">name</code><code class="o">))</code>
+    <code class="o">.</code><code class="n">map</code><code class="o">(</code><code class="n">customer</code> <code class="k">=&gt;</code> <code class="n">customer</code><code class="o">.</code><code class="n">total</code><code class="o">)</code>
+    <code class="o">.</code><code class="n">sum</code>
+</pre></div>
+
+</div>
+
+<p>Dropping the no value options is a key behaviour for <code>flatMap</code> here. For example, compare the flatten on a list of lists:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="k">val</code> <code class="n">x</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="nc">List</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">2</code><code class="o">),</code> <code class="nc">List</code><code class="o">(</code><code class="mi">3</code><code class="o">),</code> <code class="nc">List</code><code class="o">(</code><code class="mi">4</code><code class="o">,</code> <code class="mi">5</code><code class="o">))</code>
+  <code class="n">x</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="nc">List</code><code class="o">(</code><code class="mi">1</code><code class="o">),</code> <code class="nc">List</code><code class="o">(</code><code class="mi">2</code><code class="o">),</code> <code class="nc">List</code><code class="o">(</code><code class="mi">3</code><code class="o">))</code>
+
+  <code class="n">scala</code><code class="o">&gt;</code> <code class="n">x</code><code class="o">.</code><code class="n">flatten</code>
+  <code class="n">res0</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Int</code><code class="o">]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="mi">1</code><code class="o">,</code> <code class="mi">2</code><code class="o">,</code> <code class="mi">3</code><code class="o">,</code> <code class="mi">4</code><code class="o">,</code> <code class="mi">5</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<p>…to a list of options.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">scala</code><code class="o">&gt;</code> <code class="k">val</code> <code class="n">y</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Some</code><code class="o">(</code><code class="s">"A"</code><code class="o">),</code> <code class="nc">None</code><code class="o">,</code> <code class="nc">Some</code><code class="o">(</code><code class="s">"B"</code><code class="o">))</code>
+  <code class="n">y</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Option</code><code class="o">[</code><code class="kt">String</code><code class="o">]]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Some</code><code class="o">(</code><code class="n">A</code><code class="o">),</code> <code class="nc">None</code><code class="o">,</code> <code class="nc">Some</code><code class="o">(</code><code class="n">B</code><code class="o">))</code>
+
+  <code class="n">scala</code><code class="o">&gt;</code> <code class="n">y</code><code class="o">.</code><code class="n">flatten</code>
+  <code class="n">res1</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">String</code><code class="o">]</code> <code class="k">=</code> <code class="nc">List</code><code class="o">(</code><code class="n">A</code><code class="o">,</code> <code class="n">B</code><code class="o">)</code>
+</pre></div>
+
+</div>
+
+<h3 id="leanpub-auto-more-formal-definition">More Formal Definition</h3>
+
+<p>As a more formal definition, a monad must:</p>
+
+<ul><li>Operate on a parameterised type, which implies it’s a “container” for another type (this is called a <em>type constructor</em>).</li>
+  <li>Have a way to construct the monad from its underlying type (the <em>unit function</em>).</li>
+  <li>Provide a <code>flatMap</code> operation (sometimes called <em>bind</em>).</li>
+</ul><p><code>Option</code> and <code>List</code> both meet these criteria.</p>
+
+<table style="width: 100%;">
+  <thead>
+    <tr><th> </th>
+      <th><code>Option</code></th>
+      <th><code>List</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Parameterised (type constructor)</td>
+      <td><code>Option[A]</code></td>
+      <td><code>List[T]</code></td>
+    </tr>
+    <tr><td>Construction (unit)</td>
+      <td><code>Option.apply(x)</code></td>
+      <td><code>List(x, y, z)</code></td>
+    </tr>
+    <tr><td> </td>
+      <td><code>Some(x)</code></td>
+      <td> </td>
+    </tr>
+    <tr><td> </td>
+      <td><code>None</code></td>
+      <td> </td>
+    </tr>
+    <tr><td><code>flatMap</code> (bind)</td>
+      <td><code>def flatMap[B](f: A =&gt; Option[B]): Option[B]</code></td>
+      <td><code>def flatMap[B](f: A =&gt; List[B]): List[B]</code></td>
+    </tr>
+  </tbody>
+</table><p>The definition doesn’t mention <code>map</code>, though, and our layman’s definition for monad was:</p>
+
+<blockquote>
+  <p>Something that has <code>map</code> and <code>flatMap</code> functions.</p>
+</blockquote>
+
+<p>I wanted to introduce <code>flatMap</code> in terms of <code>map</code> because it always applies a mapping function before flattening. It’s true that to be a monad you only have provide <code>flatMap</code> but in practice monads also supply a <code>map</code> function. This is because all monads are also <em>functors</em>; it’s functors that more formally have to provide maps.</p>
+
+<p>So the technical answer is that providing <code>flatMap</code>, a parameterised type, and the unit function makes something a monad. But all monads are functors and <code>map</code> comes from functor.</p>
+
+<div class="image-with-caption center">
+  <img src="../Images/image00272.jpeg" alt="Fig. 3.4. The `Functor` and `Monad` behaviours."/><p class="caption">Fig. 3.4. The <code>Functor</code> and <code>Monad</code> behaviours.</p>
+</div>
+
+
+<h3 id="leanpub-auto-summary-4">Summary</h3>
+
+<p>In this chapter, I explained that when people talk about monadic behaviour, they’re really just talking about the <code>map</code> and <code>flatMap</code> functions. The semantics of <code>map</code> and <code>flatMap</code> can differ depending on the type of monad but they share a formal, albeit abstract, definition.</p>
+
+<p>We looked at some concrete examples of the monadic functions on <code>List</code> and <code>Option</code>, and how we can use these with <code>Option</code> to avoid null checks. The real power of monads, though, is in “chaining” these functions to compose behaviour into a sequence of simple steps. To really see this, we’re going to look at some more elaborate examples in the next chapter, and see how for comprehensions work under the covers.</p>
+</div>
+</body></html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Adopting Scala</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-adopting-scala">Adopting Scala</h2>
+
+<h3 id="leanpub-auto-avoid-not-enough">Avoid Not Enough</h3>
+
+<p>I’d been working with Java for more than ten years before I starting looking at Scala properly. My first experience was a toe in the water. The team was naturally sceptical, so we decided to section off a part of the existing codebase to try Scala. We converted our tests to Scala and left mainline development in Java.</p>
+
+<p>In hindsight, this was a terrible idea. By working only with test code, there wasn’t enough critical mass or momentum to improve. The kinds of problems we were solving in test code were pretty well understood and the existing testing frameworks (like JUnit) solved most of them for us.</p>
+
+<p>There didn’t seem to be much scope to really use the language features. We pretty much just rewrote the tests in another testing framework which happened to be in Scala. We didn’t learn much at all and in the end, reverted everything back to Java. It was a total waste of time and effort.</p>
+
+<p>The one thing I learnt from this was that to explore a new language, you need real problems to solve: design problems, domain problems, business problems. Sectioning off a subset of your codebase limits the kinds of problems you can explore and so limits your learning.</p>
+
+<h3 id="leanpub-auto-dont-do-too-much">Don’t Do Too Much</h3>
+
+<p>The next time I had a chance to try out Scala, I went to the opposite extreme. I jumped in at the deep end, worked exclusively with Scala, and tried really hard to adopt functional programming, new patterns, new architectural designs… Anything I could find that was related to Scala.</p>
+
+<p>I hadn’t done much functional programming before so pretty quickly I hit a wall. I was faced with concepts and ideas that were completely foreign to me. I struggled, as I was trying to learn too much, too soon: new frameworks, libraries and techniques, as well as a new language. I tried to run before I could walk.</p>
+
+<p>It took a while for me to realise that, despite being an experienced developer, I was actually a novice when it came to Scala and functional programming. I’d failed to recognise this and in hindsight it was irresponsible to commit to building software like this. I was hired for my expertise but managed to put barriers up, preventing me from applying that expertise.</p>
+
+<h3 id="leanpub-auto-purely-functional-ftw">Purely Functional FTW?</h3>
+
+<p>Later on I was fortunate enough to work with some really experienced developers, all well-versed in functional programming and mostly coming from a Haskell background. This was great as I had the chance to benefit from others’ experiences, and the learning curve got a little easier. After a while, the team started to adopt really advanced ideas and it soon became apparent that there was another wall to get past. We started to talk about much deeper application concerns and whether we could solve these functionally.</p>
+
+<p>My point here is that for teams not used to it, heavyweight functional programming ideas can be pretty exotic. Even in industry, I think it’s fair to say that there are very few teams fully embracing this style.</p>
+
+<p>I don’t feel like, collectively, we can say if this extreme is helping to solve real-world business problems or not. It’s just another way of doing things. It does represent a very different approach to building software from the mainstream and for us, it was perhaps a little too much. It caused a bit of a divide in the team where some people were comfortable experimenting with this approach and others weren’t.</p>
+</div>
+</body></html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Manage Your Codebase</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-manage-your-codebase">Manage Your Codebase</h2>
+
+<p>Once you have your newly converted Scala codebase, you’ll be working with it for a while. Here are some practicalities you should be aware of and some general tips to help manage your codebase.</p>
+
+<h3 id="leanpub-auto-conventions">Conventions</h3>
+
+<ul><li>There are so many syntax variations and conventions that the sheer number of syntax options available can be intimidating. <strong>Settle on your own conventions</strong>.</li>
+  <li>Find a way of doing things that works for your team and stick to it. Avoid context switching between syntax modes to start with. That might mean using pattern matching rather than using <code>map</code> to start with. Wait until everyone is comfortable before switching over.</li>
+  <li>Review these choices regularly as you don’t want to be held back once you’re up and running.</li>
+  <li>Have a look at <a href="http://twitter.github.io/effectivescala/">Twitter’s efforts</a> as an example. They’ve managed to condense their experiences into a really practical guide. Well worth a read.</li>
+  <li>Typesafe have a <a href="http://docs.scala-lang.org/style/">style guide</a> which is worth reading over but should be taken with a pinch of salt.</li>
+</ul><p> </p>
+
+<div class="page-break"></div><div style="page-break-after:always"></div>
+<h3 id="leanpub-auto-what-to-avoid">What to Avoid</h3>
+
+<p>It’s also great to know what to avoid when you’re first starting out. I wish I knew some of these things before I started:</p>
+
+<ul><li><strong>SBT can make your life harder</strong>. SBT starts off very simple but if you want to do anything sophisticated, it gets fairly taxing. Be prepared to do some learning; SBT isn’t something that you can get very far with by cutting and pasting examples from the internet. You do actually need some understanding. I think you’ll have bigger things to worry about so my suggestion is to stick with a build tool that you’re familiar with to start with. It’s very easy to support Scala projects in Maven.</li>
+  <li><strong>Scalaz is not the place to start</strong>. This is the Haskell programmer’s library for Scala. It’s hardcore and if you’ve not been doing purely functional programming for years, just plain avoid it. You don’t need to know what an applicative functor is or why you’d use a Kleisli. At least, not to start with.</li>
+  <li><strong>“Fancy” Scala libraries might not help</strong>. When Scala first came out, a bunch of open source libraries hit the web. People got carried away and in hindsight would probably admit they went a little overboard with the syntax. As a result there are lots of APIs that were not designed very well:
+    <ul><li><strong>Dispatch</strong> The http library Dispatch is a good example. The method to add a query parameter to a request is <code>&lt;&lt;?</code>. That just doesn’t read as intuitively as <code>addRequestParameter</code>. In fairness, Dispatch offers both variants but the upshot is to be skeptical of libraries that overuse operator overloading.</li>
+      <li><strong>Anorm</strong> is another one that offers a parser API to extract SQL results. It basically parses <code>ResultSet</code>s but it has such a unintuitive DSL for doing so, it makes you wonder what was wrong with doing it manually.</li>
+    </ul></li>
+  <li><strong>Java libraries work just fine.</strong> You can always use the Java libraries you know and love from Scala.</li>
+  <li><strong>Lack of consistency is dangerous.</strong> We’ve already touched on this: don’t try and use all the syntax variations at once. Figure out one properly before moving on. Keep things consistent.</li>
+</ul><h3 id="leanpub-auto-other-challenges">Other Challenges</h3>
+
+<p>You’ll face plenty of other challenges:</p>
+
+<ul><li>Compilation speed is slow. It may or may not be something that concerns you but be aware: it’s unlikely to match Java’s speed anytime soon. In part this is due to just how sophisticated the Scala compiler is; it does a lot of work and that comes at a price.</li>
+  <li>Keeping your IDE build configuration in sync with your external build tool can be a challenge. Maven is so mature now that its IDE plugins pretty much handle everything for you, but the SBT plugin for IDEA on the other hand has some problems. There are third-party tools that generate IDE project files but your mileage may vary. The best I can offer is to pick the tools that seem to have the most weight behind them for your IDE.</li>
+  <li>We’ve already talked about the functional programming continuum but it’s worth mentioning again that it’s a good idea to be mindful of where you want to be. I recommend aiming for “Functional in the small, OO in the large” to start. You’ll need to continually monitor your progress and embrace the next learning challenge when you feel ready. Push the boundaries and keep learning.</li>
+</ul>
+</div>
+</body></html>

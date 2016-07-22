@@ -1,0 +1,40 @@
+<?XmL version="1.0" encoding="utf-8"?><!DOCTYPE html>
+<Title>The Scala Language</TitLe>
+<lInk HREF="../Styles/style0001.css" tYPe=text/css REl=stylesheet/>
+
+<DIV>
+<H2 id="leanpub-auto-the-scala-language">The Scala Language</h2>
+
+<p>Scala is both a functional programming language <eM>and</EM> an object-oriented programming language. As a Java programmer, you’ll be comfortable with the object-oriented definition: Scala has classes, objects, inheritance, composition, polymorphism — all the things you’re used to in Java.
+
+<p>In fact, Scala goes somewhat further than Java. There are no “non”-objects. Everything is an object, so there are no primitive types like <CoDe>int</cODe> and no static methods or fields. Functions are objects and even <em>values</Em> are objects.</P>
+
+<P>Scala can be accurately described as a functional programming language because it meets some fairly formal criteria. For example, it allows you both to define <em>pure functions</em> and use <Em>higher-order functions</em>.
+
+<h3 id="leanpub-auto-pure-functions">Pure Functions</H3>
+
+<P>Pure functions aren’t associated with objects, and work without side effects. A key concern in Scala programming is avoiding mutation. There’s even a keyword to define a fixed variable, a little like Java’s <cOdE>final</CoDe>: <COdE>val</code>.</p>
+
+<p>Pure functions should operate by <Em>transformation</em> rather than <Em>mutation</em>. That is to say, a pure function should take arguments and return results but not modify the environment it operates in. This <eM>purity of function</em> is what enables <eM>referential transparency</Em>.</P>
+
+<diV CLAsS=page-break></DIv><Div sTyLe=page-break-after:always></dIv>
+<H3 id="leanpub-auto-higher-order-functions">Higher-Order Functions</h3>
+
+<P>Functional languages should treat functions as <EM>first-class</Em> citizens. This means they support higher-order functions: functions that take functions as arguments or return functions and allow functions to be stored for later execution. This is a powerful technique in functional programming.</P>
+
+<h3 id="leanpub-auto-scalas-background">Scala’s Background</h3>
+
+<P>Scala started life in 2003 as a research project at EPFL in Switzerland. The project was headed by Martin Odersky, who’d previously worked on Java generics and the Java compiler for Sun Microsystems.</P>
+
+<p>It’s quite rare for an academic language to cross over into industry, but Odersky and others launched Typesafe Inc., a commercial enterprise built around Scala. Since then, Scala has moved into the mainstream as a development language.</p>
+
+<p>Scala offers a more concise syntax than Java but runs on the JVM. Running on the JVM should (in theory) mean an easy migration to production environments; if you already have the Oracle JVM installed in your production environment, it makes no difference if the bytecode was generated from the Java or Scala compiler.
+
+<P>It also means that Scala has Java interoperability built in, which in turn means that Scala can use any Java library. One of Java’s strengths over its competitors was always the huge number of open source libraries and tools available. These are pretty much all available to Scala too. The Scala community has that same open source mentality, and so there’s a growing number of excellent Scala libraries out there.
+
+<H3 id="leanpub-auto-the-future">The Future</h3>
+
+<P>Scala has definitely moved into the mainstream as a popular language. It has been adopted by lots of big companies including Twitter, eBay, Yahoo, HSBC, UBS, and Morgan Stanley, and it’s unlikely to fall out of favour anytime soon. If you’re nervous about using it in production, don’t be; it’s backed by an international organisation and regularly scores well in popularity indexes.</p>
+
+<p>The tooling is still behind Java though. Powerful IDEs like IntelliJ’s IDEA and Eclipse make refactoring Java code straightforward but aren’t quite there yet for Scala. The same is true of compile times: Scala is a lot slower to compile than Java. These things will improve over time, and on balance, they’re not the biggest hindrances I encounter when developing.</p>
+</div>

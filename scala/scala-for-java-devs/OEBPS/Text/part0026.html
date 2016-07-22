@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>What to Expect</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-what-to-expect">What to Expect</h2>
+
+<h3 id="leanpub-auto-the-learning-curve">The Learning Curve</h3>
+
+<p>If you’ve just started to learn Scala and are wondering what to expect, it’s typical to experience a quick ramp-up in skill followed by a slower adoption of the more sophisticated features. In this chapter, I talk about what I think of as a typical learning curve.</p>
+
+<p>Based on my experiences and talking to various Scala teams, we can chart a typical Scala learning curve like this, with experience (or time) on the <code>x</code> axis and some measure of “learning” on the <code>y</code>.</p>
+
+<div class="image-with-caption center">
+  <img src="../Images/image00273.jpeg" alt="Fig. 4.1. Typical Scala adoption as a learning curve."/><p class="caption">Fig. 4.1. Typical Scala adoption as a learning curve.</p>
+</div>
+
+<h4 id="leanpub-auto-milestone-1-oo-in-scala">Milestone 1: OO in Scala</h4>
+
+<p>When you first start, you can expect getting up to speed with the language to be a fairly steep incline. </p>
+
+<p>“Steep” but also “short”: it’s not difficult to get to the first plateau, so you can expect a relatively quick increment in learning.</p>
+
+<p>You’ll probably sit here for a bit applying what you’ve learnt. I see this as the first milestone: to be able to build object-oriented or imperative applications using language-specific constructs and features, but without necessarily adopting functional programming. It’s just like learning any other language in the Java / C family.</p>
+
+<h4 id="leanpub-auto-milestone-2-fp-in-the-small-oo-in-the-large">Milestone 2: FP in the small, OO in the large</h4>
+
+<p>The next milestone involves adopting functional programming techniques.</p>
+
+<p>This is a much more challenging step, and likely to be a shallower curve. Typically this will involve using traditional architecture design but implementing functional programming techniques in the small. You can think of this approach as “functional in the small, OO in the large”. Starting to embrace a new functional way of thinking and unlearning some of the traditional techniques can be hard, hence the shallower incline.</p>
+
+<p>Concrete examples here are more than just language syntax: things like higher-order and pure functions, referential transparency, immutability and side effect–free, more declarative coding; all the things that are typically offered by pure functional languages. The key thing here is that they’re applied in small, isolated areas.</p>
+
+<h4 id="leanpub-auto-milestone-3-fp-in-the-large">Milestone 3: FP in the large</h4>
+
+<p>The next challenge is working towards a more cohesive functional design; this really means adopting a functional style at a system level; architecting the entire application as functions and abandoning object-oriented style completely. So, aiming for something like a Haskell application.</p>
+
+<p>All the concrete functional programming mechanisms above apply but this time, throughout the system; not to isolated areas but lifted to application-wide concerns. Picking up advanced libraries like Scalaz goes hand-in-hand with this part of the curve.</p>
+
+<h3 id="leanpub-auto-the-learning-continuum">The Learning Continuum</h3>
+
+<p>You can also think of adoption of Scala as more of a continuum, with traditional imperative programming on the left and pure functional programming on the right.</p>
+
+<div class="image-with-caption center">
+  <img src="../Images/image00274.jpeg" alt="Fig. 4.2. Imperative (Java) to pure functional programming (Haskell) as a continuum."/><p class="caption">Fig. 4.2. Imperative (Java) to pure functional programming (Haskell) as a continuum.</p>
+</div>
+
+<p>You can think of the far right as Haskell on the JVM. Haskell is a pure functional language so you don’t have any choice but to design your app in a functional way. Scala is an object-oriented / functional hybrid; it can only give you the tools. It can’t enforce functional programming; you need discipline and experience in Scala to avoid, for example, mutating state, whereas Haskell will actually stop you.</p>
+
+<p>As you start out on the continuum using Java and move to the right, libraries like <a href="http://www.functionaljava.org/">Functional Java</a>, <a href="https://code.google.com/p/totallylazy/">Totally Lazy</a> and even <a href="https://leanpub.com/whatsnewjava8">Java 8 features</a> will help you adopt a more functional style. There comes a point where a language switch helps even more. Functional idioms become a <em>language feature</em> rather than a <em>library feature</em>. The syntactical sugar of for comprehensions are a good example.</p>
+
+<p> </p>
+
+<p>As you carry on, using libraries like <a href="http://eed3si9n.com/learning-scalaz/index.html">Scalaz</a> makes it easier to progress towards pure functional programming, but remember that reaching the far right, or the top-right quadrant of the learning curve, isn’t the goal in and of itself. There are plenty of teams operating effectively across the continuum.</p>
+
+<p>When you’re adopting Scala, make a deliberate decision about where you want to be on the continuum, be clear about why, and use my learning curve as a way to gauge your progress.</p>
+
+<h4 id="leanpub-auto-goals">Goals</h4>
+
+<p>Reaching the purely functional milestone is going to be difficult. It may not even be the right thing to do for your team. A purely functional system isn’t necessarily better; I suggest that most Java teams trying to adopt Scala should aim for somewhere between Milestones 1 and 2, somewhere towards the middle of the continuum.</p>
+
+<p>I think this is a good balance between seeing the benefits of the language and taking on too much. If you’re working in an commercial environment, you still have to deliver software. Remember that you’re potentially trading your experienced developers for novices as you move to the right. It may be better to balance your delivery commitments with your learning, since delivery risk goes up as you go the right.</p>
+
+<p> </p>
+</div>
+</body></html>

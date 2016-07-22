@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<title>Pattern Matching</title>
+<link href="../Styles/style0001.css" type="text/css" rel="stylesheet"/>
+</head><body>
+<div>
+<h2 id="leanpub-auto-pattern-matching">Pattern Matching</h2>
+
+<p>As well as providing switch-like functionality (that’s more powerful than Java’s version), pattern matching offers a rich set of “patterns” that can be used to match against. In this chapter, we’ll look at the anatomy of patterns and talk through some examples, including literal, constructor and type query patterns.</p>
+
+<p>Pattern matching also provides the ability to deconstruct matched objects, giving you access to parts of a data structure. We’ll look at the mechanics of deconstruction: <em>extractors</em>, which are basically objects with the special method <code>unapply</code> implemented.</p>
+
+<h3 id="leanpub-auto-switching">Switching</h3>
+
+<p>Let’s start by looking at the pattern match expression from earlier.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">month</code> <code class="k">=</code> <code class="s">"August"</code>
+  <code class="k">val</code> <code class="n">quarter</code> <code class="k">=</code> <code class="n">month</code> <code class="k">match</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="s">"January"</code> <code class="o">|</code> <code class="s">"February"</code> <code class="o">|</code> <code class="s">"March"</code> <code class="k">=&gt;</code> <code class="s">"1st quarter"</code>
+    <code class="k">case</code> <code class="s">"April"</code> <code class="o">|</code> <code class="s">"May"</code> <code class="o">|</code> <code class="s">"June"</code> <code class="k">=&gt;</code> <code class="s">"2nd quarter"</code>
+    <code class="k">case</code> <code class="s">"July"</code> <code class="o">|</code> <code class="s">"August"</code> <code class="o">|</code> <code class="s">"September"</code> <code class="k">=&gt;</code> <code class="s">"3rd quarter"</code>
+    <code class="k">case</code> <code class="s">"October"</code> <code class="o">|</code> <code class="s">"November"</code> <code class="o">|</code> <code class="s">"December"</code> <code class="k">=&gt;</code> <code class="s">"4th quarter"</code>
+    <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="s">"unknown quarter"</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>There are several key differences between Java’s <code>switch</code> and Scala’s <code>match</code> expression:</p>
+
+<ul><li>There is no fall-through behaviour between cases in Scala. Java uses <code>break</code> to avoid a fall-through but Scala breaks between each case automatically.</li>
+  <li>In Scala, a pattern match is an expression; it returns a value. Java switches must have side effects to be useful.</li>
+  <li>We can switch on a wider variety of things with Scala, not just primitives, enums and strings. We can switch on objects, and things that fit a “pattern” of our own design. In the example, we’re using “or” to build a richer match condition.</li>
+</ul><p>Pattern matching also gives us:</p>
+
+<ul><li>The ability to guard the conditions of a match; using an <code>if</code>, we can enrich a case to match not only on the pattern (the part straight after the <code>case</code>) but also on some binary condition.</li>
+  <li>Exceptions for failed matches; when a value doesn’t match anything at runtime, Scala will throw a <code>MatchError</code> exception letting us know.</li>
+  <li>Optional compile-time checks: you can set it up so that if you forget to write a case to match all possible combinations, you’ll get a compiler warning. This is done using what’s called <em>sealed traits</em>.</li>
+</ul><h3 id="leanpub-auto-patterns">Patterns</h3>
+
+<p>The anatomy of a match expression looks like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">value</code> <code class="k">match</code> <code class="o">{</code>
+      <code class="k">case</code> <code class="n">pattern</code> <code class="n">guard</code> <code class="k">=&gt;</code> <code class="n">expression</code>
+      <code class="o">...</code>
+      <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="n">default</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>So we have a value, then the <code>match</code> keyword, followed by a series of match cases. The value can itself be an expression, a literal or even an object.</p>
+
+<p>Each case is made up of a pattern, optionally a guard condition, and the expression to evaluate on a successful match.</p>
+
+<p>You might add a default, catch-all pattern at the end. The underscore is our first example of an actual pattern. It’s the wildcard pattern and means “match on anything”.</p>
+
+<p>A pattern can be:</p>
+
+<ul><li>A wildcard match (<code>_</code>). </li>
+  <li>A literal match, meaning equality, used for values such as <code>101</code> or <code>RED</code>.</li>
+  <li>A constructor match, meaning that a value would match if it could have been created using a specific constructor.</li>
+  <li>A deconstruction match, otherwise known as an <em>extractor</em> pattern.</li>
+  <li>A match based on a specific type, known as a type query pattern.</li>
+  <li>A pattern with alternatives (specified with <code>|</code>).</li>
+</ul><p>Patterns can also include a variable name, which on matching will be available to the expression on the right-hand side. It’s what’s referred to as a variable ID in the language specification.</p>
+
+<p>There are some more which I’ve left off; if you’re interested see the Pattern Matching section of the <a href="http://www.scala-lang.org/files/archive/spec/2.11/08-pattern-matching.html">Scala Language Specification</a>.</p>
+
+<h3 id="leanpub-auto-literal-matches">Literal Matches</h3>
+
+<p>A literal match is a match against any Scala literal. The example below uses a string literal and has similar semantics to a Java switch statement.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">language</code> <code class="k">=</code> <code class="s">"French"</code>
+  <code class="n">value</code> <code class="k">match</code> <code class="o">{</code>
+      <code class="k">case</code> <code class="s">"french"</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Salut"</code><code class="o">)</code>
+      <code class="k">case</code> <code class="s">"French"</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Bonjour"</code><code class="o">)</code>
+      <code class="k">case</code> <code class="s">"German"</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Guten Tag"</code><code class="o">)</code>
+      <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Hi"</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The value must exactly match the literal in the case. In the example, the result will be to print “Bonjour” and not “Salut” as the match value has a capital <code>F</code>. The match is based on equality (<code>==</code>).</p>
+
+<h3 id="leanpub-auto-constructor-matches">Constructor Matches</h3>
+
+<p>Constructor patterns allow you to match a case against how an object was <em>constructed</em>. Let’s say we have a <code>SuperHero</code> class that looks like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">case</code> <code class="k">class</code>
+    <code class="nc">SuperHero</code><code class="o">(</code><code class="n">heroName</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">alterEgo</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="n">powers</code><code class="k">:</code> <code class="kt">List</code><code class="o">[</code><code class="kt">Ability</code><code class="o">])</code>
+</pre></div>
+
+</div>
+
+<p>It’s a regular class with three constructor arguments, but the keyword <code>case</code> at the beginning designates it as a <em>case class</em>. For now, that just means that Scala will automatically supply a bunch of useful methods for us, like <code>hashCode</code>, <code>equals</code>, and <code>toString</code>.</p>
+
+<p>Given the class and its fields, we can create a match expression like this:</p>
+
+<div class="code-block">
+<div class="highlight"><pre><code class="lineno">1</code>   <code class="k">object</code> <code class="nc">BasicConstructorPatternExample</code> <code class="k">extends</code> <code class="nc">App</code> <code class="o">{</code>
+<code class="lineno">2</code>     <code class="k">val</code> <code class="n">hero</code> <code class="k">=</code>
+<code class="lineno">3</code>       <code class="k">new</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="s">"Batman"</code><code class="o">,</code> <code class="s">"Bruce Wayne"</code><code class="o">,</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Speed</code><code class="o">,</code> <code class="nc">Agility</code><code class="o">,</code> <code class="nc">Strength</code><code class="o">))</code>
+<code class="lineno">4</code> 
+<code class="lineno">5</code>     <code class="n">hero</code> <code class="k">match</code> <code class="o">{</code>
+<code class="lineno">6</code>       <code class="k">case</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="k">_</code><code class="o">,</code> <code class="s">"Bruce Wayne"</code><code class="o">,</code> <code class="k">_</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"I'm Batman!"</code><code class="o">)</code>
+<code class="lineno">7</code>       <code class="k">case</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="k">_</code><code class="o">,</code> <code class="k">_</code><code class="o">,</code> <code class="k">_</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"???"</code><code class="o">)</code>
+<code class="lineno">8</code>     <code class="o">}</code>
+<code class="lineno">9</code>   <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Using a constructor pattern, it will match for any <code>hero</code> whose <code>alterEgo</code> field matches the value “Bruce Wayne” and print “I’m Batman”. For everyone else, it’ll print question marks.</p>
+
+<p>The underscores are used as placeholders for the constructor arguments; you need three on the second case (line 7) because the constructor has three arguments. The underscore means you don’t care what their values are. Putting the value “Bruce Wayne” on line 6 means you do care and that the second argument to the constructor must match it.</p>
+
+<p>With constructor patterns, the value must also match the type. Let’s say that <code>SuperHero</code> is a subtype of a <code>Person</code>.</p>
+
+<div class="image-with-caption center">
+  <img src="../Images/image00268.jpeg" alt="Fig. 3.2. `SuperHero` is a subtype of `Person`."/><p class="caption">Fig. 3.2. <code>SuperHero</code> is a subtype of <code>Person</code>.</p>
+</div>
+
+
+<p>If the <code>hero</code> variable was actually an instance of <code>Person</code> and not a <code>SuperHero</code>, nothing would match. In the case of no match, you’d see a <code>MatchError</code> exception at runtime. To avoid the <code>MatchError</code>, you’d need to allow non-<code>SuperHero</code> types to match. To do that, you could just use a wildcard as a default.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">BasicConstructorPatternExample</code> <code class="k">extends</code> <code class="nc">App</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">hero</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Person</code><code class="o">(</code><code class="s">"Joe Ordinary"</code><code class="o">)</code>
+
+    <code class="n">hero</code> <code class="k">match</code> <code class="o">{</code>
+      <code class="k">case</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="k">_</code><code class="o">,</code> <code class="s">"Bruce Wayne"</code><code class="o">,</code> <code class="k">_</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"I'm Batman!"</code><code class="o">)</code>
+      <code class="k">case</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="k">_</code><code class="o">,</code> <code class="k">_</code><code class="o">,</code> <code class="k">_</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"???"</code><code class="o">)</code>
+      <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"I'm a civilian, don't shoot!"</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Patterns can also bind a matched value to a variable. Instead of just matching against a literal (like “Bruce Wayne”) we can use a variable as a placeholder and access a matched value in the expression on the right-hand side. For example, we could ask the question:</p>
+
+<blockquote>
+  <p>“What super-powers does an otherwise unknown person have, if they <em>are</em> a superhero with the alter-ego Bruce Wayne?”</p>
+</blockquote>
+
+<div class="code-block">
+<div class="highlight"><pre><code class="lineno">1</code>   <code class="k">def</code> <code class="n">superPowersFor</code><code class="o">(</code><code class="n">person</code><code class="k">:</code> <code class="kt">Person</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+<code class="lineno">2</code>     <code class="n">person</code> <code class="k">match</code> <code class="o">{</code>
+<code class="lineno">3</code>       <code class="k">case</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="k">_</code><code class="o">,</code> <code class="s">"Bruce Wayne"</code><code class="o">,</code> <code class="n">powers</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">powers</code>
+<code class="lineno">4</code>       <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="nc">List</code><code class="o">()</code>
+<code class="lineno">5</code>     <code class="o">}</code>
+<code class="lineno">6</code>   <code class="o">}</code>
+<code class="lineno">7</code> 
+<code class="lineno">8</code>   <code class="n">println</code><code class="o">(</code><code class="s">"Bruce has the following powers "</code> <code class="o">+</code> <code class="n">superPowersFor</code><code class="o">(</code><code class="n">person</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+
+<p>We’re still matching only on types of <code>SuperHero</code> with a literal match against their alter-ego, but this time the underscore in the last position on line 3 is replaced with the variable <code>powers</code>. This means we can use the variable on the right-hand side. In this case, we just return it to answer the question.</p>
+
+<p>Variable binding is one of pattern matching’s key strengths. In practice, it doesn’t make much sense to use a literal value like “Bruce Wayne” as it limits the application. Instead, you’re more likely to replace it with either a variable or wildcard pattern.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">HeroConstructorPatternExample</code> <code class="k">extends</code> <code class="nc">App</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">superPowersFor</code><code class="o">(</code><code class="n">person</code><code class="k">:</code> <code class="kt">Person</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+      <code class="n">person</code> <code class="k">match</code> <code class="o">{</code>
+        <code class="k">case</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="k">_</code><code class="o">,</code> <code class="k">_</code><code class="o">,</code> <code class="n">powers</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">powers</code>
+        <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="nc">List</code><code class="o">()</code>
+      <code class="o">}</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>You’d then use values from the match object as input. To find out what powers Bruce Wayne has, you’d pass in a <code>SuperHero</code> instance for Bruce.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">bruce</code> <code class="k">=</code>
+    <code class="k">new</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="s">"Batman"</code><code class="o">,</code> <code class="s">"Bruce Wayne"</code><code class="o">,</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Speed</code><code class="o">,</code> <code class="nc">Agility</code><code class="o">,</code> <code class="nc">Strength</code><code class="o">))</code>
+  <code class="n">println</code><code class="o">(</code><code class="s">"Bruce has the following powers "</code> <code class="o">+</code> <code class="n">superPowersFor</code><code class="o">(</code><code class="n">bruce</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<p>The example is a little contrived as we’re using a match expression to return something that we already know. But as we’ve made the <code>superPowersFor</code> method more general purpose, we could also find out what powers any superhero or regular person has.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">steve</code> <code class="k">=</code>
+    <code class="k">new</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="s">"Captain America"</code><code class="o">,</code> <code class="s">"Steve Rogers"</code><code class="o">,</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Tactics</code><code class="o">,</code> <code class="nc">Speed</code><code class="o">))</code>
+  <code class="k">val</code> <code class="n">jayne</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Person</code><code class="o">(</code><code class="s">"Jayne Doe"</code><code class="o">)</code>
+
+  <code class="n">println</code><code class="o">(</code><code class="s">"Steve has the following powers "</code> <code class="o">+</code> <code class="n">superPowersFor</code><code class="o">(</code><code class="n">steve</code><code class="o">))</code>
+  <code class="n">println</code><code class="o">(</code><code class="s">"Jayne has the following powers "</code> <code class="o">+</code> <code class="n">superPowersFor</code><code class="o">(</code><code class="n">jayne</code><code class="o">))</code>
+</pre></div>
+
+</div>
+
+<div class="aside sidebarish">
+  <h4 id="leanpub-auto-constructor-patterns">Constructor Patterns</h4>
+  <p>Note that constructor patterns work on case classes out of the box. Technically, this is because they automatically implement a special method called <code>unapply</code>. We’ll see shortly how you can implement your own and achieve the same kind of thing for non-case classes.</p>
+
+</div>
+
+<h3 id="leanpub-auto-type-query">Type Query</h3>
+
+<p>Using a constructor pattern, you can implicitly match against a type and access its fields. If you don’t care about the fields, you can use a type query to match against just the type.</p>
+
+<p>For example, we could create a method <code>nameFor</code> to give us a person or superhero’s name, and call it with a list of people. We’d get back either their name, or if they’re a superhero, their alter ego.</p>
+
+<div class="code-block">
+<div class="highlight"><pre><code class="lineno"> 1</code>   <code class="k">object</code> <code class="nc">HeroTypePatternExample</code> <code class="k">extends</code> <code class="nc">App</code> <code class="o">{</code>
+<code class="lineno"> 2</code> 
+<code class="lineno"> 3</code>     <code class="k">val</code> <code class="n">batman</code> <code class="k">=</code>
+<code class="lineno"> 4</code>       <code class="k">new</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="s">"Batman"</code><code class="o">,</code> <code class="s">"Bruce Wayne"</code><code class="o">,</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Speed</code><code class="o">,</code> <code class="nc">Agility</code><code class="o">,</code> <code class="nc">Strength</code><code class="o">))</code>
+<code class="lineno"> 5</code>     <code class="k">val</code> <code class="n">cap</code> <code class="k">=</code>
+<code class="lineno"> 6</code>       <code class="k">new</code> <code class="nc">SuperHero</code><code class="o">(</code><code class="s">"Captain America"</code><code class="o">,</code> <code class="s">"Steve Rogers"</code><code class="o">,</code> <code class="nc">List</code><code class="o">(</code><code class="nc">Tactics</code><code class="o">,</code> <code class="nc">Speed</code><code class="o">))</code>
+<code class="lineno"> 7</code>     <code class="k">val</code> <code class="n">jayne</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Person</code><code class="o">(</code><code class="s">"Jayne Doe"</code><code class="o">)</code>
+<code class="lineno"> 8</code> 
+<code class="lineno"> 9</code>     <code class="k">def</code> <code class="n">nameFor</code><code class="o">(</code><code class="n">person</code><code class="k">:</code> <code class="kt">Person</code><code class="o">)</code> <code class="k">=</code> <code class="o">{</code>
+<code class="lineno">10</code>       <code class="n">person</code> <code class="k">match</code> <code class="o">{</code>
+<code class="lineno">11</code>         <code class="k">case</code> <code class="n">hero</code><code class="k">:</code> <code class="kt">SuperHero</code> <code class="o">=&gt;</code> <code class="n">hero</code><code class="o">.</code><code class="n">alterEgo</code>
+<code class="lineno">12</code>         <code class="k">case</code> <code class="n">person</code><code class="k">:</code> <code class="kt">Person</code> <code class="o">=&gt;</code> <code class="n">person</code><code class="o">.</code><code class="n">name</code>
+<code class="lineno">13</code>       <code class="o">}</code>
+<code class="lineno">14</code>     <code class="o">}</code>
+<code class="lineno">15</code> 
+<code class="lineno">16</code>     <code class="c1">// What's a superhero's alter ego?</code>
+<code class="lineno">17</code>     <code class="n">println</code><code class="o">(</code><code class="s">"Batman's Alter ego is "</code> <code class="o">+</code> <code class="n">nameFor</code><code class="o">(</code><code class="n">batman</code><code class="o">))</code>
+<code class="lineno">18</code>     <code class="n">println</code><code class="o">(</code><code class="s">"Captain America's Alter ego is "</code> <code class="o">+</code> <code class="n">nameFor</code><code class="o">(</code><code class="n">cap</code><code class="o">))</code>
+<code class="lineno">19</code>     <code class="n">println</code><code class="o">(</code><code class="s">"Jayne's Alter ego is "</code> <code class="o">+</code> <code class="n">nameFor</code><code class="o">(</code><code class="n">jayne</code><code class="o">))</code>
+<code class="lineno">20</code>   <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>Rather than use a sequence of <code>instanceOf</code> checks followed by a cast, you can specify a variable and type. In the expression that follows the arrow, the variable can be used as an instance of that type. So on line 11, <code>hero</code> is magically an instance of <code>SuperHero</code> and <code>SuperHero</code> specific methods (like <code>alterEgo</code>) are available without casting.</p>
+
+<p>When you use pattern matching to deal with exceptions in a <code>try</code> and <code>catch</code>, it’s actually type queries that are being used.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">try</code> <code class="o">{</code>
+    <code class="k">val</code> <code class="n">url</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">URL</code><code class="o">(</code><code class="s">"http://baddotrobot.com"</code><code class="o">)</code>
+    <code class="k">val</code> <code class="n">reader</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">BufferedReader</code><code class="o">(</code><code class="k">new</code> <code class="nc">InputStreamReader</code><code class="o">(</code><code class="n">url</code><code class="o">.</code><code class="n">openStream</code><code class="o">))</code>
+    <code class="k">var</code> <code class="n">line</code> <code class="k">=</code> <code class="n">reader</code><code class="o">.</code><code class="n">readLine</code>
+    <code class="k">while</code> <code class="o">(</code><code class="n">line</code> <code class="o">!=</code> <code class="kc">null</code><code class="o">)</code> <code class="o">{</code>
+      <code class="n">line</code> <code class="k">=</code> <code class="n">reader</code><code class="o">.</code><code class="n">readLine</code>
+      <code class="n">println</code><code class="o">(</code><code class="n">line</code><code class="o">)</code>
+    <code class="o">}</code>
+  <code class="o">}</code> <code class="k">catch</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="k">_:</code> <code class="kt">MalformedURLException</code> <code class="o">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Bad URL"</code><code class="o">)</code>
+    <code class="k">case</code> <code class="n">e</code><code class="k">:</code> <code class="kt">IOException</code> <code class="o">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="s">"Problem reading data : "</code> <code class="o">+</code> <code class="n">e</code><code class="o">.</code><code class="n">getMessage</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The underscore in the <code>MalformedURLException</code> match shows that you can use a wildcard with type queries if you’re not interested in using the value.</p>
+
+<h3 id="leanpub-auto-deconstruction-matches-and-unapply">Deconstruction Matches and <code>unapply</code></h3>
+
+<p>It’s common to implement the <code>apply</code> method as a factory-style creation method; a method taking arguments and giving back a new instance. You can think of the special case <code>unapply</code> method as the opposite of this. It takes an instance and extracts values from it; usually the values that were used to construct it.</p>
+
+<img src="../Images/image00269.gif" alt="apply\left ( a,b \right )\rightarrow object\left ( a,b \right )" class="block-equation"/><img src="../Images/image00270.gif" alt="unapply\left ( object\left ( a,b \right )) \right )\rightarrow a,b" class="block-equation"/><p>Because they extract values, objects that implement <code>unapply</code> are referred to as <em>extractors</em>.</p>
+
+<blockquote>
+  <p>Given an object, an <em>extractor</em> typically extracts the parameters that would have created that object.</p>
+</blockquote>
+
+<p>So if we want to use our <code>Customer</code> in a match expression, we’d add an <code>unapply</code> method to its companion object.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">class</code> <code class="nc">Customer</code><code class="o">(</code><code class="k">val</code> <code class="n">name</code><code class="k">:</code> <code class="kt">String</code><code class="o">,</code> <code class="k">val</code> <code class="n">address</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code>
+
+  <code class="k">object</code> <code class="nc">Customer</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">unapply</code><code class="o">(???)</code> <code class="k">=</code> <code class="o">???</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>An <code>unapply</code> method always takes an instance of the object you’d like to deconstruct, in our case a <code>Customer</code>.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Customer</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">unapply</code><code class="o">(</code><code class="n">customer</code><code class="k">:</code> <code class="kt">Customer</code><code class="o">)</code> <code class="k">=</code> <code class="o">???</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>It should return either the extracted parts of the object or something to indicate it couldn’t be deconstructed. In Scala, rather than return a null to represent this, we return the <em>option</em> of a result. It’s the same idea as the <code>Optional</code> class in Java.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Customer</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">unapply</code><code class="o">(</code><code class="n">customer</code><code class="k">:</code> <code class="kt">Customer</code><code class="o">)</code><code class="k">:</code> <code class="kt">Option</code><code class="o">[</code><code class="kt">???</code><code class="o">]</code> <code class="k">=</code> <code class="o">???</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The last piece of the puzzle is to work out what can optionally be extracted from the object: the type to put in the <code>Option</code> parameter. If you wanted to be able to extract just the customer name, the return would be <code>Option[String]</code>, but we want to be able to extract both the name and address (and therefore be able to match on both name and address in a match expression).</p>
+
+<p>The answer is to use a tuple, the data structure we saw earlier. It’s a way of returning multiple pieces of data in a single type.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">Customer</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">unapply</code><code class="o">(</code><code class="n">customer</code><code class="k">:</code> <code class="kt">Customer</code><code class="o">)</code><code class="k">:</code> <code class="kt">Option</code><code class="o">[(</code><code class="kt">String</code>, <code class="kt">String</code><code class="o">)]</code> <code class="k">=</code> <code class="o">{</code>
+      <code class="nc">Some</code><code class="o">((</code><code class="n">customer</code><code class="o">.</code><code class="n">name</code><code class="o">,</code> <code class="n">customer</code><code class="o">.</code><code class="n">address</code><code class="o">))</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>We can now use a pattern match with our customer.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">val</code> <code class="n">customer</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">Customer</code><code class="o">(</code><code class="s">"Bob"</code><code class="o">,</code> <code class="s">"1 Church street"</code><code class="o">)</code>
+  <code class="n">customer</code> <code class="k">match</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="nc">Customer</code><code class="o">(</code><code class="n">name</code><code class="o">,</code> <code class="n">address</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="n">name</code> <code class="o">+</code> <code class="s">" "</code> <code class="o">+</code> <code class="n">address</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>You’ll notice that this looks like our constructor pattern example. That’s because it’s essentially the same thing; we used a case class before which added an <code>unapply</code> method for us. This time, we created it ourselves. It’s both an <em>extractor</em> and, because there’s a symmetry with the constructor, a constructor pattern.</p>
+
+<p>More specifically, the list of values to extract in a pattern must match those in a class’s primary constructor to be called a constructor pattern. See <a href="http://www.scala-lang.org/files/archive/spec/2.11/08-pattern-matching.html">the language spec</a> for details.</p>
+
+<h4 id="leanpub-auto-why-write-your-own-extractors">Why Write Your Own Extractors?</h4>
+
+<p>Why would you implement your own extractor method (<code>unapply</code>) when case classes already have one? It might be simply because you can’t or don’t want to use a case class or you may not want the match behaviour of a case class; you might want custom extraction behaviour (for example, returning <code>Boolean</code> from <code>unapply</code> to indicate a match with no extraction).</p>
+
+<p>It might also be the case that you can’t modify a class but you’d like to be able to extract parts from it. You can write extractors for anything. For example, you can’t modify the <code>String</code> class but you still might want to extract things from it, like parts of an email address or a URL.</p>
+
+<p>For example, the stand-alone object below extracts the protocol and host from a string when it’s a valid URL. It has no relationship with the <code>String</code> class but still allows us to write a match expression and “deconstruct” a string into a protocol and host.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="k">object</code> <code class="nc">UrlExtractor</code> <code class="o">{</code>
+    <code class="k">def</code> <code class="n">unapply</code><code class="o">(</code><code class="n">string</code><code class="k">:</code> <code class="kt">String</code><code class="o">)</code><code class="k">:</code> <code class="kt">Option</code><code class="o">[(</code><code class="kt">String</code>, <code class="kt">String</code><code class="o">)]</code> <code class="k">=</code> <code class="o">{</code>
+      <code class="k">try</code> <code class="o">{</code>
+        <code class="k">val</code> <code class="n">url</code> <code class="k">=</code> <code class="k">new</code> <code class="nc">URL</code><code class="o">(</code><code class="n">string</code><code class="o">)</code>
+        <code class="nc">Some</code><code class="o">((</code><code class="n">url</code><code class="o">.</code><code class="n">getProtocol</code><code class="o">,</code> <code class="n">url</code><code class="o">.</code><code class="n">getHost</code><code class="o">))</code>
+      <code class="o">}</code> <code class="k">catch</code> <code class="o">{</code>
+        <code class="k">case</code> <code class="k">_:</code> <code class="kt">MalformedURLException</code> <code class="o">=&gt;</code> <code class="nc">None</code>
+      <code class="o">}</code>
+    <code class="o">}</code>
+  <code class="o">}</code>
+
+  <code class="k">val</code> <code class="n">url</code> <code class="k">=</code> <code class="s">"http://baddotrobot.com"</code> <code class="k">match</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="nc">UrlExtractor</code><code class="o">(</code><code class="n">protocol</code><code class="o">,</code> <code class="n">host</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="n">println</code><code class="o">(</code><code class="n">protocol</code> <code class="o">+</code> <code class="s">" "</code> <code class="o">+</code> <code class="n">host</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>This decoupling between patterns and the data types they work against is called <em>representation independence</em> (see Section <a href="http://www.artima.com/pins1ed/extractors.html">24.6</a>) of <em>Programming in Scala</em>.</p>
+
+<h3 id="leanpub-auto-guard-conditions">Guard Conditions</h3>
+
+<p>You can complement the patterns we’ve seen with <code>if</code> conditions.</p>
+
+<div class="code-block">
+<div class="highlight"><pre>  <code class="n">customer</code><code class="o">.</code><code class="n">yearsACustomer</code> <code class="k">=</code> <code class="mi">3</code>
+  <code class="k">val</code> <code class="n">discount</code> <code class="k">=</code> <code class="n">customer</code> <code class="k">match</code> <code class="o">{</code>
+    <code class="k">case</code> <code class="nc">YearsACustomer</code><code class="o">(</code><code class="n">years</code><code class="o">)</code> <code class="k">if</code> <code class="n">years</code> <code class="o">&gt;=</code> <code class="mi">5</code> <code class="k">=&gt;</code> <code class="nc">Discount</code><code class="o">(</code><code class="mf">0.50</code><code class="o">)</code>
+    <code class="k">case</code> <code class="nc">YearsACustomer</code><code class="o">(</code><code class="n">years</code><code class="o">)</code> <code class="k">if</code> <code class="n">years</code> <code class="o">&gt;=</code> <code class="mi">2</code> <code class="k">=&gt;</code> <code class="nc">Discount</code><code class="o">(</code><code class="mf">0.20</code><code class="o">)</code>
+    <code class="k">case</code> <code class="nc">YearsACustomer</code><code class="o">(</code><code class="n">years</code><code class="o">)</code> <code class="k">if</code> <code class="n">years</code> <code class="o">&gt;=</code> <code class="mi">1</code> <code class="k">=&gt;</code> <code class="nc">Discount</code><code class="o">(</code><code class="mf">0.10</code><code class="o">)</code>
+    <code class="k">case</code> <code class="k">_</code> <code class="k">if</code> <code class="n">blackFriday</code><code class="o">(</code><code class="n">today</code><code class="o">)</code> <code class="k">=&gt;</code> <code class="nc">Discount</code><code class="o">(</code><code class="mf">0.10</code><code class="o">)</code>
+    <code class="k">case</code> <code class="k">_</code> <code class="k">=&gt;</code> <code class="nc">Discount</code><code class="o">(</code><code class="mi">0</code><code class="o">)</code>
+  <code class="o">}</code>
+</pre></div>
+
+</div>
+
+<p>The condition following the pattern is called a <em>guard</em>. You can reference a variable if you like, so we can say for customers of over five years, a 50% discount applies; two years, 20% and so on. If a variable isn’t required, that’s fine too. For example, we’ve got a case that says if no previous discount applies and today is Black Friday, give a discount of 10%.</p>
+</div>
+</body></html>
