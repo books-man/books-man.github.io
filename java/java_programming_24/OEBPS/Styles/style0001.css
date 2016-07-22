@@ -15,87 +15,90 @@ strike, strong, sub, sup, tt, var, small, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	margin: 0;
-	outline: 0;
-	padding: 0;
-	vertical-align: baseline;
-} 
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
 
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
-	display: block;
+    display: block;
 }
 
 body {
     /* put in Georgia and Baskerville to target Nook HD */
-    
+
     /* font-size and line-height not declared per Amazon and Apple guidelines */
     background-color: transparent;
     hyphens: none;
-        -webkit-hyphens: none;
-        -moz-hyphens:none;
-        adobe-hyphenate: none;    
-	/* margins in pixels to support Nook per Nook Press Epub Guidance: http://cp-barnesandnoble.kb.net/kb/article?ArticleId=4476&source=Article&c=12&cid=28 */
-	margin: 30px 30px 20px 30px;
-	text-indent: 0;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    adobe-hyphenate: none;
+    /* margins in pixels to support Nook per Nook Press Epub Guidance: http://cp-barnesandnoble.kb.net/kb/article?ArticleId=4476&source=Article&c=12&cid=28 */
+    margin: 30px 20% 20px 20% !important;
+    text-indent: 0;
+    font-size: large;
 }
 
 body.ls {
-    
+
 }
 
-ol, 
+ol,
 ul {
-	list-style-type: none;
+    list-style-type: none;
 }
 
 blockquote {
-	quotes: none;
+    quotes: none;
 }
 
 q {
-  quotes: "“" "”" "‘" "’";
- }
+    quotes: "“" "”" "‘" "’";
+}
 
 q:before {
     content: open-quote;
- }
+}
 
 q:after {
     content: close-quote;
- }
+}
 
 table {
     display: table;
-	border-collapse: collapse;
- }
+    border-collapse: collapse;
+}
 
 /* end CSS Reset */
 
 /* Paragraph Styles */
 
-	p {
-	    background-color: inherit;
-		margin: .5em 0;
-	    /* text-align: justify; Amazon publishing guidelines state that body text
-	    "MUST NOT have a forced alignment" p. 11, Sect 3.1.1, V2013.3 */
-	    /* Amazon publishing guidelines state: "Body text must use the default font size and line height. 
-	    Body text should _not_ use the <font size=”…”> tag or the font-size and line-height 
-	    attributes in CSS." p. 11, Sect 3.1.1, V2013.3 */
-	     
-	    outline: 0;
-	    padding: 0;
-	    text-indent: 0;
-	 }
- 
+p {
+    background-color: inherit;
+    margin: .5em 0;
+    /* text-align: justify; Amazon publishing guidelines state that body text
+    "MUST NOT have a forced alignment" p. 11, Sect 3.1.1, V2013.3 */
+    /* Amazon publishing guidelines state: "Body text must use the default font size and line height.
+    Body text should _not_ use the <font size=”…”> tag or the font-size and line-height
+    attributes in CSS." p. 11, Sect 3.1.1, V2013.3 */
+
+    outline: 0;
+    padding: 0;
+    text-indent: 0;
+    font-family: "Segoe UI";
+    color: #4b4b4b;
+}
+
 .feature1 p,
 .feature2 p,
 .feature3 p,
@@ -107,7 +110,7 @@ table {
 blockquote {
     margin: .5em 1em .125em 1em;
     page-break-inside: avoid;
-	quotes: none;
+    quotes: none;
 }
 
 /* End Paragraph Styles */
@@ -165,7 +168,7 @@ body ul {
     margin-left: inherit;
     /* Padding must be set in relative units to work in Kobo for iPad */
     padding-left: 1.5em;
-    text-align: left;    
+    text-align: left;
 }
 
 li {
@@ -176,7 +179,7 @@ li {
     padding-left: inherit;
 }
 
-.sub {    
+.sub {
     padding-left: inherit;
 }
 
@@ -204,11 +207,11 @@ body .listParaN {
     list-style-type: decimal;
     margin-left: inherit;
 }
-    
+
 .upper-alpha {
     list-style-type: upper-alpha;
 }
- 
+
 .lower-roman {
     list-style-type: lower-roman;
 }
@@ -225,30 +228,34 @@ body .listParaN {
     list-style-type: none;
 }
 
-.decimal-leading-zero { 
-   list-style-type: decimal-leading-zero;
+.decimal-leading-zero {
+    list-style-type: decimal-leading-zero;
 }
 
-.lower-greek{  
-    list-style-type: lower-greek; 
+.lower-greek {
+    list-style-type: lower-greek;
 }
 
-.armenian{
-    list-style-type:armenian;
+.armenian {
+    list-style-type: armenian;
 }
 
 .georgian {
-    list-style-type:georgian;
+    list-style-type: georgian;
 }
-.disc{
-    list-style-type:disc;
+
+.disc {
+    list-style-type: disc;
 }
-.circle{
-    list-style-type:circle;
+
+.circle {
+    list-style-type: circle;
 }
-.square{
-    list-style-type:square;
+
+.square {
+    list-style-type: square;
 }
+
 .optionList {
     margin: 1em 0;
 }
@@ -314,7 +321,7 @@ corners. JLK@Aptara 12/20/2014 */
 .feature4.ls {
     border-radius: 0px;
     border: none;
-    background-color: #FFF4DE;  
+    background-color: #FFF4DE;
     margin: .5em auto;
     padding: .5em;
     page-break-inside: avoid;
@@ -329,7 +336,7 @@ section[class="feature4"] h4 {
     margin: 0;
     padding: .5em 0;
     text-align: left;
-    text-indent: 0;    
+    text-indent: 0;
 }
 
 section[class="feature1"] h1 {
@@ -374,7 +381,7 @@ section[class="feature4"] h4 {
     display: none;
 }
 
-.top, 
+.top,
 .bottom {
     display: none;
 }
@@ -387,7 +394,7 @@ section[class="feature4"] h4 {
     margin-bottom: 0;
     margin-left: auto;
     page-break-after: avoid;
-    text-align: center;    
+    text-align: center;
     text-decoration: overline;
 }
 
@@ -404,17 +411,18 @@ section[class="feature4"] h4 {
 /*Code*/
 
 pre {
-        
+
     font-size: inherit;
     hyphens: none;
-        -webkit-hyphens: none;
-        -moz-hyphens:none;
-        adobe-hyphenate: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    adobe-hyphenate: none;
     margin: 1em 0;
-    padding: 0;        
+    padding: 0;
     text-align: left;
     text-indent: 0;
     white-space: pre-wrap;
+    font-family: "Source Code Pro";
 }
 
 .codeTitle {
@@ -449,20 +457,20 @@ apply bold italic font style and weight. */
 
 a {
     color: blue;
-	font: inherit; 
+    font: inherit;
 }
 
 .indexTerm {
-	color: inherit;
-	font-weight: inherit;
-	text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
 }
 
 .normal {
     font-size: inherit;
     font-style: normal;
     font-weight: normal;
-    
+
 }
 
 b,
@@ -470,17 +478,17 @@ strong {
     font-size: inherit;
     font-style: inherit;
     font-weight: bold;
-    
+
     text-decoration: inherit;
-    }
+}
 
 cite,
 em,
 i {
     font-size: inherit;
-    font-style:italic;
+    font-style: italic;
     font-weight: inherit;
-    
+
     text-decoration: inherit;
 }
 
@@ -488,7 +496,7 @@ i {
     font-size: inherit;
     font-weight: bold;
     font-style: italic;
-    
+
     text-decoration: inherit;
 }
 
@@ -529,7 +537,7 @@ code,
 .codeLabel,
 .codeVariable,
 .userinputVariable {
-    
+
     font-size: inherit;
 }
 
@@ -578,7 +586,7 @@ var {
     margin-left: auto;
     margin-right: auto;
     text-indent: 0;
-    text-align: center;    
+    text-align: center;
 }
 
 .right {
@@ -587,7 +595,7 @@ var {
 }
 
 .textbreak {
-    margin: .625em auto;    
+    margin: .625em auto;
     text-align: center;
 }
 
@@ -597,27 +605,29 @@ var {
 
 .red {
     background-color: inherit;
-    color:#FF0000;
+    color: #FF0000;
     /*color:rgb(255,0,0);*/
 }
+
 .blue {
-    background-color:inherit;
-    color:#000FFF;
+    background-color: inherit;
+    color: #000FFF;
     /*color:rgb(0,15,255);*/
 }
+
 .green {
-    background-color:inherit;
-    color:#228B22;
+    background-color: inherit;
+    color: #228B22;
     /*color:rgb(34,139,34);*/
 }
+
 .yellow {
-    background-color:inherit;
-    color:#FFF000;
+    background-color: inherit;
+    color: #FFF000;
     /*color:rgb(255,240,0);*/
 }
 
 /* End Colors */
-
 
 /* Code Colors */
 
@@ -643,7 +653,7 @@ var {
 
 .codeColorBrown {
     background-color: inherit;
-    
+
 }
 
 .codeColorDkBlue {
@@ -673,7 +683,7 @@ var {
 
 .codeColorGrey80 {
     background-color: inherit;
-    
+
 }
 
 .codeColorHotPink {
@@ -692,7 +702,7 @@ var {
 }
 
 .codeColorPeach {
-    background-color: inherit;    
+    background-color: inherit;
     color: #CE8F53;
 }
 
@@ -767,7 +777,7 @@ var {
 
 .lsColorGrey {
     background-color: inherit;
-    
+
 }
 
 .lsColorMdGrey {
@@ -777,17 +787,17 @@ var {
 
 .lsColorBlack {
     background-color: inherit;
-    
+
 }
 
 .lsColor95Black {
     background-color: inherit;
-    
+
 }
 
 .lsColor100Black {
     background-color: inherit;
-    
+
 }
 
 .lsColorRed {
@@ -819,26 +829,27 @@ var {
     background-color: inherit;
     color: #ECF2E2;
 }
+
 /* End LS Colors */
 
 /* Front Matter Styles */
- 
+
 .bookTitle {
-    
+
     font-size: 2em;
     font-weight: bold;
     margin: 2.25em 0 .3125em 0;
     page-break-after: avoid;
-    text-align: left;        
+    text-align: left;
 }
 
 .bookSubTitle {
-    
+
     font-size: 1.5em;
     font-weight: bold;
     margin: 1.5em 0 .3125em 0;
     page-break-after: avoid;
-    text-align: left;    
+    text-align: left;
 }
 
 .associateBookEditor,
@@ -848,7 +859,7 @@ var {
 .bookVolumeNumber,
 .colophon,
 .forewordAuthor {
-    margin: 1.25em 0 0 0;    
+    margin: 1.25em 0 0 0;
     text-align: left;
     text-indent: 0;
 }
@@ -865,11 +876,11 @@ var {
 .contributorName,
 .editorName,
 .organizationName {
-	display: inline;
-	font-weight: bold;
+    display: inline;
+    font-weight: bold;
 }
 
-.publisherImprint,  
+.publisherImprint,
 .publisherCities {
     font-size: .75em;
     margin: 1.25em auto;
@@ -892,14 +903,14 @@ section[class="copyright"] p {
 
 .creditsTitle { /*amend titles in credits for this style*/
     margin-top: 1.25em;
-    text-align: left;    
+    text-align: left;
 }
 
 li.contentsAbstract {
     font-size: .9em;
-    
+
     list-style-type: none;
-    text-align: left;    
+    text-align: left;
     text-decoration: none;
 }
 
@@ -910,7 +921,7 @@ li.contentsAbstract {
 }
 
 .contentsH2 {
-    list-style-type:none;
+    list-style-type: none;
     /* The presence of the following creates linebreaks after bullets on the Kindle DX:
     margin-left: .5em;
     padding-left: .5em; */
@@ -931,14 +942,14 @@ li.contentsAbstract {
 
 .tocList li {
     list-style: none;
-	margin-top: .3125em;
+    margin-top: .3125em;
 }
 
 .signatureLine {
-    
-    margin-top: 1.5em;    
+
+    margin-top: 1.5em;
     margin-bottom: .75em;
-    margin-left: 1.5em;    
+    margin-left: 1.5em;
     text-align: left;
     text-indent: 0;
 }
@@ -946,10 +957,10 @@ li.contentsAbstract {
 /* End Front Matter Styles */
 
 /* Chapter Specific Frontmatter */
-.chapterAuthor, 
+.chapterAuthor,
 .chapterAuthorAffiliation,
 .chapterCredit {
-    
+
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 1.5em;
@@ -960,7 +971,7 @@ li.contentsAbstract {
 /* Sections and Headings */
 
 section {
-	margin: 1em auto;
+    margin: 1em auto;
 }
 
 /* key ideas - LS */
@@ -987,11 +998,11 @@ h1 {
     font-size: 1.5em;
     font-weight: bold;
     margin-top: 1.25em;
-    }
+}
 
 h1 span {
-	font-size: inherit;
-	font-weight: inherit;
+    font-size: inherit;
+    font-weight: inherit;
 }
 
 header h1 {
@@ -999,29 +1010,30 @@ header h1 {
     font-weight: bold;
     margin-bottom: 0;
 }
+
 h1.partNumber, partTitle {
     font-size: 2em;
     font-weight: inherit;
-    margin-top: 1.25em;    
+    margin-top: 1.25em;
 }
 
-h1.ls
-{
+h1.ls {
     background-color: inherit;
     color: #E15631;
     text-transform: uppercase;
     font-weight: normal;
 }
+
 .title {
-  margin-bottom: 0;
-  margin-top: 2em;
+    margin-bottom: 0;
+    margin-top: 2em;
 }
 
 h2 {
     font-size: 1.3em;
     font-weight: bold;
     margin: 1em 0 .5em 0;
-    
+
 }
 
 h2.ls {
@@ -1030,12 +1042,11 @@ h2.ls {
     font-weight: normal;
 }
 
-h3
- {
+h3 {
     font-size: 1.1em;
     font-weight: bold;
     margin: .625em 0 .5em 0;
-        
+
 }
 
 h3.ls {
@@ -1058,12 +1069,12 @@ h4.ls {
 
 section.keyConcepts.ls h4 {
     background-color: inherit;
-    
+
     font-weight: bold;
 }
 
 section.objectives.ls h4 {
-    
+
     color: #E15631;
     font-size: 1.3em;
     font-weight: normal;
@@ -1074,7 +1085,7 @@ h5,
 h6 {
     font-size: 1em;
     font-weight: bold;
-    margin-top: 1em;  
+    margin-top: 1em;
 }
 
 h5.ls,
@@ -1086,11 +1097,11 @@ h6.ls {
 }
 
 .listHead,
-.navListHead
-{
+.navListHead {
     font-size: 1.1em;
     margin: .625em 0 .5em 0;
 }
+
 h1,
 h2,
 h3,
@@ -1099,14 +1110,14 @@ h5,
 h6,
 .listHead,
 .navListHead {
-    
+
     hyphens: none;
-        -webkit-hyphens: none;
-        -moz-hyphens:none;
-        adobe-hyphenate: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    adobe-hyphenate: none;
     page-break-after: avoid;
     page-break-inside: avoid;
-    text-align: left;    
+    text-align: left;
 }
 
 /* End HTML5 Headings */
@@ -1115,27 +1126,27 @@ h6,
 
 figure,
 .informalFigure {
-    margin: .625em 0;  
+    margin: .625em 0;
     page-break-inside: avoid;
     text-align: center;
-    text-indent: 0;    
+    text-indent: 0;
 }
 
 img {
     margin: 0 auto;
     /* JLK@Aptara 10012013: This is doing funky things to graphics in ADE, Kobo, other RS's height: auto; */
-     
+
     padding: 0;
 }
 
 figure.ls img {
     margin: .5em auto;
-     
+
 }
 
 figcaption {
-    
-    margin: .6875em 0 .125em 0;    
+
+    margin: .6875em 0 .125em 0;
     page-break-after: avoid;
     page-break-inside: avoid;
     text-align: left;
@@ -1145,7 +1156,7 @@ figcaption {
 /* figcaption specifically for LS - JLK@Aptara 12/21/2014*/
 
 figure.ls figcaption {
-    
+
     font-weight: bold;
     margin: .6875em .5em .5em .5em;
     page-break-after: avoid;
@@ -1158,7 +1169,7 @@ figure.ls figcaption {
     color: inherit;
     font-size: .9em;
     margin-top: .25em;
-    margin-left: 1.5em;    
+    margin-left: 1.5em;
     text-align: left;
     text-indent: 0;
 }
@@ -1199,8 +1210,8 @@ figure.tableLS1 p.source {
     display: inline-block;
     top: 2em;
     bottom: 1em;
-	clear: both;    
-} 
+    clear: both;
+}
 
 .marginIcon {
     margin-bottom: .5em;
@@ -1210,8 +1221,7 @@ figure.tableLS1 p.source {
     page-break-after: always;
 }
 
-.floatLeft 
-{
+.floatLeft {
     float: left;
     bottom: 1em;
 }
@@ -1231,8 +1241,7 @@ Use <td class="footercell"> with a colspan="N" declaration instead. Or, use <p c
 /* NOTE: including <p>'s in your table cells will result in extra spacing and bad rendering; all <p>'s in <td> cells should be removed, leaving the formatting to 
 the td element selector. If you need extra line, use <br/> */
 
-table
-{
+table {
     border-collapse: collapse; /*turns off double borders*/
     margin: 0 auto .5em auto;
     text-align: center;
@@ -1240,7 +1249,7 @@ table
 
 thead {
     font-weight: bold;
-    display: table-header-group;    
+    display: table-header-group;
 }
 
 td,
@@ -1250,10 +1259,10 @@ th {
     background-color: inherit;
     border: 1px solid #C0C0C0;
     display: table-cell;
-    padding: 3px;    
+    padding: 3px;
     text-indent: 0;
     text-align: left;
-    vertical-align: text-top;    
+    vertical-align: text-top;
 }
 
 tr {
@@ -1270,7 +1279,7 @@ tr {
 
 .tableLS .footerCell,
 .tableLS1 .footerCell {
-    
+
     border: none;
 }
 
@@ -1284,8 +1293,7 @@ tr {
 /* 4 distinct table definitions, including incorporating table caption into table design, encoding bg-color for features */
 
 figure.tableLS table,
-figure.tableLS1 table
-{
+figure.tableLS1 table {
     padding: .5em;
     margin: 0 0 .5em 0em;
 }
@@ -1302,13 +1310,13 @@ figure.tableLS1 span.figureLabel {
 
 figure.tableLS span.figureLabel a:link,
 figure.tableLS1 span.figureLabel a:link {
-    color: #FFFFFF; 
+    color: #FFFFFF;
 }
 
 figure.tableLS figcaption p,
 figure.tableLS1 figcaption p {
     background-color: #DCE0E9;
-    
+
     font-weight: bold;
     padding: .5em .5em .25em .5em;
     margin: 1em 0 -.25em 0;
@@ -1323,7 +1331,7 @@ figure.tableLS1 figcaption p {
 }
 
 .tableLS tbody tr:nth-child(even) {
-   background-color: #FFF4DE;
+    background-color: #FFF4DE;
 }
 
 .tableLS1 tbody td {
@@ -1340,10 +1348,11 @@ figure.tableLS1 figcaption p {
 .feature3 .tableLS1 thead,
 .feature4 .tableLS thead,
 .feature4 .tableLS1 thead {
-    
+
 }
+
 .tableLS tbody tr:nth-child(even) {
-   background-color: #FFF4DE;
+    background-color: #FFF4DE;
 }
 
 .feature1 .tableLS tbody td,
@@ -1354,7 +1363,7 @@ figure.tableLS1 figcaption p {
 .feature3 .tableLS3 tbody td,
 .feature4 .tableLS tbody td,
 .feature4 .tableLS4 tbody td {
-    
+
 }
 
 /* End Tables */
@@ -1394,15 +1403,15 @@ figure.tableLS1 figcaption p {
     text-align: center;
     border-radius: 0px;
     border: none;
-    background-color: #FFF4DE; 
+    background-color: #FFF4DE;
     padding: 1.25em;
     width: 95%;
 }
 
 .listWhere::before {
-	content: "Where: ";
-	padding-left: 0;
-	margin-left: -1.5em;
+    content: "Where: ";
+    padding-left: 0;
+    margin-left: -1.5em;
 }
 
 .equationNumber {
@@ -1414,14 +1423,14 @@ figure.tableLS1 figcaption p {
 .epigraph,
 .extract {
     display: block;
-    page-break-inside: avoid;    
+    page-break-inside: avoid;
     margin: .625em 0 .625em 1.25em;
 }
 
 .dialogue {
     display: block;
     margin-top: .25em;
-    margin-left: 1.25em;    
+    margin-left: 1.25em;
 }
 
 /* End End of Chapter */
@@ -1445,10 +1454,10 @@ dfn,
 dt {
     font-weight: bold;
     font-style: normal;
-        hyphens: none;
-        -webkit-hyphens: none;
-        -moz-hyphens:none;
-        adobe-hyphenate: none;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    adobe-hyphenate: none;
 }
 
 /* End Glossary */
@@ -1460,26 +1469,26 @@ dt {
 span[epub|type~="pagebreak"] {
     color: #B4B4B4;
     font-size: .7em;
-	text-align: center;
+    text-align: center;
 }
 
 nav[epub|type~="landmarks"] {
-	display: none;
-	visibility: hidden;
+    display: none;
+    visibility: hidden;
 }
 
 nav[epub|type~="page-list"] {
-	display: none;
-	visibility: hidden;
+    display: none;
+    visibility: hidden;
 }
 
 nav {
-	margin: 1em auto;
+    margin: 1em auto;
 }
 
 .guideList {
-	display: none;
-	visibility: hidden;
+    display: none;
+    visibility: hidden;
 }
 
 .index-term-categories {
@@ -1488,75 +1497,76 @@ nav {
 }
 
 .pageList {
-	display: none;
-	visibility: hidden;
+    display: none;
+    visibility: hidden;
 }
 
 /* Back of Book Ads */
 
 .bobBookCover {
-	
-	font-weight: normal;
-	font-style: normal;
-	font-size: 1em;
-	text-decoration: none;
-	text-align: center;
-	
-	text-indent: 0;
-	margin: 1.25em 0 .3125em 0;
+
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1em;
+    text-decoration: none;
+    text-align: center;
+
+    text-indent: 0;
+    margin: 1.25em 0 .3125em 0;
 }
 
 h1.ad {
-	
-	font-weight : bold;
-	font-style : normal;
-	font-size : 1.83em;
-	text-decoration : none;
-	text-align : center;
-	color : #1152bf;
-	text-indent : 0;
-	margin : 0 0 .625em 0;
+
+    font-weight: bold;
+    font-style: normal;
+    font-size: 1.83em;
+    text-decoration: none;
+    text-align: center;
+    color: #1152bf;
+    text-indent: 0;
+    margin: 0 0 .625em 0;
 }
 
 .bobCopy, .bobEntry {
-	
-	font-weight: normal;
-	font-style: normal;
-	font-size: 1em;
-	text-decoration: none;
-	text-align: center;
-	
-	text-indent: 0;
-	margin: 0;
+
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1em;
+    text-decoration: none;
+    text-align: center;
+
+    text-indent: 0;
+    margin: 0;
     page-break-inside: avoid;
 }
 
 .bobLink {
-	
-	font-weight: 500;
-	font-style: normal;
-	font-size: 1em;
-	text-decoration: none;
-	text-align: center;
-	color: #0000ff;
-	text-indent: 0;
-	margin: 0;
+
+    font-weight: 500;
+    font-style: normal;
+    font-size: 1em;
+    text-decoration: none;
+    text-align: center;
+    color: #0000ff;
+    text-indent: 0;
+    margin: 0;
 }
 
 .bobAd {
-	padding: 1.25em;
+    padding: 1.25em;
 }
 
 /* End Back of Book Ads */
 
 /* Rules for Amazon only */
 
-@media all{
-    body {/* Amazon guidance says margin-left and margin-right must be 0. */
-    	margin-left: 0;
-    	margin-right: 0;
-    	text-indent: 0;
+@media all {
+    body { /* Amazon guidance says margin-left and margin-right must be 0. */
+        margin-left: 0;
+        margin-right: 0;
+        text-indent: 0;
     }
+
     ol {
         list-style-type: decimal;
         padding-left: 1.5em;
@@ -1568,7 +1578,7 @@ h1.ad {
 
     ol ol ol {
         list-style-type: lower-roman;
-        }
+    }
 
     ul {
         list-style-type: disc;
@@ -1586,18 +1596,18 @@ h1.ad {
         list-style-type: square;
         padding-left: 1.5em;
     }
-    
+
     .list {
         padding: 0;
 
     }
-    
-    body .listPara1 { 
+
+    body .listPara1 {
         margin-left: .375em;
         padding: inherit;
         text-align: left;
     }
-        
+
     body .listPara2,
     body .listPara3,
     body .listPara4,
@@ -1605,13 +1615,12 @@ h1.ad {
         margin-left: .25em;
         padding: inherit;
         text-align: left;
-    }    
-    
+    }
+
     .sub {
         padding: 0 0 0 1.5em;
     }
 }
 
- 
 /*end style sheet*/
 
