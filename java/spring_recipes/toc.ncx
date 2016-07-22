@@ -1,0 +1,4461 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="eng">
+  <head>
+    <meta content="7fc80c5e-17d0-4a4c-b4f7-80e817b83e0b" name="dtb:uid"/>
+    <meta content="4" name="dtb:depth"/>
+    <meta content="calibre (1.48.0)" name="dtb:generator"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text>Spring Recipes: A Problem-Solution Approach</text>
+  </docTitle>
+  <navMap>
+    <navPoint class="chapter" id="num_1" playOrder="1">
+      <navLabel>
+        <text>Title</text>
+      </navLabel>
+      <content src="text/part0000.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_2" playOrder="2">
+      <navLabel>
+        <text>Copyright</text>
+      </navLabel>
+      <content src="text/part0001.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_3" playOrder="3">
+      <navLabel>
+        <text>Dedication</text>
+      </navLabel>
+      <content src="text/part0002.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_4" playOrder="4">
+      <navLabel>
+        <text>Contents at a Glance</text>
+      </navLabel>
+      <content src="text/part0003.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_5" playOrder="5">
+      <navLabel>
+        <text>Contents</text>
+      </navLabel>
+      <content src="text/part0004.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_6" playOrder="6">
+      <navLabel>
+        <text>About the Authors</text>
+      </navLabel>
+      <content src="text/part0005.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_7" playOrder="7">
+      <navLabel>
+        <text>About the Technical Reviewer</text>
+      </navLabel>
+      <content src="text/part0006.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_8" playOrder="8">
+      <navLabel>
+        <text>Acknowledgments</text>
+      </navLabel>
+      <content src="text/part0007.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_9" playOrder="9">
+      <navLabel>
+        <text>Introduction</text>
+      </navLabel>
+      <content src="text/part0008.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_10" playOrder="10">
+      <navLabel>
+        <text>Chapter 1: Spring Development Tools</text>
+      </navLabel>
+      <content src="text/part0009.html"/>
+      <navPoint class="chapter" id="num_11" playOrder="11">
+        <navLabel>
+          <text>1-1. Build a Spring application with the Spring Tool Suite</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec1"/>
+        <navPoint class="chapter" id="num_12" playOrder="12">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_13" playOrder="13">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_14" playOrder="14">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_15" playOrder="15">
+        <navLabel>
+          <text>1-2. Build a Spring application with the Eclipse IDE</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec5"/>
+        <navPoint class="chapter" id="num_16" playOrder="16">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_17" playOrder="17">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec7"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_18" playOrder="18">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec8"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_19" playOrder="19">
+        <navLabel>
+          <text>1-3. Build a Spring application with the IntelliJ IDE</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec9"/>
+        <navPoint class="chapter" id="num_20" playOrder="20">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_21" playOrder="21">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec11"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_22" playOrder="22">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec12"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_23" playOrder="23">
+        <navLabel>
+          <text>1-4. Build a Spring application with the Maven command line interface</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec13"/>
+        <navPoint class="chapter" id="num_24" playOrder="24">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_25" playOrder="25">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec15"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_26" playOrder="26">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec16"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_27" playOrder="27">
+        <navLabel>
+          <text>1-5. Build a Spring application with the Gradle command line interface</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec17"/>
+        <navPoint class="chapter" id="num_28" playOrder="28">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_29" playOrder="29">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_30" playOrder="30">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_31" playOrder="31">
+        <navLabel>
+          <text>1.6 Build a Spring application with the Gradle Wrapper</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec21"/>
+        <navPoint class="chapter" id="num_32" playOrder="32">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec22"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_33" playOrder="33">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_34" playOrder="34">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0009.html#Sec24"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_35" playOrder="35">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0009.html#Sec25"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_36" playOrder="36">
+      <navLabel>
+        <text>Chapter 2: Spring Core Tasks</text>
+      </navLabel>
+      <content src="text/part0010.html"/>
+      <navPoint class="chapter" id="num_37" playOrder="37">
+        <navLabel>
+          <text>2-1. Manage and Configure POJOs with the Spring IoC Container</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec1"/>
+        <navPoint class="chapter" id="num_38" playOrder="38">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_39" playOrder="39">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_40" playOrder="40">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_41" playOrder="41">
+        <navLabel>
+          <text>2-2. Create POJOs by Invoking a Constructor</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec9"/>
+        <navPoint class="chapter" id="num_42" playOrder="42">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_43" playOrder="43">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec11"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_44" playOrder="44">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec12"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_45" playOrder="45">
+        <navLabel>
+          <text>2-3. Use POJO References, Auto-Wiring, and Imports to Interact with Other POJOs</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec16"/>
+        <navPoint class="chapter" id="num_46" playOrder="46">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec17"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_47" playOrder="47">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_48" playOrder="48">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec19"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_49" playOrder="49">
+        <navLabel>
+          <text>2-4. Configure POJOs with Java Collection Attributes</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec28"/>
+        <navPoint class="chapter" id="num_50" playOrder="50">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec29"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_51" playOrder="51">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec30"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_52" playOrder="52">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec31"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_53" playOrder="53">
+        <navLabel>
+          <text>2-5. Set a POJOs Scope</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec36"/>
+        <navPoint class="chapter" id="num_54" playOrder="54">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec37"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_55" playOrder="55">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec38"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_56" playOrder="56">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec39"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_57" playOrder="57">
+        <navLabel>
+          <text>2-6. Use Data from External Resources (Text Files, XML Files, Properties Files, or Image Files)</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec40"/>
+        <navPoint class="chapter" id="num_58" playOrder="58">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec41"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_59" playOrder="59">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_60" playOrder="60">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec43"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_61" playOrder="61">
+        <navLabel>
+          <text>2-7. Resolve I18N Text Messages for Different Locales in Properties Files</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec46"/>
+        <navPoint class="chapter" id="num_62" playOrder="62">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec47"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_63" playOrder="63">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec48"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_64" playOrder="64">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec49"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_65" playOrder="65">
+        <navLabel>
+          <text>2-8. Customize POJO Initialization and Destruction</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec50"/>
+        <navPoint class="chapter" id="num_66" playOrder="66">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec51"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_67" playOrder="67">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec52"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_68" playOrder="68">
+        <navLabel>
+          <text>2-9. Create Post Processors to Validate and Modify POJOs</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec57"/>
+        <navPoint class="chapter" id="num_69" playOrder="69">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec58"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_70" playOrder="70">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec59"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_71" playOrder="71">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec60"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_72" playOrder="72">
+        <navLabel>
+          <text>2-10. Create POJOs with a Factory (Static Method, Instance Method, Spring’s FactoryBean)</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec63"/>
+        <navPoint class="chapter" id="num_73" playOrder="73">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec64"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_74" playOrder="74">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec65"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_75" playOrder="75">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec66"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_76" playOrder="76">
+        <navLabel>
+          <text>2-11. Use Spring Environments and Profiles to Load Different Sets of POJOs</text>
+        </navLabel>
+        <content src="text/part0010.html#Sec70"/>
+        <navPoint class="chapter" id="num_77" playOrder="77">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec71"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_78" playOrder="78">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec72"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_79" playOrder="79">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0010.html#Sec73"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_80" playOrder="80">
+        <navLabel>
+          <text>2-12. Aspect Orientated Programming</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec77"/>
+        <navPoint class="chapter" id="num_81" playOrder="81">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec78"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_82" playOrder="82">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec79"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_83" playOrder="83">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec80"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_84" playOrder="84">
+        <navLabel>
+          <text>2-13. Declare POJOs from Static Fields or Object Properties</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec85"/>
+        <navPoint class="chapter" id="num_85" playOrder="85">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec86"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_86" playOrder="86">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec87"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_87" playOrder="87">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec88"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_88" playOrder="88">
+        <navLabel>
+          <text>2-14. Making POJOs Aware of Spring’s IoC Container Resources</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec91"/>
+        <navPoint class="chapter" id="num_89" playOrder="89">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec92"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_90" playOrder="90">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec93"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_91" playOrder="91">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec94"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_92" playOrder="92">
+        <navLabel>
+          <text>2-15. Communicate Application Events Between POJOs</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec95"/>
+        <navPoint class="chapter" id="num_93" playOrder="93">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec96"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_94" playOrder="94">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec97"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_95" playOrder="95">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec98"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_96" playOrder="96">
+        <navLabel>
+          <text>2-16. Use Property Editors in Spring</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec102"/>
+        <navPoint class="chapter" id="num_97" playOrder="97">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec103"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_98" playOrder="98">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec104"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_99" playOrder="99">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec105"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_100" playOrder="100">
+        <navLabel>
+          <text>2-17. Inherit POJO Configurations</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec106"/>
+        <navPoint class="chapter" id="num_101" playOrder="101">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec107"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_102" playOrder="102">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec108"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_103" playOrder="103">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec109"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_104" playOrder="104">
+        <navLabel>
+          <text>2-18. Implement POJOs with Scripting Languages</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec113"/>
+        <navPoint class="chapter" id="num_105" playOrder="105">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec114"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_106" playOrder="106">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec115"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_107" playOrder="107">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec116"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_108" playOrder="108">
+        <navLabel>
+          <text>2-19. Inject Spring POJOs into Scripts</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec120"/>
+        <navPoint class="chapter" id="num_109" playOrder="109">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec121"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_110" playOrder="110">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec122"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_111" playOrder="111">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec123"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_112" playOrder="112">
+        <navLabel>
+          <text>2-20. Refresh POJOs from Scripts</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec127"/>
+        <navPoint class="chapter" id="num_113" playOrder="113">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec128"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_114" playOrder="114">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec129"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_115" playOrder="115">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec130"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_116" playOrder="116">
+        <navLabel>
+          <text>2-21. Define Script Sources as Inline Code and not in External Files</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec131"/>
+        <navPoint class="chapter" id="num_117" playOrder="117">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec132"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_118" playOrder="118">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec133"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_119" playOrder="119">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec134"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_120" playOrder="120">
+        <navLabel>
+          <text>2-22. Use the Spring Expression Language to Configure POJOs</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec135"/>
+        <navPoint class="chapter" id="num_121" playOrder="121">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec136"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_122" playOrder="122">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec137"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_123" playOrder="123">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0011.html#Sec138"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_124" playOrder="124">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0011.html#Sec142"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_125" playOrder="125">
+      <navLabel>
+        <text>Chapter 3: Spring Annotation Driven Core Tasks</text>
+      </navLabel>
+      <content src="text/part0012.html"/>
+      <navPoint class="chapter" id="num_126" playOrder="126">
+        <navLabel>
+          <text>3-1. Using Java Config to configure POJOs</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec1"/>
+        <navPoint class="chapter" id="num_127" playOrder="127">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_128" playOrder="128">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_129" playOrder="129">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_130" playOrder="130">
+        <navLabel>
+          <text>3-2. Create POJOs by Invoking a Constructor</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec13"/>
+        <navPoint class="chapter" id="num_131" playOrder="131">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_132" playOrder="132">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec15"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_133" playOrder="133">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec16"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_134" playOrder="134">
+        <navLabel>
+          <text>3-3. Use POJO References and Auto-Wiring to Interact with other POJOs</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec19"/>
+        <navPoint class="chapter" id="num_135" playOrder="135">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec20"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_136" playOrder="136">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec21"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_137" playOrder="137">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec22"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_138" playOrder="138">
+        <navLabel>
+          <text>3-4. Auto-wire POJOs the @Resource and @Inject annotation</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec30"/>
+        <navPoint class="chapter" id="num_139" playOrder="139">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_140" playOrder="140">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_141" playOrder="141">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec33"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_142" playOrder="142">
+        <navLabel>
+          <text>3-5. Set a POJOs Scope with the @Scope annotation</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec36"/>
+        <navPoint class="chapter" id="num_143" playOrder="143">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec37"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_144" playOrder="144">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec38"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_145" playOrder="145">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec39"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_146" playOrder="146">
+        <navLabel>
+          <text>3-6. Use data from External Resources (Text files, XML files, properties files, or image files)</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec40"/>
+        <navPoint class="chapter" id="num_147" playOrder="147">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec41"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_148" playOrder="148">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_149" playOrder="149">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec43"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_150" playOrder="150">
+        <navLabel>
+          <text>3-7. Resolve I18N Text Messages for different locales in properties files</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec46"/>
+        <navPoint class="chapter" id="num_151" playOrder="151">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec47"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_152" playOrder="152">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec48"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_153" playOrder="153">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec49"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_154" playOrder="154">
+        <navLabel>
+          <text>3-8. Customize POJO Initialization and Destruction with annotations</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec50"/>
+        <navPoint class="chapter" id="num_155" playOrder="155">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec51"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_156" playOrder="156">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec52"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_157" playOrder="157">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec53"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_158" playOrder="158">
+        <navLabel>
+          <text>3-9. Create Post Processors to validate and modify POJOs</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec58"/>
+        <navPoint class="chapter" id="num_159" playOrder="159">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec59"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_160" playOrder="160">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec60"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_161" playOrder="161">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec61"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_162" playOrder="162">
+        <navLabel>
+          <text>3-10. Create POJOs with a factory (Static method, Instance method, Spring’s FactoryBean)</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec65"/>
+        <navPoint class="chapter" id="num_163" playOrder="163">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec66"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_164" playOrder="164">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec67"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_165" playOrder="165">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec68"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_166" playOrder="166">
+        <navLabel>
+          <text>3-11. Use Spring Environments and Profiles to load different sets of POJOs</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec72"/>
+        <navPoint class="chapter" id="num_167" playOrder="167">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec73"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_168" playOrder="168">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec74"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_169" playOrder="169">
+          <navLabel>
+            <text>How it works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec75"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_170" playOrder="170">
+        <navLabel>
+          <text>3-12. Aspect Orientated programming with Annotations</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec79"/>
+        <navPoint class="chapter" id="num_171" playOrder="171">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec80"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_172" playOrder="172">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec81"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_173" playOrder="173">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec82"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_174" playOrder="174">
+        <navLabel>
+          <text>3-13. Accessing the Join Point Information</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec89"/>
+        <navPoint class="chapter" id="num_175" playOrder="175">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec90"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_176" playOrder="176">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec91"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_177" playOrder="177">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec92"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_178" playOrder="178">
+        <navLabel>
+          <text>3-14. Specifying Aspect Precedence with the @Order annotation</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec93"/>
+        <navPoint class="chapter" id="num_179" playOrder="179">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec94"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_180" playOrder="180">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec95"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_181" playOrder="181">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec96"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_182" playOrder="182">
+        <navLabel>
+          <text>3-15. Reuse Aspect Pointcut Definitions</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec97"/>
+        <navPoint class="chapter" id="num_183" playOrder="183">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec98"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_184" playOrder="184">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec99"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_185" playOrder="185">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec100"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_186" playOrder="186">
+        <navLabel>
+          <text>3-16. Writing AspectJ Pointcut Expressions</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec101"/>
+        <navPoint class="chapter" id="num_187" playOrder="187">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec102"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_188" playOrder="188">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec103"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_189" playOrder="189">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec104"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_190" playOrder="190">
+        <navLabel>
+          <text>3-17. AOP introductions for POJOs</text>
+        </navLabel>
+        <content src="text/part0012.html#Sec109"/>
+        <navPoint class="chapter" id="num_191" playOrder="191">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec110"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_192" playOrder="192">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec111"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_193" playOrder="193">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0012.html#Sec112"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_194" playOrder="194">
+        <navLabel>
+          <text>3-18. Introduce states to your POJOs with AOP</text>
+        </navLabel>
+        <content src="text/part0013.html#Sec113"/>
+        <navPoint class="chapter" id="num_195" playOrder="195">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec114"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_196" playOrder="196">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec115"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_197" playOrder="197">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec116"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_198" playOrder="198">
+        <navLabel>
+          <text>3-19. Load-Time Weaving AspectJ Aspects in Spring</text>
+        </navLabel>
+        <content src="text/part0013.html#Sec117"/>
+        <navPoint class="chapter" id="num_199" playOrder="199">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec118"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_200" playOrder="200">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec119"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_201" playOrder="201">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec120"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_202" playOrder="202">
+        <navLabel>
+          <text>3-20. Configuring AspectJ Aspects in Spring</text>
+        </navLabel>
+        <content src="text/part0013.html#Sec123"/>
+        <navPoint class="chapter" id="num_203" playOrder="203">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec124"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_204" playOrder="204">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec125"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_205" playOrder="205">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec126"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_206" playOrder="206">
+        <navLabel>
+          <text>3-21. Inject POJOs into Domain Objects with AOP</text>
+        </navLabel>
+        <content src="text/part0013.html#Sec127"/>
+        <navPoint class="chapter" id="num_207" playOrder="207">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec128"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_208" playOrder="208">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec129"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_209" playOrder="209">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec130"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_210" playOrder="210">
+        <navLabel>
+          <text>3-22. Concurrency with Spring and TaskExecutors</text>
+        </navLabel>
+        <content src="text/part0013.html#Sec131"/>
+        <navPoint class="chapter" id="num_211" playOrder="211">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec132"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_212" playOrder="212">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec133"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_213" playOrder="213">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0013.html#Sec134"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_214" playOrder="214">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0013.html#Sec135"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_215" playOrder="215">
+      <navLabel>
+        <text>Chapter 4: Spring @MVC</text>
+      </navLabel>
+      <content src="text/part0014.html"/>
+      <navPoint class="chapter" id="num_216" playOrder="216">
+        <navLabel>
+          <text>4-1. Developing a Simple Web Application with Spring MVC</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec1"/>
+        <navPoint class="chapter" id="num_217" playOrder="217">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_218" playOrder="218">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_219" playOrder="219">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_220" playOrder="220">
+        <navLabel>
+          <text>4-2. Mapping requests with @RequestMapping</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec12"/>
+        <navPoint class="chapter" id="num_221" playOrder="221">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_222" playOrder="222">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_223" playOrder="223">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec15"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_224" playOrder="224">
+        <navLabel>
+          <text>4-3. Intercepting Requests with Handler Interceptors</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec19"/>
+        <navPoint class="chapter" id="num_225" playOrder="225">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec20"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_226" playOrder="226">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec21"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_227" playOrder="227">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec22"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_228" playOrder="228">
+        <navLabel>
+          <text>4-4. Resolving User Locales</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec23"/>
+        <navPoint class="chapter" id="num_229" playOrder="229">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec24"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_230" playOrder="230">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec25"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_231" playOrder="231">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec26"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_232" playOrder="232">
+        <navLabel>
+          <text>4-5. Externalizing Locale-Sensitive Text Messages</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec31"/>
+        <navPoint class="chapter" id="num_233" playOrder="233">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_234" playOrder="234">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec33"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_235" playOrder="235">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec34"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_236" playOrder="236">
+        <navLabel>
+          <text>4-6. Resolving Views by Names</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec35"/>
+        <navPoint class="chapter" id="num_237" playOrder="237">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec36"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_238" playOrder="238">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec37"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_239" playOrder="239">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec38"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_240" playOrder="240">
+        <navLabel>
+          <text>4-7. Views and Content Negotiation</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec44"/>
+        <navPoint class="chapter" id="num_241" playOrder="241">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec45"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_242" playOrder="242">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec46"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_243" playOrder="243">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec47"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_244" playOrder="244">
+        <navLabel>
+          <text>4-8. Mapping Exceptions to Views</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec48"/>
+        <navPoint class="chapter" id="num_245" playOrder="245">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec49"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_246" playOrder="246">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec50"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_247" playOrder="247">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec51"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_248" playOrder="248">
+          <navLabel>
+            <text>Mappings exceptions using @ExceptionHandler</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec52"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_249" playOrder="249">
+        <navLabel>
+          <text>4-9. Handling Forms with Controllers</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec53"/>
+        <navPoint class="chapter" id="num_250" playOrder="250">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec54"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_251" playOrder="251">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec55"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_252" playOrder="252">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec56"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_253" playOrder="253">
+        <navLabel>
+          <text>4-10. Bean validation with Annotations (JSR-303)</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec65"/>
+        <navPoint class="chapter" id="num_254" playOrder="254">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec66"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_255" playOrder="255">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec67"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_256" playOrder="256">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec68"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_257" playOrder="257">
+        <navLabel>
+          <text>4-11. Creating Excel and PDF Views</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec69"/>
+        <navPoint class="chapter" id="num_258" playOrder="258">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec70"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_259" playOrder="259">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec71"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_260" playOrder="260">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0014.html#Sec72"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_261" playOrder="261">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0014.html#Sec77"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_262" playOrder="262">
+      <navLabel>
+        <text>Chapter 5: Spring REST</text>
+      </navLabel>
+      <content src="text/part0015.html"/>
+      <navPoint class="chapter" id="num_263" playOrder="263">
+        <navLabel>
+          <text>5-1. Publishing XML with REST Services</text>
+        </navLabel>
+        <content src="text/part0015.html#Sec1"/>
+        <navPoint class="chapter" id="num_264" playOrder="264">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_265" playOrder="265">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_266" playOrder="266">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_267" playOrder="267">
+        <navLabel>
+          <text>5-2. Publishing JSON with REST services</text>
+        </navLabel>
+        <content src="text/part0015.html#Sec9"/>
+        <navPoint class="chapter" id="num_268" playOrder="268">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_269" playOrder="269">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec11"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_270" playOrder="270">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec12"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_271" playOrder="271">
+        <navLabel>
+          <text>5-3. Accessing a REST Service with Spring</text>
+        </navLabel>
+        <content src="text/part0015.html#Sec15"/>
+        <navPoint class="chapter" id="num_272" playOrder="272">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec16"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_273" playOrder="273">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec17"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_274" playOrder="274">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec18"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_275" playOrder="275">
+        <navLabel>
+          <text>5-4. Publishing RSS and Atom feeds</text>
+        </navLabel>
+        <content src="text/part0015.html#Sec21"/>
+        <navPoint class="chapter" id="num_276" playOrder="276">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec22"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_277" playOrder="277">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_278" playOrder="278">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0015.html#Sec24"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_279" playOrder="279">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0015.html#Sec25"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_280" playOrder="280">
+      <navLabel>
+        <text>Chapter 6: Spring Social</text>
+      </navLabel>
+      <content src="text/part0016.html"/>
+      <navPoint class="chapter" id="num_281" playOrder="281">
+        <navLabel>
+          <text>6-1. Setting Up Spring Social</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec1"/>
+        <navPoint class="chapter" id="num_282" playOrder="282">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_283" playOrder="283">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_284" playOrder="284">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_285" playOrder="285">
+        <navLabel>
+          <text>6-2. Connecting to Twitter</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec5"/>
+        <navPoint class="chapter" id="num_286" playOrder="286">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_287" playOrder="287">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec7"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_288" playOrder="288">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec8"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_289" playOrder="289">
+        <navLabel>
+          <text>6-3. Connecting to Facebook</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec11"/>
+        <navPoint class="chapter" id="num_290" playOrder="290">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec12"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_291" playOrder="291">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_292" playOrder="292">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec14"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_293" playOrder="293">
+        <navLabel>
+          <text>6-4. Showing Service Provider Connection Status</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec17"/>
+        <navPoint class="chapter" id="num_294" playOrder="294">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_295" playOrder="295">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_296" playOrder="296">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_297" playOrder="297">
+        <navLabel>
+          <text>6-5. Using the Twitter API</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec22"/>
+        <navPoint class="chapter" id="num_298" playOrder="298">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_299" playOrder="299">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec24"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_300" playOrder="300">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec25"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_301" playOrder="301">
+        <navLabel>
+          <text>6-6. Using a Persistent UsersConnectionRepository</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec26"/>
+        <navPoint class="chapter" id="num_302" playOrder="302">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec27"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_303" playOrder="303">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec28"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_304" playOrder="304">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec29"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_305" playOrder="305">
+        <navLabel>
+          <text>6-7. Integrating Spring Social and Spring Security</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec30"/>
+        <navPoint class="chapter" id="num_306" playOrder="306">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_307" playOrder="307">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_308" playOrder="308">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0016.html#Sec33"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_309" playOrder="309">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0016.html#Sec36"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_310" playOrder="310">
+      <navLabel>
+        <text>Chapter 7: Spring Security</text>
+      </navLabel>
+      <content src="text/part0017.html"/>
+      <navPoint class="chapter" id="num_311" playOrder="311">
+        <navLabel>
+          <text>7-1. Securing URL Access</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec1"/>
+        <navPoint class="chapter" id="num_312" playOrder="312">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_313" playOrder="313">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_314" playOrder="314">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_315" playOrder="315">
+        <navLabel>
+          <text>7-2. Logging In to Web Applications</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec10"/>
+        <navPoint class="chapter" id="num_316" playOrder="316">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec11"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_317" playOrder="317">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec12"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_318" playOrder="318">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec13"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_319" playOrder="319">
+        <navLabel>
+          <text>7-3. Authenticating Users</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec19"/>
+        <navPoint class="chapter" id="num_320" playOrder="320">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec20"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_321" playOrder="321">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec21"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_322" playOrder="322">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec22"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_323" playOrder="323">
+        <navLabel>
+          <text>7-4. Making Access Control Decisions</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec30"/>
+        <navPoint class="chapter" id="num_324" playOrder="324">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_325" playOrder="325">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_326" playOrder="326">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec33"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_327" playOrder="327">
+        <navLabel>
+          <text>7-5. Securing Method Invocations</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec35"/>
+        <navPoint class="chapter" id="num_328" playOrder="328">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec36"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_329" playOrder="329">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec37"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_330" playOrder="330">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec38"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_331" playOrder="331">
+        <navLabel>
+          <text>7-6. Handling Security in Views</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec42"/>
+        <navPoint class="chapter" id="num_332" playOrder="332">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec43"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_333" playOrder="333">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec44"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_334" playOrder="334">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec45"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_335" playOrder="335">
+        <navLabel>
+          <text>7-7. Handling Domain Object Security</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec48"/>
+        <navPoint class="chapter" id="num_336" playOrder="336">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec49"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_337" playOrder="337">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec50"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_338" playOrder="338">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0017.html#Sec51"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_339" playOrder="339">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0017.html#Sec55"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_340" playOrder="340">
+      <navLabel>
+        <text>Chapter 8: Spring Mobile</text>
+      </navLabel>
+      <content src="text/part0018.html"/>
+      <navPoint class="chapter" id="num_341" playOrder="341">
+        <navLabel>
+          <text>Recipe 8-1. Device detection without Spring Mobile</text>
+        </navLabel>
+        <content src="text/part0018.html#Sec1"/>
+        <navPoint class="chapter" id="num_342" playOrder="342">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_343" playOrder="343">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_344" playOrder="344">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_345" playOrder="345">
+        <navLabel>
+          <text>Recipe 8-2. Device detection with Spring Mobile</text>
+        </navLabel>
+        <content src="text/part0018.html#Sec5"/>
+        <navPoint class="chapter" id="num_346" playOrder="346">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_347" playOrder="347">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec7"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_348" playOrder="348">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec8"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_349" playOrder="349">
+        <navLabel>
+          <text>8-3. Using Site preferences</text>
+        </navLabel>
+        <content src="text/part0018.html#Sec11"/>
+        <navPoint class="chapter" id="num_350" playOrder="350">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec12"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_351" playOrder="351">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_352" playOrder="352">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec14"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_353" playOrder="353">
+        <navLabel>
+          <text>8-4. Using the Device Information to Render Views</text>
+        </navLabel>
+        <content src="text/part0018.html#Sec17"/>
+        <navPoint class="chapter" id="num_354" playOrder="354">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_355" playOrder="355">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_356" playOrder="356">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_357" playOrder="357">
+        <navLabel>
+          <text>8-5. Site Switching</text>
+        </navLabel>
+        <content src="text/part0018.html#Sec21"/>
+        <navPoint class="chapter" id="num_358" playOrder="358">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec22"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_359" playOrder="359">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_360" playOrder="360">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0018.html#Sec24"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_361" playOrder="361">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0018.html#Sec25"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_362" playOrder="362">
+      <navLabel>
+        <text>Chapter 9: Spring with Other Web Frameworks</text>
+      </navLabel>
+      <content src="text/part0019.html"/>
+      <navPoint class="chapter" id="num_363" playOrder="363">
+        <navLabel>
+          <text>9-1. Accessing Spring in Generic Web Applications</text>
+        </navLabel>
+        <content src="text/part0019.html#Sec1"/>
+        <navPoint class="chapter" id="num_364" playOrder="364">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_365" playOrder="365">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_366" playOrder="366">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_367" playOrder="367">
+        <navLabel>
+          <text>9-2. Using Spring in Your Servlets and Filters</text>
+        </navLabel>
+        <content src="text/part0019.html#Sec5"/>
+        <navPoint class="chapter" id="num_368" playOrder="368">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_369" playOrder="369">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec7"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_370" playOrder="370">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec8"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_371" playOrder="371">
+        <navLabel>
+          <text>9-3. Integrating Spring with JSF</text>
+        </navLabel>
+        <content src="text/part0019.html#Sec11"/>
+        <navPoint class="chapter" id="num_372" playOrder="372">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec12"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_373" playOrder="373">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_374" playOrder="374">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0019.html#Sec14"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_375" playOrder="375">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0019.html#Sec17"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_376" playOrder="376">
+      <navLabel>
+        <text>Chapter 10: Data Access</text>
+      </navLabel>
+      <content src="text/part0020.html"/>
+      <navPoint class="chapter" id="num_377" playOrder="377">
+        <navLabel>
+          <text>Problems with Direct JDBC</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec1"/>
+        <navPoint class="chapter" id="num_378" playOrder="378">
+          <navLabel>
+            <text>Setting Up the Application Database</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_379" playOrder="379">
+          <navLabel>
+            <text>Understanding the Data Access Object Design Pattern</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_380" playOrder="380">
+          <navLabel>
+            <text>Implementing the DAO with JDBC</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec4"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_381" playOrder="381">
+          <navLabel>
+            <text>Configuring a Data Source in Spring</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec5"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_382" playOrder="382">
+          <navLabel>
+            <text>Running the DAO</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_383" playOrder="383">
+          <navLabel>
+            <text>Taking It a Step Further</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec7"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_384" playOrder="384">
+        <navLabel>
+          <text>10-1. Using a JDBC Template to Update a Database</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec8"/>
+        <navPoint class="chapter" id="num_385" playOrder="385">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec9"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_386" playOrder="386">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_387" playOrder="387">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec11"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_388" playOrder="388">
+        <navLabel>
+          <text>10-2. Using a JDBC Template to Query a Database</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec16"/>
+        <navPoint class="chapter" id="num_389" playOrder="389">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec17"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_390" playOrder="390">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_391" playOrder="391">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec19"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_392" playOrder="392">
+        <navLabel>
+          <text>10-3. Simplifying JDBC Template Creation</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec24"/>
+        <navPoint class="chapter" id="num_393" playOrder="393">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec25"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_394" playOrder="394">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec26"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_395" playOrder="395">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec27"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_396" playOrder="396">
+        <navLabel>
+          <text>10-4. Using Named Parameters in a JDBC Template</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec30"/>
+        <navPoint class="chapter" id="num_397" playOrder="397">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_398" playOrder="398">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_399" playOrder="399">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec33"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_400" playOrder="400">
+        <navLabel>
+          <text>10-5. Handling Exceptions in the Spring JDBC Framework</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec34"/>
+        <navPoint class="chapter" id="num_401" playOrder="401">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec35"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_402" playOrder="402">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec36"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_403" playOrder="403">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec37"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_404" playOrder="404">
+        <navLabel>
+          <text>10-6. Problems with Using ORM Frameworks Directly</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec40"/>
+        <navPoint class="chapter" id="num_405" playOrder="405">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec41"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_406" playOrder="406">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_407" playOrder="407">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec43"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_408" playOrder="408">
+          <navLabel>
+            <text>Persisting Objects Using the Hibernate API with Hibernate XML Mappings</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec44"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_409" playOrder="409">
+          <navLabel>
+            <text>Persisting Objects Using the Hibernate API with JPA Annotations</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec45"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_410" playOrder="410">
+          <navLabel>
+            <text>Persisting Objects Using JPA with Hibernate as the Engine</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec46"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_411" playOrder="411">
+        <navLabel>
+          <text>10-7. Configuring ORM Resource Factories in Spring</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec47"/>
+        <navPoint class="chapter" id="num_412" playOrder="412">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec48"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_413" playOrder="413">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec49"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_414" playOrder="414">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec50"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_415" playOrder="415">
+        <navLabel>
+          <text>10-8. Persisting Objects with Spring’s ORM Templates</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec53"/>
+        <navPoint class="chapter" id="num_416" playOrder="416">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec54"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_417" playOrder="417">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec55"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_418" playOrder="418">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec56"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_419" playOrder="419">
+        <navLabel>
+          <text>10-9. Persisting Objects with Hibernate’s Contextual Sessions</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec59"/>
+        <navPoint class="chapter" id="num_420" playOrder="420">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec60"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_421" playOrder="421">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec61"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_422" playOrder="422">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec62"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_423" playOrder="423">
+        <navLabel>
+          <text>10-10. Persisting Objects with JPA’s Context Injection</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec63"/>
+        <navPoint class="chapter" id="num_424" playOrder="424">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec64"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_425" playOrder="425">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec65"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_426" playOrder="426">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec66"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_427" playOrder="427">
+        <navLabel>
+          <text>10-11. Simplify JPA with Spring Data JPA</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec67"/>
+        <navPoint class="chapter" id="num_428" playOrder="428">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec68"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_429" playOrder="429">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec69"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_430" playOrder="430">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0020.html#Sec70"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_431" playOrder="431">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0020.html#Sec71"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_432" playOrder="432">
+      <navLabel>
+        <text>Chapter 11: Spring Transaction Management</text>
+      </navLabel>
+      <content src="text/part0021.html"/>
+      <navPoint class="chapter" id="num_433" playOrder="433">
+        <navLabel>
+          <text>11-1. Problems with Transaction Management</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec1"/>
+      </navPoint>
+      <navPoint class="chapter" id="num_434" playOrder="434">
+        <navLabel>
+          <text>11-2. Choosing a Transaction Manager Implementation</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec4"/>
+        <navPoint class="chapter" id="num_435" playOrder="435">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec5"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_436" playOrder="436">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_437" playOrder="437">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec7"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_438" playOrder="438">
+        <navLabel>
+          <text>11-3. Managing Transactions Programmatically with the Transaction Manager API</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec8"/>
+        <navPoint class="chapter" id="num_439" playOrder="439">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec9"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_440" playOrder="440">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_441" playOrder="441">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec11"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_442" playOrder="442">
+        <navLabel>
+          <text>11-4. Managing Transactions Programmatically with a Transaction Template</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec12"/>
+        <navPoint class="chapter" id="num_443" playOrder="443">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_444" playOrder="444">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_445" playOrder="445">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec15"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_446" playOrder="446">
+        <navLabel>
+          <text>11-5. Managing Transactions Declaratively with Transaction Advices</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec16"/>
+        <navPoint class="chapter" id="num_447" playOrder="447">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec17"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_448" playOrder="448">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_449" playOrder="449">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec19"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_450" playOrder="450">
+        <navLabel>
+          <text>11-6. Managing Transactions Declaratively with the @Transactional Annotation</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec20"/>
+        <navPoint class="chapter" id="num_451" playOrder="451">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec21"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_452" playOrder="452">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec22"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_453" playOrder="453">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec23"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_454" playOrder="454">
+        <navLabel>
+          <text>11-7. Setting the Propagation Transaction Attribute</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec25"/>
+        <navPoint class="chapter" id="num_455" playOrder="455">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec26"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_456" playOrder="456">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec27"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_457" playOrder="457">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec28"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_458" playOrder="458">
+        <navLabel>
+          <text>11-8. Setting the Isolation Transaction Attribute</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec32"/>
+        <navPoint class="chapter" id="num_459" playOrder="459">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec33"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_460" playOrder="460">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec34"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_461" playOrder="461">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec35"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_462" playOrder="462">
+        <navLabel>
+          <text>11-9. Setting the Rollback Transaction Attribute</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec40"/>
+        <navPoint class="chapter" id="num_463" playOrder="463">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec41"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_464" playOrder="464">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_465" playOrder="465">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec43"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_466" playOrder="466">
+        <navLabel>
+          <text>11-10. Setting the Timeout and Read-Only Transaction Attributes</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec44"/>
+        <navPoint class="chapter" id="num_467" playOrder="467">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec45"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_468" playOrder="468">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec46"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_469" playOrder="469">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec47"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_470" playOrder="470">
+        <navLabel>
+          <text>11-11. Managing Transactions with Load-Time Weaving</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec48"/>
+        <navPoint class="chapter" id="num_471" playOrder="471">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec49"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_472" playOrder="472">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec50"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_473" playOrder="473">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0021.html#Sec51"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_474" playOrder="474">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0021.html#Sec52"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_475" playOrder="475">
+      <navLabel>
+        <text>Chapter 12: Spring Batch</text>
+      </navLabel>
+      <content src="text/part0022.html"/>
+      <navPoint class="chapter" id="num_476" playOrder="476">
+        <navLabel>
+          <text>Runtime Metadata Model</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec1"/>
+      </navPoint>
+      <navPoint class="chapter" id="num_477" playOrder="477">
+        <navLabel>
+          <text>12-1. Setting Up Spring Batch’s Infrastructure</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec2"/>
+        <navPoint class="chapter" id="num_478" playOrder="478">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_479" playOrder="479">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec4"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_480" playOrder="480">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec5"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_481" playOrder="481">
+        <navLabel>
+          <text>12-2. Reading and Writing</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec8"/>
+        <navPoint class="chapter" id="num_482" playOrder="482">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec9"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_483" playOrder="483">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_484" playOrder="484">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec11"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_485" playOrder="485">
+        <navLabel>
+          <text>12-3. Writing a Custom ItemWriter and ItemReader</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec15"/>
+        <navPoint class="chapter" id="num_486" playOrder="486">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec16"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_487" playOrder="487">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec17"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_488" playOrder="488">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec18"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_489" playOrder="489">
+        <navLabel>
+          <text>12-4. Processing Input Before Writing</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec21"/>
+        <navPoint class="chapter" id="num_490" playOrder="490">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec22"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_491" playOrder="491">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_492" playOrder="492">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec24"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_493" playOrder="493">
+        <navLabel>
+          <text>12-5. Better Living through Transactions</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec26"/>
+        <navPoint class="chapter" id="num_494" playOrder="494">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec27"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_495" playOrder="495">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec28"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_496" playOrder="496">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec29"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_497" playOrder="497">
+        <navLabel>
+          <text>12-6. Retrying</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec32"/>
+        <navPoint class="chapter" id="num_498" playOrder="498">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec33"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_499" playOrder="499">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec34"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_500" playOrder="500">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec35"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_501" playOrder="501">
+        <navLabel>
+          <text>12-7. Controlling Step Execution</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec39"/>
+        <navPoint class="chapter" id="num_502" playOrder="502">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec40"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_503" playOrder="503">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec41"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_504" playOrder="504">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec42"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_505" playOrder="505">
+        <navLabel>
+          <text>12-8. Launching a Job</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec47"/>
+        <navPoint class="chapter" id="num_506" playOrder="506">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec48"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_507" playOrder="507">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec49"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_508" playOrder="508">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec50"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_509" playOrder="509">
+        <navLabel>
+          <text>12-9. Parameterizing a Job</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec54"/>
+        <navPoint class="chapter" id="num_510" playOrder="510">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec55"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_511" playOrder="511">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec56"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_512" playOrder="512">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0022.html#Sec57"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_513" playOrder="513">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0022.html#Sec60"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_514" playOrder="514">
+      <navLabel>
+        <text>Chapter 13: NoSQL and BigData</text>
+      </navLabel>
+      <content src="text/part0023.html"/>
+      <navPoint class="chapter" id="num_515" playOrder="515">
+        <navLabel>
+          <text>13-1. Using MongoDB</text>
+        </navLabel>
+        <content src="text/part0023.html#Sec1"/>
+        <navPoint class="chapter" id="num_516" playOrder="516">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_517" playOrder="517">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_518" playOrder="518">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_519" playOrder="519">
+        <navLabel>
+          <text>13-2. Using Redis</text>
+        </navLabel>
+        <content src="text/part0023.html#Sec11"/>
+      </navPoint>
+      <navPoint class="chapter" id="num_520" playOrder="520">
+        <navLabel>
+          <text>13-3. Using Hadoop</text>
+        </navLabel>
+        <content src="text/part0023.html#Sec17"/>
+        <navPoint class="chapter" id="num_521" playOrder="521">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_522" playOrder="522">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_523" playOrder="523">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_524" playOrder="524">
+        <navLabel>
+          <text>13-4. Using Neo4j</text>
+        </navLabel>
+        <content src="text/part0023.html#Sec25"/>
+        <navPoint class="chapter" id="num_525" playOrder="525">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec26"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_526" playOrder="526">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec27"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_527" playOrder="527">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0023.html#Sec28"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_528" playOrder="528">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0023.html#Sec35"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_529" playOrder="529">
+      <navLabel>
+        <text>Chapter 14: Spring Java Enterprise Services and Remoting Technologies</text>
+      </navLabel>
+      <content src="text/part0024.html"/>
+      <navPoint class="chapter" id="num_530" playOrder="530">
+        <navLabel>
+          <text>14-1.Register Spring POJOs as JMX MBeans</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec1"/>
+        <navPoint class="chapter" id="num_531" playOrder="531">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_532" playOrder="532">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_533" playOrder="533">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_534" playOrder="534">
+        <navLabel>
+          <text>14-2. Publish and Listen to JMX Notifications</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec11"/>
+        <navPoint class="chapter" id="num_535" playOrder="535">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec12"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_536" playOrder="536">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_537" playOrder="537">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec14"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_538" playOrder="538">
+        <navLabel>
+          <text>14-3. Access Remote JMX MBeans in Spring</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec17"/>
+        <navPoint class="chapter" id="num_539" playOrder="539">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_540" playOrder="540">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_541" playOrder="541">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_542" playOrder="542">
+        <navLabel>
+          <text>14-4. Send E-mail with Spring’s E-mail Support</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec23"/>
+        <navPoint class="chapter" id="num_543" playOrder="543">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec24"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_544" playOrder="544">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec25"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_545" playOrder="545">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec26"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_546" playOrder="546">
+        <navLabel>
+          <text>14-5. Schedule tasks with Spring’s Quartz Support</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec31"/>
+        <navPoint class="chapter" id="num_547" playOrder="547">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_548" playOrder="548">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec33"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_549" playOrder="549">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec34"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_550" playOrder="550">
+        <navLabel>
+          <text>14-6. Schedule tasks with Spring’s Scheduling</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec37"/>
+        <navPoint class="chapter" id="num_551" playOrder="551">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec38"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_552" playOrder="552">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec39"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_553" playOrder="553">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec40"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_554" playOrder="554">
+        <navLabel>
+          <text>14-7. Expose and Invoke Services through RMI</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec41"/>
+        <navPoint class="chapter" id="num_555" playOrder="555">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_556" playOrder="556">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec43"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_557" playOrder="557">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec44"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_558" playOrder="558">
+        <navLabel>
+          <text>14-8. Expose and Invoke Services through HTTP</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec47"/>
+        <navPoint class="chapter" id="num_559" playOrder="559">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec48"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_560" playOrder="560">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec49"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_561" playOrder="561">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec50"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_562" playOrder="562">
+        <navLabel>
+          <text>14-9. Expose and invoke SOAP Web Services with JAX-WS</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec57"/>
+        <navPoint class="chapter" id="num_563" playOrder="563">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec58"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_564" playOrder="564">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec59"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_565" playOrder="565">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec60"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_566" playOrder="566">
+        <navLabel>
+          <text>14-10. Introduction to contract first SOAP Web Services</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec65"/>
+        <navPoint class="chapter" id="num_567" playOrder="567">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec66"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_568" playOrder="568">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec67"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_569" playOrder="569">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec68"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_570" playOrder="570">
+        <navLabel>
+          <text>14-11. Expose and invoke SOAP Web Services with Spring-WS</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec73"/>
+        <navPoint class="chapter" id="num_571" playOrder="571">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec74"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_572" playOrder="572">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec75"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_573" playOrder="573">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec76"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_574" playOrder="574">
+        <navLabel>
+          <text>14-12. Develop SOAP Web Services with Spring-WS and XML Marshalling</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec81"/>
+        <navPoint class="chapter" id="num_575" playOrder="575">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec82"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_576" playOrder="576">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec83"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_577" playOrder="577">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0024.html#Sec84"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_578" playOrder="578">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0024.html#Sec87"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_579" playOrder="579">
+      <navLabel>
+        <text>Chapter 15: Spring Messaging</text>
+      </navLabel>
+      <content src="text/part0025.html"/>
+      <navPoint class="chapter" id="num_580" playOrder="580">
+        <navLabel>
+          <text>15-1. Send and Receive JMS Messages with Spring</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec1"/>
+        <navPoint class="chapter" id="num_581" playOrder="581">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_582" playOrder="582">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_583" playOrder="583">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_584" playOrder="584">
+        <navLabel>
+          <text>15-2. Convert JMS Messages</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec9"/>
+        <navPoint class="chapter" id="num_585" playOrder="585">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec10"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_586" playOrder="586">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec11"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_587" playOrder="587">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec12"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_588" playOrder="588">
+        <navLabel>
+          <text>15-3. Manage JMS Transactions</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec13"/>
+        <navPoint class="chapter" id="num_589" playOrder="589">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_590" playOrder="590">
+          <navLabel>
+            <text>Approach</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec15"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_591" playOrder="591">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec16"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_592" playOrder="592">
+        <navLabel>
+          <text>15-4. Create Message-Driven POJOs in Spring</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec17"/>
+        <navPoint class="chapter" id="num_593" playOrder="593">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_594" playOrder="594">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_595" playOrder="595">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_596" playOrder="596">
+        <navLabel>
+          <text>15-5. Cache and pool JMS connections</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec26"/>
+        <navPoint class="chapter" id="num_597" playOrder="597">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec27"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_598" playOrder="598">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec28"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_599" playOrder="599">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec29"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_600" playOrder="600">
+        <navLabel>
+          <text>15-6 Send and Receive AMQP Messages with Spring</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec30"/>
+        <navPoint class="chapter" id="num_601" playOrder="601">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_602" playOrder="602">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_603" playOrder="603">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0025.html#Sec33"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_604" playOrder="604">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0025.html#Sec36"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_605" playOrder="605">
+      <navLabel>
+        <text>Chapter 16: Spring Integration</text>
+      </navLabel>
+      <content src="text/part0026.html"/>
+      <navPoint class="chapter" id="num_606" playOrder="606">
+        <navLabel>
+          <text>16-1. Integrating One System with Another Using EAI</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec1"/>
+        <navPoint class="chapter" id="num_607" playOrder="607">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_608" playOrder="608">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_609" playOrder="609">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_610" playOrder="610">
+        <navLabel>
+          <text>16-2. Integrating Two Systems Using JMS</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec7"/>
+        <navPoint class="chapter" id="num_611" playOrder="611">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec8"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_612" playOrder="612">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec9"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_613" playOrder="613">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec10"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_614" playOrder="614">
+        <navLabel>
+          <text>16-3. Interrogating Spring Integration Messages for Context Information</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec12"/>
+        <navPoint class="chapter" id="num_615" playOrder="615">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec13"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_616" playOrder="616">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_617" playOrder="617">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec15"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_618" playOrder="618">
+        <navLabel>
+          <text>16-4. Integrating Two Systems Using a File System</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec17"/>
+        <navPoint class="chapter" id="num_619" playOrder="619">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_620" playOrder="620">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_621" playOrder="621">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_622" playOrder="622">
+        <navLabel>
+          <text>16-5. Transforming a Message from One Type to Another</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec22"/>
+        <navPoint class="chapter" id="num_623" playOrder="623">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_624" playOrder="624">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec24"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_625" playOrder="625">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec25"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_626" playOrder="626">
+        <navLabel>
+          <text>16-6. Error Handling Using Spring Integration</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec28"/>
+        <navPoint class="chapter" id="num_627" playOrder="627">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec29"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_628" playOrder="628">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec30"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_629" playOrder="629">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec31"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_630" playOrder="630">
+        <navLabel>
+          <text>16-7. Forking Integration Control: Splitters and Aggregators</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec35"/>
+        <navPoint class="chapter" id="num_631" playOrder="631">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec36"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_632" playOrder="632">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec37"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_633" playOrder="633">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec38"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_634" playOrder="634">
+        <navLabel>
+          <text>16-8. Conditional Routing with Routers</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec41"/>
+        <navPoint class="chapter" id="num_635" playOrder="635">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_636" playOrder="636">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec43"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_637" playOrder="637">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec44"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_638" playOrder="638">
+        <navLabel>
+          <text>16-9. Staging Events Using Spring Batch</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec45"/>
+        <navPoint class="chapter" id="num_639" playOrder="639">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec46"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_640" playOrder="640">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec47"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_641" playOrder="641">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec48"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_642" playOrder="642">
+        <navLabel>
+          <text>16-10. Using Gateways</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec49"/>
+        <navPoint class="chapter" id="num_643" playOrder="643">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec50"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_644" playOrder="644">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec51"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_645" playOrder="645">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0026.html#Sec52"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_646" playOrder="646">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0026.html#Sec55"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_647" playOrder="647">
+      <navLabel>
+        <text>Chapter 17: Spring Testing</text>
+      </navLabel>
+      <content src="text/part0027.html"/>
+      <navPoint class="chapter" id="num_648" playOrder="648">
+        <navLabel>
+          <text>17-1. Creating Tests with JUnit and TestNG</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec1"/>
+        <navPoint class="chapter" id="num_649" playOrder="649">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_650" playOrder="650">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_651" playOrder="651">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_652" playOrder="652">
+        <navLabel>
+          <text>17-2. Creating Unit Tests and Integration Tests</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec7"/>
+        <navPoint class="chapter" id="num_653" playOrder="653">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec8"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_654" playOrder="654">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec9"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_655" playOrder="655">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec10"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_656" playOrder="656">
+        <navLabel>
+          <text>17-3. Unit Testing Spring MVC Controllers</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec14"/>
+        <navPoint class="chapter" id="num_657" playOrder="657">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec15"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_658" playOrder="658">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec16"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_659" playOrder="659">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec17"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_660" playOrder="660">
+        <navLabel>
+          <text>17-4. Managing Application Contexts in Integration Tests</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec18"/>
+        <navPoint class="chapter" id="num_661" playOrder="661">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_662" playOrder="662">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec20"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_663" playOrder="663">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec21"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_664" playOrder="664">
+        <navLabel>
+          <text>17-5. Injecting Test Fixtures into Integration Tests</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec24"/>
+        <navPoint class="chapter" id="num_665" playOrder="665">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec25"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_666" playOrder="666">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec26"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_667" playOrder="667">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec27"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_668" playOrder="668">
+        <navLabel>
+          <text>17-6. Managing Transactions in Integration Tests</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec30"/>
+        <navPoint class="chapter" id="num_669" playOrder="669">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_670" playOrder="670">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec32"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_671" playOrder="671">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec33"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_672" playOrder="672">
+        <navLabel>
+          <text>17-7. Accessing a Database in Integration Tests</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec36"/>
+        <navPoint class="chapter" id="num_673" playOrder="673">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec37"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_674" playOrder="674">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec38"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_675" playOrder="675">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec39"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_676" playOrder="676">
+        <navLabel>
+          <text>17-8. Using Spring’s Common Testing Annotations</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec41"/>
+        <navPoint class="chapter" id="num_677" playOrder="677">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec42"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_678" playOrder="678">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec43"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_679" playOrder="679">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec44"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_680" playOrder="680">
+        <navLabel>
+          <text>17-9. Integration Testing Spring MVC Controllers</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec46"/>
+        <navPoint class="chapter" id="num_681" playOrder="681">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec47"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_682" playOrder="682">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec48"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_683" playOrder="683">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0027.html#Sec49"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_684" playOrder="684">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0027.html#Sec52"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_685" playOrder="685">
+      <navLabel>
+        <text>Chapter 18: Grails</text>
+      </navLabel>
+      <content src="text/part0028.html"/>
+      <navPoint class="chapter" id="num_686" playOrder="686">
+        <navLabel>
+          <text>18-1. Getting and Installing Grails</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec1"/>
+        <navPoint class="chapter" id="num_687" playOrder="687">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec2"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_688" playOrder="688">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec3"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_689" playOrder="689">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec4"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_690" playOrder="690">
+        <navLabel>
+          <text>18-2. Creating a Grails Application</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec5"/>
+        <navPoint class="chapter" id="num_691" playOrder="691">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec6"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_692" playOrder="692">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec7"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_693" playOrder="693">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec8"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_694" playOrder="694">
+        <navLabel>
+          <text>18-3. Grails Plug-Ins</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec13"/>
+        <navPoint class="chapter" id="num_695" playOrder="695">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec14"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_696" playOrder="696">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec15"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_697" playOrder="697">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec16"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_698" playOrder="698">
+        <navLabel>
+          <text>18-4. Developing, Producing, and Testing in Grails Environments</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec17"/>
+        <navPoint class="chapter" id="num_699" playOrder="699">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec18"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_700" playOrder="700">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec19"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_701" playOrder="701">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec20"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_702" playOrder="702">
+        <navLabel>
+          <text>18-5. Creating an Application’s Domain Classes</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec21"/>
+        <navPoint class="chapter" id="num_703" playOrder="703">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec22"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_704" playOrder="704">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec23"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_705" playOrder="705">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec24"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_706" playOrder="706">
+        <navLabel>
+          <text>18-6. Generating CRUD Controllers and Views for an Application’s Domain Classes</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec25"/>
+        <navPoint class="chapter" id="num_707" playOrder="707">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec26"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_708" playOrder="708">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec27"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_709" playOrder="709">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec28"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_710" playOrder="710">
+        <navLabel>
+          <text>18-7. Internationalization (I18n) Message Properties</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec29"/>
+        <navPoint class="chapter" id="num_711" playOrder="711">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec30"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_712" playOrder="712">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec31"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_713" playOrder="713">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec32"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_714" playOrder="714">
+        <navLabel>
+          <text>18-8. Changing Permanent Storage Systems</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec33"/>
+        <navPoint class="chapter" id="num_715" playOrder="715">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec34"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_716" playOrder="716">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec35"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_717" playOrder="717">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec36"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_718" playOrder="718">
+        <navLabel>
+          <text>18-9. Logging</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec39"/>
+        <navPoint class="chapter" id="num_719" playOrder="719">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec40"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_720" playOrder="720">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec41"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_721" playOrder="721">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec42"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_722" playOrder="722">
+        <navLabel>
+          <text>18-10. Running Unit and Integration Tests</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec45"/>
+        <navPoint class="chapter" id="num_723" playOrder="723">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec46"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_724" playOrder="724">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec47"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_725" playOrder="725">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec48"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_726" playOrder="726">
+        <navLabel>
+          <text>18-11. Using Custom Layouts and Templates</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec49"/>
+        <navPoint class="chapter" id="num_727" playOrder="727">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec50"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_728" playOrder="728">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec51"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_729" playOrder="729">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec52"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_730" playOrder="730">
+        <navLabel>
+          <text>18-12. Using GORM Queries</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec53"/>
+        <navPoint class="chapter" id="num_731" playOrder="731">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec54"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_732" playOrder="732">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec55"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_733" playOrder="733">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec56"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_734" playOrder="734">
+        <navLabel>
+          <text>18-13. Creating Custom Tags</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec57"/>
+        <navPoint class="chapter" id="num_735" playOrder="735">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec58"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_736" playOrder="736">
+          <navLabel>
+            <text>Solution</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec59"/>
+        </navPoint>
+        <navPoint class="chapter" id="num_737" playOrder="737">
+          <navLabel>
+            <text>How It Works</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec60"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_738" playOrder="738">
+        <navLabel>
+          <text>18-14. Adding Security</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec61"/>
+        <navPoint class="chapter" id="num_739" playOrder="739">
+          <navLabel>
+            <text>Problem</text>
+          </navLabel>
+          <content src="text/part0028.html#Sec62"/>
+        </navPoint>
+      </navPoint>
+      <navPoint class="chapter" id="num_740" playOrder="740">
+        <navLabel>
+          <text>Summary</text>
+        </navLabel>
+        <content src="text/part0028.html#Sec68"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="num_741" playOrder="741">
+      <navLabel>
+        <text>Index</text>
+      </navLabel>
+      <content src="text/part0029.html"/>
+    </navPoint>
+  </navMap>
+</ncx>
